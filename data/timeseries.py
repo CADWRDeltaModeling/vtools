@@ -1,0 +1,469 @@
+""" Time series module
+Module contains the TimeSeries class and the factory functions
+for creating regular and irregular time series, as well as
+some helper functions
+"""
+import sys #,pdb
+from vtime import *
+from datetime import datetime
+import itertools
+import scipy
+import bisect
+all = ["TimeSeries","TimeSeriesElement","prep_binary","rts","its"]
+
+# python standard lib import.
+from operator import isNumberType,isSequenceType
+#from vtools.debugtools.timeprofile import debug_timeprofiler
+
+def range_union(ts0,ts1):
+    """Union of time ranges of two series
+       Returns a tuple representing the start
+       and end of the union of time
+       ranges of ts0 and ts1, as determined by the
+       earliest start and the latest end.
+    """
+      
+    union_start=min(ts0.start,ts1.start)
+    union_end=max(ts0.end,ts1.end)
+    return (union_start,union_end)
+
+def range_intersect(ts0,ts1):
+    """Intersection of time ranges of two series.
+       May return result with union_start >union_end,
+       in which case there is no intersection.
+
+       Todo: In the future, may return None in this case
+    """
+    union_start=max(ts0.start,ts1.start)
+    union_end=min(ts0.end,ts1.end)
+    return (union_start,union_end)
+
+def index_after(seq,tm):
+    """Return the index of a time sequence that
+       is on or after tm
+    """
+    return bisect.bisect_right(seq,ticks(tm))
+
+def indexes_after(seq,tm):
+    """Return an array of indexes representing
+       the index of seq that is on or after each
+       member of tm
+       Arguments:
+       seq: a sequence of ticks
+       tm:  a list of ticks
+    """
+
+    return scipy.searchsorted(seq,tm)
+
+
+def index_before(seq,tm):
+    return bisect.bisect_left(seq,ticks(tm))
+    
+def prep_binary(ts1,ts2):
+    """Create data for time-aligned op between series
+       Returns data holders and selections required to carry out
+       a binary operation on two series.
+       Arguments:
+       ts1,ts2:  Two regular time series with similar time intervals
+
+       Returns:
+       A tuple containing, in order:
+       seq: time sequence representing the union of times from the series
+       start: the start of the sequence as a datetime
+       slice0: slice within seq covered by ranges of both ts1 and ts2
+       slice1: slice within ts1 representing the region intersecting ts2
+       slice2: slice within ts2 representing the region intersecting ts1
+    """
+    if not ts1.is_regular() or not ts2.is_regular():
+        raise ValueError("Time series in binary operations must be regular")
+    if (ts1.interval != ts2.interval):
+        raise ValueError("Series have different time interval")
+    tm_union=range_union(ts1,ts2)
+    tm_sect=range_intersect(ts1,ts2)
+    n=number_intervals(tm_union[0],tm_union[1],ts1.interval)+1
+    start=tm_union[0]
+    seq=time_sequence(tm_union[0],ts1.interval,n)
+    slice0=slice(index_before(seq,tm_sect[0]),index_before(seq,tm_sect[1]))
+    slice1=slice(ts1.index_before(tm_sect[0]),ts1.index_before(tm_sect[1]))
+    slice2=slice(ts2.index_before(tm_sect[0]),ts2.index_before(tm_sect[1]))
+    return (seq,start,slice0,slice1,slice2)
+
+
+class TimeSeriesElement(object):
+    def __init__(self,time_data):
+        self.time_data=time_data
+
+    def _get_value(self):
+        return self.time_data[1]
+
+    def _get_ticks(self):
+        return self.time_data[0]
+
+    def _get_time(self):
+        return ticks_to_time(self.ticks)
+    
+    value = property(_get_value,None,None,"Value at element")
+    ticks = property(_get_ticks,None,None,"Time point in long integer ticks of element")
+    time = property(_get_time,None,None,"Time at element")
+
+    def __str__(self):
+        return "%s %s" % (self.time, self.value)
+
+
+
+class TimeSeries(object):
+    """ Time series
+       This is the fundamental class for both regular and
+       irregular time series. The prefered way to create a
+       time series is with the rts or its factory functions,
+       not with the constructor.
+    """
+
+    def __init__(self, times, data, props,header=None):
+        """ Avoid using the constructor for client programming.
+            Use the factory functions rts and its instead.
+        """
+        if (len(times) != len(data)):
+            raise ValueError("times not same length as data")
+            # fixme: what is the correct exception?
+
+        # are times input as times or as a sequence
+        # of ticks?
+        if isinstance(times[0],datetime):
+            self._ticks = scipy.array(map(ticks,times))
+        else:
+            self._ticks = times
+        self._data = data    # must validate data sequence properties
+        self._props = props  # must validate props        
+        self._len = len(times)
+        self._len = len(data)
+
+    def is_regular(self):
+        """returns true if the time series is regular
+           a regular series will have time samples at absolute
+           or calendar time intervals
+        """
+        return hasattr(self,'interval')
+    
+    def __len__(self):
+        return len(self._ticks)
+
+    def index_before(self,tm):
+        """
+        Return the index of the time series at point tm
+        """
+        return index_before(self._ticks,tm)
+
+    def index_after(self,tm):
+        """ return the indexes of the time series at/after points
+            given by tm.
+
+            Input tm maybe a single datetime or list/array datetime, or
+            single ticks or list/array of ticks.
+            Accordingly, return will be a single index or array of indexes
+            
+            If points are found, corresponding indexes will be return,
+            if not, indexes whose time are directly after points will 
+            be returned.
+
+            Performance of this method is better if tm is given by ticks
+            if this is convenient; otherwise, if given a sequence of times,
+            the method will convert the sequence to ticks automatically.
+        """
+        
+        ## Decsion about time type of tm, is it
+        ## ticks or datetime.
+ 
+        issequence=False
+        if isSequenceType(tm):
+            test_tm=tm[0]
+            issequence=True
+        else:
+            test_tm=tm
+        
+        if isinstance(test_tm,datetime):
+            if issequence:
+                   tm=map(ticks,tm)
+            else:
+                   tm=ticks(tm)
+            return indexes_after(self._ticks,tm)
+        elif isNumberType(test_tm):
+            return indexes_after(self._ticks,tm)
+        else:
+            raise TypeError("Timeseries class can only"
+                            " search time given as datetime"
+                            " or ticks")
+       
+
+
+    def __iter__(self):
+        ts_iter = itertools.izip(self._ticks,self._data)
+        for item in ts_iter:
+            yield TimeSeriesElement(item)
+
+    # slicing/subsetting API
+    def __getitem__(self,key):
+        if type(key)==int:
+            # return element
+            return TimeSeriesElement( (self._ticks[key],self.data[key]))
+        else:
+            begndx=key.start
+            endndx=key.stop
+            if key.start:
+                if not (type(key.start) == int or
+                        isinstance(key.start,datetime)):
+                    raise TypeError("slice index start must be integer or datetime")
+                if isinstance(key.start,datetime):
+                    begndx = self.index_after(key.start)
+            if key.stop:
+                if not(type(key.stop) == int or
+                       isinstance(key.stop,datetime)):
+                    raise TypeError("slice index stop must be integer or datetime")
+                if isinstance(key.stop,datetime):
+                    endndx = self.index_after(key.stop)
+            return self._data[begndx:endndx]
+
+
+    def __setitem__(self,key,item):
+        raise NotImplementedError
+
+    # 
+    def __delitem__(self, index):
+        if( self.is_regular()):
+            raise ValueError("Elements may not be deleted from a regular time series")
+        else:
+            del(_ticks[index])
+            del(_data[index])
+
+
+    #perform a copy, optionally with clipped start and end
+    def copy(self,start=None,end=None,left=False,right=False):
+        pass
+ 
+
+    # built in math
+    def ts_unary(f):     
+        def u(self):
+            data=f(self._data)
+            if self.is_regular():
+                return rts(data,self.start,self.interval,None)
+            else:
+                return TimeSeries(self._ticks,data,None)
+        u.__name__=f.__name__
+        return u
+
+    def ts_binary(f):
+        def b(self,other):
+            if( isinstance(other,TimeSeries) ):
+                tm_seq,start,slice0,slice1,slice2 = prep_binary(self,other)
+                data=scipy.ones(len(tm_seq),'d')*scipy.nan #@todo: correct the size for non-univariate
+                data[slice0]=f(self.data[slice1], other.data[slice2])
+                return rts(data,start,self.interval,None)
+            else:
+                if (other is None): return None
+                data=f(self._data,other)
+                if self.is_regular():
+                    return rts(data,self.start,self.interval,None)
+                else:
+                    return TimeSeries(self._ticks,data,None)
+        b.__name__=f.__name__
+        return b
+
+    @ts_binary
+    def __add__(self, other):
+        return self + other
+
+    @ts_binary
+    def __sub__(self, other):
+        return self - other
+
+    @ts_binary
+    def __mul__(self, other):
+        return self * other
+    
+    @ts_binary    
+    def __div__(self, other):
+        return self / other
+
+    @ts_binary
+    def __mod__(self, other):
+        return self % other
+
+    @ts_binary
+    def __divmod__(self, other):
+        return divmod(self,other)
+
+    @ts_binary
+    def __radd__(self, other):
+        return other+self
+
+    @ts_binary
+    def __rsub__(self, other):
+        return other-self
+
+    @ts_binary
+    def __rmul__(self, other):
+        return self*other
+
+    @ts_binary
+    def __rdiv__(self, other):
+        return other/self
+
+    @ts_binary
+    def __rmod__(self, other):
+        return other % self
+
+    def __rdivmod__(self, other):
+        raise NotImplementedError
+
+# Called to implement the unary arithmetic operations (-, +, abs()  and ~). 
+    @ts_unary
+    def __neg__(self):
+        return -self
+
+    def __pos__(self):
+        raise NotImplementedError
+
+    @ts_unary
+    def __abs__(self) :
+        return abs(self)
+
+    def __invert__(self):
+        raise NotImplementedError
+
+# Comparisons
+    @ts_binary
+    def __gt__(self, other):
+        return self > other
+
+    @ts_binary
+    def __lt__(self, other):
+        return self < other        
+
+    @ts_binary
+    def __le__(self, other):
+        return self <= other
+
+    @ts_binary
+    def __ge__(self, other):
+        return self >= other                
+
+    @ts_binary
+    def __eq__(self, other):
+        return self == other 
+
+    @ts_binary
+    def __ne__(self, other):
+        return self != other             
+        
+    @ts_binary
+    def __and__(self,other):
+        return numpy.logical_and(self,other) 
+
+    @ts_binary
+    def __or__(self,other):
+        return numpy.logical_or(self,other) 
+        
+# Private accessors for properties
+
+    def _get_start(self):
+        return ticks_to_time(self._ticks[0])        
+
+    def _get_end(self):
+        return ticks_to_time(self._ticks[-1])
+
+    def _get_data(self):
+        return self._data
+
+    def _get_ticks(self):
+        return self._ticks
+
+    def _get_props(self):
+        return self._props
+    
+    def _get_times(self):
+        return scipy.array(map(ticks_to_time,self._ticks))
+
+    def _get_name(self):
+
+        if type(self._props)==dict:
+            if 'name' in self._props.keys():
+                return self._props['name']
+            else:
+                return 'no name'
+        else:
+            return 'no name'
+    
+#   public properties
+    start = property(_get_start,None,None,"Time at first element of series")
+    end = property(_get_end,None,None,"Time at last element of series") 
+    data=property(_get_data,None,None,"Data component of series (for all time)")
+    ticks=property(_get_ticks,None,None,"Array of long integer ticks representing the time index of the series")
+    times=property(_get_times,None,None,"Array of datetimes represented by series")    
+    props=property(_get_props,None,None,"Dictionary containing attributes, metadata and user properties")
+
+
+    
+def rts(data,start,interval,props=None):
+    """ Create a regular or calendar time series from
+        data and time parameters
+
+        input:
+            data: should be a array/list of values,
+            start: may be an instance of datetime,
+                   string, or ticks
+            interval: maybe timedelta or relativedelta
+                      or string.
+        output:
+            a timeseries instance.
+    """
+    
+    if type(start)==type(' '):
+        start=parse_time(start)
+    if type(interval)==type(' '):
+        interval=parse_interval(interval)
+    timeseq=time_sequence(start,interval,len(data))
+    if type(data)==list:
+        data=scipy.array(data)
+    if props == None: props = {}
+    ts=TimeSeries(timeseq,data,props)
+    ts.interval=interval
+    return ts
+
+def its(times,data,props=None):
+    """ Create an irregular time series from time and data
+        sequences
+        
+        input:
+            data: should be a array/list of values,
+            times: time sequence in ticks or datetime.
+        output:
+            a timeseries instance.
+    """
+    # convert times to a tick sequence
+    if type(data)==list:
+        data=scipy.array(data)
+    if props == None: props = {}        
+    ts=TimeSeries(times,data,props)
+
+    return ts
+
+
+
+              
+
+
+            
+        
+    
+    
+    
+
+
+
+    
+    
+    
+
+
+    
