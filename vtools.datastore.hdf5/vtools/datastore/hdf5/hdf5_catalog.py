@@ -75,9 +75,12 @@ class HDF5Catalog(Catalog):
         # Built extent string.
         index=entry.index
         dimension_selection=self.entry_dimension_map[index]
-        
+                
         if not extent:
             extent=""
+        else:
+            extent=extent.rstrip(";")
+            extent=extent+";"
             
         for (dimension,selection) in \
             zip(entry.dimension_scales(),dimension_selection):            

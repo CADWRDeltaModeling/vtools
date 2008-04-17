@@ -49,6 +49,8 @@ def hdf_retrieve_ts(hdf_file,selector,extent=None):
        
     hdf_service=dsm.get_service(HDF5_DATA_SOURCE)
     c=hdf_service.get_catalog(hdf_file)
+    extent=extent.rstrip(';')
+    extent=extent+";"
     data_refs=c.data_references(selector,extent)
     
 ##    if not data_ref:
@@ -56,8 +58,14 @@ def hdf_retrieve_ts(hdf_file,selector,extent=None):
 ##       return no data records from source.
 ##       no data was retrieved."""
 ##       return  None
-    
-    return hdf_service.get_data(data_ref)
+    ts=[]
+    for data_ref in data_refs:
+       tss=hdf_service.get_data(data_ref)
+       ts.append(tss)
+    if len(ts)==1:
+       return ts[0]
+    else:
+       return ts
 
 
     

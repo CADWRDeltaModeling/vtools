@@ -2,6 +2,7 @@
 ## python import
 import os.path
 import pdb
+import copy
 
 ##scipy import
 from scipy import zeros,string_
@@ -47,6 +48,21 @@ def process_array_val(val):
 _NOT_USUAL_ATTR=["start_time","interval","CLASS",\
                  "DIMENSION_LIST","DIMENSION_LABELS",\
                  "DIMENSION_PATH"]
+                 
+                 
+## hardwared dimension_sacle map for dataset nodes, used for dsm2 tide file
+_DIMENSION_SACLE_MAP={"channel area":[("channel_location",1),("channel_number",2)],
+                      "channel avg area":[("channel_number",1)],
+                      "channel flow":[("channel_location",1),("channel_number",2)],
+                      "channel stage":[("channel_location",1),("channel_number",2)],
+                      "qext changed":[("external_flow_names",1)],
+                      "reservoir flow":[("connection",1),("reservoir_names",2)],
+                      "reservoir height":[("reservoir_names",1)],
+                      "transfer flow":[("transfer_names",1)]
+                      }
+_DIMENSION_SCALE_PATH="/hydro/geometry/"
+_DIMENSION_SACLE_NAME=["channel_location","channel_number","external_flow_names","connection",\
+"reservoir_names","transfer_names"]
 
 class HDF5Service(Service):
     """ Service class to retrieve catalog and accsse timeseries
@@ -161,7 +177,7 @@ class HDF5Service(Service):
         "role":"identification","element_type":"path"})
         schema.append(schema_item)
         schema_item=CatalogSchemaItem({"name":"data_extent",\
-        "role":"extent","element_type":"dimension"})
+        "role":"extent","element_type":"dimension_scale"})
         schema.append(schema_item)          
         schema_item=CatalogSchemaItem({"name":"data_attr",\
         "role":"attribute","element_type":"attribute"})                
@@ -180,25 +196,30 @@ class HDF5Service(Service):
         scales={} ## key is path to reference node
                   ## values is tuple of scale and
                   ## dimension index.
-        for node in fileh.walkNodes("/",classname="Array"):            
-            if hasattr(node.attrs,"CLASS"):
-                c=node.attrs.CLASS
-                c=process_array_val(c)
-                c=c.strip()
-                if c==HDF_DIMENSION_SCALE_CLASS:
-                    path=node.attrs.REFERENCE_PATH
-                    path=process_array_val(path).strip()
-                    str_nodes=node.attrs.REFERENCE_NODE
-                    str_nodes=process_array_val(str_nodes).strip()
-                    str_nodes=str_nodes.split(",")
-                    str_nodes=[path+nd for nd in str_nodes]
-                    dimensions=node.attrs.REFERENCE_DIMENSION
-                    scale=node.read()
-                    for (di,nd) in zip(dimensions,str_nodes):
-                        if nd in scales.keys():
-                            scales[nd].append((node.name,di,scale))
-                        else:
-                            scales[nd]=[(node.name,di,scale)]
+          
+        nl= fileh.walkNodes("/",classname="Array")   
+              
+        for node in nl:  
+            # if hasattr(node.attrs,"CLASS"):
+                # c=node.attrs.CLASS
+                # c=process_array_val(c)
+                # c=c.strip()
+                #if c==HDF_DIMENSION_SCALE_CLASS:
+            if node.name in  _DIMENSION_SACLE_NAME:
+                    # path=node.attrs.REFERENCE_PATH
+                    # path=process_array_val(path).strip()
+                    # str_nodes=node.attrs.REFERENCE_NODE
+                    # str_nodes=process_array_val(str_nodes).strip()
+                    # str_nodes=str_nodes.split(",")
+                    # str_nodes=[path+nd for nd in str_nodes]
+                    # dimensions=node.attrs.REFERENCE_DIMENSION
+                scale=node.read()
+                scales[node.name]=scale
+                    # for (di,nd) in zip(dimensions,str_nodes):
+                        # if nd in scales.keys():
+                            # scales[nd].append((node.name,di,scale))
+                        # else:
+                            # scales[nd]=[(node.name,di,scale)]
         return scales
                 
     
@@ -238,8 +259,8 @@ class HDF5Service(Service):
         
         for item_schema in schema: 
                 element_type=item_schema.get_element("element_type")
-                if element_type=="dimension":
-                    scales=self._retrive_node_scales(node,scaledic)
+                if element_type=="dimension_scale":
+                    scales=self._retrive_node_scales_tide(node,scaledic)
                     if scales:
                         for scale in scales:
                             catalogentry.add_dimension_scale(scale)
@@ -249,10 +270,13 @@ class HDF5Service(Service):
                     if type(meta_entry_item)==list:
                         for name,item in meta_entry_item:
                             catalogentry.add_item(name,item)
+                            catalogentry.add_trait(name,item) 
                     else:
                         element_name=item_schema.get_element("name")
                         catalogentry.add_item(element_name,\
                                               meta_entry_item)
+                        catalogentry.add_trait(element_name,\
+                                              meta_entry_item) 
 
         return catalogentry
 
@@ -294,6 +318,57 @@ class HDF5Service(Service):
               val=process_array_val(val)
               lst.append((name,val))
         return lst
+        
+        
+    def _retrive_node_scales_tide(self,node,scale_dic):
+
+        """ This function returns list of dimensions-scale of a node
+            (instance of class dimensions) by hardwared dimension-scale
+             map.
+        """
+        name=node.name
+         
+        if not name in _DIMENSION_SACLE_MAP.keys():
+            raise Warning("%s don't have dimension scale defined"%name)
+                
+        scalelst=_DIMENSION_SACLE_MAP[name]
+        scalelst2=copy.deepcopy(scalelst)
+        dimension_scales=[]
+        gottime=False
+        
+        avadi=range(len(node.shape))## bookkeeping dimension
+                                       ## indexes.
+        #pdb.set_trace()
+        for (scalename,scaledi) in scalelst:          
+            if scalename in scale_dic.keys(): ## common data channels
+                scale=scale_dic[scalename]
+                dimensionscale=ChannelDimension(scale)
+                dimensionscale.name=scalename
+                dimensionscale.label=scalename
+                dimensionscale.index=scaledi
+                dimension_scales.append(dimensionscale)
+                scalelst2.remove((scalename,scaledi))
+            
+        if not gottime: ## if time not given explicity try
+                        ## to calculate it form nodes attribute
+                        ## setting.
+            if len(scalelst2)>0: ## Besides time scale, there are
+                             ## some dimension scales not given.
+                             ## try to interpret them directly
+               
+               for (scalename,scaledi) in scalelst2:
+                    scale=range(node.shape[scaledi])
+                    dimensionscale=ChannelDimension(scale)
+                    dimensionscale.name=scalename
+                    dimensionscale.label=scalename
+                    dimensionscale.index=scaledi
+                    dimension_scales.append(dimensionscale)
+               
+            dimensionscale=self._retrieve_time_scale(node,0)
+            dimension_scales.append(dimensionscale)
+        #print "scale done with "+node.name 
+        return dimension_scales
+
 
     def _retrive_node_scales(self,node,scale_dic):
 
@@ -479,11 +554,12 @@ class HDF5Service(Service):
         time_seq=None        
         hastime=False
 
-        di_scale_names=process_array_val(\
-            getattr(node.attrs,"DIMENSION_LABELS"))
-        di_scale_names=di_scale_names.strip()
-        nlst=di_scale_names.split(",")
-        nlst=[nl.strip() for nl in nlst]
+        name=node.name
+        if not name in _DIMENSION_SACLE_MAP.keys():
+            raise Warning("%s don't have dimension scale defined"%name)       
+        scalelst=_DIMENSION_SACLE_MAP[name]
+        nlst=[nl[0] for nl in scalelst]
+        nlst.append(HDF_TIME_SCALE)
         
         for extent in extents:
             extent_name=extent[0]           
@@ -494,6 +570,7 @@ class HDF5Service(Service):
                 self._parse_extent(extent,node)
             else:
                 (index,di)=self._parse_extent(extent,node)
+                
                 
             extent_indexs[di]=index
             nlst.remove(extent_name)
@@ -514,16 +591,19 @@ class HDF5Service(Service):
         ## str attr of node to map extent_name to
         ## mapping to dimension index.
         if extent_name=="time_window":
-            extent_name=HDF_TIME_SCALE
+            return 0
 
-        nlist=self._retrieve_scale_map(node)
-        
-        for index in nlist.keys():
-            if nlist[index]==extent_name:
+        name=node.name
+        if not name in _DIMENSION_SACLE_MAP.keys():
+            raise Warning("%s don't have dimension scale defined"%name)   
+            
+        scalelst=_DIMENSION_SACLE_MAP[name]
+                
+        for (scalename,index) in scalelst:
+            if scalename==extent_name:
                 return index
         #pdb.set_trace()
-        raise HDF5AccessError("Error in mapping extent name"+\
-                                  "to dimension index")         
+        raise HDF5AccessError("Cann't map extent %s to dimension index"%extent_name)         
 
     def _parse_extent(self,extent,node):
         
@@ -540,9 +620,7 @@ class HDF5Service(Service):
         dim_index=self._map_extentname_to_index(extent_name,node)
         
         if not HDF_TIME_SCALE in extent_name:##usual channel
-            path2scale_node=process_array_val(\
-                getattr(node.attrs,"DIMENSION_PATH")).strip()\
-                             +extent_name
+            path2scale_node=_DIMENSION_SCALE_PATH+extent_name
             try:
                 scale_node=hdf5fh.getNode(path2scale_node,classname="Array")
             except tables.NoSuchNodeError,e:
