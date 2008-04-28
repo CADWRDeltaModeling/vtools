@@ -32,6 +32,8 @@ setup(
     entry_points="""
             [vtools.datastore]
             DssService=vtools.datastore.dss.api:DssService
+            [vtools.datastore.plugin.resource]
+            DssResourceType=vtools.datastore.dss.api:DssResourceType
         """
 
 )

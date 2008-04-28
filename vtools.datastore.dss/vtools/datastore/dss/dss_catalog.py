@@ -29,6 +29,8 @@ from enthought.traits.api import Bool,Int
 from vtime_dss_utility import string_to_dss_julian_date,uncondensed_Dparts
 from dss_constants import DSS_DATA_SOURCE
 
+__all__=["DssCatalogError","DssCatalog"]
+
 class DssCatalogError(Exception):
     """ Exception tracking error happend in dss catalog operations"""
 

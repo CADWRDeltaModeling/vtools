@@ -50,6 +50,8 @@ from vtime_dss_utility import discover_valid_rts_start,\
      discover_valid_rts_end
 from vtime_dss_utility import dss_julian2python,interval_to_D,valid_dss_interval_dic_in_delta
 
+__all__=["DssAccessError","DssCatalogServiceError","DssService"]
+
 class DssAccessError(Exception):
 
     def _init_(self,st="Error in dss data source"):
