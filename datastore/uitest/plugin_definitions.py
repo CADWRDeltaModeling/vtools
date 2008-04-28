@@ -25,6 +25,7 @@ PLUGIN_DEFINITIONS = [
     join(envisage, 'workbench/workbench_plugin_definition.py'),
     join(envisage, 'workbench/action/action_plugin_definition.py'),
     join(envisage, 'repository/repository_plugin_definition.py'),
+    join(envisage, 'resource/resource_plugin_definition.py'),
     #join(envisage, 'ui/ui_plugin_definition.py'),
     #join(envisage, 'ui/preference/preference_plugin_definition.py'),
 
@@ -35,10 +36,6 @@ PLUGIN_DEFINITIONS = [
     # datastore plugins.
     join(vtools_datastore_plugin, 'plugin_definition.py'),
     
-    # example plugins
-    
-    #join(vtools_datastore,'uitest/perspective/plugin_definition.py'),
-    #join(vtools_datastore,'uitest/hello_world/plugin_definition.py'),
     
 ]
 
