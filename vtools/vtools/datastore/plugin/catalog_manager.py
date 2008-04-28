@@ -30,7 +30,6 @@ class CatalogManager(HasTraits):
     ###########################################################################     
     def __init__(self,application):
         self._application=application
-        #self.current_selection=r'D:\delta\models\vtools\src\vtools\datastore\dss\test\testfile.dss'
     ###########################################################################
     # public interface.
     ###########################################################################     
@@ -53,11 +52,13 @@ class CatalogManager(HasTraits):
         """
         if not (datasource in self._model_dict.keys()):
             catalog=self._cataloging_datasource(datasource)
-            if catalog:               
-##                models=generate_models_from_schema_entries(catalog.entries(),\
-##                                                           catalog.schema())
-##                self._model_dict[datasource]=models
+            if catalog:                      
                 self._catalog_dict[datasource]=catalog
+                workbench=self._application.workbench
+                for v in workbench.active_window.views:
+                    if hasattr(v,"update_catalog"):
+                        v.update_catalog()
+                
          
     def remove_datasource(self,datasource):
         """ remove the catalog models of a datasource from manager by

@@ -103,11 +103,11 @@ workbench = Workbench(
 )
 
 
-exportable_dss = ExportableObject(
-    class_name = 'vtools.datastore.plugin.data.dssfile.DssFile',
-    id = 'vtools.datastore.plugin.DssFile',
-    label = 'dss file Template',
-    )
+#exportable_dss = ExportableObject(
+#    class_name = 'vtools.datastore.plugin.data.dssfile.DssFile',
+#    id = 'vtools.datastore.plugin.DssFile',
+#    label = 'dss file Template',
+#    )
 
 ###############################################################################
 # The plugin definition.
@@ -139,7 +139,7 @@ class DataStorePluginDefinition(PluginDefinition):
     # The contributions that this plugin makes to extension points offered by
     # either itself or other plugins.
     extensions = [branding,workbench,workbench_action_set,
-    RepositoryRootFactory(class_name='vtools.datastore.plugin.root_factories.BuiltInRootFactory'),
-	exportable_dss]
+    #RepositoryRootFactory(class_name='vtools.datastore.plugin.root_factories.BuiltInRootFactory'),
+	]
 
 #### EOF ######################################################################
