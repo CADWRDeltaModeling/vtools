@@ -31,7 +31,6 @@ class CatalogViewer(View):
     
     # The pointer to the panel contain catalog table.
     view_panel=Any
-    
     ###########################################################################
     # Public interface.
     ###########################################################################
@@ -56,7 +55,7 @@ class CatalogViewer(View):
     def _create_catalog_explorer(self, parent):
         """ Creates the datasoruce catalog explorer.
         This is the combination of identity entries and other metadata.
-        """
+        """ 
         
         self._catalog_manager=self.application.get_service\
         (ICATALOGMANAGER)        
@@ -79,7 +78,6 @@ class CatalogViewer(View):
         """ Creates the catalog table. """
                 
         if current_catalog:    
-            pdb.set_trace()
             table_view=create_catalog_editor_view(current_catalog) 
             logger.debug("created tableview %s",table_view)           
             ui =  current_catalog.edit_traits(

@@ -63,6 +63,8 @@ class DataStorePlugin(Plugin):
         #self.repository=Repository(roots=[rr1,],application=application)
         #self.register_service(IREPOSITORY,self.repository)
         
+        
+        
         return
 
     def stop(self, application):

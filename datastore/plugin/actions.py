@@ -68,18 +68,18 @@ workbench_action_set = WorkbenchActionSet(
         
         ],
     actions=[
-        Action(
-            locations=[
-                Location(path='ToolBar/CatalogGroup'),
-                Location(path='MenuBar/DataToolMenu/CatalogToolMenu/alltool'),
-                ],
-            id=ID+".action.data_action.CatalogAction",
-            class_name=ID+".action.data_action.DataCatalogingAction",
-            name="&Cataloging",
-            image="action/images/do_it",
-            description="Catalog a source selected in data explorer",
-            tooltip="Click it to catalog a source selected in data explorer",
-            ),
+        # Action(
+            # locations=[
+                # Location(path='ToolBar/CatalogGroup'),
+                # Location(path='MenuBar/DataToolMenu/CatalogToolMenu/alltool'),
+                # ],
+            # id=ID+".action.data_action.CatalogAction",
+            # class_name=ID+".action.data_action.DataCatalogingAction",
+            # name="&Cataloging",
+            # image="action/images/do_it",
+            # description="Catalog a source selected in data explorer",
+            # tooltip="Click it to catalog a source selected in data explorer",
+            # ),
         Action(
             locations=[
                 Location(path='MenuBar/DataToolMenu/CatalogToolMenu/alltool'),
