@@ -12,6 +12,8 @@ from vtools.datastore.data_reference import DataReference
 ## local import
 from excel_constants import *
 
+__all__=["ExcelCatalog"]
+
 class ExcelCatalog(Catalog):
 
     """ A simple catalog class for excel data source,no fancy capacity

@@ -25,6 +25,7 @@ from excel_catalog import ExcelCatalog
 from excel_constants import *
 from utility import *
 
+__all__=["ExcelService"]
 
 class ExcelService(Service):
     """ Service to access excel data source."""
