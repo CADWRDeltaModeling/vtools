@@ -36,7 +36,7 @@ try:
         pe.load(False)
         
 except Exception, e:
-    raise ImportError("fail to load required data source serice plugin %s due to %s"%(str(plugin),str(e)))
+    raise ImportError("fail to load required data source service plugin %s due to %s"%(str(plugin),str(e)))
 
 
 ########################################################################### 
