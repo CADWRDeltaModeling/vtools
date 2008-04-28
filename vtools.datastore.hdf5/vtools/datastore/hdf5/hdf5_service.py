@@ -28,6 +28,7 @@ from hdf5_catalog_service_error import HDF5CatalogServiceError
 from hdf5_access_error import HDF5AccessError
 from hdf5_constants import *
 
+__all__=["HDF5Service"]
 
 def process_array_val(val):
     """ Coerce array of size 1 readed

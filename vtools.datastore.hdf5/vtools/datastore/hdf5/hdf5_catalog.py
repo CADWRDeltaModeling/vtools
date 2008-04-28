@@ -15,7 +15,7 @@ from vtools.datastore.dimension import RangeDimension
 #local import
 from hdf5_constants import *
 
-
+__all__=["HDF5CatalogError","HDF5Catalog"]
 
 class HDF5CatalogError(Exception):
     """ Exception store error informaiton during HDF5 operations"""
