@@ -156,12 +156,13 @@ def create_catalog_editor_view(catalog):
     dock='vertical',resizable=True,buttons=NoButtons,\
     kind='live',height=0.2)
 
-#    traits_view = View(
-#    [Item('adaptedentries',id='entries',editor = table_editor),\
-#      '|[]<>' ],\
-#    id='vtools.datastore.ui.catalog_adapter.catalog_view',\
-#    dock='vertical',resizable=True,buttons=NoButtons,\
-#    kind='live',height=0.2)
+    ##   traits_view = View(
+    ##    [Item('adaptedentries',id='entries',editor = table_editor),\
+    ##      '|[]<>' ],\
+    ##    id='vtools.datastore.ui.catalog_adapter.catalog_view',\
+    ##    dock='vertical',resizable=True,buttons=NoButtons,\
+    ##    kind='live',height=0.2)
+
     return traits_view
 
     
