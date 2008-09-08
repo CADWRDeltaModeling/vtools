@@ -151,8 +151,8 @@ class TestDssService(unittest.TestCase):
         self.assert_(ts.props["AUTHOR"]=="John Doe")
         self.assert_(ts.props["MODEL"]=="hydro 7.5")
         
-        ## then save this ts back into dss in a different path with some
-        ## extra props to simulate props in pratical cases
+        ## then save this ts back into dss in a different path
+        ## to simulate pratical cases
         id="vtools.datastore.dss.DssService"
         path="/RLTM+CHAN/SLBAR002_COPY/FLOW-EXPORT//1DAY/DWR-OM-JOC/"
         source=self.test_file_path
@@ -160,6 +160,7 @@ class TestDssService(unittest.TestCase):
         self.dss_service.add_data(data_ref,ts)
 
         ## read this ts back it AGGREATION should be MEAN
+        ## also with all other properties
         dssc=self.dss_service.get_catalog(source)
         data_refs=dssc.data_references(path)
         data_ref=data_refs.next()
