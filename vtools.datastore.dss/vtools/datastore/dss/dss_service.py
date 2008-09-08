@@ -352,8 +352,11 @@ class DssService(Service):
             if ts.is_regular():
                 (flags,lflags,cunits,ctype,cdate,ctime)=\
                 validate_rts_for_dss(ts)
-                stime=ts.start
-                etime=ts.end
+                ## here we use cdate and ctime to parse new start time and end time
+                ##for we may move start time point a interval to comform dss storage
+                ##format
+                stime=parse_time(cdate+" "+ctime[0:2]+":"+ctime[2:4])
+                etime=stime+(ts.end-ts.start)
                 self._check_path_ts(data_reference,ts)
                 nvals=len(ts)
                 values=ts.data
@@ -1113,7 +1116,9 @@ class DssService(Service):
         """ given a rts data_ref returns the character cdate,ctime
             and number of data contained within time extents.
         """
-
+        ## here we requie data_ref must contain time extent for such a info are needed by
+        ##fortran lib dss function to retirieve ts, it is best to generate data_ref from 
+        ##a dss catalog,not directly to save th work of finding ts time extent
         if not data_ref.extent:
             raise ValueError("data reference doesn't contain time extent.")        
         
@@ -1213,7 +1218,7 @@ class DssService(Service):
             if istat==5:
                 #pdb.set_trace()
                 del dssf
-                raise DssAccessError("no record of %s is found"%path)
+                raise DssAccessError("data of %s within your selection is invalid,change your timewindow"%path)
             if istat>5:
                 del dssf 
                 raise DssAccessError("error in access data of %s"%path)

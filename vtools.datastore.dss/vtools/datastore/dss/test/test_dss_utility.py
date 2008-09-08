@@ -59,11 +59,14 @@ class TestDssUtility(unittest.TestCase):
         self.assert_(os.path.exists(destination))
 
     def test_retrieve_ts(self):
+   
         
         dssfile_path=self.data_file_path
         selector="/HIST*/SLTR*/*//15MIN/*/"
-        range="(10/2/1997 1200, 7/4/1998 1315)"
+        tss=dss_retrieve_ts(dssfile_path,selector)
+        numd=len(tss)
         
+        range="(10/2/1997 1200, 7/4/1998 1315)"
         tss=dss_retrieve_ts(dssfile_path,selector,range)
         numd=len(tss)
         self.assertEqual(numd,3)

@@ -104,7 +104,71 @@ class TestDssService(unittest.TestCase):
             #pdb.set_trace()
             ts=self.dss_service.get_data(data_ref)
             self.assert_(type(ts)==TimeSeries)
-       
+
+
+    def test_get_save_ts(self):
+        ## test ts property unchanged after read and save ts into dss
+            
+        selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC/"
+        source=self.test_file_path
+        dssc=self.dss_service.get_catalog(source)
+        ##cagatalog function return a itertor over possible data reference
+        ##we only get one data ref
+        data_refs=dssc.data_references(selector)
+        data_ref=data_refs.next()
+        ts=self.dss_service.get_data(data_ref)
+
+
+        ## then save this ts back into dss in a different path with some
+        ## extra props to simulate props in pratical cases
+        id="vtools.datastore.dss.DssService"
+        path="/RLTM+CHAN/SLBAR002_COPY/FLOW-EXPORT//1DAY/DWR-OM-JOC/"
+        source=self.test_file_path
+        data_ref=DataReference(id,source=source,selector=path)
+        self.dss_service.add_data(data_ref,ts)
+
+        ## read this ts back it be same length as original one
+        data_refs=dssc.data_references(selector)
+        data_ref=data_refs.next()
+        nts=self.dss_service.get_data(data_ref)
+        self.assert_(len(ts)==len(nts))
+    
+        
+    def test_save_ts_props(self):
+        ## test ts property unchanged after read and save ts into dss
+            
+        selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC/"
+        source=self.test_file_path
+        dssc=self.dss_service.get_catalog(source)
+        ##cagatalog function return a itertor over possible data reference
+        ##we only get one data ref
+        data_refs=dssc.data_references(selector)
+        data_ref=data_refs.next()
+        ts=self.dss_service.get_data(data_ref)
+        self.assert_(type(ts)==TimeSeries)
+        self.assert_(ts.props[AGGREGATION]==MEAN)
+        self.assert_(ts.props["DATUMN"]=="NGVD88")
+        self.assert_(ts.props["AUTHOR"]=="John Doe")
+        self.assert_(ts.props["MODEL"]=="hydro 7.5")
+        
+        ## then save this ts back into dss in a different path with some
+        ## extra props to simulate props in pratical cases
+        id="vtools.datastore.dss.DssService"
+        path="/RLTM+CHAN/SLBAR002_COPY/FLOW-EXPORT//1DAY/DWR-OM-JOC/"
+        source=self.test_file_path
+        data_ref=DataReference(id,source=source,selector=path)
+        self.dss_service.add_data(data_ref,ts)
+
+        ## read this ts back it AGGREATION should be MEAN
+        dssc=self.dss_service.get_catalog(source)
+        data_refs=dssc.data_references(path)
+        data_ref=data_refs.next()
+        ts=self.dss_service.get_data(data_ref)
+        self.assert_(type(ts)==TimeSeries)
+        self.assert_(ts.props[AGGREGATION]==MEAN)
+        self.assert_(ts.props["DATUMN"]=="NGVD88")
+        self.assert_(ts.props["AUTHOR"]=="John Doe")
+        self.assert_(ts.props["MODEL"]=="hydro 7.5")
                 
     def test_save_data(self):
         ## save some ts into dss file, ts may contain

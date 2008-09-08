@@ -73,20 +73,27 @@ def validate_rts_for_dss(rt):
     if type(rt)==TimeSeries:
         (flags,lflags,cunits,cdate,ctime)=\
         _validate_properties_of_regular_timeseries(rt)
-
+        
+        aggregation_before_translate=INDIVIDUAL
+        aggregation=INDIVIDUAL
         if rt.props and (AGGREGATION in rt.props.keys()):
             aggregation=rt.props[AGGREGATION]
+            aggregation_before_translate=aggregation
         else:
             aggregation=INDIVIDUAL
-            
+        ## if aggregation need to be translate into dss term 
+        if aggregation in RTS_VT_PROPTY_TO_DSS.keys():
+            aggregation=RTS_VT_PROPTY_TO_DSS[aggregation]        
+        
         ctype=aggregation
         
         if rt.props and (TIMESTAMP in rt.props.keys()):
             timestamp=rt.props[TIMESTAMP]
         else:
-            timestamp=INST            
-#        if aggregation in [MEAN,MAX,MIN] and timestamp==PERIOD_START:
-#            _move_start_forward_a_interval(rt)
+            timestamp=INST    
+                   
+        if aggregation_before_translate in [MEAN,MAX,MIN] and timestamp==PERIOD_START:
+            (cdate,ctime)=_move_start_forward_a_interval(rt)
             
     else:
         raise TypeError("input is not type of TimeSeries in validating rts for dss storage")
@@ -165,15 +172,23 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
 
     if CTYPE in prop.keys() and not((TIMESTAMP in\
         prop.keys()) or (AGGREGATION in prop.keys())):
-        if prop[CTYPE]=="PER-AVER" or prop[CTYPE]=="PER-CUM":
-           # Todo: make the automatic conversion a user controlled
-           #preference           
+        tsstype=prop[CTYPE]
+        #translate vtools time aggreation term into dss term
+        # Todo: make the automatic conversion a user controlled
+        #preference         
+        if tsstype in RTS_DSS_PROPTY_TO_VT.keys():
            start_datetime=start_datetime-interval_timedelta
            prop[TIMESTAMP]=PERIOD_START
-           if prop[CTYPE]=="PER-AVER":
-               prop[AGGREGATION]=MEAN
-           else:
-               prop[AGGREGATION]=SUM
+           prop[AGGREGATION]=RTS_DSS_PROPTY_TO_VT[tsstype]
+           
+        #if prop[CTYPE]=="PER-AVER" or prop[CTYPE]=="PER-CUM":
+  
+        #   start_datetime=start_datetime-interval_timedelta
+        #   prop[TIMESTAMP]=PERIOD_START
+        #   if prop[CTYPE]=="PER-AVER":
+        #       prop[AGGREGATION]=MEAN
+        #   else:
+        #       prop[AGGREGATION]=SUM
                
         del prop[CTYPE]
 
@@ -370,6 +385,7 @@ def _move_start_forward_a_interval(rt):
     hourmin_format="%H%M"
     cdate=dss_start.strftime(date_format)
     ctime=dss_start.strftime(hourmin_format)
+    return (cdate,ctime)
     #rt.props["cdate"]=cdate
     #rt.props["ctime"]=ctime
 
