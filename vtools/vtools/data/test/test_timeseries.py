@@ -3,7 +3,7 @@ import numpy
 import datetime
 from vtools.data.timeseries import *
 from vtools.data.vtime import *
-
+from vtools.data.constants import *
 class TestTimeSeries(unittest.TestCase):
 
     def setUp(self):
@@ -12,7 +12,8 @@ class TestTimeSeries(unittest.TestCase):
         self.stime1=datetime(1992,3,7)
         self.stime2=datetime(1992,3,7,1,0)
         self.dt=time_interval(minutes=15)
-        self.ts1=rts(self.arr,self.stime1,self.dt,None)
+        props={TIMESTAMP:INST,AGGREGATION:MEAN,"UNIT":"CFS"}
+        self.ts1=rts(self.arr,self.stime1,self.dt,props)
         self.ts2=rts(self.arr+2,self.stime2,self.dt,None)
         irreg_data=numpy.arange(5.,dtype=float)
         irreg_times=numpy.array([datetime(1994,1,2),datetime(1994,1,24),
@@ -69,6 +70,18 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts5.start,self.its1.start)
         self.assert_(not ts5.is_regular())
 
+    def testInPlaceAddScalar(self):
+        ts4=self.ts1 
+        ts4 +=5.
+        self.assertEqual(ts4[0].value,5.)
+        self.assertEqual(ts4.start,self.ts1.start)
+        self.assertEqual(len(ts4),len(self.ts1))
+        self.assert_(ts4.is_regular())
+        self.assertEqual(ts4.interval,self.ts1.interval)
+        self.assertEqual(ts4.end,self.ts1.end)
+        self.assertEqual(ts4.props["UNIT"],"CFS")
+        self.assertEqual(ts4.props[AGGREGATION],MEAN)
+        
     def testSubtractTimeSeries(self):
         # todo: binary, unary, various intervals
         #       incompabible interval
@@ -119,7 +132,7 @@ class TestTimeSeries(unittest.TestCase):
     def testMultiply(self):
         ts5=self.ts2*self.ts1
         self.assertEqual(ts5[4].value,8.)
-        self.assert_(not(numpy.isnan(ts5.data[-1])))
+        self.assert_(numpy.isnan(ts5.data[-1]))
         ts5=self.ts1*2.
         self.assertEqual(ts5[4].value,8.)
         ts5=3.*self.ts1
