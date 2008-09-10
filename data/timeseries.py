@@ -237,9 +237,29 @@ class TimeSeries(object):
 
 
     #perform a copy, optionally with clipped start and end
+    # if left=True, the first time point will be at or before the given start time
+    # otherwise, the first time will be at or after the given start. same for right
     def copy(self,start=None,end=None,left=False,right=False):
         pass
+    
+    # provide a shared-memory ts (shared data and props) with a reduced time window 
+    # if left=True, the first time point will be at or before the given start time
+    # otherwise, the first time will be at or after the given start. same for right
+    def window(self,start=None, end=None, left=False, right=False):
+        pass
  
+ 
+    def ts_inplace_binary(f):
+        def b(self,other):
+            if( isinstance(other,TimeSeries) ):
+                raise ValueError("In place ops not implemented for two time series")
+            else:
+                if (other is None): return None
+                f(self._data,other)
+                return self
+        b.__name__=f.__name__
+        return b
+
 
     # built in math
     def ts_unary(f):     
@@ -316,6 +336,24 @@ class TimeSeries(object):
     def __rdivmod__(self, other):
         raise NotImplementedError
 
+# Implement the inplace operators (currently only with scalar)
+    @ts_inplace_binary
+    def __iadd__(self,other):
+        self+=other
+
+    @ts_inplace_binary
+    def __isub__(self,other):
+        self-=other
+        
+    @ts_inplace_binary
+    def __imul__(self,other):
+        self*=other
+
+    @ts_inplace_binary
+    def __idiv__(self,other):
+        self/=other
+
+        
 # Called to implement the unary arithmetic operations (-, +, abs()  and ~). 
     @ts_unary
     def __neg__(self):
