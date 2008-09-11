@@ -7,3 +7,4 @@ from filter import *
 from godin import *
 from tide_filters import *
 from diff import *
+from stats import *
