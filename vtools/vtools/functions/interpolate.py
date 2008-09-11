@@ -310,19 +310,19 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
               p is spline tension.
     """
     if not ts.is_regular():
-        raise ValueError("Only regular time sereis can be"
+        raise ValueError("Only regular time series can be"
                         " interpolated by histospline")
     
     if AGGREGATION in ts.props.keys():
         if not ts.props[AGGREGATION]==MEAN:
-            raise ValueError("Only time sereis with averaged values can be"
+            raise ValueError("Only time series with averaged values can be"
                              " interpolated by histospline")
     if TIMESTAMP in ts.props.keys():
         if not ts.props[TIMESTAMP]==PERIOD_START:
             raise ValueError("Input time series' values must be stampped at start"
                               " of individual period")
     x=ts.ticks
-    extra_x=x[-1]+ticks(ts.interval)
+    extra_x=ticks((ts[-1].time+ts.interval))
     x=resize(x,len(x)+1)
     x[-1]=extra_x
     y=ts.data    
