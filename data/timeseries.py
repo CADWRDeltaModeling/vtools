@@ -6,6 +6,7 @@ some helper functions
 import sys #,pdb
 from vtime import *
 from datetime import datetime
+import copy
 import itertools
 import scipy
 import bisect
@@ -88,6 +89,52 @@ def prep_binary(ts1,ts2):
     slice2=slice(ts2.index_before(tm_sect[0]),ts2.index_before(tm_sect[1]))
     return (seq,start,slice0,slice1,slice2)
 
+
+def _get_span(ts,start,end,left,right):
+    """
+       return span of index within ts according to input start and end
+    """
+
+    if (start==None):
+        start=ts.start
+    elif isinstance(start,int) or isinstance(start,str):
+        start=parse_time(start)
+    elif not isinstance(start,datetime):
+        raise TypeError("input start must be None,integer ticks,time string or datetime")
+    if (end==None):
+        end=ts.end
+    elif isinstance(end,int) or isinstance(end,str):
+        end=parse_time(end)
+    elif not isinstance(end,datetime):
+        raise TypeError("input end must be None,integer ticks,time string or datetime")
+
+    if start>end:
+        raise ValueError("intput start is after end")
+       
+    start_index=ts.index_before(start)
+    start=ticks(start)
+
+    if (start_index==0) and (not(start==ts.ticks[start_index])) and left:
+        raise ValueError("cann't take left side of input start time, which is before the ts start ")
+    
+    if (not(start_index==0)) and (not(start==ts.ticks[start_index])):
+        if left:
+          start_index-=1;
+    
+    end_index=ts.index_before(end)
+    end=ticks(end)
+
+    if (end_index==(len(ts)-1)) and (not(end==ts.ticks[end_index])) and right:
+        raise ValueError("cann't take right side of input end time, which is after the ts end ")   
+    
+    if (not(end_index==(len(ts)-1))) and (not(end==ts.ticks[end_index])):
+        if not right:
+          end_index-=1;
+          
+    if end_index<start_index:
+       raise ValueError("input end is before the start")
+
+    return (start_index,end_index)
 
 class TimeSeriesElement(object):
     def __init__(self,time_data):
@@ -240,13 +287,31 @@ class TimeSeries(object):
     # if left=True, the first time point will be at or before the given start time
     # otherwise, the first time will be at or after the given start. same for right
     def copy(self,start=None,end=None,left=False,right=False):
-        pass
+        (startindex,endindex)=_get_span(self,start,end,left,right)
+        newdata=numpy.copy(self.data[startindex:endindex+1])
+        newprops=copy.copy(self.props)
+        if(self.is_regular()):
+            newstart=ticks_to_time(self._ticks[startindex])
+            interval=copy.copy(self.interval)
+            return rts(newdata,newstart,interval,newprops)
+        else:
+            newticks=numpy.copy(self._ticks[startindex:endindex+1])
+            return its(newticks,newdata,newprops)
     
     # provide a shared-memory ts (shared data and props) with a reduced time window 
     # if left=True, the first time point will be at or before the given start time
     # otherwise, the first time will be at or after the given start. same for right
     def window(self,start=None, end=None, left=False, right=False):
-        pass
+        (startindex,endindex)=_get_span(self,start,end,left,right)
+        newdata=self.data[startindex:endindex+1]
+        newprops=self.props
+        if(self.is_regular()):
+            newstart=ticks_to_time(self._ticks[startindex])
+            interval=self.interval
+            return rts(newdata,newstart,interval,newprops)
+        else:
+            newticks=self._ticks[startindex:endindex+1]
+            return its(newticks,newdata,newprops)        
  
  
     def ts_inplace_binary(f):
@@ -449,7 +514,7 @@ def rts(data,start,interval,props=None):
         input:
             data: should be a array/list of values,
             start: may be an instance of datetime,
-                   string, or ticks
+                   string
             interval: maybe timedelta or relativedelta
                       or string.
         output:
