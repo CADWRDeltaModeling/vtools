@@ -52,8 +52,9 @@ def period_op(ts,interval,op,method=None):
         input:
         
            ts: time series operation is applied on, must
-           be regular time series.
-    
+           be regular time series, only valid data will be 
+           considered
+           
            interval: time interval or string that can be parsed
            to be interval
            
