@@ -253,6 +253,12 @@ class TimeSeries(object):
         if type(key)==int:
             # return element
             return TimeSeriesElement( (self._ticks[key],self.data[key]))
+        elif isinstance(key,datetime):
+            ndx = self.index_before(key)
+            if self._ticks[ndx] == ticks(key):
+                return TimeSeriesElement( (self._ticks[ndx],self._data[ndx]))
+            else:
+                raise ValueError("Subscript date not exactly matched in series")
         else:
             begndx=key.start
             endndx=key.stop
@@ -268,7 +274,9 @@ class TimeSeries(object):
                     raise TypeError("slice index stop must be integer or datetime")
                 if isinstance(key.stop,datetime):
                     endndx = self.index_after(key.stop)
-            return self._data[begndx:endndx]
+            props2=copy(props)
+            props2["sliced_from"]=(self.start,self.end)
+            return TimeSeries(self._ticks,self._data,props2,header=self.header)
 
 
     def __setitem__(self,key,item):
@@ -398,6 +406,12 @@ class TimeSeries(object):
     def __rmod__(self, other):
         return other % self
 
+    @ts_binary
+    def __pow__(self, other):
+        return other % self
+        
+        
+        
     def __rdivmod__(self, other):
         raise NotImplementedError
 
