@@ -180,16 +180,60 @@ class TestTimeSeries(unittest.TestCase):
         i=ts.index_after(t1)
         
         self.assertEqual(i,0)
-        
-        
 
-        
+    def test_ts_copy(self):
+        ## test copy part of a ts      
+        stime=self.ts1.times[0]
+        etime=self.ts1.times[8]
+        newts=self.ts1.copy(start=stime,end=etime)
+        self.assertEqual(len(newts),9)
+        self.assertEqual(newts.props["UNIT"],"CFS")
+        self.assertEqual(newts.props[AGGREGATION],MEAN)
+        self.assert_(newts.data[0]==self.ts1.data[0])
+        self.ts1.data[0]+=2.0
+        self.assert_(not(newts.data[0]==self.ts1.data[0]))
+       
+          
+        stime=self.its1.times[0]
+        etime=self.its1.times[4]
+        newits=self.its1.copy(start=stime,end=etime)
+        self.assertEqual(len(newits),5)      
+        self.assert_(newits.data[0]==self.its1.data[0])
+        self.its1.data[0]+=2.0
+        self.assert_(not(newits.data[0]==self.its1.data[0]))
 
-        
-        
+    def test_ts_window(self):
+        ## test windowing part of a ts
+        stime=self.ts1.times[0]
+        etime=self.ts1.times[8]
+        newts=self.ts1.window(start=stime,end=etime)
+        self.assertEqual(len(newts),9)
+        self.assertEqual(newts.props["UNIT"],"CFS")
+        self.assertEqual(newts.props[AGGREGATION],MEAN) 
+        self.assert_(newts.data[0]==self.ts1.data[0])
+        self.ts1.data[0]+=2.0
+        self.assert_(newts.data[0]==self.ts1.data[0])
+                 
+        stime=self.its1.times[0]
+        etime=self.its1.times[4]
+        newits=self.its1.window(start=stime,end=etime)
+        self.assertEqual(len(newits),5)      
+        self.assert_(newits.data[0]==self.its1.data[0])
+        self.its1.data[0]+=2.0
+        self.assert_(newits.data[0]==self.its1.data[0])
+                
 
-    #@todo: add test funcs for index_after of timeseries also.
+    def test_ts_copy_left_right(self):
+        ## test copy ts using left and right option
+        dt=time_interval(minutes=2)
+        stime=self.ts1.times[2]-dt
+        etime=self.ts1.times[10]+dt
+        newts=self.ts1.copy(start=stime,end=etime,left=True,right=True)
+        self.assertEqual(len(newts),11)
+        self.assert_(newts.data[0]==self.ts1.data[1])
+        self.assert_(newts.data[10]==self.ts1.data[11])
 
+        self.assertRaises(ValueError,self.ts1.copy,etime,stime)        
 
 if __name__ == '__main__':
     unittest.main()
