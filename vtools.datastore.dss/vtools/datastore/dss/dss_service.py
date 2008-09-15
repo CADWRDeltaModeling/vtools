@@ -5,7 +5,7 @@ from shutil import rmtree
 from os import mkdir,rmdir
 from string import split,strip,rstrip
 import re
-#import pdb
+import pdb
 
 #scipy import
 from scipy import zeros,concatenate
@@ -340,18 +340,18 @@ class DssService(Service):
             ## stuff header here.
             clabels=[]
             citems=[]
-
-            if ts.props:                   
-                for key in ts.props.keys():
-                    val=ts.props[key]
-                    clabels.append(key)
-                    citems.append(val)
-                
-            headu,nheadu=self._stuff_header(clabels,citems)
             
             if ts.is_regular():
-                (flags,lflags,cunits,ctype,cdate,ctime)=\
+                (flags,lflags,cunits,ctype,cdate,ctime,cprops)=\
                 validate_rts_for_dss(ts)
+                
+                if cprops:                   
+                    for key in cprops.keys():
+                        val=cprops[key]
+                        clabels.append(key)
+                        citems.append(val)
+                
+                headu,nheadu=self._stuff_header(clabels,citems)
                 ## here we use cdate and ctime to parse new start time and end time
                 ##for we may move start time point a interval to comform dss storage
                 ##format
@@ -365,8 +365,16 @@ class DssService(Service):
                                             lflags,cunits,ctype,headu,\
                                             nheadu)                
             else:
-                itimes,flags,lflags,jbdate,cunits,ctype=\
+                itimes,flags,lflags,jbdate,cunits,ctype,cprops=\
                 validate_its_for_dss(ts)
+                if cprops:                   
+                    for key in cprops.keys():
+                        val=cprops[key]
+                        clabels.append(key)
+                        citems.append(val)
+                
+                headu,nheadu=self._stuff_header(clabels,citems)                
+                
                 nvals=len(ts)
                 values=ts.data
                 self._save_irregularTS_extend(data_reference,itimes,\
@@ -868,9 +876,15 @@ class DssService(Service):
         ce=firstpath.split('/')[5]
         interval=parse_interval(ce)
         cd=firstD
-        start=parse_time(cd)##+interval ## in dss storage,this is
+        start=parse_time(cd) 
+        ## move forward for aver,min, and min,max data
+        if ctype.upper()=="PER-AVER" or ctype.upper()=="PER-MIN" \
+           or ctype.upper()=="PER-CUM" or ctype.upper()=="PER-MAX":
+            start=start+interval       ## in dss storage,this is
                                       ## the actual start time 
                                       ## of the data block.
+
+                   
 
         valid_start=discover_valid_rts_start(data,start,interval)
 

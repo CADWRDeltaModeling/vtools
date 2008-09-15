@@ -1,6 +1,7 @@
 import sys,os,unittest,shutil,pdb
 from vtools.data.vtime import *        
 from vtools.data.timeseries import *   
+from vtools.data.constants import *
 from datetime import datetime         
 from scipy import arange,sin,pi,cos
 
@@ -59,7 +60,29 @@ class TestDssUtility(unittest.TestCase):
         self.assert_(os.path.exists(destination))
 
     def test_retrieve_ts(self):
-   
+        
+        ## READ A SHORT INST REGUALR TS
+        dssfile_path=self.data_file_path
+        selector="/HIST*/RSAC054/STAGE//15MIN/UCB-ELI/"
+        ts=dss_retrieve_ts(dssfile_path,selector)
+        self.assertEqual(len(ts),673)
+        self.assertEqual(ts.times[0],datetime(1999,7,12))
+        self.assertEqual(ts.props[TIMESTAMP],INST)
+        self.assertEqual(ts.props[AGGREGATION],INDIVIDUAL)
+        self.assertAlmostEqual(ts.data[0],4.49960184)
+        self.assertAlmostEqual(ts.data[-1],-0.41016656)
+        
+         ## READ A VERY LONG INST REGUALR TS
+        dssfile_path=self.data_file_path
+        selector="/HIST*/SLTMP017/STAGE//15MIN/DWR-CD-SURFWATER/"
+        ts=dss_retrieve_ts(dssfile_path,selector)
+        self.assertEqual(len(ts),35040)
+        self.assertEqual(ts.times[0],datetime(1997,10,1))
+        self.assertEqual(ts.props[TIMESTAMP],INST)
+        self.assertEqual(ts.props[AGGREGATION],INDIVIDUAL)
+        self.assertAlmostEqual(ts.data[0],3.73)
+        self.assertAlmostEqual(ts.data[-1],-3.00)
+        
         
         dssfile_path=self.data_file_path
         selector="/HIST*/SLTR*/*//15MIN/*/"
@@ -99,7 +122,18 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(type(ts),TimeSeries)
         self.assertEqual(ts.start,start)
         self.assertEqual(ts.end,end)
-
+        
+    def test_retrieve_aver_ts(self):
+        
+        dssfile_path=self.data_file_path
+        selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2/"
+        tss=dss_retrieve_ts(dssfile_path,selector)
+        numd=len(tss)
+        self.assertEqual(numd,938)
+        startdatetime=datetime(1997,1,1)
+        self.assertEqual(tss.times[0],startdatetime)
+    
+        
     def test_dss_delete_ts(self):
     
         dssfile_path=self.data_file_path
@@ -115,6 +149,38 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(len(cat),25)
         cat=dss_catalog(dssfile_path,selector)
         self.assertEqual(len(cat),3)
+     
+    def test_retrieve_save__inst_rts(self):
+
+        ## READ A SHORT INST REGUALR TS
+        dssfile_path=self.data_file_path
+        selector="/HIST*/RSAC054/STAGE//15MIN/UCB-ELI/"
+        ts=dss_retrieve_ts(dssfile_path,selector)
+        
+        savepath="/HIST+FILL/RSAC054/STAGE//15MIN/UCB-ELI_C/"
+        dss_store_ts(ts,dssfile_path,savepath)
+        nts=dss_retrieve_ts(dssfile_path,savepath)
+        self.assertEqual(len(nts),len(ts))
+        self.assertEqual(nts.times[0],ts.times[0])
+        self.assertEqual(nts.props,ts.props)
+        self.assertEqual(nts.data[0],ts.data[0])
+        self.assertEqual(nts.data[-1],ts.data[-1])   
+
+    def test_retrieve_save_aver_rts(self):
+        
+        dssfile_path=self.data_file_path
+        selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2/"
+        ts=dss_retrieve_ts(dssfile_path,selector)
+        
+        savepath="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2_C/"
+        dss_store_ts(ts,dssfile_path,savepath)
+        nts=dss_retrieve_ts(dssfile_path,savepath)
+        
+        self.assertEqual(len(nts),len(ts))
+        self.assertEqual(nts.times[0],ts.times[0])
+        self.assertEqual(nts.props,ts.props)
+        self.assertEqual(nts.data[0],ts.data[0])
+        self.assertEqual(nts.data[-1],ts.data[-1])       
         
 if __name__=="__main__":
     

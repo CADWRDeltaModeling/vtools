@@ -3,7 +3,7 @@
 #import pdb
 import datetime
 from string import upper
-
+import copy
 # scipy import
 from scipy import nan,isnan,where,array,\
      arange,compress,zeros
@@ -76,9 +76,13 @@ def validate_rts_for_dss(rt):
         
         aggregation_before_translate=INDIVIDUAL
         aggregation=INDIVIDUAL
+        ## this is the props going to be reurned
+        corrected_props=copy.deepcopy(rt.props) 
         if rt.props and (AGGREGATION in rt.props.keys()):
             aggregation=rt.props[AGGREGATION]
             aggregation_before_translate=aggregation
+            #remove this aggregation item,for it is not needed in dss storage
+            del corrected_props[AGGREGATION] 
         else:
             aggregation=INDIVIDUAL
         ## if aggregation need to be translate into dss term 
@@ -89,16 +93,18 @@ def validate_rts_for_dss(rt):
         
         if rt.props and (TIMESTAMP in rt.props.keys()):
             timestamp=rt.props[TIMESTAMP]
+            #remove this timestamp for it is not needed in dss storage
+            del corrected_props[TIMESTAMP]
         else:
             timestamp=INST    
                    
         if aggregation_before_translate in [MEAN,MAX,MIN] and timestamp==PERIOD_START:
             (cdate,ctime)=_move_start_forward_a_interval(rt)
-            
+                   
     else:
         raise TypeError("input is not type of TimeSeries in validating rts for dss storage")
 
-    return (flags,lflags,cunits,ctype,cdate,ctime)
+    return (flags,lflags,cunits,ctype,cdate,ctime,corrected_props)
 
 
 def string_to_dss_julian_date(sdate):
@@ -170,8 +176,7 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
     #some operation on property dic
     relative_interval=None
 
-    if CTYPE in prop.keys() and not((TIMESTAMP in\
-        prop.keys()) or (AGGREGATION in prop.keys())):
+    if CTYPE in prop.keys():
         tsstype=prop[CTYPE]
         #translate vtools time aggreation term into dss term
         # Todo: make the automatic conversion a user controlled
@@ -180,7 +185,9 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
            start_datetime=start_datetime-interval_timedelta
            prop[TIMESTAMP]=PERIOD_START
            prop[AGGREGATION]=RTS_DSS_PROPTY_TO_VT[tsstype]
-           
+        else:
+           prop[TIMESTAMP]=INST
+           prop[AGGREGATION]=INDIVIDUAL
         #if prop[CTYPE]=="PER-AVER" or prop[CTYPE]=="PER-CUM":
   
         #   start_datetime=start_datetime-interval_timedelta
@@ -189,8 +196,12 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
         #       prop[AGGREGATION]=MEAN
         #   else:
         #       prop[AGGREGATION]=SUM
-               
+        
+        # del ctyue for vtools ts don't need it    
         del prop[CTYPE]
+    else: 
+        prop[TIMESTAMP]=INST
+        prop[AGGREGATION]=INDIVIDUAL
 
     (data,starti)=_validate_dss_data_series(data,flags)
     start_datetime=increment(start_datetime,interval_timedelta,starti)
@@ -249,7 +260,7 @@ def validate_its_for_dss(irrts):
 
     ctype=INST
     
-    return (itimes,flags,lflags,jbdate,cunit,ctype)
+    return (itimes,flags,lflags,jbdate,cunit,ctype,irrts.props)
 
 def discover_valid_rts_start(data,start,interval):
     """ given the rts data seq., which may contain empty data markers (e.g. -902)
