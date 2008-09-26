@@ -58,7 +58,7 @@ def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False):
     ######################
     
     lt=os.stat(dss_file)
-
+   
     if dss_file in _catalog_buffer.keys():
         if not(lt[9]==lt[8]) and (lt[7]>lt[8]): ## to do, is it a enough conditon to
             c=_catalog_buffer[dss_file]         ## decide the source dss has not been changed?
@@ -111,6 +111,10 @@ def dss_store_ts(ts,dss_file,path):
                              selector=path)
     dss_service=dsm.get_service(DSS_DATA_SOURCE)
     dss_service.add_data(ref,ts)
+    
+    ## update catalog buffer
+    if dss_file in _catalog_buffer.keys():
+        del _catalog_buffer[dss_file] 
 
    
     
