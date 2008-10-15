@@ -98,6 +98,33 @@ class TestMerge(unittest.TestCase):
         self.assert_(spy.allclose(nt.data[ii+1:ii+num_nan+2],ts2.data[0:num_nan+1]))
         self.assert_(spy.allclose(nt.data[ii+num_nan+2:s1+1],ts1.data[ii+num_nan+2:s1+1]))
         self.assert_(spy.allclose(nt.data[s1+1:len(nt.data)],ts2.data[s3+1:len(ts2.data)]))
+        
+        ## a small test
+        d1=[1.0]*4
+        d2=[2.0]*2
+        
+        st1=datetime.datetime(year=1990,month=2,day=1)
+        st2=datetime.datetime(year=1990,month=3,day=1)
+        
+        ts1=rts(d1,st1,time_interval(months=1))
+        ts2=rts(d2,st2,time_interval(months=1))
+        nt=merge(ts1,ts2)
+        self.assertEqual(len(nt),len(ts1))
+        self.assertEqual(nt.data[-1],ts1.data[-1])
+    
+
+        d1=[1.0,1.0,1.0,spy.nan]
+        d2=[2.0,3.0,4.0]
+        
+        st1=datetime.datetime(year=1990,month=2,day=1)
+        st2=datetime.datetime(year=1990,month=3,day=1)
+        
+        ts1=rts(d1,st1,time_interval(months=1))
+        ts2=rts(d2,st2,time_interval(months=1))
+        nt=merge(ts1,ts2)
+        self.assertEqual(len(nt),len(ts1))
+        self.assertEqual(nt.data[-1],ts2.data[-1])    
+        
     
     def test_merge_rts_2d_intersect(self): 
         
