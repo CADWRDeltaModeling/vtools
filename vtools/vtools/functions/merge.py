@@ -98,8 +98,12 @@ def _merge(ts1,ts2):
          data[0:len1,]=tss[first].data
          data[(len_ts-len2):len_ts,]=tss[second].data
     else:  ## There existes union of two ts.  
-        data[slice0.stop+1:len_ts,]=tss[second].data[second_slice.stop+1:len2,]
-        data[0:slice0.stop+1,]=tss[first].data
+        if second_slice.stop+1<len2:
+            data[slice0.stop+1:len_ts,]=tss[second].data[second_slice.stop+1:len2,]
+            data[0:slice0.stop+1,]=tss[first].data
+        else:
+            data[0:len_ts]=tss[first].data
+        
         x=data[slice0.start:slice0.stop+1,]
         y=tss[second].data[second_slice.start:second_slice.stop+1,]
         temp_data=where(isnan(x),y,x)
