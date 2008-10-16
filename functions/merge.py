@@ -51,7 +51,10 @@ def _merge(ts1,ts2):
            ts2: regular time series with same interval as ts1
                 
         returns:
-            a new merged time series if success.
+            a new merged time series if success. In the intersection zone
+            of two ts, ts1 data take priority unless it is nan. Time extent of
+            output ts will be union of two ts' extent.
+            
     
     """
     
@@ -97,15 +100,18 @@ def _merge(ts1,ts2):
     if slice0.start>slice0.stop:    
          data[0:len1,]=tss[first].data
          data[(len_ts-len2):len_ts,]=tss[second].data
-    else:  ## There existes union of two ts.  
+    else:  ## There existes union of two ts.
+        data[0:slice0.start,]=tss[first].data[0:first_slice.start,]
         if second_slice.stop+1<len2:
+            data[slice0.start:slice0.stop+1,]=tss[0].data[slice1.start:slice1.stop+1]
             data[slice0.stop+1:len_ts,]=tss[second].data[second_slice.stop+1:len2,]
-            data[0:slice0.stop+1,]=tss[first].data
         else:
-            data[0:len_ts]=tss[first].data
-        
+            ##data[0:len_ts]=tss[first].data
+            data[slice0.start:slice0.stop+1,]=tss[0].data[slice1.start:slice1.stop+1,]
+            data[slice0.stop+1:len_ts,]=tss[first].data[first_slice.stop+1:len1,]
+            
         x=data[slice0.start:slice0.stop+1,]
-        y=tss[second].data[second_slice.start:second_slice.stop+1,]
+        y=tss[1].data[slice2.start:slice2.stop+1,]
         temp_data=where(isnan(x),y,x)
         data[slice0.start:slice0.stop+1,]=temp_data
  
