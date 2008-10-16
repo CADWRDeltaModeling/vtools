@@ -46,6 +46,7 @@ def suite():
     ## merge
     suite.addTest(TestMerge("test_merge_rts_no_intersect"))
     suite.addTest(TestMerge("test_merge_rts_intersect"))
+    suite.addTest(TestMerge("test_merge_rts_intersect2"))
     suite.addTest(TestMerge("test_merge_rts_2d_intersect"))
     suite.addTest(TestMerge("test_merge_large_rts"))
 

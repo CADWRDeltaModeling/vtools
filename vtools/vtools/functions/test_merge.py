@@ -123,7 +123,30 @@ class TestMerge(unittest.TestCase):
         ts2=rts(d2,st2,time_interval(months=1))
         nt=merge(ts1,ts2)
         self.assertEqual(len(nt),len(ts1))
-        self.assertEqual(nt.data[-1],ts2.data[-1])    
+        self.assertEqual(nt.data[-1],ts2.data[-1])
+
+
+    def test_merge_rts_intersect2(self):
+        """ Test merging two rts with intersection."""
+        
+        d1=[1.0]*4
+        d2=[2.0]*4
+        d1[2]=spy.nan
+        
+        st1=datetime.datetime(year=1990,month=2,day=1)
+        st2=datetime.datetime(year=1990,month=3,day=1)
+        
+        ts1=rts(d1,st1,time_interval(months=1))
+        ts2=rts(d2,st2,time_interval(months=1))
+               
+        nt=merge(ts1,ts2)
+        ## test ts1 data take priority on valid data
+        self.assertEqual(nt.data[1],ts1.data[1])
+
+        ## test ts2 data take prioirty on invalid data of ts1
+        self.assertEqual(nt.data[2],ts2.data[2])
+                 
+                
         
     
     def test_merge_rts_2d_intersect(self): 
