@@ -7,6 +7,7 @@ from test_filter import TestFilter
 from test_godin import TestGodin
 from test_merge import TestMerge
 from test_shift import TestShift
+from test_resample import TestResamplefunctions
 
 def suite():    
     suite = unittest.TestSuite()
@@ -30,8 +31,12 @@ def suite():
     suite.addTest(TestInterpolate("test_multidimension_tsdata"))
     suite.addTest(TestInterpolate("test_flat"))
     
-    ##  Decimate
+    ##  Decimate 
     suite.addTest(TestDecimate("test_decimate_rts"))
+    suite.addTest(TestResamplefunctions("test_resample_rts_aligned"))
+    suite.addTest(TestResamplefunctions("test_resample_rts"))
+    suite.addTest(TestResamplefunctions("test_decimate_rts"))
+    suite.addTest(TestResamplefunctions("test_decimate_rts_2d"))
 
     ## filtering
     suite.addTest(TestFilter("test_butterworth"))
