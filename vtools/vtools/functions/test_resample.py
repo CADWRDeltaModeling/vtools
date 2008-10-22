@@ -49,6 +49,19 @@ class TestResamplefunctions(unittest.TestCase):
                 ts=resample(ts0,interval)
                 self.assert_(ts.is_regular())
                 self.assert_(len(ts.data)==sample_num)
+
+    def test_resample_rts_aligned(self):
+
+        # test resampling regular time series with aligned start
+        data=range(100)
+        st=datetime.datetime(year=2000,month=2,day=1,hour=2,minute=15)
+        delta=time_interval(minutes=15)
+        ts=rts(data,st,delta,{})
+        resample_interval=time_interval(hours=1)
+        nts=resample(ts,resample_interval,aligned=True)
+        rstart=datetime.datetime(year=2000,month=2,day=1,hour=3)
+        self.assertEqual(rstart,nts.start)
+        
                 
     def test_decimate_rts(self):
         

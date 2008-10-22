@@ -118,7 +118,7 @@ def resample_ftt(ts,interval,window=BOXCAR):
 ########################################################################### 
 ## Public interface.
 ###########################################################################
-def resample(ts,interval,window=BOXCAR):
+def resample(ts,interval,window=BOXCAR,aligned=True):
     
     """ 
         Do a resample operation on a time series
@@ -152,19 +152,23 @@ def resample(ts,interval,window=BOXCAR):
 
     if not is_interval(interval):
         interval=parse_interval(interval)     
-        
-    num=number_intervals(ts.start,ts.end,interval) 
-    steps=int(ticks(interval)/ticks(ts.interval))   
-    nt=ts.data[0:num*steps:steps,]
-    st=ts.start
-    prop={}
-    prop[TIMESTAMP]=INST
-    prop[AGGREGATION]=INDIVIDUAL
-    for key,val in ts.props.items():
-        prop[key]=val
+
+    if aligned:
+        aligned_start=align(ts.start,interval,1)
+        return resample(ts.window(aligned_start,ts.end),interval,window,False)
+    else:
+        num=number_intervals(ts.start,ts.end,interval) 
+        steps=int(ticks(interval)/ticks(ts.interval))   
+        nt=ts.data[0:num*steps:steps,]
+        st=ts.start
+        prop={}
+        prop[TIMESTAMP]=INST
+        prop[AGGREGATION]=INDIVIDUAL
+        for key,val in ts.props.items():
+            prop[key]=val
     
-    new_ts=rts(nt,st,interval,prop)                
-    return new_ts
+        new_ts=rts(nt,st,interval,prop)                
+        return new_ts
 
 def decimate(ts,interval,**dic):
     
