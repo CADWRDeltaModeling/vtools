@@ -184,6 +184,7 @@ class TimeSeries(object):
         self._props = props  # must validate props        
         self._len = len(times)
         self._len = len(data)
+       
 
     def is_regular(self):
         """returns true if the time series is regular
@@ -274,9 +275,10 @@ class TimeSeries(object):
                     raise TypeError("slice index stop must be integer or datetime")
                 if isinstance(key.stop,datetime):
                     endndx = self.index_after(key.stop)
-            props2=copy(props)
+            props2=copy.copy(self._props)
             props2["sliced_from"]=(self.start,self.end)
-            return TimeSeries(self._ticks,self._data,props2,header=self.header)
+            # to do: what is this header
+            return TimeSeries(self._ticks,self._data,props2) #header=self.header)
 
 
     def __setitem__(self,key,item):
@@ -350,7 +352,8 @@ class TimeSeries(object):
             if( isinstance(other,TimeSeries) ):
                 tm_seq,start,slice0,slice1,slice2 = prep_binary(self,other)
                 data=scipy.ones(len(tm_seq),'d')*scipy.nan #@todo: correct the size for non-univariate
-                data[slice0]=f(self.data[slice1], other.data[slice2])
+                data[slice0.start:slice0.stop+1:slice0.step]=f(self.data[slice1.start:slice1.stop+1:slice1.step],
+                                                             other.data[slice2.start:slice2.stop+1:slice2.step])
                 return rts(data,start,self.interval,None)
             else:
                 if (other is None): return None
