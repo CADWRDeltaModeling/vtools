@@ -41,7 +41,7 @@ class TestTimeSeries(unittest.TestCase):
     def testAddTimeSeries(self):
         # todo: binary, unary, various intervals
         #       incompabible interval NA
-        ts3=self.ts1+self.ts2        
+        ts3=self.ts1+self.ts2
         self.assertEqual(ts3[4].value,6.0)
         self.assertEqual(ts3.start,self.stime1)
         self.assertEqual(len(ts3),self.size1+4)
@@ -50,6 +50,28 @@ class TestTimeSeries(unittest.TestCase):
         dt2=datetime(1992,3,7,2,30)
         self.assertEqual(ts3[5].value,8.0)
 
+    def testAverageTimeseries(self):
+        # test average multiple ts together
+        stime=datetime(1992,2,10)
+        stime2=datetime(1992,2,11)
+        arr=numpy.arange(20)
+        #arr2=2*arr
+        #arr3=1.5*arr
+        dt=time_interval(days=1)
+        props={TIMESTAMP:PERIOD_START,AGGREGATION:MEAN,"UNIT":"CFS"}
+        ts1=rts(arr,stime,dt,props)
+        ts2=rts(arr,stime,dt,props)
+        ts3=rts(arr,stime2,dt,props)
+        ts4=(ts1+ts2)/2.0
+        self.assertEqual(len(ts4),len(ts1))
+        self.assertEqual(ts4.data[-1],ts1.data[-1])
+        ts5=(ts1+ts3)/2.0
+        self.assertEqual(len(ts5),len(ts1)+1)
+        self.assert_(numpy.isnan(ts5.data[0]))
+        self.assert_(numpy.isnan(ts5.data[-1]))
+        self.assertEqual(ts5.data[1],(ts1.data[1]+ts3.data[0])/2.0)
+        self.assertEqual(ts5.data[-2],(ts1.data[19]+ts3.data[18])/2.0)
+                         
     def testAddTimeAlignmentBad(self):
         data = numpy.arange(100.)
         ts4 = rts(data, self.stime1, time_interval(minutes=60), None)
