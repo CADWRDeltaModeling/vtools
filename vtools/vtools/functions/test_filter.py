@@ -14,7 +14,7 @@ from vtools.data.vtime import ticks_to_time,ticks\
 ## Scipy testing suite import.
 from numpy.testing import assert_array_equal, assert_equal
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
-
+from numpy import arange
 ## Scipy import.
 import scipy
 ## Local import 
@@ -75,7 +75,16 @@ class TestFilter(unittest.TestCase):
             ts=butterworth(ts0)
             self.assert_(ts.is_regular())
             
-
+    def test_butterworth_noevenorder(self):
+        """ test a butterworth with non even order input
+        """
+        st=datetime.datetime(year=2000,month=2,day=3)
+        delta=time_interval(hours=1)
+        data=arange(100)
+        order=7
+        ts0=rts(data,st,delta,{})
+        self.assertRaises(ValueError,butterworth,ts0,order)
+        
     
     def test_boxcar(self):
         

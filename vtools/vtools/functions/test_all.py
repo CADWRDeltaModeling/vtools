@@ -42,6 +42,7 @@ def suite():
     suite.addTest(TestFilter("test_butterworth"))
     suite.addTest(TestFilter("test_boxcar"))
     suite.addTest(TestFilter("test_daily_average"))
+    suite.addTest(TestFilter("test_butterworth_noevenorder")) 
 
     ## godin
     suite.addTest(TestGodin("test_godin"))
