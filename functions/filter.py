@@ -9,7 +9,7 @@ from scipy import nan, isnan,add,convolve, \
 transpose
 from scipy.signal import lfilter
 from scipy.signal.filter_design import butter
-
+from numpy import sqrt
 ## Vtool vtime import.
 
 from vtools.data.vtime import *
@@ -27,7 +27,7 @@ first_point={time_interval(minutes=15):48,time_interval(hours=1):36}
 ## tide time series analysis, here set cutoff frequency at 0.8 cycle/day
 ## ,but it is represented as a ratio to Nyquist frequency for two
 ## sample intervals.
-butterworth_cutoff_frequecies={time_interval(minutes=15):0.8/(48),\
+butterworth_cutoff_frequencies={time_interval(minutes=15):0.8/(48),\
                                time_interval(hours=1):0.8/12}
 
 ## supported interval
@@ -37,7 +37,7 @@ _butterworth_interval=[time_interval(minutes=15),time_interval(hours=1)]
 ## Public interface.
 ###########################################################################
 
-def butterworth(ts,order=4,cutoff_frequence=None):
+def butterworth(ts,order=4,cutoff_frequency=None):
     
     """ low-pass butterworth filter on a regular time series.
         default order is 4, if no cutoff_frequence
@@ -52,7 +52,9 @@ def butterworth(ts,order=4,cutoff_frequence=None):
            a new regular time series with the same 
            interval of ts.
     """
-
+    if (order%2):
+        raise ValueError("only even order is accepted")
+        
     if not ts.is_regular():
         raise ValueError("Only regular time series can be filtered.")
     
@@ -61,20 +63,24 @@ def butterworth(ts,order=4,cutoff_frequence=None):
     if not interval in _butterworth_interval:
         raise ValueError("time interval is not supported by butterworth.")
     
-    cf=cutoff_frequence
+    cf=cutoff_frequency
     if cf==None:
-        cf=butterworth_cutoff_frequecies[interval]
+        cf=butterworth_cutoff_frequencies[interval]
         
     ## get butter filter coefficients.
-    [b,a]=butter(order,cf)
+    [b,a]=butter(order/2,cf)
     d1=lfilter(b, a, ts.data,0)
+    d1=d1[len(d1)::-1]
+    d2=lfilter(b,a,d1,0)
+    d2=d2[len(d2)::-1]
+    #d2=sqrt(d2)
     
     prop={}
     prop[TIMESTAMP]=INST
     prop[AGGREGATION]=INDIVIDUAL
     for key,val in ts.props.items():
         prop[key]=val
-    return rts(d1,ts.start,ts.interval,prop)
+    return rts(d2,ts.start,ts.interval,prop)
     
    
 
