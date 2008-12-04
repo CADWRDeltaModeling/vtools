@@ -259,7 +259,7 @@ class TimeSeries(object):
             if self._ticks[ndx] == ticks(key):
                 return TimeSeriesElement( (self._ticks[ndx],self._data[ndx]))
             else:
-                raise ValueError("Subscript date not exactly matched in series")
+                raise ValueError("Subscript date must exactly match date in series")
         else:
             begndx=key.start
             endndx=key.stop
@@ -278,7 +278,9 @@ class TimeSeries(object):
             props2=copy.copy(self._props)
             props2["sliced_from"]=(self.start,self.end)
             # to do: what is this header
-            return TimeSeries(self._ticks,self._data,props2) #header=self.header)
+            return TimeSeries(self._ticks[begndx:endndx], \
+                              self._data[begndx:endndx], \
+                              props2) #header=self.header)
 
 
     def __setitem__(self,key,item):
