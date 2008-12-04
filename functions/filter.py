@@ -40,13 +40,13 @@ _butterworth_interval=[time_interval(minutes=15),time_interval(hours=1)]
 def butterworth(ts,order=4,cutoff_frequency=None):
     
     """ low-pass butterworth filter on a regular time series.
-        default order is 4, if no cutoff_frequence
+        default order is 4, if no cutoff_frequency
         is given, default will be used.
 
         input:
             ts: regular time series to be filtered.
             order: order of the filter,int.
-            cutoff_frequence: cut_off frequence represented
+            cutoff_frequency: cut_off frequency represented
             by ratio of Nyquist frequency, should within (0,1).
         output:
            a new regular time series with the same 
