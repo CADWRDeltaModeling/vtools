@@ -29,7 +29,8 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(len(self.ts1),self.size1)
 
     def testSlice(self):
-        x=self.ts1[datetime(1992,3,7,0,0):datetime(1992,3,7,0,45)]
+        #x=self.ts1[datetime(1992,3,7,0,0):datetime(1992,3,7,1,45)]
+        x=self.ts1[datetime(1992,3,7,1,0):datetime(1992,3,7,1,45)]
         self.assertEqual(len(x),3)  # assure that the values is clipped noninclusively on right
         x=self.ts1[datetime(1992,3,7,0,0):datetime(1992,3,7,0,45,1)]
         self.assertEqual(len(x),4)
