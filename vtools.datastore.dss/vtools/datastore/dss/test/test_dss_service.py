@@ -233,6 +233,34 @@ class TestDssService(unittest.TestCase):
         rtt3=self.dss_service.get_data(data_ref)
         self.assert_(parse_time("01/15/1997")==rtt3.start)
         self.assert_(parse_time("08/24/1998")==rtt3.end)
+        
+    def test_retrievesave_longits(self):
+        ## save some ts into dss file, ts may contain
+        ## header.
+
+        ## save rts first.
+        data=range(8000)
+        start="12/21/2000 2:00"
+        interval="1hour"
+        prop={}
+        prop[TIMESTAMP]=INST
+        prop[AGGREGATION]=INDIVIDUAL
+
+        prop["datum"]="NGVD88"
+        prop["manager"]="John Doe"
+        prop["model"]="hydro 7.5"
+
+        rt1=rts(data,start,interval,prop)
+        it1=its(data,rt1.ticks,prop)
+        
+        id="vtools.datastore.dss.DssService"
+        path="/TEST/DOWNSTREAM/EC//IR-MONTH/STAGE/"
+        
+        source=self.test_file_path
+
+        data_ref=DataReference(id,source=source,selector=path)
+        self.dss_service.add_data(data_ref,it1)   
+      
 
     def test_save2newf(self):
         """ try to save ts to a non exist file."""

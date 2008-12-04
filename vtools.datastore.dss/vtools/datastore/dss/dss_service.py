@@ -1132,7 +1132,7 @@ class DssService(Service):
         """
         ## here we requie data_ref must contain time extent for such a info are needed by
         ##fortran lib dss function to retirieve ts, it is best to generate data_ref from 
-        ##a dss catalog,not directly to save th work of finding ts time extent
+        ##a dss catalog,not directly ,to save th work of finding ts time extent
         if not data_ref.extent:
             raise ValueError("data reference doesn't contain time extent.")        
         
@@ -1308,7 +1308,7 @@ class DssService(Service):
         dssf=open_dss(dss_file_path)
 
         juls,jule,istime,ietime=self._gen_its_jultime(data_ref)        
-        # Max number of vals,integer defined in dss_constants.py
+        # Max number of vals can be retrived one time, this consant is defined in dss_constants.py
         kval=DSS_MAX_ITS_POINTS
         lflags=True
         kheadu=DSS_MAX_HEADER_ITEMS

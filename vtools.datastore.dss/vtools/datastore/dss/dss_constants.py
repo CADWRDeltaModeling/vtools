@@ -19,7 +19,8 @@ DSS_DATA_SOURCE="vtools.datastore.dss.DssService"
 
 # The maximum number of points allowable to retrieve
 # from a irregualr time sereis path in one time
-DSS_MAX_ITS_POINTS=1000
+#to do:investiage large number of points
+DSS_MAX_ITS_POINTS=5000
 # The maximum number of points allowable to retrieve
 # from a regualr time sereis path in one time
 DSS_MAX_RTS_POINTS=35000
