@@ -105,7 +105,8 @@ def interpolate_ts(ts,inttime,method=SPLINE,filter_nan=True,**dic):
 def monotonic_spline(ts,times,filter_nan=True):
     """
        Interpolation by monotonic spline.
-
+       monotonic spline will pass data point exactly.
+       
        Input:
              ts: timesereis to be interpolated
              times: time interval, string which can be parsed into
@@ -202,7 +203,10 @@ def next_neighbor(ts,times,filter_nan=True,**dic):
 def spline(ts,times,filter_nan=True,**dic):    
     """
        Interpolating gaps by next valid neighbors.
-
+       spline method is not necessary to pass data point, the closeness
+       can be controlled by parameter s, s=1.0e-3 by default. the lower s is
+       , the closer is the fitted curve to data point, and less smoother.
+       this is different from monotonic spline.
        Input:
              ts: timesereis to be interpolated
              times: time interval or string which can be parsed into
@@ -571,7 +575,7 @@ def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
 
 
 def _spline(ts,times,time_begin=None,time_end=None,\
-            k=3,s=1e-3,filter_nan=True,per=0):
+            k=3,s=1e-6,filter_nan=True,per=0):
     
     """ Estimate missing values within ts data by
         B-spline interpolation.

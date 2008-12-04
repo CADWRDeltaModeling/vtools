@@ -329,15 +329,16 @@ class TestInterpolate(unittest.TestCase):
 
     def test_interpolate_rts_rts(self):
         """ Test create a finer regular ts by interpolating rts"""
-        
+       
         rts1=self.rts1
         interval="1hour"
         for method in [SPLINE,MONOTONIC_SPLINE,\
                        LINEAR,PREVIOUS,NEXT,NEAREST]:
+           
             rt=interpolate_ts(rts1,interval,method=method)
             self.assert_(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
-
+            
     def test_interpolate_rts_rts_month2day(self):
         """ Test create a finer regular ts by interpolating rts"""
 
