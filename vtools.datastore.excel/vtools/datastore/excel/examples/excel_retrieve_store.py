@@ -26,7 +26,7 @@ selector="sheet1$B10:F200" ##this selection must contain data only
 ts_type="rts"
 start=datetime(2001,10,15,12)
 intl=minutes(15)
-tss=dss_retrieve_ts(source,selector,ts_type,\
+tss=excel_retrieve_ts(source,selector,ts_type,\
                     start=start,interval=intl)
 
 ## Similar to previous example, with except user' selector contain
@@ -45,7 +45,7 @@ selector="sheet1$B8:F200" ## header items must be located at every begining
 ts_type="rts"
 start=datetime(2001,10,15,12)
 intl=minutes(15)
-tss=dss_retrieve_ts(source,selector,ts_type,\
+tss=excel_retrieve_ts(source,selector,ts_type,\
                     start=start,interval=intl,header_labels=["name","unit"])
 
 ## to retrieve all regular time series stored at
@@ -63,10 +63,10 @@ tss=dss_retrieve_ts(source,selector,ts_type,\
 
 selector="sheet1$B10:F200" ##this selection must contain data val and header vals only
 ts_type="rts"
-tss=dss_retrieve_ts(source,selector,ts_type,header_labels=["interval","start","name"])
+tss=excel_retrieve_ts(source,selector,ts_type,header_labels=["interval","start","name"])
  ## this example almost same as previous one,with except user specify a strings store
  ## within a range as header labels. 
-tss=dss_retrieve_ts(source,selector,ts_type,header_labels="N8:N10")
+tss=excel_retrieve_ts(source,selector,ts_type,header_labels="N8:N10")
 
 
 ## to retrieve all regular time series stored at

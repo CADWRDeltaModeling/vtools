@@ -345,7 +345,7 @@ def _retrieve_rts_no_time(book,selection,**args):
     for i in range(num_ts):
         header_dic={}
         if type(mix_re)==tuple:
-           start,interval=mix_re
+           start,intl=mix_re
         else:
             header_dic=mix_re[i][2]
             if "start" in header_dic.keys():
