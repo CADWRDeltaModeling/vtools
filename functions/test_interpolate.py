@@ -339,6 +339,8 @@ class TestInterpolate(unittest.TestCase):
             self.assert_(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
             
+    
+         
     def test_interpolate_rts_rts_month2day(self):
         """ Test create a finer regular ts by interpolating rts"""
 
