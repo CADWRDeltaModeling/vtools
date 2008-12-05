@@ -575,7 +575,7 @@ def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
 
 
 def _spline(ts,times,time_begin=None,time_end=None,\
-            k=3,s=1e-6,filter_nan=True,per=0):
+            k=3,s=1.0e-3,filter_nan=True,per=0):
     
     """ Estimate missing values within ts data by
         B-spline interpolation.

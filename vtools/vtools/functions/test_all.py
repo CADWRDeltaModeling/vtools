@@ -8,6 +8,7 @@ from test_godin import TestGodin
 from test_merge import TestMerge
 from test_shift import TestShift
 from test_resample import TestResamplefunctions
+from test_diffnorm import TestDiffNorm
 
 def suite():    
     suite = unittest.TestSuite()
@@ -60,6 +61,12 @@ def suite():
     suite.addTest(TestShift("test_shift_operation_rts"))
     suite.addTest(TestShift("test_shift_operation_its"))             
 
+    
+    ## diffnorm                  
+    suite.addTest(TestDiffNorm("test_norm_L1"))
+    suite.addTest(TestDiffNorm("test_norm_L2"))
+    suite.addTest(TestDiffNorm("test_norm_Linf"))
+    suite.addTest(TestDiffNorm("test_ts_equal"))
     return suite
 
 
