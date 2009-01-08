@@ -159,7 +159,7 @@ def resample(ts,interval,window=BOXCAR,aligned=True):
     else:
         num=number_intervals(ts.start,ts.end,interval) 
         steps=int(ticks(interval)/ticks(ts.interval))   
-        nt=ts.data[0:num*steps:steps,]
+        nt=ts.data[0:num*steps+1:steps,]
         st=ts.start
         prop={}
         prop[TIMESTAMP]=INST

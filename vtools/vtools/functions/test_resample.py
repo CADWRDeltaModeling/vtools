@@ -48,10 +48,24 @@ class TestResamplefunctions(unittest.TestCase):
                 sample_num=number_intervals(ts0.start,ts0.end,interval)
                 ts=resample(ts0,interval)
                 self.assert_(ts.is_regular())
-                self.assert_(len(ts.data)==sample_num)
-
+                self.assert_(len(ts.data)==(sample_num+1))
+                
+    def test_resample_rts_in(self):
+        # Test operations on ts of with incomplete end hour
+        st=datetime.datetime(year=1990,month=2,day=3,hour=11, minute=45)
+        delta=time_interval(minutes=15)
+        resample_interval=time_interval(hours=1)
+        data=range(-1,10)
+        ts=rts(data,st,delta,{})
+        nts=resample(ts,resample_interval)
+        self.assert_(nts.data[2]==ts.data[9])
+        self.assert_(len(nts)==3)
+         
+        nt2=resample(ts,resample_interval,aligned=False)
+        self.assert_(nt2.data[2]==ts.data[8])
+        self.assert_(len(nt2)==3)
+        
     def test_resample_rts_aligned(self):
-
         # test resampling regular time series with aligned start
         data=range(100)
         st=datetime.datetime(year=2000,month=2,day=1,hour=2,minute=15)
