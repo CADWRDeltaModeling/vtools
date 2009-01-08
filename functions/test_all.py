@@ -35,6 +35,7 @@ def suite():
     ##  Decimate 
     suite.addTest(TestDecimate("test_decimate_rts"))
     suite.addTest(TestResamplefunctions("test_resample_rts_aligned"))
+    suite.addTest(TestResamplefunctions("test_resample_rts_in"))
     suite.addTest(TestResamplefunctions("test_resample_rts"))
     suite.addTest(TestResamplefunctions("test_decimate_rts"))
     suite.addTest(TestResamplefunctions("test_decimate_rts_2d"))
