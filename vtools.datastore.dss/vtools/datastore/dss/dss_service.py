@@ -965,7 +965,7 @@ class DssService(Service):
             dssf.close()
             raise e
 
-        header_dic=self._unstuff_header(headu,nheadu)
+        header_dic=self._unstuff_header(headu,nheadu,0)
         start=dss_julian2python(jbdate,itimes[0])
         end=dss_julian2python(jbdate,itimes[nvals-1])
 
