@@ -37,14 +37,14 @@ class TestDiffNorm(unittest.TestCase):
         # This ts is the orignial one
         ts0=rts(data,ts_start,ts_intvl)
         ts1=rts(data,ts_start,ts_intvl)
-        l1norm=norm_diff_L1(ts0,ts1)        
+        l1norm=norm_diff_l1(ts0,ts1)        
         self.assertEqual(l1norm,0.0)
         
         d2=[1.,2.,0.]
         d3=[0.,0.,1.]
         ts0=rts(d2,ts_start,ts_intvl)
         ts1=rts(d3,ts_start,ts_intvl)    
-        l1norm2=norm_diff_L1(ts0,ts1)        
+        l1norm2=norm_diff_l1(ts0,ts1)        
         self.assertEqual(l1norm2,4.0)
         
     def test_norm_L2(self):
@@ -59,14 +59,14 @@ class TestDiffNorm(unittest.TestCase):
         # This ts is the orignial one
         ts0=rts(data,ts_start,ts_intvl)
         ts1=rts(data,ts_start,ts_intvl)
-        l1norm=norm_diff_L2(ts0,ts1)        
+        l1norm=norm_diff_l2(ts0,ts1)        
         self.assertEqual(l1norm,0.0)
         
         d2=[1.,2.,0.]
         d3=[0.,0.,1.]
         ts0=rts(d2,ts_start,ts_intvl)
         ts1=rts(d3,ts_start,ts_intvl)    
-        l1norm2=norm_diff_L2(ts0,ts1)        
+        l1norm2=norm_diff_l2(ts0,ts1)        
         self.assertEqual(l1norm2,numpy.sqrt(6.0))
         
         
@@ -82,14 +82,14 @@ class TestDiffNorm(unittest.TestCase):
         # This ts is the orignial one
         ts0=rts(data,ts_start,ts_intvl)
         ts1=rts(data,ts_start,ts_intvl)
-        l1norm=norm_diff_Linf(ts0,ts1)        
+        l1norm=norm_diff_linf(ts0,ts1)        
         self.assertEqual(l1norm,0.0)
         
         d2=[1.,2.,0.]
         d3=[0.,0.,1.]
         ts0=rts(d2,ts_start,ts_intvl)
         ts1=rts(d3,ts_start,ts_intvl)    
-        l1norm2=norm_diff_Linf(ts0,ts1)        
+        l1norm2=norm_diff_linf(ts0,ts1)        
         self.assertEqual(l1norm2,2.0)
         
     def test_ts_equal(self):

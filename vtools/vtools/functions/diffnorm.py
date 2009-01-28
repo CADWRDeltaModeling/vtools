@@ -6,7 +6,7 @@ import numpy
 ## Public interface.
 ###########################################################################
 
-__all__=["norm_diff_L1","norm_diff_L2","norm_diff_Linf","ts_equal"]
+__all__=["norm_diff_l1","norm_diff_l2","norm_diff_linf","ts_equal"]
 
 
 def _norm_L1_array(data):
@@ -34,7 +34,7 @@ def _norm_Linf_array(data):
     return numpy.maximum.reduce(data)
     
     
-def norm_diff_L1(ts1,ts2,window=None):
+def norm_diff_l1(ts1,ts2,window=None):
     if window is None:
         window=(ts1.start,ts1.end)
     st=window[0]
@@ -43,7 +43,7 @@ def norm_diff_L1(ts1,ts2,window=None):
     return _norm_L1_array(diffts.data)
     
     
-def norm_diff_L2(ts1,ts2,window=None):
+def norm_diff_l2(ts1,ts2,window=None):
     if window is None:
         window=(ts1.start,ts1.end)
     st=window[0]
@@ -53,7 +53,7 @@ def norm_diff_L2(ts1,ts2,window=None):
     
     
     
-def norm_diff_Linf(ts1,ts2,window=None):
+def norm_diff_linf(ts1,ts2,window=None):
     if window is None:
         window=(ts1.start,ts1.end)
     st=window[0]
