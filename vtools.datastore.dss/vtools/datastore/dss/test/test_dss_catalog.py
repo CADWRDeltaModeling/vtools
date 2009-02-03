@@ -128,7 +128,17 @@ class TestDssCatalog(unittest.TestCase):
         dl=dssc.filter_catalog(selector)
         self.assertEqual(type(dl),DssCatalog)
         self.assertEqual(len(dl),1)
+        
+        ## this selector has a trailing space intentionally, I made it still correct by stripping the space.
+        selector="/HIST+CHAN/SLTMP017/STAGE//15MIN/DWR-CD-SURFWATER/ "       
+        dl=dssc.filter_catalog(selector)
+        self.assertEqual(type(dl),DssCatalog)
+        self.assertEqual(len(dl),1)
+        
+        selector="nothing here "      
+        self.assertRaises(ValueError,dssc.filter_catalog,selector)
 
+        
     def test_filter_catalog2(self):
         
         dssfile_path=self.test_file_path

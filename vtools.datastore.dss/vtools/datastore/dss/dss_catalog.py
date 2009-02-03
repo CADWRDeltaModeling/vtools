@@ -383,6 +383,10 @@ class DssCatalog(Catalog):
         
         qualified_entry_indexes=[ e.index for e in self._entries \
                                 if self._selected(e,select_pattern)]
+                                
+        if len(qualified_entry_indexes)<1:
+            raise ValueError("input selector doesn't match any record in dss file ")
+        
 
         entries=[copy(self._entries[index]) for index \
                  in qualified_entry_indexes ]
@@ -541,6 +545,7 @@ class DssCatalog(Catalog):
             A support of selection pattern like "A=HIST,B=RSAC*,C=EC*,
             TIMEWINDOW=(10/2/1997 1200, 7/4/1998 1315)" was added.
         """
+        selector=selector.strip()
         if not selector:
             return re.compile("/.*?/.*?/.*?/.*?/.*?/.*?/")
         selector=selector.upper()
@@ -555,6 +560,8 @@ class DssCatalog(Catalog):
             selector=selector.replace(';',',')
             ca,cb,cc,cd,ce,cf,nparts=\
             zgpnp(selector,nparts)
+            if nparts[0]==-10:
+                raise ValueError("invalid selector")
             if not ca:
                 ca=r"*"
             if not cb:
