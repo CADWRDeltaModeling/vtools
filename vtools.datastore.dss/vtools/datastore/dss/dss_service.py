@@ -1189,7 +1189,7 @@ class DssService(Service):
             
             if etimet>etime:
                 etimet=etime
-                nval=number_intervals(stimet,etimet,step)
+                nval=number_intervals(stimet,etimet,step)+1
                 
             cdate=stimet.date()
             cdate=cdate.strftime('%d%b%Y') 

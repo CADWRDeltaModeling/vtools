@@ -239,7 +239,7 @@ class TestDssService(unittest.TestCase):
         ## header.
 
         ## save rts first.
-        data=range(8000)
+        data=range(36009)
         start="12/21/2000 2:00"
         interval="1hour"
         prop={}
@@ -252,14 +252,17 @@ class TestDssService(unittest.TestCase):
 
         rt1=rts(data,start,interval,prop)
         it1=its(data,rt1.ticks,prop)
-        
-        id="vtools.datastore.dss.DssService"
-        path="/TEST/DOWNSTREAM/EC//IR-MONTH/STAGE/"
-        
-        source=self.test_file_path
 
+        id="vtools.datastore.dss.DssService"
+        path="/TEST/DOWNSTREAM/EC//1HOUR/SRT/"
+        source=self.test_file_path
+        
         data_ref=DataReference(id,source=source,selector=path)
-        self.dss_service.add_data(data_ref,it1)   
+        self.dss_service.add_data(data_ref,rt1)  
+        
+        ##path="/TEST/DOWNSTREAM/EC//IR-MONTH/STAGE/"
+        ##data_ref=DataReference(id,source=source,selector=path)
+        ##self.dss_service.add_data(data_ref,it1)   
       
 
     def test_save2newf(self):
