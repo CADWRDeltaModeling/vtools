@@ -151,12 +151,12 @@ def time_sequence(start,dt,n):
         raise TypeError("1st argument of time_sequence"
         "must be type of datetime")
     
-    if start.day>28:
-        if type(dt)==type(years(1)):
-            if dt.months or dt.years:
-                raise ValueError("Time sequence "
-                "starting after 28th day by interval %s"
-                "is not defined"%str(dt))
+    #if start.day>28:
+    #    if type(dt)==type(years(1)):
+    #        if dt.months or dt.years:
+    #            raise ValueError("Time sequence "
+    #            "starting after 28th day by interval %s"
+    #            "is not defined"%str(dt))
     
     if isinstance(dt,_datetime.timedelta):
         start=(start-time_base)
