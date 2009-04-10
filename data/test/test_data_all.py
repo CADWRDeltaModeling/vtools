@@ -21,7 +21,7 @@ def suite():
     suite.addTest(TestTimeSeries("testIter"))
     suite.addTest(TestTimeSeries("test_is_regular")) 
     suite.addTest(TestTimeSeries("test_index_after"))
-
+    suite.addTest(TestTimeSeries("test_ts_start_after_28_with_relativedelta"))
     
     suite.addTest(TestVTime("testTimeInterval"))
     suite.addTest(TestVTime("testIncrement"))

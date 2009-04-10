@@ -256,7 +256,27 @@ class TestTimeSeries(unittest.TestCase):
         self.assert_(newts.data[0]==self.ts1.data[1])
         self.assert_(newts.data[10]==self.ts1.data[11])
 
-        self.assertRaises(ValueError,self.ts1.copy,etime,stime)        
+        self.assertRaises(ValueError,self.ts1.copy,etime,stime)    
+
+    def test_ts_start_after_28_with_relativedelta(self):
+        dt=time_interval(months=1)
+        st=parse_time("1/30/1991")
+        num=120
+        d2=parse_time("2/28/1991")
+        data=range(num)
+        ts1=rts(data,st,dt,num)
+        self.assertEqual(ts1.times[1],d2)
+        
+        dt=time_interval(years=1)
+        st=parse_time("2/29/2000")
+        num=20
+        data=range(num)
+        ts2=rts(data,st,dt,num)
+        d2=parse_time("2/28/2001")
+        self.assertEqual(ts2.times[1],d2)
+        
+                
+  
 
 if __name__ == '__main__':
     unittest.main()

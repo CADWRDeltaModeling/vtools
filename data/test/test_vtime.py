@@ -153,10 +153,10 @@ class TestVTime(unittest.TestCase):
         for t1,t2 in zip(timeseq1,timeseq2):
             self.assertEqual(t1,t2)
         
-        # Incorrect start date
-        wrongstime=datetime(1993,3,29)
-        interval=months(1)
-        self.assertRaises(ValueError,time_sequence,wrongstime,interval,n)
+        # Incorrect start date, this restriction is remvoed
+        #wrongstime=datetime(1993,3,29)
+        #interval=months(1)
+        #self.assertRaises(ValueError,time_sequence,wrongstime,interval,n)
 
         # Test only one interval is desired.
         n=1
