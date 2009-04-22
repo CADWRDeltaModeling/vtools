@@ -35,5 +35,10 @@ props={DATUM:"NGVD88"}
 # create the series
 ts=rts(data,start,dt,props)
 
+
+#you may also reuse the property of a existing time series to built a new ts
+
+ts2=rts(data,start,dt,ts.props)
+
 print ts[0]                          # todo: time series elements don't print
 print ts[1]
