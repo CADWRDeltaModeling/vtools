@@ -83,6 +83,8 @@ class TestPeriodOp(unittest.TestCase):
                 for method in [RECT,TRAPEZOID]:
                     nt=period_op(ts,interval,op,method=method)
                     self.assertEqual(nt.start,aligned_start)
+                    self.assertEqual(nt.props[TIMESTAMP],PERIOD_START)
+                    self.assertEqual(nt.props[AGGREGATION],op)
                     self.assertEqual(len(nt.data),nt_len)
                     
             ## Test operations on ts of constant values.        

@@ -120,7 +120,8 @@ def period_op(ts,interval,op,method=None):
     prop[TIMESTAMP]=PERIOD_START
     prop[AGGREGATION]=op
     for key,val in ts.props.items():
-        prop[key]=val
+        if (not (key==TIMESTAMP)) and (not (key==AGGREGATION)):
+            prop[key]=val
         
     ## Depending on the calendar dependence of interval,
     ## two methods are chosen to perform operation, first
