@@ -44,10 +44,9 @@ def godin(ts):
     d1=_boxcar(d1,num_2,num_2)
     
     prop={}
-    prop[TIMESTAMP]=INST
-    prop[AGGREGATION]=INDIVIDUAL
-    
     for key,val in ts.props.items():
         prop[key]=val
+    prop[TIMESTAMP]=INST
+    prop[AGGREGATION]=INDIVIDUAL
         
     return rts(d1,ts.start,ts.interval,prop)
