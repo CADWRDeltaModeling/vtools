@@ -162,10 +162,11 @@ def resample(ts,interval,window=BOXCAR,aligned=True):
         nt=ts.data[0:num*steps+1:steps,]
         st=ts.start
         prop={}
-        prop[TIMESTAMP]=INST
-        prop[AGGREGATION]=INDIVIDUAL
+       
         for key,val in ts.props.items():
             prop[key]=val
+        prop[TIMESTAMP]=INST
+        prop[AGGREGATION]=INDIVIDUAL
     
         new_ts=rts(nt,st,interval,prop)                
         return new_ts
@@ -218,10 +219,10 @@ def decimate(ts,interval,**dic):
         
     ll=data.shape[0]    
     prop={}
-    prop[TIMESTAMP]=INST
-    prop[AGGREGATION]=INDIVIDUAL
     for key,val in ts.props.items():
         prop[key]=val
+    prop[TIMESTAMP]=INST
+    prop[AGGREGATION]=INDIVIDUAL
     new_rts=rts(data,resample_start,interval,prop)
     
     return new_rts

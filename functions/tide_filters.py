@@ -73,10 +73,10 @@ def tide_butterworth(ts,order=2,cutoff_frequence=None):
     d2r=d2[::-1].copy()
     
     prop={}
-    prop[TIMESTAMP]=INST
-    prop[AGGREGATION]=INDIVIDUAL
     for key,val in ts.props.items():
         prop[key]=val
+    prop[TIMESTAMP]=INST
+    prop[AGGREGATION]=INDIVIDUAL
     return rts(d2r,ts.start,ts.interval,prop)
     
    

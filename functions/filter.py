@@ -76,10 +76,11 @@ def butterworth(ts,order=4,cutoff_frequency=None):
     #d2=sqrt(d2)
     
     prop={}
-    prop[TIMESTAMP]=INST
-    prop[AGGREGATION]=INDIVIDUAL
     for key,val in ts.props.items():
         prop[key]=val
+    prop[TIMESTAMP]=INST
+    prop[AGGREGATION]=INDIVIDUAL
+    
     return rts(d2,ts.start,ts.interval,prop)
     
    
@@ -136,10 +137,10 @@ def boxcar(ts,before,after):
     new_data=_boxcar(ts.data,len_before,len_after)
     
     prop={}
-    prop[TIMESTAMP]=INST
-    prop[AGGREGATION]=INDIVIDUAL
     for key,val in ts.props.items():
         prop[key]=val
+    prop[TIMESTAMP]=INST
+    prop[AGGREGATION]=INDIVIDUAL
     return rts(new_data,ts.start,ts.interval,prop)
 
 def daily_average(ts):
