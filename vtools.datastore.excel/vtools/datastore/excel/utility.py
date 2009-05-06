@@ -121,7 +121,7 @@ def _excel_store_ts(ts,book,selection,header,write_times):
         elif write_times=="first":
             if i>0:
                 write_time=False
-        
+
         if header:
             if type(header)==dict: ## header is a dict itself
                 header_dic=header
@@ -135,17 +135,18 @@ def _excel_store_ts(ts,book,selection,header,write_times):
                     ## ${*?} with ts attribute.
                     header_dic=_fill_dic(header_dic,tts)
                 else:
-                    header_dic=_check_in_header(tts,header)
-                    
+                    header_dic=_check_in_header(tts,header)                    
             num_header=len(header_dic)
+            
         _check_store_selection(tts,num_header,rvar,write_time)
-        _write_to_sheet(tts,sheet,rvar,header_dic,write_time,col_offset)
+        ## header here is passed to in to force header item stored in original order
+        _write_to_sheet(tts,sheet,rvar,header_dic,header,write_time,col_offset)
         col_offset=col_offset+1
         if write_time:
             col_offset=col_offset+1
         i=i+1
 
-def _write_to_sheet(ts,sheet,rvar,header_dic,write_times,col_off_set):
+def _write_to_sheet(ts,sheet,rvar,header_dic,header,write_times,col_off_set):
     """ actual func to write a ts into spreadsheet """
 
     st_col=rvar[1]
@@ -182,7 +183,10 @@ def _write_to_sheet(ts,sheet,rvar,header_dic,write_times,col_off_set):
             #write header labels
             st_cell=sheet.Cells(r,c)
             end_cell=sheet.Cells(r+num_header-1,c)
-            val=array(header_dic.keys())
+            if type(header)==type([]):
+                val=array(header)
+            else:
+                val=array(header_dic.keys())
             val=reshape(val,(len(val),1))
             sheet.Range(st_cell,end_cell).Value=val
             r=r+num_header
@@ -197,7 +201,13 @@ def _write_to_sheet(ts,sheet,rvar,header_dic,write_times,col_off_set):
     if num_header: ##need to write header vals
         st_cell=sheet.Cells(r,c)
         end_cell=sheet.Cells(r+num_header-1,c)
-        val=array(header_dic.values())
+        val=[]
+        if type(header)==type([]):
+              for i in range(len(header)):
+                  val.append(header_dic[header[i]])
+              val=array(val)
+        else:
+            val=array(header_dic.values())
         val=reshape(val,(len(val),1))
         sheet.Range(st_cell,end_cell).Value=val
         r=r+num_header
