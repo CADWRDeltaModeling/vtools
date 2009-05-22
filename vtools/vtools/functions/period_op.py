@@ -275,7 +275,7 @@ def _calendar_dependent_op(ts,op,interval,\
     ## the intervals must be num+1, time_sequence gen
     ## time sequence by the number of time points, not
     ## number of itervals. To make a more complete
-    ## operation over the ts data, all the points all
+    ## operation over the ts data, all the points are
     ## needed, check some sub func below.
     times=time_sequence(aligned_start,interval,num+1)
     operation_index=ts.index_after(times)

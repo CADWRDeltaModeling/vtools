@@ -68,6 +68,7 @@ def suite():
     suite.addTest(TestDiffNorm("test_norm_L2"))
     suite.addTest(TestDiffNorm("test_norm_Linf"))
     suite.addTest(TestDiffNorm("test_ts_equal"))
+    suite.addTest(TestDiffNorm("test_ts_almost_equal"))
     return suite
 
 
