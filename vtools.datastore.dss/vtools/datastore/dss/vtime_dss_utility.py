@@ -141,7 +141,7 @@ def datetime_to_dss_julian_date(dtime):
 
 def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=None):
 
-    """ Convert dss time seris into TimeSeries class.
+    """ Convert dss file time seris into TimeSeries class.
         data: array of values
         startdate: start date of time windows desired as string conformed to dss style
         starttime: start time of time windows desired as string conformed to dss style
@@ -180,11 +180,15 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
         tsstype=prop[CTYPE]
         #translate vtools time aggreation term into dss term
         # Todo: make the automatic conversion a user controlled
-        #preference         
+        # those handlinges for the type of mean,min,max over a period only     
         if tsstype in RTS_DSS_PROPTY_TO_VT.keys():
            start_datetime=start_datetime-interval_timedelta
            prop[TIMESTAMP]=PERIOD_START
            prop[AGGREGATION]=RTS_DSS_PROPTY_TO_VT[tsstype]
+        elif tsstype in RTS_DSS_PROPTY_TO_VT.values():
+           start_datetime=start_datetime-interval_timedelta
+           prop[TIMESTAMP]=PERIOD_START
+           prop[AGGREGATION]=tsstype
         else:
            prop[TIMESTAMP]=INST
            prop[AGGREGATION]=INDIVIDUAL
@@ -473,14 +477,12 @@ def _validate_dss_data_series(data,flags=None,OnlyStartLen=0):
     if not type(data)==type(array([2,3])):
         data=array(data)
     
-    data=where(data==float(-901),nan,data)
-    data=where(data==float(-902),nan,data)
+    data=where((data==float(-901)) | (data==float(-902)),nan,data)
     ## set nan according to if 3,4,5 bits of flag set or not.
     ## operation is implemented by bit_wise or/and.
     if not(flags==None):
         ## filter out those invalid flags.
-        flags=where(flags==float(-901),0,flags)
-        flags=where(flags==float(-902),0,flags)
+        flags=where((flags==int(-901)) | (flags==int(-902)),0,flags)
         data=where(((flags|_d1)&_d2),nan,data)
     
     ## Here is a handling findout those possible continoues
