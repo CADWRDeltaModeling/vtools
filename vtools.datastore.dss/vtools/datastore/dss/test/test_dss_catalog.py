@@ -137,7 +137,10 @@ class TestDssCatalog(unittest.TestCase):
         
         selector="nothing here "      
         self.assertRaises(ValueError,dssc.filter_catalog,selector)
-
+        
+        ## this selector intentionaly misses last backslash, it should report error
+        selector="/HIST+CHAN/SLTMP017/STAGE//15MIN/DWR-CD-SURFWATER"    
+        self.assertRaises(ValueError,dssc.filter_catalog,selector)
         
     def test_filter_catalog2(self):
         

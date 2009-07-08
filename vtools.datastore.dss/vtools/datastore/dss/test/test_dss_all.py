@@ -12,6 +12,10 @@ def suite():
     suite.addTest(TestDssService("test_get_data"))
     suite.addTest(TestDssService("test_get_data_all"))
     suite.addTest(TestDssService("test_save_data"))
+    
+    suite.addTest(TestDssCatalog("test_modify")) ## it may cause error
+                                                 ## when it is move after
+                                                ## test_save_data.
     suite.addTest(TestDssService("test_save_ts_props"))
     suite.addTest(TestDssService("test_get_save_ts"))
     suite.addTest(TestDssUtility("test_save_ts_manytimes"))
