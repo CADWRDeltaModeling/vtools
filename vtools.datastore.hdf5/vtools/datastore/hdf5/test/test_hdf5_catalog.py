@@ -41,7 +41,7 @@ class TestHDF5Catalog(unittest.TestCase):
 
     def test_filter_catalog(self):
 
-        path="/hydro/data/channel_flow"
+        path="/hydro/data/channel flow"
         hdfile_path=self.test_file_path
         hfc=self.hdf5_service.get_catalog(hdfile_path)
         c1=hfc.filter_catalog(path)
@@ -49,10 +49,10 @@ class TestHDF5Catalog(unittest.TestCase):
         self.assertEqual(len(c1),1)
 
     def test_data_references(self):
-
-        path="/hydro/data/channel_flow"
+        
+        path="/hydro/data/channel flow"
         extent="channel_number=1;channel_location=upstream"
-        time_window="time_window=(1991-10-3 12:00,1991-10-17 13:00);"
+        time_window="time_window=(2002-5-10 12:00,2002-5-29 13:00);"
         extent=time_window+extent
         hdfile_path=self.test_file_path
         hfc=self.hdf5_service.get_catalog(hdfile_path)
@@ -61,7 +61,7 @@ class TestHDF5Catalog(unittest.TestCase):
         
         self.assertEqual(type(ref),DataReference)
         
-        self.assertEqual(ref.selector,"/hydro/data/channel_flow")
+        self.assertEqual(ref.selector,"/hydro/data/channel flow")
         self.assertEqual(ref.extent,extent)
         ts=self.hdf5_service.get_data(ref)        
                 

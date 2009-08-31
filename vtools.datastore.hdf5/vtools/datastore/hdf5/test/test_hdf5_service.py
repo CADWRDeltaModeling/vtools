@@ -68,7 +68,7 @@ class TestHDF5Service(unittest.TestCase):
             dataref=catalog.get_data_reference(entry)
             data=self.hdf5_service.get_data(dataref)
             self.assert_(type(data),TimeSeries)
-            self.assertEqual(len(data),457)
+            self.assertEqual(len(data),475)
 
 if __name__=="__main__":
     
