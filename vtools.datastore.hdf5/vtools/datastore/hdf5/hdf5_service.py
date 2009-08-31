@@ -66,7 +66,7 @@ _DIMENSION_SACLE_NAME=["channel_location","channel_number","external_flow_names"
 "reservoir_names","transfer_names"]
 
 class HDF5Service(Service):
-    """ Service class to retrieve catalog and accsse timeseries
+    """ Service class to retrieve catalog and access timeseries
         stored in a hdf5 file. 
     """
 
@@ -134,10 +134,12 @@ class HDF5Service(Service):
         """ Modify dataset with a time series at location pointed by 
         datareference.
         """
-        self._check_data_reference(dataref)
+        ##self._check_data_reference(dataref)
         (array_node,fh)=self._get_array_node(dataref)
-        para=self._compose_array_para(dataref.extent)        
-        array_node[para]=ts.data
+        channel=dataref.extent
+        #para=self._compose_array_para(dataref.extent)     
+        lts=len(ts.data)        
+        array_node[channel,0:lts]=ts.data
         fh.close()
 
 ##    def _add_data(self,dataref,data):
@@ -160,7 +162,7 @@ class HDF5Service(Service):
             raise HDF5AccessError("empty path in data reference used when \
             trying to access HDF5 data")
 
-        if not(dataref.extent):
+        if (dataref.extent==""):
             raise HDF5AccessError("empty extent in data reference used when \
             trying to access HDF5 data")
 
@@ -198,7 +200,7 @@ class HDF5Service(Service):
                   ## values is tuple of scale and
                   ## dimension index.
           
-        nl= fileh.walkNodes("/",classname="Array")   
+        nl= fileh.walkNodes("/hydro",classname="Array")   
               
         for node in nl:  
             # if hasattr(node.attrs,"CLASS"):

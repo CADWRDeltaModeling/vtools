@@ -102,16 +102,16 @@ def hdf_store_ts(hdf_file,path,datachannel,ts):
     else:
        raise ValueError("Not existing hdf file %s"%hdf_file)
 
-    datachannel=datachannel.strip(";")
-    datachannel=datachannel.strip()
+    ##datachannel=datachannel.strip(";")
+    ##datachannel=datachannel.strip()
 
-    time_extent=";time_window=("+ts.start.strftime('%m/%d/%Y %H%M')\
-                 +","+ts.end.strftime('%m/%d/%Y %H%M')+")"
+    ##time_extent=";time_window=("+ts.start.strftime('%m/%d/%Y %H%M')\
+    ##             +","+ts.end.strftime('%m/%d/%Y %H%M')+")"
     
     ref=DataReferenceFactory(HDF5_DATA_SOURCE,\
                              source=hdf_file,\
                              selector=path,extent\
-                             =datachannel+time_extent)
+                             =datachannel)
     
     hdf_service=dsm.get_service(HDF5_DATA_SOURCE)
     hdf_service.modify_data(ref,ts)   
