@@ -374,12 +374,12 @@ class DssCatalog(Catalog):
             selector only contains path info.
         """
                 
-        if os.path.isfile(selector):
-            f=file(selector)
-            select_pattern=map(self._parse_pattern,\
-            [p.strip() for p in f if p.strip()])
-        else:
-            select_pattern=self._parse_pattern(selector)        
+        # if os.path.isfile(selector):
+            # f=file(selector)
+            # select_pattern=map(self._parse_pattern,\
+            # [p.strip() for p in f if p.strip()])
+        # else:
+        select_pattern=self._parse_pattern(selector)        
         
         qualified_entry_indexes=[ e.index for e in self._entries \
                                 if self._selected(e,select_pattern)]
@@ -387,7 +387,7 @@ class DssCatalog(Catalog):
         if len(qualified_entry_indexes)<1:
             raise ValueError("input selector doesn't match any record in dss file ")
         
-
+        
         entries=[copy(self._entries[index]) for index \
                  in qualified_entry_indexes ]
         

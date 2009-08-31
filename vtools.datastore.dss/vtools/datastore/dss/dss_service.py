@@ -127,7 +127,12 @@ class DssService(Service):
         
         return (time_window,header,unit,type)
 
-    def remove_dssfile(self,dss_file_path):
+    def remove_dssfile_catalog(self,dss_file_path):
+        """
+           remove all the catalog information about a dss file,
+           this function can be used to reload catalog when it 
+           placed before a get_catalog function
+        """
         self._remove_dssfile_catalog(dss_file_path)
 
     def reload_dss_records(self,dss_file_path):
@@ -153,6 +158,9 @@ class DssService(Service):
     def update_db(self,dss_file_path):
         """ update db record about dss file."""
         self._update_dss_file_catalog(dss_file_path)
+        
+    
+        
         
        
     ########################################################################### 
@@ -200,22 +208,23 @@ class DssService(Service):
         
         info=self.dbcursor.fetchall()
         
+        
         if info: ## info is in form of [(1,2222344)],2222344 is time, 1 is f index
             last_modified_time=info[0][1]
             #print last_modified_time,os.stat(dss_file_path)[8]
-            #####################################################################
-            ##              comment and observation                            ##
-            ## This decision is done by comparing the update time of a dss file##
-            ## stored within db to its updatetime returned by windows query on ##
-            ## file property, if they are different, catalog will redone to    ##
-            ## refelect the change that might happen from last time. When they ##
-            ## same, just used info stored in db to save time. But it may fail,##
-            ## sometimes when last modification on dss file is very close to   ##
-            ## current time, for instance doing a catalog modification right   ##
-            ## after some saving ts into dss, like in test_all_module(when     ##
+            ##########################################
+            ##              comment and observation                                                          ##
+            ## This decision is done by comparing the update time of a dss file     ##
+            ## stored within db to its updatetime returned by windows query on     ##
+            ## file property, if they are different, catalog will redone to               ##
+            ## refelect the change that might happen from last time. When they    ##
+            ## same, just used info stored in db to save time. But it may fail,         ##
+            ## sometimes when last modification on dss file is very close to          ##
+            ## current time, for instance doing a catalog modification right         ##
+            ## after some saving ts into dss, like in test_all_module(when             ##
             ## test_modify right after test_save_data, sometimes two times are ##
-            ## the same,even file is different already).No solution currrently ##
-            #####################################################################
+            ## the same,even file is different already).No solution currrently    ##
+            #########################################
             if not(last_modified_time==\
                    os.stat(dss_file_path)[8]):
                 self._remove_dssfile_catalog(dss_file_path)
@@ -759,7 +768,7 @@ class DssService(Service):
         
     def _add_dss_file_record(self,fpath,index):
         """" Insert dssfile path into table DssFile."""
-        
+
         insertstat = "insert into dssfile (F_ID, FPATH,MODIFYTIME) values (?,?,?)"
         self.dbcursor.execute(insertstat,tuple([index,fpath,os.stat(fpath)[8]]))
         self.entrydb.commit()
