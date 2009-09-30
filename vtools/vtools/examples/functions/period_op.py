@@ -22,3 +22,9 @@ ts_min=period_aver(ts,"1day",SQUARE)
 ## get 1day average values of a timeseris
 ## using TRAPEZOID method
 ts_min=period_aver(ts,"1day",TRAPEZOID)
+
+
+## sum data in monthly or yearly 
+
+ts_month=period_op(ts,"1month",SUM)
+ts_year=period_op(ts,"1year",SUM)
