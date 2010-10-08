@@ -4,7 +4,9 @@
 import sys,os,shutil,unittest,pdb
 
 ## vtools import
-from vtools.datastore.utility import *
+from vtools.datastore import *
+from vtools.datastore.dss import *
+from vtools.datastore.dss.utility import *
 
 class TestUtility(unittest.TestCase):
 
@@ -14,11 +16,11 @@ class TestUtility(unittest.TestCase):
     def __init__(self,methodName="runTest"):
 
         super(TestUtility,self).__init__(methodName)
-        self.dss_file_path='\\datastore\\test\\testfile.dss'
+        self.dss_file_path='.\\testfile.dss'
         fs=__import__("vtools").__file__
         (fsp,fsn)=os.path.split(fs)
         self.dss_file_path=fsp+self.dss_file_path
-        self.backup_dss_file=fsp+'\\datastore\\dss\\test\\backup_dssfile\\testfile.dss'
+        self.backup_dss_file=fsp+'\\test\\backup\\testfile.dss'
         
     def setUp(self):
         if os.path.exists(self.dss_file_path):
@@ -37,14 +39,14 @@ class TestUtility(unittest.TestCase):
         ## retrieve all data.
         dssfile_path=self.dss_file_path
         selector="PATH=/RLTM+CHAN/RSAN112/FLOW//1DAY/DWR-OM-JOC-DSM2/;"
-        ts=retrieve_ts(dssfile_path,selector)
+        ts=dss_retrieve_ts(dssfile_path,selector)
         self.assertEqual(len(ts),938)
 
         ## retrieve some data within a time window.
         ## this should contain 11 data
         time_window="time_window=(10/01/1997 02:00,10/12/1997 03:00);"
         selector=time_window+selector
-        ts=retrieve_ts(dssfile_path,selector)
+        ts=dss_retrieve_ts(dssfile_path,selector)
         self.assertEqual(len(ts),11)
         
     def test_save_rts_data(self):
@@ -56,7 +58,7 @@ class TestUtility(unittest.TestCase):
         data=range(20)
         start="01/15/1997"
         props={}
-        save_rts(dssfile_path,path,data,start,props=props)
+        dss_store_rts(dssfile_path,path,data,start,props=props)
 
     def test_save_its_data(self):
         """ test adding a its to source."""
@@ -74,9 +76,9 @@ class TestUtility(unittest.TestCase):
                "04/15/1998","05/19/1998","06/30/1998",\
                "07/15/1998","08/24/1998"]
         props={}
-        save_its(dssfile_path,path,data,times,props=props)
+        dss_store_its(dssfile_path,path,data,times,props=props)
 
-    def test_catalogging_data(self):
+    def test_cataloging_data(self):
 
 
         ##

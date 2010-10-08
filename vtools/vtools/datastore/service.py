@@ -33,7 +33,7 @@ class Service(DataAccessService,CatalogService):
         if identification in Service.all_service.keys():
             return Service.all_service[identification]
         else:
-            raise identification +" is not a type registed"
+            raise ValueError(identification +" is not a type registed")
 
     factory=staticmethod(factory)
 

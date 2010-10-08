@@ -19,7 +19,7 @@ setup(
     author="Eli Ateljevich, Qiang Shu",
     author_email="eli@water.ca.gov",
     license="PSF or ZPL",
-    install_requires = ['enthought.traits>=1.0','vtools'],
+    install_requires = ['Traits>=3.0','vtools'],
     test_suite = 'test',
     packages = find_packages(),
     namespace_packages = find_packages(),
