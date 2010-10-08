@@ -43,8 +43,8 @@ class DataReference(object):
         extent=self.extent
 
         if not extent:
-            raise "Warning: this data reference doesn't \
-            contain extent information."
+            raise ValueError("Warning: this data reference doesn't \
+            contain extent information.")
         
         extlist=split(extent,';')
         element_list=[]

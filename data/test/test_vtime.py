@@ -143,7 +143,6 @@ class TestVTime(unittest.TestCase):
      
     def testTimeSequenceTime(self):
         from datetime import timedelta
-        from enthought.util import numerix
         interval=timedelta(days=1)
         interval_ticks=ticks(interval)
         sticks=ticks(self.stime1)
@@ -152,11 +151,6 @@ class TestVTime(unittest.TestCase):
         timeseq2=time_sequence(self.stime1,interval,n)
         for t1,t2 in zip(timeseq1,timeseq2):
             self.assertEqual(t1,t2)
-        
-        # Incorrect start date, this restriction is remvoed
-        #wrongstime=datetime(1993,3,29)
-        #interval=months(1)
-        #self.assertRaises(ValueError,time_sequence,wrongstime,interval,n)
 
         # Test only one interval is desired.
         n=1
@@ -169,7 +163,6 @@ class TestVTime(unittest.TestCase):
     
     def testTimeSequenceCalendar(self):
         from dateutil import rrule
-        from enthought.util import numerix
         #import pdb
 
         interval=relativedelta(months=1,days=2,hours=3,minutes=13,seconds=27)

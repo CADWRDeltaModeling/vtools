@@ -155,15 +155,15 @@ def transfer(s1,reference1,s2,reference2,transform=None,**func_args):
       try:
         dt=s1.get_data(d1)
       except:
-        raise StandardError("Fail to retrieve data pointed by %s"%d1.selector)
+        raise StandardError("Failed to retrieve data pointed to by %s"%d1.selector)
       try:
         ts=_transform(dt,transform,**func_args)
       except:
-        raise StandardError("Fail to transform input timeseries" )
+        raise StandardError("Failed to transform input timeseries" )
       try:
         s2.add_data(d2,ts)
       except:
-        raise StandardError("Fail to add new data into path %s in dest %s"%(d2.selector,d2.source))
+        raise StandardError("Failed to add new data into path %s in dest %s"%(d2.selector,d2.source))
     return
 
 ########################################################################### 
