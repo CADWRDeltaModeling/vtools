@@ -15,10 +15,8 @@
 #-------------------------------------------------------------------------------
 
 #from plot_base import *
-from enthought.util.scipyx import *
 from vtools.data.vtime import *
-#from enthought.logger import logger
-from enthought.util import numerix
+from numpy import *
 
 def _calc_time_unit(tick_intvl,start):
     stime=ticks_to_time(start)
@@ -66,7 +64,7 @@ def _create_magic_intervals(units):
     magics = []
     for i in range(len(units)):
         magics.append(mi[str(units[i])])
-    magics = numerix.array(magics)
+    magics = numpy.array(magics)
     return magics.transpose()
 
 
@@ -211,7 +209,7 @@ def auto_interval ( data_low, data_high ):
     # We'll choose from between 2 and 8 tick marks.
     # Preference is given to more ticks:
     #   Note reverse order and see kludge below...
-    divisions = arange( 7.0, 2.0, -1.0 ) # (8, 7, 6, ..., 3 )
+    divisions = numpy.arange( 7.0, 2.0, -1.0 ) # (8, 7, 6, ..., 3 )
     
     # Calculate the intervals for the divisions:
     candidate_intervals = range / divisions
@@ -236,7 +234,7 @@ def auto_interval ( data_low, data_high ):
     # so we subtract a small, index dependent amount from each difference
     # to force correct ordering.
     sh    = shape( differences )
-    small = 2.2e-16 * arange( sh[1] ) * arange( sh[0] )[:,NewAxis]
+    small = 2.2e-16 * numpy.arange( sh[1] ) * arange( sh[0] )[:,numpy.newaxis]
     small = small[::-1,::-1] #reverse the order
     differences = differences - small
    
