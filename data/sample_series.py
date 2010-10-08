@@ -3,7 +3,7 @@ import sys
     
 import datetime
 from timeseries import *
-from enthought.util.numerix import arange
+from numpy import arange
 from scipy.special import jn,nan
 
 def create_sample_series():
