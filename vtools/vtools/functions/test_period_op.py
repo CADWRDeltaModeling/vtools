@@ -3,7 +3,6 @@
 import sys,os,unittest,shutil,random,pdb
 
 ## Datetime import
-import datetime
 
 ## vtools import
 from vtools.data.timeseries import rts,its
@@ -13,6 +12,8 @@ from vtools.data.vtime import ticks,number_intervals,\
 from vtools.data.vtime import ticks_to_time,ticks\
      ,number_intervals,time_sequence,time_interval
 from vtools.data.constants import *
+
+from period_op import *
 
 ## Scipy import.
 from scipy import array as sciarray
@@ -24,17 +25,13 @@ from scipy import nan,isnan,allclose
 ## Scipy testing suite import.
 from numpy.testing import assert_array_equal, assert_equal
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
+import datetime
 
-# Peroid func import
-from period_op import *
 
 class TestPeriodOp(unittest.TestCase):
 
     """ test functionality of period operations """
-
-
     def __init__(self,methodName="runTest"):
-
         super(TestPeriodOp,self).__init__(methodName)
                          
         # Number of data in a time series.
@@ -217,23 +214,16 @@ class TestPeriodOp(unittest.TestCase):
             ######################
 
     def test_period_op_irregular(self):
-
         """ Test behaviour of period operation on irregular TS."""
-
 
         times=[random.randint(1,100) for i in range(self.num_ts)]
         times=sciadd.accumulate(times)
-
         data=sciarray([random.random() for i in range(self.num_ts)])
-
         ts=its(times,data,{})
-
         for op in [MIN,MAX,MEAN,SUM]:
-
             self.assertRaises( ValueError,period_op,ts,"1 day",op)
 
     def test_period_op_uncompatible_interval(self):
-
         """ Test behaviour of period operation on TS with interval uncompatible
             with operation time interval
         """
