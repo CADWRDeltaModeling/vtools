@@ -40,12 +40,12 @@ class TestTransfer(unittest.TestCase):
             
     def setUp(self):
         
-        self.servic_emanager=DataServiceManager()
-        self.dss_service=self.servic_emanager.get_service\
+        self.service_manager=DataServiceManager()
+        self.dss_service=self.service_manager.get_service\
         ("vtools.datastore.dss.DssService")
-        self.hdf_service=self.servic_emanager.get_service\
+        self.hdf_service=self.service_manager.get_service\
         ("vtools.datastore.hdf5.HDF5Service")
-        self.excel_service=self.servic_emanager.get_service\
+        self.excel_service=self.service_manager.get_service\
         ("vtools.datastore.excel.ExcelService")
         
         if os.path.exists(self.test_file_path):

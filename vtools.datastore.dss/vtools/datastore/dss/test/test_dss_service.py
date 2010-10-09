@@ -17,49 +17,30 @@ class TestDssService(unittest.TestCase):
 
     """ test functionality of dss service """
     def __init__(self,methodName="runTest"):
-
         super(TestDssService,self).__init__(methodName)
-        #self.test_file_path='\\datastore\\dss\\test\\testfile.dss'
-        #fs=__import__("vtools").__file__
-        #(fsp,fsn)=os.path.split(fs)
-        #self.test_file_path=fsp+self.test_file_path
-        #self.backup_dss_file=fsp+'\\datastore\\dss\\test\\backup_dssfile\\testfile.dss'
-        
         self.test_file_path=os.path.abspath("testfile.dss")
-        self.backup_dss_file=os.path.abspath("./backup_dssfile/testfile.dss")
-        
-        self.servic_emanager=DataServiceManager()
-        self.dss_service=self.servic_emanager.\
-        get_service("vtools.datastore.dss.DssService")
+        self.backup_dss_file=os.path.abspath("./backup_dssfile/testfile.dss")        
+        self.service_manager=DataServiceManager()
+        self.dss_service=self.service_manager.get_service("vtools.datastore.dss.DssService")
         
     def setUp(self):
-
-
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
-            
         shutil.copy(self.backup_dss_file,self.test_file_path)
-
         if os.path.exists('newdss.dss'):
             os.remove('newdss.dss')
         
     def tearDown(self):
-        
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
 
     def test_get_catalog(self):
-
         dssfile_path=self.test_file_path
-
         dssc=self.dss_service.get_catalog(dssfile_path)
-        self.assert_(type(dssc)==DssCatalog)
-        
-        entries=dssc.entries()
-        
+        self.assert_(type(dssc)==DssCatalog)        
+        entries=dssc.entries()        
         for entry in entries:
-            self.assert_(type(entry)==CatalogEntry)
-            
+            self.assert_(type(entry)==CatalogEntry)            
         self.assertEqual(len(entries),25)
         
     def test_get_data(self):
@@ -292,8 +273,7 @@ class TestDssService(unittest.TestCase):
            
       
         
-if __name__=="__main__":
-    
+if __name__=="__main__": 
     unittest.main()  
         
         

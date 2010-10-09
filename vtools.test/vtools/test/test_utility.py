@@ -4,6 +4,8 @@
 import sys,os,shutil,unittest,pdb
 
 ## vtools import
+from vtools.data.vtime import *
+from vtools.data.timeseries import rts,its
 from vtools.datastore import *
 from vtools.datastore.dss import *
 from vtools.datastore.dss.utility import *
@@ -58,7 +60,8 @@ class TestUtility(unittest.TestCase):
         data=range(20)
         start="01/15/1997"
         props={}
-        dss_store_rts(dssfile_path,path,data,start,props=props)
+        ts = rts(data,start,minutes(15))
+        dss_store_ts(dssfile_path,path,ts)
 
     def test_save_its_data(self):
         """ test adding a its to source."""
@@ -67,7 +70,7 @@ class TestUtility(unittest.TestCase):
         dssfile_path=self.dss_file_path
         path="/HERE/IS/ITS//IR-YEAR/TEST/"
         data=range(20)
-        
+       
         times=["01/15/1997","02/17/1997","03/5/1997",\
                "04/25/1997","05/1/1997","06/15/1997",\
                "07/25/1997","08/14/1997","09/17/1997",\
@@ -76,14 +79,15 @@ class TestUtility(unittest.TestCase):
                "04/15/1998","05/19/1998","06/30/1998",\
                "07/15/1998","08/24/1998"]
         props={}
-        dss_store_its(dssfile_path,path,data,times,props=props)
+        ts = its(data,times,props=props)
+        dss_store_ts(dssfile_path,path,ts)
 
     def test_cataloging_data(self):
 
 
         ##
         dssfile_path=self.dss_file_path
-        c=catalog(dssfile_path)
+        c=dss_catalog(dssfile_path)
 
         for e in c.entries():
             print e.item("A"),e.item("DATATYPE"),e.item("UNIT")

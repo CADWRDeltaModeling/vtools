@@ -1241,10 +1241,10 @@ class DssService(Service):
             if istat==5:
                 #pdb.set_trace()
                 del dssf
-                raise DssAccessError("data of %s within your selection is invalid,change your timewindow"%path)
+                raise DssAccessError("Data for  %s within your selection is invalid, change your timewindow?"%path)
             if istat>5:
                 del dssf 
-                raise DssAccessError("error in access data of %s"%path)
+                raise DssAccessError("Error access data: %s"%path)
 
             if index==0: ## keep first set of dic and date.
                 ccdate=cdate

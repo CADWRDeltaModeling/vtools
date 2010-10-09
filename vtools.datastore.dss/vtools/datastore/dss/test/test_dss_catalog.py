@@ -116,7 +116,6 @@ class TestDssCatalog(unittest.TestCase):
             self.assert_('_MODIFIED' in dataref.selector)
             
     def test_filter_catalog(self):
-        
         dssfile_path=self.test_file_path
         dssc=self.dss_service.get_catalog(dssfile_path)
         selector="/HIST*/SLTR*/*//15MIN/*/"
