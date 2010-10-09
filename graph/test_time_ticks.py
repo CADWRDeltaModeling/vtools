@@ -2,7 +2,7 @@ import unittest
 from vtools.data.vtime import *
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
-from time_ticks import time_ticks,auto_interval,_calc_time_unit,align
+from vtools.graph.time_ticks import auto_time_ticks,auto_interval,_calc_time_unit,align
 
 class TestTimeTicks(unittest.TestCase):
 
@@ -67,12 +67,11 @@ class TestTimeTicks(unittest.TestCase):
                 for d in [1,7,29]:
                     start = datetime(1992,3,d)
                     end = datetime(1992,i,j)
-                    tickpoints = time_ticks(ticks(start),ticks(end),
+                    tickpoints = auto_time_ticks(ticks(start),ticks(end),
                                      "auto","auto","auto",False)
                     ticktimes = map(ticks_to_time,tickpoints)
                     y= [ datetime.strftime(t,"%d%b%Y %H:%M") 
                            for t in ticktimes ]
-                    print "result: %s " % y
                     #auto = auto_interval(ticks(start), ticks(end))
                     #self.display(start,end,auto)
         return

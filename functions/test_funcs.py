@@ -7,6 +7,7 @@ from vtools.data.timeseries import rts,its
 from vtools.data.vtime import *
 
 ## Scipy import.
+from datetime import datetime
 from scipy import array as sciarray
 from scipy import add as sciadd
 from scipy import minimum as sciminimum
@@ -15,11 +16,11 @@ from scipy import nan,isnan,allclose
 
 # Peroid func import
 from period_op import *
+from vtools.data.constants import *
 
 class Testfunctions(unittest.TestCase):
 
     """ test functionality of dss catalog. """
-
 
     def __init__(self,methodName="runTest"):
 
@@ -32,7 +33,6 @@ class Testfunctions(unittest.TestCase):
         self.large_data_size=100000
         
     def test_period_op(self):
-
         # Test operations on ts of varied values.
         test_input=[(datetime(year=1990,month=2,day=3,hour=11, minute=15),
                      3005,minutes(5),"1hour",hours(1),
@@ -54,8 +54,7 @@ class Testfunctions(unittest.TestCase):
                      datetime(year=1990,month=1,day=1,hour=00, minute=00),
                     ]
 
-        for (st,num,delta,interval,op_delta,aligned_start) in test_input:
-            
+        for (st,num,delta,interval,op_delta,aligned_start) in test_input:            
             data=[random.uniform(self.min_val,self.max_val) \
                   for k in range(num)]
             times=time_sequence(st,delta,num)
@@ -83,9 +82,7 @@ class Testfunctions(unittest.TestCase):
                     self.assertEqual(a,b)
 
     def test_period_op2(self):
-
         """ Run test with known result time series."""
-
         st=datetime(year=1990,month=2,day=3,hour=11, minute=15)
         num=3005
         delta=minutes(5)
@@ -124,8 +121,7 @@ class Testfunctions(unittest.TestCase):
             for (a,b) in zip(nt.data,op_data):
                 self.assertEqual(a,b)
 
-    def test_period_op3(self):
-        
+    def test_period_op3(self):        
         """Test period operation on time series with 2-dimensional data."""
 
         st=datetime(year=1990,month=2,day=3,hour=11, minute=15)
@@ -164,13 +160,12 @@ class Testfunctions(unittest.TestCase):
         ts=its(times,data,{})
         
         for (op,op_data) in [(MIN,nt_min),(MAX,nt_max),(MEAN,nt_mean)]:                
-            nt=period_operation(ts,interval,op)
+            nt=period_op(ts,interval,op)
             for (a,b) in zip(nt.data,op_data):
                 for (va,vb) in zip(a,b):
                     self.assertEqual(va,vb)
 
     def test_period_op_large(self):
-
         """ Test performance of period operation on very large size of TS.
             Print out time used also.
         """
@@ -188,11 +183,10 @@ class Testfunctions(unittest.TestCase):
         for op in [MIN,MAX,MEAN]:
 
 
-            nt=period_operation(ts,interval,op)
+            nt=period_op(ts,interval,op)
         
 
     def test_period_op_irregular(self):
-
         """ Test behaviour of period operation on irregular TS."""
 
 
@@ -204,10 +198,9 @@ class Testfunctions(unittest.TestCase):
         ts=its(times,data,{})
 
         for op in [MIN,MAX,MEAN]:
-            self.assertRaises( ValueError,period_operation,ts,"1 day",op)
+            self.assertRaises( ValueError,period_op,ts,"1 day",op)
 
     def test_period_op_uncompatible_interval(self):
-
         """ Test behaviour of period operation on TS with interval uncompatible
             with operation time interval
         """
@@ -227,10 +220,9 @@ class Testfunctions(unittest.TestCase):
             times=time_sequence(st,delta,num)
             ts=its(times,data,{})
             for op in [MIN,MAX,MEAN]:
-                self.assertRaises(ValueError,period_operation,ts,interval,op)
+                self.assertRaises(ValueError,period_op,ts,interval,op)
 
     def test_period_op_nan(self):
-
         """ Test the behaviour of period operation on data with NaN."""
 
         st=datetime(year=1990,month=2,day=3,hour=11, minute=15)
@@ -273,7 +265,7 @@ class Testfunctions(unittest.TestCase):
         ts=its(times,data,{})
         
         for (op,op_data) in [(MIN,nt_min),(MAX,nt_max),(MEAN,nt_mean)]:                
-            nt=period_operation(ts,interval,op)
+            nt=period_op(ts,interval,op)
             self.assert_(allclose(nt.data,op_data))
 
         
