@@ -10,7 +10,7 @@ from vtools.datastore.dss.api import *
 ###########################################################
 
 ## giving a existing datasource.
-source="mustbeexist.dss"
+source="mustexist.dss"
 
 ## to retrieve a whole time series stored at a specific path
 ## within dss source

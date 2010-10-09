@@ -6,7 +6,7 @@
 from vtools.datastore.dss.api import *
 
 ## giving a existing datasource.
-source="mustbeexist.dss"
+source="mustexist.dss"
 
 ## call funcs to create a data catalog.
 c=dss_catalog(source)
