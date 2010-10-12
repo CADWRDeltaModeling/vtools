@@ -26,6 +26,12 @@ Easy_install does not work correctly:
 3.	pywin32. I had to use the executable installer...easy_install was not complete.
 5.	pytables. The binary installer is easier.
 
+How to test:
+1. In each package, use the nosetest feature of setup.py:
+setup.py nosetests
+2. Because of importing issues with nose + eggs, this is about as automated as we can be right now.
+3. I have renamed test_something_all.py as prev_something_all.py so that the unittest suites don't run. Basically, we were running all the tests twice. We can figure out a neater solution later.
+
 Test status:
 We pass most tests in /data and /functions. There is a failure in the filtering. We fail a fair number in /datastore and we should work on that, particularly for Excel. The hdf5 and dss results are OK.
 
