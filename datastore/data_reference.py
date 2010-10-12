@@ -30,6 +30,7 @@ class DataReference(object):
         self.extent=extent
         self.view=view
         self.decoration=None ## reserved locations for future extending purposes.
+        
     ########################################################################### 
     # Public interface.
     ###########################################################################
