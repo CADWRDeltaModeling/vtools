@@ -14,21 +14,16 @@ class TestExcelUtility(unittest.TestCase):
     """ test utility functions of excel  """
 
     def __init__(self,methodName="runTest"):
-
         super(TestExcelUtility,self).__init__(methodName)
         self.test_file_path='test.xls'
-        self.test_file_path=os.path.abspath(self.test_file_path)
-        self.backup_excel_file=os.path.abspath('./backup_excelfile/test.xls')
-        
-        self.data_file_path='store.xls'        
-        self.data_file_path=os.path.abspath(self.data_file_path)
+        self.test_file_path=os.path.join(os.path.split(__file__)[0],self.test_file_path)
+        self.data_file_path='data.xls'
+        self.data_file_path=os.path.join(os.path.split(__file__)[0],self.data_file_path)
+        self.backup_excel_file=os.path.join(os.path.split(__file__)[0],'backup_excelfile/test.xls')
          
     def setUp(self):
-
-
         if os.path.exists(self.test_file_path):
-            os.remove(self.test_file_path)
-            
+            os.remove(self.test_file_path)            
         shutil.copy(self.backup_excel_file,self.test_file_path)                
 
         if os.path.exists(self.data_file_path):
@@ -109,7 +104,6 @@ class TestExcelUtility(unittest.TestCase):
                               header_labels=["name"])        
         self.assertEqual(type(tss),TimeSeries)
         self.assertEqual(len(tss),104)            
-
         ## left to do  header_labels not given use
         ## default single label "name"
         
@@ -117,7 +111,6 @@ class TestExcelUtility(unittest.TestCase):
         """ test of retrieving rts as time is given next to each data col"""
         
         excel_file=self.test_file_path
-      
         selection="hydro_flow$w14:AF118"
         ts_type="its"
         

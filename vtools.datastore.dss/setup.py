@@ -18,17 +18,16 @@ setup(
     author="Eli Ateljevich, Qiang Shu",
     author_email="eli@water.ca.gov",
     license="PSF or ZPL",
-    install_requires = ['Traits>3.0','vtools'],
-    test_suite = 'test',
+    install_requires = ['setuptools','Traits>3.3','vtools'],
     packages = find_packages(),
-    namespace_packages = find_packages(),
- 
+    namespace_packages=['vtools','vtools.datastore'],
     package_data={
                   "vtools.datastore.dss.test":["backup_dssfile/*.dss"],
                   "vtools.datastore.dss":["examples/*.py"]
                  },
     exclude_package_data = { '': ['*.pyc','*.pyo'] },
-    
+    test_suite = "nose.collector",
+    tests_require = "nose",       
     entry_points="""
             [vtools.datastore]
             DssService=vtools.datastore.dss.api:DssService

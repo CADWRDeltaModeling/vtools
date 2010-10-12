@@ -19,16 +19,17 @@ setup(
     author="Eli Ateljevich, Qiang Shu",
     author_email="eli@water.ca.gov",
     license="PSF or ZPL",
-    install_requires = ['Traits>3.0','vtools'],
-    test_suite = 'test',
+    install_requires = ['setuptools','Traits>3.3','vtools>=0.1.5','tables>2.1'],
     packages = find_packages(),
-    namespace_packages = find_packages(),
+    namespace_packages=['vtools','vtools.datastore'],
  
     package_data={
                   "vtools.datastore.hdf5.test":["backup/*.h5"],
                   "vtools.datastore.hdf5":["examples/*.py"]
                  },
     exclude_package_data = { '': ['*.pyc','*.pyo'] },
+    test_suite = "nose.collector",
+    tests_require = "nose",        
     entry_points="""
             [vtools.datastore]
             HDF5Service=vtools.datastore.hdf5.api:HDF5Service

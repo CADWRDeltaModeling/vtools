@@ -12,20 +12,17 @@ from vtools.datastore.dimension import RangeDimension
 from datetime import datetime
 from dateutil.parser import parse
 
+
 class TestDssCatalog(unittest.TestCase):
     """ test functionality of dss catalog """
     
     def __init__(self,methodName="runTest"):
 
-        super(TestDssCatalog,self).__init__(methodName)
-        #self.test_file_path='\\datastore\\dss\\test\\testfile.dss'
-        #fs=__import__("vtools").__file__
-        #(fsp,fsn)=os.path.split(fs)
-        #self.test_file_path=fsp+self.test_file_path
-        #self.backup_dss_file=fsp+'\\datastore\\dss\\test\\backup_dssfile\\testfile.dss'
-        
-        self.test_file_path=os.path.abspath("testfile.dss")
-        self.backup_dss_file=os.path.abspath("./backup_dssfile/testfile.dss")
+        super(TestDssCatalog,self).__init__(methodName)     
+        #self.test_file_path=os.path.relpath("./testfile.dss")
+        #self.backup_dss_file=os.path.relpath("./backup_dssfile/testfile.dss")
+        self.test_file_path=os.path.join(os.path.split(__file__)[0],"testfile.dss")
+        self.backup_dss_file=os.path.join(os.path.split(__file__)[0],"backup_dssfile/testfile.dss")           
         
     def setUp(self):
         self.servic_emanager=DataServiceManager()
@@ -36,25 +33,18 @@ class TestDssCatalog(unittest.TestCase):
 
         shutil.copy(self.backup_dss_file,self.test_file_path)
         
-    def tearDown(self):
-        
+    def tearDown(self):        
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
 
 
     def test_get_data_reference(self):
-
         dssfile_path=self.test_file_path
         dssc=self.dss_service.get_catalog(dssfile_path)
-    
         for entry in dssc.entries():           
             data_ref=dssc.get_data_reference(entry)
-
-            #(cstime,cetime)=data_ref.extents()[0][1]
-
         
     def test_copy_remove(self):
-
         dssfile_path=self.test_file_path
         dssc=self.dss_service.get_catalog(dssfile_path)
 

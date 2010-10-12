@@ -17,15 +17,9 @@ class TestDssUtility(unittest.TestCase):
 
     def __init__(self,methodName="runTest"):
         super(TestDssUtility,self).__init__(methodName)
-        #self.test_file_path='\\datastore\\dss\\test\\sin.dss'
-        #fs=__import__("vtools").__file__
-        #(fsp,fsn)=os.path.split(fs)
-        #self.test_file_path=fsp+self.test_file_path
-        self.test_file_path=os.path.abspath('sin.dss')
-        self.data_file_path='testfile.dss'
-        self.data_file_path=os.path.abspath(self.data_file_path)
-        self.backup_data_file=os.path.abspath('./backup_dssfile/testfile.dss')  
-        
+        self.test_file_path=os.path.join(os.path.split(__file__)[0],'sin.dss')
+        self.data_file_path=os.path.join(os.path.split(__file__)[0],'testfile.dss')
+        self.backup_data_file=os.path.join(os.path.split(__file__)[0],"backup_dssfile/testfile.dss")
         self.service_manager=DataServiceManager()
         self.dss_service=self.service_manager.get_service("vtools.datastore.dss.DssService")        
         

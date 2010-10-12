@@ -18,8 +18,10 @@ class TestDssService(unittest.TestCase):
     """ test functionality of dss service """
     def __init__(self,methodName="runTest"):
         super(TestDssService,self).__init__(methodName)
-        self.test_file_path=os.path.abspath("testfile.dss")
-        self.backup_dss_file=os.path.abspath("./backup_dssfile/testfile.dss")        
+        self.test_file_path=os.path.join(os.path.split(__file__)[0],"testfile.dss")
+        self.backup_dss_file=os.path.join(os.path.split(__file__)[0],"backup_dssfile/testfile.dss")  
+        print "**********************"
+        print self.backup_dss_file        
         self.service_manager=DataServiceManager()
         self.dss_service=self.service_manager.get_service("vtools.datastore.dss.DssService")
         

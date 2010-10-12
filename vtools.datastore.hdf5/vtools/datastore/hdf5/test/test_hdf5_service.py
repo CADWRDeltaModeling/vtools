@@ -18,8 +18,8 @@ class TestHDF5Service(unittest.TestCase):
 
         super(TestHDF5Service,self).__init__(methodName)
         self.test_file_path='hist.h5'
-        self.test_file_path=os.path.abspath(self.test_file_path)
-        self.backup_hdf_file=os.path.abspath('./backup/hist.h5')
+        self.test_file_path=os.path.join(os.path.split(__file__)[0],self.test_file_path)
+        self.backup_hdf_file=os.path.join(os.path.split(__file__)[0],'./backup/hist.h5')
         
     def setUp(self):
         self.servic_emanager=DataServiceManager()

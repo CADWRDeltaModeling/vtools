@@ -19,8 +19,8 @@ class TestExcelService(unittest.TestCase):
 
         super(TestExcelService,self).__init__(methodName)
         self.test_file_path='test.xls'
-        self.test_file_path=os.path.abspath(self.test_file_path)
-        self.backup_xls_file=os.path.abspath('./backup_excelfile/test.xls')
+        self.test_file_path=os.path.join(os.path.split(__file__)[0],self.test_file_path)
+        self.backup_xls_file=os.path.join(os.path.split(__file__)[0],'./backup_excelfile/test.xls')  
         
     def setUp(self):
         self.servic_emanager=DataServiceManager()
