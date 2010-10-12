@@ -3,11 +3,12 @@ The non-easy_install Enthought prerequisites seem to be:
 2.	wxPython
 3.	swig (swig.exe must be on path)
 4.  PIL (Python Imaging Library)
-5.  mingw??? Not sure about machines with no compiler yet.
+5.  mingw for machines with no compiler.
 
 I downloaded those. After that:
 easy_install numpy
 easy_install scipy
+easy_install reportlab
 easy_install Chaco
 easy_install Enable
 easy_install Envisage
@@ -15,7 +16,6 @@ easy_install TraitsBackEndWX
 
 
 To install vtools we need additional libraries:
-easy_install reportlab
 easy_install numexpr
 easy_install cython
 easy_install python-dateutil
