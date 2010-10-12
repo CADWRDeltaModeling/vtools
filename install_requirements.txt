@@ -1,0 +1,48 @@
+The non-easy_install Enthought prerequisites seem to be:
+1.	setuptools
+2.	wxPython
+3.	swig (swig.exe must be on path)
+4.  PIL (Python Imaging Library)
+5.  mingw??? Not sure about machines with no compiler yet.
+
+I downloaded those. After that:
+easy_install numpy
+easy_install scipy
+easy_install Chaco
+easy_install Enable
+easy_install Envisage
+easy_install TraitsBackEndWX
+
+
+To install vtools we need additional libraries:
+easy_install reportlab
+easy_install numexpr
+easy_install cython
+easy_install python-dateutil
+easy_install nose
+
+Easy_install does not work correctly:
+1.	gadfly. Use setup.py install. There is a performance-accelerator library (kjbuckets) you should also do setup install on. See their readme/install directions.
+3.	pywin32. I had to use the executable installer...easy_install was not complete.
+5.	pytables. The binary installer is easier.
+
+Test status:
+We pass most tests in /data and /functions. There is a failure in the filtering. We fail a fair number in /datastore and we should work on that, particularly for Excel. The hdf5 and dss results are OK.
+
+Remaining issues:
+1.	I added numerous dependencies.
+2.	We need an installer plan.
+3.	I eliminated some deprecated usage that python 2.6 would not accept, in both vtools and in gadfly.
+4.	There is a file called _rational_hist.pyd. I updated svn to represent the file for version 2.6, but I promise to add the source soon. 
+5.	In vtools/functions there is something wrong with one of the filters. This should be apparent from running the tests.
+6.	I did not seriously attempt to get the UI stuff going because of additional work getting the dependencies right. There were medium scale changes in envisage.  Do not work on the GUI stuff without talking to me. This is not high priority, and I have pretty strong opinions on this stuff.
+7.	We need some documentation. I would like this to take three forms:
+    a. The inline documentation we already have, cleaned up a bit to be more useful
+    b. A demo.py similar to the one ETS has in its /examples directly. I think we should steal this if demo.py (or is it tutorial.py?) isn't too heavyweight. We will need to add an example.cfg file.
+    c. A small getting started guide.
+
+
+
+
+
+

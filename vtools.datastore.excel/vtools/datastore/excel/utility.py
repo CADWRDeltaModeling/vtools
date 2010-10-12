@@ -25,23 +25,28 @@ __all__=["excel_store_ts","excel_retrieve_ts"]
 
 
 def excel_store_ts(ts,excel_file,selection,header=None,write_times="all"):
-    """ store single or list of ts into excel file based on
-        input setting.
-    """
+    """ store single series or list of series into excel"""
+    
+    if not ts:
+        raise TypeError("Input time series can not be None")
+    if not selection:
+        raise TypeError("Selection is None")
+    
     app=win32com.client.Dispatch(r'Excel.Application')
     newfile=False
     
     abspath=os.path.abspath(excel_file)
-    #(new_default_path,fname)=os.path.split(abspath)
-    #old_default_path=app.DefaultFilePath
-
-    try:
-        book = app.Workbooks.Open(abspath)
-    except:
+    
+    if os.path.exists(abspath):
+        try:
+            book = app.Workbooks.Open(abspath)
+            newFile = False
+        except:
+            raise ValueError("Could not open Excel file. Is it open? Previous failure may have left it open?")
+    else:
         newfile=True
         book=app.Workbooks.Add()
 
-    #app.DefaultFilePath=new_default_path    
     try:
         _excel_store_ts(ts,book,selection,header,write_times)        
     except Exception, e:
@@ -49,21 +54,30 @@ def excel_store_ts(ts,excel_file,selection,header=None,write_times="all"):
         del app
         raise e
     
-    if not newfile:
-        book.Save()
-    else:
+    if newfile:
+        if os.path.exists(abspath):
+            os.remove(abspath)
         book.SaveAs(abspath)
-        
+    else:
+        book.Save()
+
     book.Close()
-    #app.DefaultFilePath=old_default_path
     del app
 
 def excel_retrieve_ts(excel_file,selection,ts_type,time=None,**args):
-    """" retrieve ts from excel file based on given setting, may
-         return a single ts or list of ts.
+    """" retrieve ts from excel file
+         may return a single ts or list of ts.
     """
     app=win32com.client.Dispatch(r'Excel.Application')
-    book = app.Workbooks.Open(excel_file)
+    if os.path.exists(excel_file):
+        try:
+            book = app.Workbooks.Open(abspath)
+        except:
+            pass
+    else:
+        raise ValueError("Excel file does not exist")
+    
+        
     unique=False
     if "unique" in args.keys():
         unique=args["unique"]
@@ -83,9 +97,9 @@ def excel_retrieve_ts(excel_file,selection,ts_type,time=None,**args):
     del app
 
     if unique and type(ts_lst)==list and len(ts_lst)>1:
-        raise Warning("your unique selecting criteria"
+        raise Warning("your selection criteria"
               "matches more than one timeseries,"
-              "check it.") 
+              "please check it.") 
 
     return ts_lst
 

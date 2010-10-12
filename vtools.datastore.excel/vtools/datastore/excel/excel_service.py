@@ -101,11 +101,9 @@ class ExcelService(Service):
         return ExcelCatalog(excel_file)
 
     def _add_data(self,dataref,ts):
-        
         self._batch_add(dataref,ts)
                 
     def _modify_data(self,dataref,data):
-
         raise NotImplementedError("Function _modify_data has not be implemented yet \
         for class ExcelService.")
 
@@ -127,10 +125,10 @@ class ExcelService(Service):
         selection=ref.selector
 
         header=None
-        if "header" in ref.decoration.keys():
+        if ref.decoration and "header" in ref.decoration.keys():
             header=ref.decoration["header"]        
         write_times=None
-        if "write_times" in ref.decoration.keys():
+        if ref.decoration and "write_times" in ref.decoration.keys():
             write_times=ref.decoration["write_times"]
     
         excel_store_ts(ts,excel_file,selection,\
