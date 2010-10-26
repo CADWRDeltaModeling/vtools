@@ -94,11 +94,11 @@ def boxcar(ts,before,after):
        input:
           ts: timeseries to be processed.
           
-          before:lenght of averging interval 
+          before:length of averging interval 
                  before the sampling 
                  points.
                  
-          after: lenght of averging interval 
+          after: length of averging interval 
                 after the sampling 
                 points.
                 
