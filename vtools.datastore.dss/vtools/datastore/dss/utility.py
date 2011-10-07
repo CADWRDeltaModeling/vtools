@@ -107,7 +107,7 @@ def dss_store_ts(ts,dss_file,path):
 
     """
     if(len(ts)==0):
-        raise ValueError("input timeseries is empty")
+        raise ValueError("timeseries to be written is empty")
     ref=DataReferenceFactory(DSS_DATA_SOURCE,\
                              source=dss_file,\
                              selector=path)
