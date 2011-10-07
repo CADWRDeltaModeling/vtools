@@ -173,13 +173,16 @@ class TimeSeries(object):
         if (len(times) != len(data)):
             raise ValueError("times not same length as data")
             # fixme: what is the correct exception?
-
+        
         # are times input as times or as a sequence
         # of ticks?
-        if isinstance(times[0],datetime):
-            self._ticks = scipy.array(map(ticks,times))
+        if(len(times)>0):
+            if isinstance(times[0],datetime):
+                self._ticks = scipy.array(map(ticks,times))
+            else:
+                self._ticks = times
         else:
-            self._ticks = times
+            self._ticks=[]
         self._data = data    # must validate data sequence properties
         self._props = props  # must validate props        
         self._len = len(times)
