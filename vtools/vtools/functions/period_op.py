@@ -73,9 +73,9 @@ def period_op(ts,interval,op,method=None):
         interval=parse_interval(interval)
     
     ## Check if input ts is regular ts.
-    if not(ts.is_regular()):
-        raise ValueError("Input timeseries isn't a regular" 
-                         " interval time series")
+    #if not(ts.is_regular()):
+    #    raise ValueError("Input timeseries is not a regular" 
+    #                     " interval time series")
 
     ## Check ts interval is compatible with opertional interval.
     if not (_check_interval_compatible(ts.interval,interval)):
