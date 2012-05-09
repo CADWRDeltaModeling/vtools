@@ -2,8 +2,7 @@ import sys,os,unittest,shutil,pdb
 from vtools.data.vtime import *        
 from vtools.data.timeseries import *   
 from vtools.data.constants import *
-from vtools.datastore.dss.dss_service import DssService
-from vtools.datastore.data_service_manager import DataServiceManager
+from vtools.datastore.dss.dss_constants import *
 from datetime import datetime         
 from scipy import arange,sin,pi,cos
 
@@ -16,12 +15,17 @@ class TestDssUtility(unittest.TestCase):
 
 
     def __init__(self,methodName="runTest"):
+
         super(TestDssUtility,self).__init__(methodName)
-        self.test_file_path=os.path.join(os.path.split(__file__)[0],'sin.dss')
-        self.data_file_path=os.path.join(os.path.split(__file__)[0],'testfile.dss')
-        self.backup_data_file=os.path.join(os.path.split(__file__)[0],"backup_dssfile/testfile.dss")
-        self.service_manager=DataServiceManager()
-        self.dss_service=self.service_manager.get_service("vtools.datastore.dss.DssService")        
+        #self.test_file_path='\\datastore\\dss\\test\\sin.dss'
+        #fs=__import__("vtools").__file__
+        #(fsp,fsn)=os.path.split(fs)
+        #self.test_file_path=fsp+self.test_file_path
+        self.test_file_path=os.path.abspath('sin.dss')
+
+        self.data_file_path='testfile.dss'
+        self.data_file_path=os.path.abspath(self.data_file_path)
+        self.backup_data_file=os.path.abspath('./backup_dssfile/testfile.dss')        
         
     def setUp(self):
         if os.path.exists(self.test_file_path):
@@ -36,8 +40,8 @@ class TestDssUtility(unittest.TestCase):
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
 
-        if os.path.exists(self.data_file_path):
-            os.remove(self.data_file_path)
+        ##if os.path.exists(self.data_file_path):
+        ##    os.remove(self.data_file_path)
 
     def test_save_ts_manytimes(self):
         
@@ -119,6 +123,14 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(type(ts),TimeSeries)
         self.assertEqual(ts.start,start)
         self.assertEqual(ts.end,end)
+
+    def test_retrieve_irreg_ts(self):
+ 
+        start=datetime(2005,11,1)
+        end=datetime(2005,12,1)        
+        selector="/SPECIAL STUDY/DLC/STAGE//IR-DAY/CDEC/"
+        ts=dss_retrieve_ts(self.data_file_path,selector,(start,end));
+        self.assertEqual(len(ts),0)
         
     def test_retrieve_aver_ts(self):
         
@@ -170,6 +182,7 @@ class TestDssUtility(unittest.TestCase):
         ts=dss_retrieve_ts(dssfile_path,selector)
         
         savepath="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2_C/"
+        ts.props["unit"]="xddd"
         dss_store_ts(ts,dssfile_path,savepath)
         nts=dss_retrieve_ts(dssfile_path,savepath)
         
