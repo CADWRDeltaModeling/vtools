@@ -43,7 +43,7 @@ class TestDssService(unittest.TestCase):
         entries=dssc.entries()        
         for entry in entries:
             self.assert_(type(entry)==CatalogEntry)            
-        self.assertEqual(len(entries),25)
+        self.assertEqual(len(entries),26)
         
     def test_get_data(self):
         # Regular time series.
