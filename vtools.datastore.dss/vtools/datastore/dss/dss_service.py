@@ -12,7 +12,7 @@ from scipy import zeros,concatenate
 
 #vtools import 
 from vtools.datastore.service import Service
-from vtools.data.timeseries import TimeSeries
+from vtools.data.timeseries import TimeSeries,its
 from vtools.datastore.catalog_schema import CatalogSchemaItem
 from vtools.data.vtime import parse_interval,number_intervals,\
      increment
@@ -864,7 +864,7 @@ class DssService(Service):
           
 
     def _retrieve_data_type(self,dssfile,cpath):
-        """ Get info about data series type,also return its block size."""
+        """ Get info about data series type,also return block size."""
         
         [nsize,lexist,cdtype,idtype]=dssfile.zdtype(cpath)
         [nhead,ndata,lfound]=dssfile.zcheck(cpath)
@@ -1268,11 +1268,12 @@ class DssService(Service):
         prop={}
         prop[UNIT]=cunits
         prop[CTYPE]=ctype
-
+        
         if nnheadu>0:
             hdic=self._unstuff_header(hheadu,nnheadu,2)
             for key in hdic.keys():
-                prop[key]=hdic[key]
+                if not((key==UNIT)or(key==CTYPE)):
+                    prop[key]=hdic[key]
                 
         ts=dss_rts_to_ts\
         (datat,ccdate,cctime,time_interval,iofset,prop,flagst)
@@ -1327,20 +1328,24 @@ class DssService(Service):
         (itimes,data,nval,jbdate,flags,lfread,cunits,ctype,headu,nheadu,istat)= \
         dssf.zritsx(path,juls,istime,jule,ietime,kval,lflags,kheadu,inflag)
         del dssf
+         ## add those props.
+        prop={}
+        #prop[CTYPE]=ctype
+        prop[UNIT]=cunits
+        
         if istat==5:
             raise DssAccessError("no record of %s is found"%path)
         if istat>5:
             raise DssAccessError("error in access data of %s"%path)
-
-        ## add those props.
-        prop={}
-        #prop[CTYPE]=ctype
-        prop[UNIT]=cunits
+        if istat==4: ##no data found,return a 0 len its
+            return its([],[],prop)
+       
 
         if nheadu>0:
             hdic=self._unstuff_header(headu,nheadu,2)
             for key in hdic.keys():
-                prop[key]=hdic[key]
+                if not((key==UNIT)or(key==CTYPE)):
+                    prop[key]=hdic[key]
                 
         data=dss_its_to_ts(data,jbdate,itimes,prop,flags)
         return data
