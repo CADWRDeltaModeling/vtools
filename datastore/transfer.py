@@ -10,7 +10,7 @@
       -o, --out=output: data store where data will be written.
       -d, --dest=dest: optional,map from selector to the output location in the output data store.
       -t, --trans=transformer:  optional,path to the tranformation func to be applied.
-      -e, --extent=extent: optional, extent within a selected time sereis.
+      -e, --extent=extent: optional, extent within a selected time series.
       -u, --usage: help info.
 """
 ## python import
@@ -267,7 +267,7 @@ def main():
                   -s, --selector=select: selection criteria of input data.
                   -o, --out=output: data store where data will be written.
                   -d, --dest=dest: optional,map from selector to the output location in the output data store.
-                  -e, --extent=extent: optional, extent within a selected time sereis, such as a time window
+                  -e, --extent=extent: optional, extent within a selected time series, such as a time window
                                        (6/26/1929 12:00,12/9/1940 12:00).
                   -t, --trans=transformer:  optional, path to the tranformation func to be applied.
                                            can be a full path string of existing function

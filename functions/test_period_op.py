@@ -221,7 +221,7 @@ class TestPeriodOp(unittest.TestCase):
         data=sciarray([random.random() for i in range(self.num_ts)])
         ts=its(times,data,{})
         for op in [MIN,MAX,MEAN,SUM]:
-            self.assertRaises( ValueError,period_op,ts,"1 day",op)
+            self.assertRaises( Exception,period_op,ts,"1 day",op)
 
     def test_period_op_uncompatible_interval(self):
         """ Test behaviour of period operation on TS with interval uncompatible

@@ -5,16 +5,16 @@
 ## load necessary libs.
 from vtools.functions.api import *
 
-## to fill the invalid data points within time
-## sereis ts by linear method.
+## fill the invalid (nan) data points within a time
+## series by linear interpolation.
 ts_new=interpolate_ts_nan(ts,method=LINEAR)
 
-## to fill the invalid data points within time
-## sereis ts by spline method.
+## fill the invalid data points within time
+## series ts by spline method.
 ts_new=interpolate_ts_nan(ts,method=SPLINE)
 
 ## to fill the invalid data points within time
-## sereis ts by monotonic spline method.
+## series ts by monotonic spline method.
 ts_new=interpolate_ts_nan(ts,method=MONOTONIC_SPLINE)
 
 ## to create a regular time series with time step of
