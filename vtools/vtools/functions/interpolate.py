@@ -76,7 +76,7 @@ def interpolate_ts(ts,inttime,method=SPLINE,filter_nan=True,**dic):
 
         input:
              ts: timeseries, must has data of rank one
-             at the moment, can be regular time sereis
+             at the moment, can be regular time series
              or irregular time series.
              inttime: time interval or sequence of times.
                       in case of time interval, a rts is returned
@@ -108,15 +108,15 @@ def monotonic_spline(ts,times,filter_nan=True):
        monotonic spline will pass data point exactly.
        
        Input:
-             ts: timesereis to be interpolated
+             ts: timeseries to be interpolated
              times: time interval, string which can be parsed into
                     time interval, or sequence of datetime or integer
                     ticks.
         Optional input:
              filter_nan:if NaN point should be ommitted or not.
         Output:
-              a regular time sereis if second input is time iterval,
-              or irregular time sereis otherwise. 
+              a regular time series if second input is time iterval,
+              or irregular time series otherwise. 
     """
 
     return interpolate_ts(ts,times,method=MONOTONIC_SPLINE,filter_nan=filter_nan)  
@@ -126,15 +126,15 @@ def linear(ts,times,filter_nan=True):
        Interpolation by linear method.
 
        Input:
-             ts: timesereis to be interpolated
+             ts: timeseries to be interpolated
              times: time interval or string which can be parsed into
                     time interval, or sequence of datetime or integer
                     ticks.
         Optional input:
              filter_nan:if NaN point should be ommitted or not.
         Output:
-              a regular time sereis if second input is time iterval,
-              or irregular time sereis otherwise. 
+              a regular time series if second input is time iterval,
+              or irregular time series otherwise. 
     """    
     return interpolate_ts(ts,times,method=LINEAR,filter_nan=filter_nan)
 
@@ -143,15 +143,15 @@ def nearest_neighbor(ts,times,filter_nan=True,**dic):
        Interpolating gaps by nearest valid neibhbors.
 
        Input:
-             ts: timesereis to be interpolated
+             ts: timeseries to be interpolated
              times: time interval or string which can be parsed into
                     time interval, or sequence of datetime or integer
                     ticks.
         Optional input:
              filter_nan:if NaN point should be ommitted or not.
         Output:
-              a regular time sereis if second input is time iterval,
-              or irregular time sereis otherwise. 
+              a regular time series if second input is time iterval,
+              or irregular time series otherwise. 
     """
     return interpolate_ts(ts,times,method=NEAREST,filter_nan=filter_nan,**dic)  
 
@@ -160,15 +160,15 @@ def previous_neighbor(ts,times,filter_nan=True,**dic):
        Interpolating gaps by previous valid neighbors.
 
        Input:
-             ts: timesereis to be interpolated
+             ts: timeseries to be interpolated
              times: time interval or string which can be parsed into
                     time interval, or sequence of datetime or integer
                     ticks.
         Optional input:
              filter_nan:if NaN point should be ommitted or not.
         Output:
-              a regular time sereis if second input is time iterval,
-              or irregular time sereis otherwise.        
+              a regular time series if second input is time iterval,
+              or irregular time series otherwise.        
     """
     return interpolate_ts(ts,times,method=PREVIOUS,filter_nan=filter_nan,**dic)
 
@@ -188,15 +188,15 @@ def next_neighbor(ts,times,filter_nan=True,**dic):
        Interpolating gaps by next valid neighbors.
 
        Input:
-             ts: timesereis to be interpolated
+             ts: timeseries to be interpolated
              times: time interval or string which can be parsed into
                     time interval, or sequence of datetime or integer
                     ticks.
         Optional input:
              filter_nan:if NaN point should be ommitted or not.
         Output:
-              a regular time sereis if second input is time iterval,
-              or irregular time sereis otherwise. 
+              a regular time series if second input is time iterval,
+              or irregular time series otherwise. 
     """
     return interpolate_ts(ts,times,method=NEXT,filter_nan=filter_nan,**dic)
 
@@ -208,15 +208,15 @@ def spline(ts,times,filter_nan=True,**dic):
        , the closer is the fitted curve to data point, and less smoother.
        this is different from monotonic spline.
        Input:
-             ts: timesereis to be interpolated
+             ts: timeseries to be interpolated
              times: time interval or string which can be parsed into
                     time interval, or sequence of datetime or integer
                     ticks.
         Optional input:
              filter_nan:if NaN point should be ommitted or not.
         Output:
-              a regular time sereis if second input is time iterval,
-              or irregular time sereis otherwise. 
+              a regular time series if second input is time iterval,
+              or irregular time series otherwise. 
     """
     return interpolate_ts(ts,times,method=SPLINE,filter_nan=filter_nan,**dic)
 
@@ -230,7 +230,7 @@ def _interpolate2rts(ts,interval,method=SPLINE,filter_nan=True,**dic):
         
         input:
              ts: timeseries, must has data of rank one
-             at the moment, can be regular time sereis
+             at the moment, can be regular time series
              or irregular time series.
         optional input:
              method: what interpolation method used.
@@ -313,6 +313,7 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
               times must be array of ticks.
               p is spline tension.
     """
+
     if not ts.is_regular():
         raise ValueError("Only regular time series can be"
                         " interpolated by histospline")
@@ -323,7 +324,7 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
                              " interpolated by histospline")
     if TIMESTAMP in ts.props.keys():
         if not ts.props[TIMESTAMP]==PERIOD_START:
-            raise ValueError("Input time series' values must be stampped at start"
+            raise ValueError("Input time series values must be stamped at start"
                               " of individual period")
     x=ts.ticks
     extra_x=ticks((ts[-1].time+ts.interval))
@@ -342,7 +343,7 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
     if iflag==3:
         raise ValueError("Lowbound violation")
     if iflag==12:
-        raise ValueError("spline tension must be larger than -1")
+        raise ValueError("Spline tension parameter must be larger than -1")
 
     return ynew
 
@@ -359,16 +360,16 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
               p is spline tension.
     """
     if not ts.is_regular():
-        raise ValueError("Only regular time sereis can be"
+        raise ValueError("Only regular time series can be"
                         " interpolated by histospline")
     
     if AGGREGATION in ts.props.keys():
         if not ts.props[AGGREGATION]==MEAN:
-            raise ValueError("Only time sereis with averaged values can be"
+            raise ValueError("Only time series with averaged values can be"
                              " interpolated by histospline")
     if TIMESTAMP in ts.props.keys():
         if not ts.props[TIMESTAMP]==PERIOD_START:
-            raise ValueError("Input time series' values must be stampped at start"
+            raise ValueError("Input time series values must be stamped at start"
                               " of individual period")
     x=ts.ticks
     extra_x=x[-1]+ticks(ts.interval)
@@ -379,7 +380,6 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
     y0=y[0]
     yn=y[-1]
     (ynew,iflag)=rhistinterpbound(x,y,times,p,lowbound,[y0,yn,q,tolbound])
-
     if iflag==1:
         raise ValueError("Input time series must be longer than 3")
     if iflag==2:
@@ -391,13 +391,6 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
 
     return ynew    
 
-
-      
-    
-    
-    
-
-    
     
 def _inner_monotonic_spline(ts,times,filter_nan=True):
     # todo: none of our public API should return arrays
@@ -674,7 +667,7 @@ def _spline(ts,times,time_begin=None,time_end=None,\
 def _check_data_length(x,k):
     
     if len(x)< k+2:
-        raise ValueError("time sereis is too short to do interpolation.")
+        raise ValueError("time series is too short to do interpolation.")
 
 def _check_input_times(times):
 
