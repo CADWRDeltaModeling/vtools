@@ -5,11 +5,12 @@ some helper functions
 """
 import sys #,pdb
 from vtime import *
-from datetime import datetime
+from datetime import datetime,timedelta
 import copy
 import itertools
 import scipy
 import bisect
+import numpy as np
 all = ["TimeSeries","TimeSeriesElement","prep_binary","rts","its"]
 
 # python standard lib import.
@@ -570,9 +571,42 @@ def its(times,data,props=None):
         data=scipy.array(data)
     if props == None: props = {}        
     ts=TimeSeries(times,data,props)
-
     return ts
 
+
+def its2rts(its,interval,original_dates=True):
+   """ Convert an irregular time series to a regular.
+       This function assumes observations were taken at "almost regular" intervals with some 
+       variation due to clocks/recording. It nudges the time to "neat" time points to obtain the
+       corresponding regular index, allowing gaps. There is no correctness checking, 
+       The dates are stored at the original "imperfect" time points if original_dates == True,
+       otherwise at the "nudged" regular times.
+       
+   """
+   if not isinstance(interval, timedelta): 
+       raise ValueErrror("Only exact regular intervals (secs, mins, hours, days) accepted in its2rts")
+   start = round_ticks(its.ticks[0],interval)
+   stime = ticks_to_time(start)
+   end = round_ticks(its.ticks[-1],interval)
+   
+   ticks = its.ticks   
+   n = (end - start)/interval.seconds
+   tseq = time_sequence(stime, interval, n+1)   
+   data = np.ones_like(tseq,dtype='d')*np.nan
+   vround = np.vectorize(round_ticks)
+   tround = vround(its.ticks,interval)   
+   ndx = np.searchsorted(tseq,tround)
+   if any(ndx[1:] == ndx[:-1]):
+        badndx = np.extract(ndx[1:] == ndx[:-1],ndx[1:])
+        badtime = tseq[badndx]
+        for t in badtime:
+            print "Warning multiple time steps map to a single neat output step near: %s " % ticks_to_time(t)
+   data[ndx]=its.data
+   if original_dates:
+       tseq[ndx]=its.ticks
+   ts = TimeSeries(tseq,data,its.props)
+   ts.interval = interval
+   return ts
 
 
               
