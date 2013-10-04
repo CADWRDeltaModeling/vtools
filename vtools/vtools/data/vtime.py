@@ -258,7 +258,8 @@ def parse_interval(interval_string):
 
     return time_interval(**args)
 
-
+                           
+                
 def align(timepoint,interval,side):
     """ Finds a neat time point that is calendar aligned with the given
         interval either to the right (+1) or the left (-1) of the arg
@@ -276,28 +277,6 @@ def align(timepoint,interval,side):
         if (left == timepoint): return left
         else: return increment(left,interval)
 
-def round_time(dtime, interval=minutes(15)):
-    """Round a datetime object to an interval 
-    dtime : datetime.datetime object, default now.
-    interval: interval to round to (non-calendar dependent)
-    returns rounded time and offset in seconds between input time and rounded time
-    """
-    round_to=long(interval.seconds)
-    seconds = long((dtime - dtime.min).seconds)
-    # // is a floor division, not a comment on following line:
-    rounding = (seconds+round_to/2) // round_to * round_to
-    return dtime + _datetime.timedelta(0,rounding-seconds,-dtime.microsecond), (rounding-seconds)
-
-
-def round_ticks(ticks,interval=minutes(15)):
-    """Tick-based version of round_time in seconds, for use with vectors 
-    ticks : ticks representing seconds
-    interval: interval to round to (non-calendar dependent)
-    """
-    round_to=long(interval.seconds)
-    seconds = ticks
-    rounding = (seconds + round_to/2) // round_to*round_to
-    return rounding
 
 def parse_time(t):
     """ Given a input as ticks or string
@@ -313,13 +292,6 @@ def parse_time(t):
            t=t.strip()
            return parse(t)
 
-
-
-           
-
-           
-           
-           
 
     
     
