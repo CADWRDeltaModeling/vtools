@@ -115,7 +115,7 @@ def _get_span(ts,start,end,left,right):
     start=ticks(start)
 
     if (start_index==0) and (not(start==ts.ticks[start_index])) and left:
-        raise ValueError("cann't take left side of input start time, which is before the ts start ")
+        raise ValueError("requested start index is before the ts start ")
     
     if (not(start_index==0)) and (not(start==ts.ticks[start_index])):
         if left:
@@ -125,15 +125,14 @@ def _get_span(ts,start,end,left,right):
     end=ticks(end)
 
     if (end_index==(len(ts)-1)) and (not(end==ts.ticks[end_index])) and right:
-        raise ValueError("cann't take right side of input end time, which is after the ts end ")   
+        raise ValueError("requested end index is after the ts end ")   
     
     if (not(end_index==(len(ts)-1))) and (not(end==ts.ticks[end_index])):
         if not right:
           end_index-=1;
           
-    if end_index<start_index:
-       raise ValueError("input end is before the start")
-
+    assert end_index<start_index 
+    
     return (start_index,end_index)
 
 class TimeSeriesElement(object):
@@ -281,14 +280,24 @@ class TimeSeries(object):
             props2=copy.copy(self._props)
             props2["sliced_from"]=(self.start,self.end)
             # to do: what is this header
-            return TimeSeries(self._ticks[begndx:endndx], \
+            ts = TimeSeries(self._ticks[begndx:endndx], \
                               self._data[begndx:endndx], \
                               props2) #header=self.header)
+            if self.is_regular(): ts.interval = self.interval
+            return ts
 
 
     def __setitem__(self,key,item):
-        raise NotImplementedError
-
+        if type(key) == int:
+            self.data[key] = item
+        elif isinstance(key,datetime):
+            ndx = self.index_before(key)
+            if self._ticks[ndx] == ticks(key):
+                self.data[ndx] = item
+            else:
+                raise ValueError("Subscript date must exactly match existing date in series")
+        else:
+            raise KeyError("Key not understood")
     # 
     def __delitem__(self, index):
         if( self.is_regular()):
@@ -499,6 +508,10 @@ class TimeSeries(object):
 
     def _get_data(self):
         return self._data
+        
+    def _set_data(self,data):
+        if type(data) == type(self._data):
+            self._data = data
 
     def _get_ticks(self):
         return self._ticks
@@ -522,7 +535,7 @@ class TimeSeries(object):
 #   public properties
     start = property(_get_start,None,None,"Time at first element of series")
     end = property(_get_end,None,None,"Time at last element of series") 
-    data=property(_get_data,None,None,"Data component of series (for all time)")
+    data=property(_get_data,_set_data,None,"Data component of series (for all time)")
     ticks=property(_get_ticks,None,None,"Array of long integer ticks representing the time index of the series")
     times=property(_get_times,None,None,"Array of datetimes represented by series")    
     props=property(_get_props,None,None,"Dictionary containing attributes, metadata and user properties")
@@ -574,6 +587,39 @@ def its(times,data,props=None):
     return ts
 
 
+def its2rts(its,interval,original_dates=True):
+   """ Convert an irregular time series to a regular.
+       This function assumes observations were taken at "almost regular" intervals with some 
+       variation due to clocks/recording. It nudges the time to "neat" time points to obtain the
+       corresponding regular index, allowing gaps. There is no correctness checking, 
+       The dates are stored at the original "imperfect" time points if original_dates == True,
+       otherwise at the "nudged" regular times.
+       
+   """
+   if not isinstance(interval, timedelta): 
+       raise ValueErrror("Only exact regular intervals (secs, mins, hours, days) accepted in its2rts")
+   start = round_ticks(its.ticks[0],interval)
+   stime = ticks_to_time(start)
+   end = round_ticks(its.ticks[-1],interval)
+   interval_seconds = ticks(interval)
+   its_ticks = its.ticks   
+   n = (end - start)/interval_seconds
+   tseq = time_sequence(stime, interval, n+1)   
+   data = np.ones_like(tseq,dtype='d')*np.nan
+   vround = np.vectorize(round_ticks)
+   tround = vround(its.ticks,interval)   
+   ndx = np.searchsorted(tseq,tround)
+   if any(ndx[1:] == ndx[:-1]):
+        badndx = np.extract(ndx[1:] == ndx[:-1],ndx[1:])
+        badtime = tseq[badndx]
+        for t in badtime:
+            print "Warning multiple time steps map to a single neat output step near: %s " % ticks_to_time(t)
+   data[ndx]=its.data
+   if original_dates:
+       tseq[ndx]=its.ticks
+   ts = TimeSeries(tseq,data,its.props)
+   ts.interval = interval
+   return ts
 
               
 
