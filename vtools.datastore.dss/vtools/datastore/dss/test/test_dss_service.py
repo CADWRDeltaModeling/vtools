@@ -1,7 +1,7 @@
 import sys,os,unittest,shutil ,pdb
 from copy import deepcopy
 
-from vtools.datastore.dss.dss_service import DssService
+from vtools.datastore.dss.dss_service import DssService,DssAccessError
 from vtools.datastore.data_service_manager import DataServiceManager
 from vtools.datastore.dss.dss_catalog import DssCatalog
 from vtools.datastore.dss.dss_constants import *
@@ -69,6 +69,23 @@ class TestDssService(unittest.TestCase):
         data=self.dss_service.get_data(data_ref)
         self.assert_(type(data)==TimeSeries)
         self.assertEqual(len(data.data),106)
+
+    def test_get_aggregated_data(self):
+        # Regular time series.
+        id="vtools.datastore.dss.DssService"
+        view=""
+        selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2/"
+        source=self.test_file_path
+        extent="time_window=(1/2/1997,1/5/1997)"
+        data_ref=DataReference(id,source,view,selector,extent)
+        data=self.dss_service.get_data(data_ref)
+        self.assert_(type(data)==TimeSeries)
+        l=len(data.data)
+        self.assertEqual(len(data.data),3)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('1/2/1997'))
+        # Here dss reading func only read up to right end of
+        # time window (not include).
+        self.assertEqual(ticks_to_time(data.ticks[l-1]),parse('1/4/1997'))
 
     def test_get_data_all(self):
         ## here to test pull out all the data from a
@@ -153,6 +170,255 @@ class TestDssService(unittest.TestCase):
         self.assert_(ts.props["DATUMN"]=="NGVD88")
         self.assert_(ts.props["AUTHOR"]=="John Doe")
         self.assert_(ts.props["MODEL"]=="hydro 7.5")
+
+    def test_read_aggregated_rts_timewindow(self):
+        ## save some ts into dss file, ts is hourly averaged
+
+        ## save rts first.
+        data=range(1000)
+        start="12/21/2000 2:00"
+        interval="1hour"
+        prop={}
+        prop[TIMESTAMP]=PERIOD_START
+        prop[AGGREGATION]=MEAN
+        rt1=rts(data,start,interval,prop)
+
+        id="vtools.datastore.dss.DssService"
+        path="/TEST/DOWNSTREAM/EC//1HOUR/STAGE/"
+        source=self.test_file_path
+        data_ref=DataReference(id,source=source,selector=path)
+        self.dss_service.add_data(data_ref,rt1)
+        
+
+        ## test return part of stored data up to the end
+        ## it should get 992 numbers and value is (8,9,...,1000)
+        ## it start datetime shoudl be 12/21/2000 10:00
+        extent="time_window=(12/21/2000 10:00,01/31/2001 18:00)"
+        data_ref=DataReference(id,source,None,path,extent)        
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assert_(len(rtt2)==992)
+        correct_data = range(8,len(rtt2)+8)
+        for i in range(len(rtt2)):
+            self.assert_(rtt2.data[i]==float(correct_data[i]))
+
+        ## test return middle part of stored data
+        ## it should get 12 numbers and value is (8,9,...,19)
+        ## it start datetime should be 12/21/2000 10:00, end
+        ## at 12/21/2000 21:00 (not include to the later side)
+        extent="time_window=(12/21/2000 10:00,12/21/2000 22:00)"
+        data_ref=DataReference(id,source,None,path,extent)        
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assert_(rtt2.end==parse_time("12/21/2000 21:00"))
+        self.assert_(len(rtt2)==12)
+        correct_data = range(8,len(rtt2)+8)
+        for i in range(len(rtt2)):
+            self.assert_(rtt2.data[i]==float(correct_data[i]))
+
+        ## test return middle part of stored data
+        ## it should get 12 numbers and value is (8,9,...,19)
+        ## it start datetime should be 12/21/2000 10:00, end
+        ## at 12/21/2000 21:00 (not include to the later side)
+        ## time window is not given at the correct hourly time points.
+        extent="time_window=(12/21/2000 09:45,12/21/2000 22:15)"
+        data_ref=DataReference(id,source,None,path,extent)        
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assert_(rtt2.end==parse_time("12/21/2000 21:00"))
+        self.assert_(len(rtt2)==12)
+        correct_data = range(8,len(rtt2)+8)
+        for i in range(len(rtt2)):
+            self.assert_(rtt2.data[i]==float(correct_data[i]))
+
+        ## test valid timewindow overlap exaclty the last data of
+        ## the record
+        extent="time_window=(1/31/2001 17:00,1/31/2001 22:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==1)
+        self.assert_(rtt2.data[0]==float(999))
+
+        ## test invalid time window with same start and end
+        ## excatly at beginig time sequence
+        extent="time_window=(12/21/2000 02:00,12/21/2000 02:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+        ## test invalid time window with same start and end
+        extent="time_window=(12/21/2000 05:00,12/21/2000 05:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+        ## test invalid time window with same start and end not aligined with interval
+        extent="time_window=(12/21/2000 05:15,12/21/2000 05:15)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+        ## test invalid time window with different start and end within a hour interval
+        extent="time_window=(12/21/2000 05:15,12/21/2000 05:55)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+        ## test invalid time window with different start and end across two hour intervals
+        ## but bot intervals are incomplete, so it should return no value
+        extent="time_window=(12/21/2000 05:15,12/21/2000 06:55)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+
+        ## test invalid time window with same start and end
+        ## excatly at beginig time sequence
+        extent="time_window=(12/21/2000 17:15,12/21/2000 17:15)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+
+        ## test valid time window overlap exactly the first data
+        ## at the begining
+        extent="time_window=(12/21/2000 02:00,12/21/2000 03:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==1)
+        self.assert_(rtt2.data[0]==float(0))
+
+
+        ## test valid time window overlap exactly a data in the middle
+        extent="time_window=(12/21/2000 05:00,12/21/2000 06:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==1)
+        self.assert_(rtt2.data[0]==float(3))
+
+        ## test valid time window overlap exactly a data at the end
+        extent="time_window=(1/31/2001 17:00,1/31/2001 18:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==1)
+        self.assert_(rtt2.data[0]==float(999))
+
+        ## test invalid timewindow before the data starting
+        ## but still overlap data block window
+        extent="time_window=(12/21/2000 00:00,12/21/2000 1:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+
+        ## test invalid timewindow overlapping data block window,
+        extent="time_window=(1/31/2001 18:00,1/31/2001 22:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+        ## test invalid timewindow not overlapping data block window
+        extent="time_window=(11/21/2000 00:00,11/22/2000 1:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        self.assertRaises(DssAccessError,self.dss_service.get_data,data_ref)
+         
+    def test_read_instant_rts_timewindow(self):
+        ## save some ts into dss file, ts is hourly spaned instanteous
+
+        ## save rts first.
+        data=range(1000)
+        start="12/21/2000 2:00"
+        interval="1hour"
+        prop={}
+
+        rt1=rts(data,start,interval,prop)
+
+        id="vtools.datastore.dss.DssService"
+        path="/TEST/DOWNSTREAM/EC//1HOUR/STAGE/"
+        source=self.test_file_path
+        data_ref=DataReference(id,source=source,selector=path)
+        self.dss_service.add_data(data_ref,rt1)
+        
+
+        ## test returning part of stored data up to the end
+        ## it should get 992 numbers and value is (8,9,...,1000)
+        ## it start datetime shoudl be 12/21/2000 10:00
+        extent="time_window=(12/21/2000 10:00,01/31/2001 18:00)"
+        data_ref=DataReference(id,source,None,path,extent)        
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assert_(len(rtt2)==992)
+        correct_data = range(8,len(rtt2)+8)
+        for i in range(len(rtt2)):
+            self.assert_(rtt2.data[i]==float(correct_data[i]))
+
+        ## test returning middle part of stored data
+        ## it should get 13 numbers and value is (8,9,...,19,20)
+        ## it start datetime should be 12/21/2000 10:00, end
+        ## at 12/21/2000 22:00 (include the later side)
+        extent="time_window=(12/21/2000 10:00,12/21/2000 22:00)"
+        data_ref=DataReference(id,source,None,path,extent)        
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assert_(rtt2.end==parse_time("12/21/2000 22:00"))
+        self.assert_(len(rtt2)==13)
+        correct_data = range(8,len(rtt2)+8)
+        for i in range(len(rtt2)):
+            self.assert_(rtt2.data[i]==float(correct_data[i]))
+
+        ## test valid timewindow overlap exaclty the last data of
+        ## the record
+        extent="time_window=(1/31/2001 17:00,1/31/2001 17:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==1)
+        self.assert_(rtt2.data[0]==float(999))
+
+        ## test valid time window with same start and end
+        ## excatly at begining of the time sequence
+        extent="time_window=(12/21/2000 02:00,12/21/2000 02:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==1)
+        self.assert_(rtt2.data[0]==float(0))
+
+
+        ## test valid time window overlap exactly a data in the middle
+        extent="time_window=(12/21/2000 05:00,12/21/2000 05:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==1)
+        self.assert_(rtt2.data[0]==float(3))
+
+        
+        ## test invalid time window in the middle with the same earlier and later side
+        ## not aligns with time sequence
+        extent="time_window=(12/21/2000 05:15,12/21/2000 05:15)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+       
+
+        ## test invalid timewindow before the data starting
+        ## but still overlap data block window
+        extent="time_window=(12/21/2000 00:00,12/21/2000 1:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+
+        ## test invalid timewindow overlapping data block window,
+        extent="time_window=(1/31/2001 18:00,1/31/2001 22:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+        ## test invalid timewindow not overlapping data block window
+        extent="time_window=(11/21/2000 00:00,11/22/2000 1:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        self.assertRaises(DssAccessError,self.dss_service.get_data,data_ref)
+
+
                 
     def test_save_data(self):
         ## save some ts into dss file, ts may contain
@@ -175,12 +441,10 @@ class TestDssService(unittest.TestCase):
         id="vtools.datastore.dss.DssService"
         path="/TEST/DOWNSTREAM/EC//1HOUR/STAGE/"
         source=self.test_file_path
-
         data_ref=DataReference(id,source=source,selector=path)
         self.dss_service.add_data(data_ref,rt1)
         dssc=self.dss_service.get_catalog(source)        
         path="/TEST/DOWNSTREAM/EC//1HOUR/STAGE/"
-        
         data_ref=dssc.data_references(path).next()       
         rtt=self.dss_service.get_data(data_ref)      
         self.assert_(len(rtt)==len(data))
@@ -192,6 +456,9 @@ class TestDssService(unittest.TestCase):
         rtt2=self.dss_service.get_data(data_ref)
         self.assert_(rtt.start==rtt2.start)
         self.assert_(rtt.end==rtt2.end)
+
+
+      
         
         ## then its.
 
