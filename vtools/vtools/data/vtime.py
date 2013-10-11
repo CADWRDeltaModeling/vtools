@@ -277,7 +277,7 @@ def align(timepoint,interval,side):
         if (left == timepoint): return left
         else: return increment(left,interval)
 
-def round_time(dtime, interval=minutes(15)):
+def round_time(dtime, interval):
     """Round a datetime object to an interval 
     dtime : datetime.datetime object, default now.
     interval: interval to round to (non-calendar dependent)
@@ -290,7 +290,7 @@ def round_time(dtime, interval=minutes(15)):
     return dtime + _datetime.timedelta(0,rounding-seconds,-dtime.microsecond), (rounding-seconds)
 
 
-def round_ticks(inticks,interval=minutes(15)):
+def round_ticks(inticks,interval):
     """Tick-based version of round_time in seconds, for use with vectors 
     ticks : ticks representing seconds
     interval: interval to round to (non-calendar dependent)
