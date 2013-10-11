@@ -255,6 +255,27 @@ class TestVTime(unittest.TestCase):
         stime_rounded = round_time(stime,interval=minutes(15))[0]
         self.assertEqual(stime_rounded,correct_result)
 
+    def testAlignTime(self):
+        stime=datetime(1992,3,7,10)
+        correct_result= datetime(1992,3,7,10)
+        left  = -1
+        right = 1
+        stime_aligned = align(stime,hours(1),left)
+        self.assertEqual(stime_aligned,correct_result)
+        stime_aligned = align(stime,hours(1),right)
+        self.assertEqual(stime_aligned,correct_result)
+
+
+        stime=datetime(1992,3,7,10,24)
+        correct_result_left_aligned = datetime(1992,3,7,10)
+        correct_result_right_aligned= datetime(1992,3,7,11)
+        left  = -1
+        right = 1
+        stime_aligned_left = align(stime,hours(1),left)
+        self.assertEqual(stime_aligned_left,correct_result_left_aligned)
+        stime_aligned_right = align(stime,hours(1),right)
+        self.assertEqual(stime_aligned_right,correct_result_right_aligned)
+
         
 
                 
