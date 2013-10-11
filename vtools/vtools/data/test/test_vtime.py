@@ -158,8 +158,12 @@ class TestVTime(unittest.TestCase):
         timeseq=time_sequence(self.stime1,interval,n)
         self.assertEqual(len(timeseq),1)
 
-        
-        
+    def testTimeSequenceZeroLen(self):
+        from datetime import timedelta
+        interval=timedelta(days=1)
+        n=0
+        timeseq=time_sequence(self.stime1,interval,n)
+        self.assertEqual(len(timeseq),0)
     
     def testTimeSequenceCalendar(self):
         from dateutil import rrule
@@ -234,6 +238,24 @@ class TestVTime(unittest.TestCase):
         valid_dt=timedelta(days=1,hours=2,minutes=3,seconds=35)
         dt_ticks=valid_dt.days*ticks_per_day + valid_dt.seconds*ticks_per_second
         self.assertEqual(ticks(valid_dt),dt_ticks)
+
+    def testRoundTime(self):
+
+        stime=datetime(1992,3,7,10,24)
+        correct_result= datetime(1992,3,7,10)
+        stime_rounded = round_time(stime,interval=hours(1))[0]
+        self.assertEqual(stime_rounded,correct_result)
+
+        stime=datetime(1992,3,7,10,35)
+        correct_result= datetime(1992,3,7,11)
+        stime_rounded = round_time(stime,interval=hours(1))[0]
+        self.assertEqual(stime_rounded,correct_result)
+        
+        correct_result= datetime(1992,3,7,10,30)
+        stime_rounded = round_time(stime,interval=minutes(15))[0]
+        self.assertEqual(stime_rounded,correct_result)
+
+        
 
                 
 
