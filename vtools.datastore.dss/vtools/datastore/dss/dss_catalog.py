@@ -259,7 +259,7 @@ class DssCatalog(Catalog):
         
         # Append dimension selection map.
         if entry2.dimension_scales():
-            time_exent=RangeDimension(entry2.dimensions_scales()[0].get_range())
+            time_exent=RangeDimension(entry2.dimension_scales()[0].get_range())
             self.entry_dimension_map.append(time_exent)
         else:
             self.entry_dimension_map.append(None)
@@ -325,7 +325,7 @@ class DssCatalog(Catalog):
         id=DSS_DATA_SOURCE
         source= self._dss_file_path        
         extent=""
-              
+            
         ## Use rangedimension stored in map to built extent string
         ## all the data will be returned.
         if parameter==None:
@@ -362,7 +362,8 @@ class DssCatalog(Catalog):
                 raise ValueError("invalid time window input")
         else:
             raise ValueError("invalid time window input")
-        
+
+    
         return DataReference(id,source,'',selector,extent)
 
     def _schema(self):
@@ -467,7 +468,7 @@ class DssCatalog(Catalog):
         for entry in self._entries:
             if entry.fully_loaded:
                 time_exent=RangeDimension(\
-                entry.dimensions_scales()[0].get_range())
+                entry.dimension_scales()[0].get_range())
                 map.append(time_extent)
             else:
                 map.append(None)           
