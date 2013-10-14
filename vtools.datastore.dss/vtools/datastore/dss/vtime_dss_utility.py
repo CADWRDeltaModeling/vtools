@@ -127,6 +127,8 @@ def dss_julian_date_to_string(jdate,time_unit):
 
     return d.isoformat(' ')
 
+
+
 def datetime_to_dss_julian_date(dtime):
     """ Convert a  datetime to dss julian dates (start from 12/31/1899).
     """
@@ -175,44 +177,53 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
         
     #some operation on property dic
     relative_interval=None
-
+    ## is it PER-AVE,PER-MIN, PER-MAX...
+    isAggregated=False
     if CTYPE in prop.keys():
         tsstype=prop[CTYPE]
         #translate vtools time aggreation term into dss term
         # Todo: make the automatic conversion a user controlled
         # those handlinges for the type of mean,min,max over a period only     
         if tsstype in RTS_DSS_PROPTY_TO_VT.keys():
-           start_datetime=start_datetime-interval_timedelta
+           #start_datetime=start_datetime-interval_timedelta
+           isAggregated=True
            prop[TIMESTAMP]=PERIOD_START
            prop[AGGREGATION]=RTS_DSS_PROPTY_TO_VT[tsstype]
         elif tsstype in RTS_DSS_PROPTY_TO_VT.values():
-           start_datetime=start_datetime-interval_timedelta
+           #start_datetime=start_datetime-interval_timedelta
+           isAggregated=Ture
            prop[TIMESTAMP]=PERIOD_START
            prop[AGGREGATION]=tsstype
         else:
            prop[TIMESTAMP]=INST
            prop[AGGREGATION]=INDIVIDUAL
-        #if prop[CTYPE]=="PER-AVER" or prop[CTYPE]=="PER-CUM":
-  
-        #   start_datetime=start_datetime-interval_timedelta
-        #   prop[TIMESTAMP]=PERIOD_START
-        #   if prop[CTYPE]=="PER-AVER":
-        #       prop[AGGREGATION]=MEAN
-        #   else:
-        #       prop[AGGREGATION]=SUM
-        
-        # del ctyue for vtools ts don't need it    
+                
+        # del ctype for vtools ts don't need it    
         del prop[CTYPE]
     else: 
         prop[TIMESTAMP]=INST
         prop[AGGREGATION]=INDIVIDUAL
 
     (data,starti)=_validate_dss_data_series(data,flags)
-    start_datetime=increment(start_datetime,interval_timedelta,starti)
-    ts= rts(data,start_datetime,interval_timedelta,prop)
-    return ts
-
-
+    if not(isAggregated):
+        start_datetime=increment(start_datetime,interval_timedelta,starti)
+        ts= rts(data,start_datetime,interval_timedelta,prop)
+        return ts
+    else:
+        ## if begining of continueous valid data start at the begining of
+        ## data read back, then the first data is out of reading time window
+        ## should be get rid of
+        if starti==0:
+            dataOneLess= data[1:len(data)]
+            ts= rts(dataOneLess,start_datetime,interval_timedelta,prop)
+            return ts
+        ## then first valid data is at least located at the early side of reading
+        ## time window, it should be kept
+        else:
+            start_datetime=increment(start_datetime,interval_timedelta,starti)
+            ts= rts(data,start_datetime,interval_timedelta,prop)
+            return ts
+            
 def dss_its_to_ts(data,jbdate,itimes,prop,flags):
 
     """ Convert dss irregular time seris into TimeSeries class.
@@ -496,9 +507,12 @@ def _validate_dss_data_series(data,flags=None,OnlyStartLen=0):
     ## it maybe possible all the data are nan.then
     ## ii is a empty array.
     if not len(ii):
-        first_nonnan_i=0
-        #last_nonnan_i=indexes[-1]+1
-        last_nonnan_i=len(data)
+        first_nonnan_i=-1
+        last_nonnan_i=-1
+        if OnlyStartLen:
+            return (first_nonnan_i,last_nonnan_i)
+        else:
+            return (numpy.array([]),first_nonnan_i)
     else:
         first_nonnan_i=ii[0]
         last_nonnan_i=ii[-1]+1
