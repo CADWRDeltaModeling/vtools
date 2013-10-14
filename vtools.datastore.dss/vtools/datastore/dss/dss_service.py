@@ -807,7 +807,35 @@ class DssService(Service):
         ihead=zeros(500)
         nhead=0
         ihead,nhead,ierr=zstfh(clabels,citems,ihead,0)
-        return (ihead,nhead)        
+        return (ihead,nhead)
+
+    def _multiple_window(self,stime,etime,step):
+        
+        """ Create iterator of multiple time window for
+            data set more than DSS_MAX_RTS_POINTS.
+        """
+    
+        lt=[]
+        stimet=stime
+        
+        while stimet<etime:
+            
+            etimet=increment(
+                stimet,step,DSS_MAX_RTS_POINTS)
+            nval=DSS_MAX_RTS_POINTS
+            
+            if etimet>etime:
+                etimet=etime
+                nval=number_intervals(stimet,etimet,step)+1
+                
+            cdate=stimet.date()
+            cdate=cdate.strftime('%d%b%Y') 
+            ctime=stimet.time()
+            ctime=ctime.strftime('%H%M')
+            stimet=etimet
+            lt.append((cdate,ctime,nval))
+            
+        return iter(lt)
        
     def _save_regularTS_extend(self,dataref,stime,etime,nvals,values,step,flags=0,\
                                 lflags=False,cunits="UND",ctype="UND",headu=0,\
@@ -905,7 +933,7 @@ class DssService(Service):
             etime = align(etime,step,left)
 
         if (etime<stime): ## no data should be return in such a case
-            return iter([(cdate,ctime,0)])
+            return (cdate,ctime,0)
 
         ## here is a fix
         ## giving a example in reading aggregated ts, timewindow (3/14/2000,3/15/2000)
@@ -933,23 +961,20 @@ class DssService(Service):
         dssf=open_dss(dss_file_path)
         time_interval=strip(split(path,"/")[5])
  
-        cdate,ctime,nval=self._gen_rts_datetime_nval(data_ref,dssf)
+        cdate,ctime,nval = self._gen_rts_datetime_nval(data_ref,dssf)
         
         lflags=True
         kheadu=DSS_MAX_HEADER_ITEMS
         index=0
 
-        data =[]
-        flags=[]
-        iofset=0
-        ctype=""
-        cunits=""
+        data  =[]
+        flags =[]
+        iofse =0
         ctype =""
+        cunits=""
         nheadu=0
-        headu=None
-        cdate =""
-        ctime =""
-   
+        headu =None
+
         if(nval>0):
             
             (nval,data,flags,lfread,cunits,ctype,headu,nheadu,iofset,icomp,istat)\
@@ -962,10 +987,6 @@ class DssService(Service):
                 del dssf 
                 raise DssAccessError("Error access data: %s erro code:"%path)
             
-        if strip(ccdate)=="":
-            ccdate=strip(split(path,"/")[4])
-            cctime="0000"
-
         del dssf
 
          ## add those props.
