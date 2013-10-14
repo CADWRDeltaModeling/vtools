@@ -5,7 +5,7 @@ from shutil import rmtree
 from os import mkdir,rmdir
 from string import split,strip,rstrip
 import re
-import pdb
+
 
 #scipy import
 from scipy import zeros,concatenate
@@ -17,8 +17,6 @@ from vtools.datastore.catalog_schema import CatalogSchemaItem
 from vtools.data.vtime import parse_interval,number_intervals,\
      increment
 
-#gadfly import
-from gadfly import gadfly
 
 #dateutil import
 import dateutil.parser
@@ -33,8 +31,9 @@ from pydss.fortranfile import fortran_file,FortranFile
 
 #vtools import
 from vtools.data.constants import *
+from vtools.data.timeseries import rts
 from vtools.data.vtime import parse_interval,\
-     parse_time
+     parse_time, round_time,align
 from vtools.datastore.data_reference import *
 #from vtools.debugtools.timeprofile import debug_timeprofiler
 
@@ -75,6 +74,7 @@ class DssCatalogServiceError(Exception):
 class DssService(Service):
     """" Service to cataloging dss file, access and edit dss data"""
 
+
     ## static method to decide whether a source can be served.
 
     def serve(source):
@@ -89,7 +89,6 @@ class DssService(Service):
 
     first_initialization=True
     database_file_dir=""
-    entrydb=None
     db_file_use_number=0 ## how many source I have cataloged so far in this run
 
     has_dss_catalog_table=False
@@ -98,6 +97,14 @@ class DssService(Service):
     dss_file_index_used=[]
 
     identification=DSS_DATA_SOURCE
+
+    ############################################################################
+    # Private member
+    ############################################################################
+    # map dss file pathes to fileid and modify time
+    _dss_file_opened = {}
+    # map dss files id to their catalog
+    _dss_catalogs    = {}
     _num_db_clean=0
     
     def load_record_property(self,path,dparts,source):
@@ -173,16 +180,8 @@ class DssService(Service):
         """
         
         if DssService.first_initialization:
-            self._create_db()
             DssService.first_initialization=False
-     
-        self.entrydb=DssService.entrydb
-        self.dbcursor=DssService.entrydb.cursor()
-    
-        #if no tables available yet,create them
-        if not(DssService.has_dss_catalog_table):
-            self._create_tables()
-            DssService.has_dss_catalog_table=True
+            
         ## following line must be excuted for the
         ## sake of making ts-header unstuff func
         ## to work correctly.
@@ -194,69 +193,37 @@ class DssService(Service):
     ###########################################################################
     def _get_catalog(self,dss_file_path):
         """ Return a catalog of dss file."""
-        selsql=" select F_ID,MODIFYTIME from dssfile where FPATH=?"
-        self.dbcursor.execute(selsql,(dss_file_path,))
-##        except:
-##            self.entrydb.close()
-##            self._create_db()
-##            DssService.first_initialization=False
-##            self.entrydb=DssService.entrydb
-##            self.dbcursor=DssService.entrydb.cursor()
-##            self._create_tables()        
-##            DssService.has_dss_catalog_table=True
-##            self.dbcursor.execute(selsql,(strip(dss_file_path),))
+        try:
+            info=self._dss_file_opened[dss_file_path]
+        except:
+            info = ()    
         
-        info=self.dbcursor.fetchall()
-        
-        
-        if info: ## info is in form of [(1,2222344)],2222344 is time, 1 is f index
-            last_modified_time=info[0][1]
+    
+        if len(info) != 0: ## info is in form of (1,2222344),2222344 is time, 1 is f index
+            last_modified_time=info[1]
             #print last_modified_time,os.stat(dss_file_path)[8]
             ##########################################
-            ##              comment and observation                                                          ##
-            ## This decision is done by comparing the update time of a dss file     ##
-            ## stored within db to its updatetime returned by windows query on     ##
+            ##              comment and observation                                       ##
+            ## This decision is done by comparing the update time of a dss file           ##
+            ## stored within db to its updatetime returned by windows query on            ##
             ## file property, if they are different, catalog will redone to               ##
-            ## refelect the change that might happen from last time. When they    ##
-            ## same, just used info stored in db to save time. But it may fail,         ##
-            ## sometimes when last modification on dss file is very close to          ##
-            ## current time, for instance doing a catalog modification right         ##
-            ## after some saving ts into dss, like in test_all_module(when             ##
-            ## test_modify right after test_save_data, sometimes two times are ##
-            ## the same,even file is different already).No solution currrently    ##
+            ## refelect the change that might happen from last time. When they            ##
+            ## same, just used info stored in db to save time. But it may fail,           ##
+            ## sometimes when last modification on dss file is very close to              ##
+            ## current time, for instance doing a catalog modification right              ##
+            ## after some saving ts into dss, like in test_all_module(when                ##
+            ## test_modify right after test_save_data, sometimes two times are            ##
+            ## the same,even file is different already).No solution currrently            ##
             #########################################
             if not(last_modified_time==\
                    os.stat(dss_file_path)[8]):
                 self._remove_dssfile_catalog(dss_file_path)
-                self._cataloging_dss_file(strip(dss_file_path))
+                return self._cataloging_dss_file(strip(dss_file_path))
+            else:
+                return self._dss_catalogs[info[0]]
         else:
-            self._cataloging_dss_file(strip(dss_file_path))
+            return self._cataloging_dss_file(strip(dss_file_path))
 
-        self.dbcursor.execute(selsql,(strip(dss_file_path),))
-        findex=self.dbcursor.fetchone()[0]
-
-        #createviewsql="create view tv as select A,B,C,D,E,F \
-        #               from dsscatalog where F_ID="+str(findex)
-        
-        #self.dbcursor.execute(createviewsql)        
-        #selsql="select * from tv"
-        selsql="select A,B,C,D,E,F from dsscatalog where F_ID="+str(findex)
-        
-        self._reduce_catalog(selsql,None)
-
-        table_column_index_map=self._create_column_index_map()
-        schema=self._generate_schema(table_column_index_map)
-        
-        records=self.dbcursor.fetchall()        
-        #dropviewsql="drop view tv"
-        #self.dbcursor.execute(dropviewsql)
-
-        ##### time profile ####
-        #print 'time at done with create catalog record iter',\
-        #      debug_timeprofiler.timegap()
-        ######################
-        
-        return DssCatalog(dss_file_path,schema,self,records)
 
     def _generate_schema(self,table_column_index_map):
 
@@ -315,10 +282,9 @@ class DssService(Service):
 
         # If it is a full path, check if it exist, if not throw exception
         # to save time.
-        if plist[4]: 
+        if plist[4]:
             (nsize,lexist,cdtype,idtype)=dssf.zdtype(path)
             if not(lexist):
-                #pdb.set_trace()
                 del dssf
                 raise DssAccessError("record %s doesn't exist "%path)
         # Maybe it is a path with D omitted, continue to find out
@@ -399,41 +365,7 @@ class DssService(Service):
     ########################################################################### 
     # Private interface.
     ###########################################################################
-    
-    def _create_db(self):      
-        """ Create a new tempory gadfly db file to store dss catalogs
-            and return db curosr.
-
-        """        
-        fname="tempdb"
-        fs=__file__
-        (fsp,fsn)=os.path.split(fs)
-        fsp=fsp+"\\temp"
-
-        if not os.path.exists(fsp):
-            try:
-                mkdir(fsp)
-            except Exception,e:
-                raise e
-
-        DssService.database_file_dir=fsp
-        
-        try:
-            DssService.entrydb=gadfly()
-            DssService.entrydb.startup(fname,fsp)
-        except Exception,e:
-            raise e
-
                 
-##    def  __del__(self):
-##        """ Clean up temp file used."""
-##        
-##        if DssService.db_file_use_number==0 :               
-##            try:
-##                self.entrydb.close()
-##            except Exception, e:
-##                raise e            
-
 
     def _cataloging_dss_file(self,dss_file_path):
 
@@ -454,35 +386,38 @@ class DssService(Service):
         #debug_timeprofiler.mark("loading catalog for dss file")
         ######################
             
-        self._retrieve_catalog_to_db(dss_file_path)
+        dtt=self._retrieve_catalog_records(dss_file_path)
 
+        table_column_index_map=self._create_column_index_map()
+        schema=self._generate_schema(table_column_index_map)
+        ##### time profile ####
+        #print 'time at done with create catalog record iter',\
+        #      debug_timeprofiler.timegap()
+        ######################
+        catalog = DssCatalog(dss_file_path,schema,self,dtt)
+
+        self._dss_catalogs[index] = catalog
+    
         #add the amount of class instance using dababase by one
         self._add_use()
 
         ##### time profile ####
         #print 'total time in loading catalog info to db',debug_timeprofiler.timegap()
         ######################    
-
+        return catalog
     def _update_dss_file_catalog(self,dss_file_path):
         """ Update the catalog database for file at dss_file_path
             if its info found in db.
         """
-
-        selsql=" select F_ID from dssfile where FPATH=?"
-        self.dbcursor.execute(selsql,(strip(dss_file_path),))
-        if self.dbcursor.fetchall():
+        try:
+            info=self._dss_file_opened[dss_file_path]
+        except:
+            info = ""       
+        
+        if info: 
             self._remove_dssfile_catalog(dss_file_path)
             self._cataloging_dss_file(dss_file_path)
 
-    def _create_tables(self):
-        """ Create the catalog table in temp db file."""
-                
-        sqlstatement="create table dsscatalog (F_ID integer,A varchar, \
-                      B varchar,C varchar,D varchar,E varchar,F varchar)" 
-        self.dbcursor.execute(sqlstatement)
-        sqlstatement="create table dssfile (F_ID integer, FPATH varchar,MODIFYTIME integer)"        
-        self.dbcursor.execute(sqlstatement)
-        self.entrydb.commit()
             
     def _remove_use(self):
 
@@ -494,32 +429,19 @@ class DssService(Service):
         DssService.db_file_use_number=DssService.db_file_use_number+1
 
 
-    def _retrieve_catalog_to_db(self,dss_file_path):
+    def _retrieve_catalog_records(self,dss_file_path):
         """ Retrieve all the catalog entries of a dssfile
-            and save it in a temp gadfly db file.
+            and return them.
         """
-        
-        insertstat = "insert into dsscatalog (F_ID,A,B,C,D,E,F) \
-                      values (?,?,?,?,?,?,?)"
-       
-        #dssfile=open_dss(dss_file_path)
-        #if dssfile and type(dssfile)==DssFile:
-
+        dtt =[]  
         if os.path.exists(dss_file_path):            
-##            try:
             dsdfile=self._open_catalog(dss_file_path)
-            #dtt=self._read_catalog_file(cf0)
             dtt=self._read_dsd_file(dsdfile)
             if not dtt:
                 raise DssCatalogServiceError\
                       ("%s isn't a valid dss file"%(dss_file_path))
-            self.dbcursor.execute(insertstat,dtt)
-            self.entrydb.commit()
-            
-        #cf0.close()  
-        #del dssfile
-
-
+        return dtt
+        
     def _read_dsd_file(self,dsd_file_path):        
         dsd=open(dsd_file_path)
         ready_status="ready"
@@ -606,85 +528,6 @@ class DssService(Service):
                 pre_parts[5],pre_parts[4],pre_parts[3]))
         return dtt
 
-##    def _read_catalog_file(self,cf0):
-##        """retrieve abbreivated path entries from catalog file cf0,
-##           if success, a list of pathes will be returned.
-##        """
-##
-##        ##### time profile ####
-##        #debug_timeprofiler.mark("reading catalog for dss file")
-##        ######################
-##        
-##        ipos=0
-##        inumb=0
-##        lend=False
-##        cf0.rewind()
-##        dtt=[]
-##        #part_re=re.compile(\
-##        #    r'/(?P<A>.*?)/(?P<B>.*?)/(?P<C>.*?)/(?P<D>.*?)/(?P<E>.*?)/(?P<F>.*?)/')
-##        
-##        i=0
-##        pre_dt=[]
-##        pre_A=None
-##        pre_B=None
-##        pre_C=None
-##        pre_D=None
-##        pre_E=None
-##        pre_F=None
-##
-##
-##
-####        nfound=1
-####        ctags="     "
-####        ntags=1
-####        npath=1
-####        cd0=fortran_file(FortranFile.DUMMY_FILE_UNIT)
-##        while not(lend):
-##        #while  nfound:
-##            [ipos,inumb,ctag,cpath,npath,lend]=zrdpat(cf0,ipos,inumb)
-##            #[ctags,cpath,npath,nfound]= zrdcat(cf0,True,cd0,ctags,ntags)
-##            #pdb.set_trace()
-##            if cpath:
-##                clst=cpath.split("/")
-##                A=clst[1]
-##                B=clst[2]
-##                C=clst[3]
-##                D=clst[4]
-##                E=clst[5]
-##                F=clst[6]
-##                
-##                
-##                if i==0: ## first one will always be appended
-##                    #dtt.append((self.dss_file_index,A,B,C,D,E,F))
-##                    pre_A=A
-##                    pre_B=B
-##                    pre_C=C
-##                    pre_D=D
-##                    pre_E=E
-##                    pre_F=F
-##                else: ## try to merge records of the same abbreviated path
-##                    if A==pre_A and B==pre_B \
-##                       and C==pre_C and E==pre_E \
-##                       and F==pre_F:
-##                        pre_D=pre_D+","+D
-##                    else:
-##                        dt=(self.dss_file_index,pre_A,pre_B,pre_C,pre_D,pre_E,pre_F)
-##                        dtt.append(dt)
-##                        pre_A=A
-##                        pre_B=B
-##                        pre_C=C
-##                        pre_D=D
-##                        pre_E=E
-##                        pre_F=F
-##                i=i+1
-##
-##        dtt.append((self.dss_file_index,pre_A,pre_B,pre_C,pre_D,pre_E,pre_F))
-##        ##### time profile ####
-##        #print 'time used in reading catalog info ',debug_timeprofiler.timegap()
-##        ######################
-##
-##        return dtt
-    
     def _open_catalog(self,fpath):
         """" Open or create standard catalog file of the dssfile for retrieving."""
                        
@@ -739,7 +582,7 @@ class DssService(Service):
         if index>=DSS_MAX_FILE_NUM:## if catalogs saved in db is too much,
                                    ## try to empty db, restart a new one.
             index=0
-            self._clean_db()
+            self._clean_catalogs()
             DssService.dss_file_index_used=[]
             #raise DssCatalogServiceError("not enough index for dss file")
             
@@ -750,43 +593,26 @@ class DssService(Service):
     def _clean_db(self):
         """ clearn all the entry within db tables."""
 
-        if DssService._num_db_clean>200:
-            self.entrydb.close()
-            self._create_db()
-            DssService.first_initialization=False
-            self.entrydb=DssService.entrydb
-            self.dbcursor=DssService.entrydb.cursor()
-        else:            
-            del_sql="drop table dssfile"        
-            self.dbcursor.execute(del_sql)
-            del_sql="drop table dsscatalog"
-            self.dbcursor.execute(del_sql)
-            self.entrydb.commit()
         DssService._num_db_clean=DssService._num_db_clean+1
-        self._create_tables()        
-        DssService.has_dss_catalog_table=True
+        self._dss_catalogs ={}     
+        
         
     def _add_dss_file_record(self,fpath,index):
-        """" Insert dssfile path into table DssFile."""
-
-        insertstat = "insert into dssfile (F_ID, FPATH,MODIFYTIME) values (?,?,?)"
-        self.dbcursor.execute(insertstat,tuple([index,fpath,os.stat(fpath)[8]]))
-        self.entrydb.commit()
+        """" Insert dssfile path into  DssFile dic."""
+        self._dss_file_opened[fpath] = (index,os.stat(fpath)[8])
 
     def _remove_dss_file_record(self,index):
         """ Remove dssfile path from table DssFile."""
         
-        delstat="DELETE FROM dssfile WHERE F_ID= ?"
-        self.dbcursor.execute(delstat,(index,))
-        self.entrydb.commit()
+        temp_dic = dict((k,v) for k, v in self._dss_file.iteritems() if v[0]==index)
+        self._dss_file = temp_dic
 
 
     def _remove_paths_record(self,index):
-        """ Remove all the paths record of a specified dssfile by index."""
+        """ Remove all the paths record of a dssfile specified  by index."""
+        temp_dic = dict((k,v) for k, v in self._dss_catalogs.iteritems() if k ==index)
+        self._dss_catalogs = temp_dic   
         
-        delstat="DELETE FROM dsscatalog WHERE F_ID= ?"
-        self.dbcursor.execute(delstat,(index,))
-        self.entrydb.commit()
     
     def _remove_dss_file(self,index):
         """ Remove all the db record related to a dss file 
@@ -795,73 +621,32 @@ class DssService(Service):
         self._remove_dss_file_record(index)
         self._remove_paths_record(index)
 
+
     def _remove_dssfile_catalog(self,dss_file_path):
         """ Delete all catalog record about dss_file_path in db"""
 
-        selsql=" select F_ID from dssfile where FPATH=?"
-        self.dbcursor.execute(selsql,(strip(dss_file_path),))
-       
-        if not(self.dbcursor.fetchall()):
-            raise DssCatalogServiceError\
-                  ("dss file %s is not founded in database"%dss_file_path)
+        try:
+            findex = self._dss_file[dss_file_path][0]
+        except Exception,e:
+            return
+        self._remove_paths_record(findex)
         
-        self.dbcursor.execute(selsql,(strip(dss_file_path),))
-        for findex in self.dbcursor.fetchall():
-            ## for findex is returned as tuple of size 1. 
-            self._remove_dss_file(findex[0])
-            ## also release the used findex from used list
-            DssService.dss_file_index_used.remove(findex[0])
-            
     def _create_column_index_map(self):
 
         """ Return a correspondance between table column index 
             and  catalog entry item name.
         """
 
-        des=self.dbcursor.description
-
+        des=(("A"),("B"),("C"),("D"),("E"),("F"))
+    
         l=len(des)
         map={}
         for i in range(0,l):
             colname=des[i][0]
-            map[colname]=i
+            # record entry is like (fileindex,Apart,Bpart, Cpart,...)
+            map[colname]=i+1
         return map
 
-   
-    def _reduce_catalog(self,selsql,parameter=None):
-        """ Return some catalog entries from catalog database based 
-            criteria parameter given, if no paramter given all catalog
-            in a dss file will be return.
-        """
-        
-        [selsql,parameter]=self._modify_select_sql(selsql,parameter)
-
-        if parameter:
-            self.dbcursor.execute(selsql,parameter)
-        else:
-            self.dbcursor.execute(selsql)
-
-    def _modify_select_sql(self,selsql,parameter):
-        """ Rebuilt string of selection sql query to add query parameters.
-           If no parameter given, just return query intact.
-        """   
-         
-        if type(parameter)==str:  #must be in format of A=WWW,B=WWW,C=WWW
-            parameter=strip(parameter)
-            itemlist=split(parameter,",")
-            
-            if len(itemlist)>0:
-                selsql=selsql+" where "
-                val=[]
-                for aitem in itemlist:
-                    elelist=split(strip(aitem),"=")
-                    selsql=selsql+"("+strip(elelist[0])+"=?) and"
-                    val.append(strip(elelist[1]))
-                selsql=rstrip(selsql,"and") #remove the last and
-                parameter=tuple(val)
-                
-        return (selsql,parameter)
-          
 
     def _retrieve_data_type(self,dssfile,cpath):
         """ Get info about data series type,also return block size."""
@@ -873,7 +658,12 @@ class DssService(Service):
 
 
     def _retrieve_rts_prop(self,dssf,cpath,dparts):
-        """ Retrieve all the prop about a rts record."""
+        """ Retrieve all the prop about a rts record.
+            returned extent is stamped at the begining of
+            period for aggregated data to observe vtools
+            tradition, that is different from what user
+            will see use HecdssVue
+        """
         #pdb.set_trace()
         firstD=dparts[0]
         firstpath=cpath.replace('//','/'+firstD+'/')
@@ -886,15 +676,7 @@ class DssService(Service):
         interval=parse_interval(ce)
         cd=firstD
         start=parse_time(cd) 
-        ## move forward for aver,min, and min,max data
-        if ctype.upper()=="PER-AVER" or ctype.upper()=="PER-MIN" \
-           or ctype.upper()=="PER-CUM" or ctype.upper()=="PER-MAX":
-            start=start+interval       ## in dss storage,this is
-                                      ## the actual start time 
-                                      ## of the data block.
-
-                   
-
+       
         valid_start=discover_valid_rts_start(data,start,interval)
 
         ## find out start datetime of ending data block.
@@ -965,7 +747,7 @@ class DssService(Service):
         jule=-2
         ietime=-2
 
-        #pdb.set_trace()        
+           
         try:            
             [itimes,vals,nvals,jbdate,flags,lfread,cunits,\
              ctype,headu,nheadu,istat]= \
@@ -980,57 +762,6 @@ class DssService(Service):
 
         return (header_dic,(start,end),cunits,ctype)
     
-##    def _retrieve_pair_header(self,dssfile,cpath):
-##        """ Retrieve info about pair data. """       
-##        kheadi=100
-##        kheadc=100
-##        kheadu=100
-##        kdata=1
-##        iplan=0
-##        # First retrieve number of curve and ordinates by zreadx
-##        [headi,nheadi,headc,nheadc,headu,nheadu,data,ndata,lfound]= \
-##        dssfile.zreadx(cpath,kheadi,kheadc,kheadu,kdata,iplan)
-##
-##        # From headi get number of curve and ordinates
-##        nord = headi[0]
-##        ncurve = headi[1]
-##        ihoriz = headi[2]
-##        
-##        
-##        # This is really waste of system time to read whole time
-##        # series value to get only header info and label, no
-##        # better solution for the time being.
-##        kvals=(ncurve+1)*nord
-##        klabel=50 #50 labels at most
-##        try:           
-##            [nord1,ncurve1,ihoriz1,c1unit,c1type,c2unit,c2type,\
-##             values,nvals,clabel,label,headu,nheadu,istat]\
-##            =dssfile.zrpd(cpath,kvals,klabel,kheadu)
-##        except Exception,e:
-##            raise e
-##        
-##        dt=[]
-##        dt.append(c1unit+","+c2unit)
-##        dt.append(c1type+","+c2type)
-##
-##        if label:            
-##            header_label="label"        
-##            header_item="(" # usually there more than one labels
-##            for i in range(0,ncurve):
-##                header_item=header_item+clabel[i]+","
-##            header_item=strip(header_item,",") #remove last ','
-##            header_item=header_item+")"
-##            
-##        #pdb.set_trace()
-##         
-##        if nheadu:
-##            [label,item]=self._unstuff_header(headu,nheadu)
-##            header_label=header_label+","+label
-##            header_item=header_item+","+item
-##
-##        dt.append(header_label)
-##        dt.append(header_item)
-##        return dt
         
     def _unstuff_header(self,headu,nheadu,output_form=1):
         """ Return unstuffed labels and item as two string list
@@ -1134,8 +865,8 @@ class DssService(Service):
             raise e
 
         del dssf
-        
-    def _gen_rts_datetime_nval(self,data_ref):
+
+    def _gen_rts_datetime_nval(self,data_ref,dssf):
         """ given a rts data_ref returns the character cdate,ctime
             and number of data contained within time extents.
         """
@@ -1150,6 +881,7 @@ class DssService(Service):
         # "'02/11/1995 10:30:00'")).
         (dummy,extent)=data_ref.extents()[0]
         
+        
         # Start time and end time in string.
         stime=extent[0]
         etime=extent[1]
@@ -1159,57 +891,39 @@ class DssService(Service):
 
         path=data_ref.selector
         time_interval=strip(split(path,"/")[5])        
-
-        # Next get string representation of start date and time
-        # in dss function foramt ,like "01JAN2000","1030"
-        # also find out how many data points within timewindow.
         step=parse_interval(time_interval)
+        cdate=stime.date()
+        cdate=cdate.strftime('%d%b%Y') 
+        ctime=stime.time()
+        ctime=ctime.strftime('%H%M')
 
-        ## here is a fix to the standard dss retrieving util
-        ## increasing etime by a interval to get the vale at
-        ## the end of time window input by user
+        right = 1
+        left  =-1
+        if (align(stime,step,right)!= stime):
+            stime = align(stime,step,right)
+        if (align(etime,step,left)!=etime):
+            etime = align(etime,step,left)
+
+        if (etime<stime): ## no data should be return in such a case
+            return iter([(cdate,ctime,0)])
+
+        ## here is a fix
+        ## giving a example in reading aggregated ts, timewindow (3/14/2000,3/15/2000)
+        ## time interval 1 day. number_interval will only return one interval for this
+        ## timewindow, that means dss readding function will only retreieve one value
+        ## stamped on 3/14/2000 (3/13/2000 24:00, dss file stamp time on the end of period)
+        ##, which is actully data of 3/13/2000 for daily aggregated data.
+        ## So we need read one more value to get data stampped at
+        ## 3/15/2000 (3/14/2000 24:00) which is the exact the aggreaged data on period (3/14/2000 - 3/15/2000)
+        ## the extra one data will be abandoned when converting data into vtools ts object.
+        ## In case of instaneous data, this fix will works fine with the timewindow with different
+        ## early and later side. It also works fine with the timewindow with the same
+        ## early and later side if they align the time sequence of the given interval.
         etime=increment(etime,step)
         
-        tnval=number_intervals(stime,etime,step)
-        
-        if tnval<DSS_MAX_RTS_POINTS:
-            cdate=stime.date()
-            cdate=cdate.strftime('%d%b%Y') 
-            ctime=stime.time()
-            ctime=ctime.strftime('%H%M')           
-            return iter([(cdate,ctime,tnval)])
-        else:
-            return self._multiple_window(stime,etime,step)
-        
-    def _multiple_window(self,stime,etime,step):
-        
-        """ Create iterator of multiple time window for
-            data set more than DSS_MAX_RTS_POINTS.
-        """
-    
-        lt=[]
-        stimet=stime
-        
-        while stimet<etime:
-            
-            etimet=increment(
-                stimet,step,DSS_MAX_RTS_POINTS)
-            nval=DSS_MAX_RTS_POINTS
-            
-            if etimet>etime:
-                etimet=etime
-                nval=number_intervals(stimet,etimet,step)+1
-                
-            cdate=stimet.date()
-            cdate=cdate.strftime('%d%b%Y') 
-            ctime=stimet.time()
-            ctime=ctime.strftime('%H%M')
-            stimet=etimet
-            lt.append((cdate,ctime,nval))
-            
-        return iter(lt)
-                
-
+        tnval=number_intervals(stime,etime,step) 
+        return (cdate,ctime,tnval)
+       
     def _retrieve_regularTS(self,data_ref):
         """ Retrieve regular time sereis referenced by data_re.
             An instance of class TimeSereis is returned. 
@@ -1218,65 +932,61 @@ class DssService(Service):
         dss_file_path=data_ref.source
         dssf=open_dss(dss_file_path)
         time_interval=strip(split(path,"/")[5])
-
-        #cdate,ctime,nval=self._gen_rts_datetime_nval(data_ref)
-        lt=self._gen_rts_datetime_nval(data_ref)
+ 
+        cdate,ctime,nval=self._gen_rts_datetime_nval(data_ref,dssf)
         
         lflags=True
         kheadu=DSS_MAX_HEADER_ITEMS
         index=0
 
-        datat=None
-        flagst=None
-        
-        while True:            
-            try:
-                cdate,ctime,nval=lt.next()
-            except:
-                break
+        data =[]
+        flags=[]
+        iofset=0
+        ctype=""
+        cunits=""
+        ctype =""
+        nheadu=0
+        headu=None
+        cdate =""
+        ctime =""
+   
+        if(nval>0):
             
             (nval,data,flags,lfread,cunits,ctype,headu,nheadu,iofset,icomp,istat)\
             =dssf.zrrtsx(path,cdate,ctime,nval,lflags,kheadu)
 
             if istat==5:
-                #pdb.set_trace()
                 del dssf
-                raise DssAccessError("Data for  %s within your selection is invalid, change your timewindow?"%path)
+                raise DssAccessError("Your selection in record %s is invalid, change your timewindow?"%path)
             if istat>5:
                 del dssf 
-                raise DssAccessError("Error access data: %s"%path)
-
-            if index==0: ## keep first set of dic and date.
-                ccdate=cdate
-                cctime=ctime
-                nnheadu=nheadu
-                hheadu=headu
-                datat=data
-                flagst=flags
-            else:
-                datat=concatenate((datat,data))
-                flagst=concatenate((flagst,flags))
-                
-            index=index+1
+                raise DssAccessError("Error access data: %s erro code:"%path)
             
         if strip(ccdate)=="":
             ccdate=strip(split(path,"/")[4])
             cctime="0000"
 
-        del dssf            
-        ## add those props.
+        del dssf
+
+         ## add those props.
         prop={}
+        
+        if (nval==0): ## return ts of zero length
+            return rts([],cdate,time_interval,prop)
+        
+       
         prop[UNIT]=cunits
         prop[CTYPE]=ctype
         
-        if nnheadu>0:
-            hdic=self._unstuff_header(hheadu,nnheadu,2)
+        if nheadu>0:
+            hdic=self._unstuff_header(headu,nheadu,2)
             for key in hdic.keys():
                 if not((key==UNIT)or(key==CTYPE)):
                     prop[key]=hdic[key]
-                
+
+             
         ts=dss_rts_to_ts\
-        (datat,ccdate,cctime,time_interval,iofset,prop,flagst)
+        (data,cdate,ctime,time_interval,iofset,prop,flags)
         
         return ts
                     
