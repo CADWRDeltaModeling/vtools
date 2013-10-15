@@ -49,7 +49,7 @@ def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False,overlap=None
                  (1,1): retrieve a data preceding and following in addition to data within
                  If early or late sides exactly coincide with data point, the data preceding or
                  following the earyl or late side will still be returned when the corresponding overlap
-                 is set.
+                 is set. This behaviour is caused by HecDss interal API.
                  dss service will raise ValueError if overlap is not None in reading regular timeseries.
                 
     ouput:
