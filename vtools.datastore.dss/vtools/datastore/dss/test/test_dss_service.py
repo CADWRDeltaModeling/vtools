@@ -46,11 +46,15 @@ class TestDssService(unittest.TestCase):
         self.assertEqual(len(entries),26)
         
     def test_get_data(self):
-        # Regular time series.
+
         id="vtools.datastore.dss.DssService"
         view=""
-        selector="/TUTORIAL/DOWNSTREAM/EC//15MIN/REALISTIC/"
         source=self.test_file_path
+
+        # Regular time series.
+      
+        selector="/TUTORIAL/DOWNSTREAM/EC//15MIN/REALISTIC/"
+        
         extent="time_window=(12/1/1991 03:45,12/24/1991 01:30)"
         data_ref=DataReference(id,source,view,selector,extent)
         data=self.dss_service.get_data(data_ref)
@@ -62,6 +66,12 @@ class TestDssService(unittest.TestCase):
         # time window (not include).
         self.assertEqual(ticks_to_time(data.ticks[l-1]),parse('12/24/1991 01:30'))
 
+        # regular time series didn't accept overlap option
+        overlap =(0,0)
+        self.assertRaises(ValueError,self.dss_service.get_data,data_ref,overlap)
+
+
+     
         # Irregular time series.
         selector="/TUTORIAL/GATE/FLAP_OP//IR-YEAR/CONSTANT/"
         extent="time_window=(12/11/1991 01:00,04/02/1992 21:50)"
@@ -70,7 +80,84 @@ class TestDssService(unittest.TestCase):
         self.assert_(type(data)==TimeSeries)
         self.assertEqual(len(data.data),106)
 
+
+    def test_get_its_data_overlap(self):
+        import pdb
+        id="vtools.datastore.dss.DssService"
+        view=""
+        source=self.test_file_path
+        # Irregular time series.
+        selector="/TUTORIAL/GATE/FLAP_OP//IR-YEAR/CONSTANT/"
+        extent="time_window=(12/10/1991 00:05,01/24/1992 20:58)"
+        data_ref=DataReference(id,source,view,selector,extent)
+        ##  retrieve data within 
+        overlap = (0,0)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),46)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:08'))
+
+        ##  retrieve data within and preceding
+        overlap = (1,0)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),47)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
+
+        ##  retrieve data within  and following
+        overlap = (0,1)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),47)
+        self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
+
+        ##  retrieve data within 
+        overlap = (1,1)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),48)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
+        self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
+
+
+        ## test when time window exaclty coincide with record time points
+        ## the data preceding and following time window will still be returned
+        ## depends the overlap option
+        extent="time_window=(12/10/1991 00:08,01/24/1992 21:00)"
+        data_ref=DataReference(id,source,view,selector,extent)
+        ##  retrieve data within 
+        overlap = (0,0)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),47)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:08'))
+        self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
+
+        ##  retrieve data within and preceding
+        overlap = (1,0)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),48)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
+        self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
+
+        ##  retrieve data within  and following
+        overlap = (0,1)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),48)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:08'))
+        self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/26/1992 08:00'))
+        ##  retrieve data within 
+        overlap = (1,1)
+        data=self.dss_service.get_data(data_ref,overlap)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),49)
+        self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
+        self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/26/1992 08:00'))
+        
     def test_get_aggregated_data(self):
+        
         # Regular time series.
         id="vtools.datastore.dss.DssService"
         view=""
@@ -90,25 +177,24 @@ class TestDssService(unittest.TestCase):
     def test_get_data_all(self):
         ## here to test pull out all the data from a
         ## path given(through data references).
-
+        
         dssfile_path=self.test_file_path
         dssc=self.dss_service.get_catalog(dssfile_path)
         entries=dssc.entries()
-
+    
         ## for each entry ,bulit a datareference without
         ## time window given
         for entry in entries:
             data_ref=dssc.get_data_reference(entry)
             #print data_ref.selector
             #print entry.dimension_scales()[0].get_range()
-            #pdb.set_trace()
             ts=self.dss_service.get_data(data_ref)
             self.assert_(type(ts)==TimeSeries)
 
 
     def test_get_save_ts(self):
         ## test ts property unchanged after read and save ts into dss
-            
+        
         selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC/"
         source=self.test_file_path
         dssc=self.dss_service.get_catalog(source)
@@ -136,7 +222,7 @@ class TestDssService(unittest.TestCase):
         
     def test_save_ts_props(self):
         ## test ts property unchanged after read and save ts into dss
-            
+        
         selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC/"
         source=self.test_file_path
         dssc=self.dss_service.get_catalog(source)
@@ -173,7 +259,7 @@ class TestDssService(unittest.TestCase):
 
     def test_read_aggregated_rts_timewindow(self):
         ## save some ts into dss file, ts is hourly averaged
-
+        
         ## save rts first.
         data=range(1000)
         start="12/21/2000 2:00"
@@ -324,7 +410,7 @@ class TestDssService(unittest.TestCase):
          
     def test_read_instant_rts_timewindow(self):
         ## save some ts into dss file, ts is hourly spaned instanteous
-
+        
         ## save rts first.
         data=range(1000)
         start="12/21/2000 2:00"
@@ -423,7 +509,7 @@ class TestDssService(unittest.TestCase):
     def test_save_data(self):
         ## save some ts into dss file, ts may contain
         ## header.
-
+        
         ## save rts first.
         data=range(1000)
         start="12/21/2000 2:00"
@@ -487,7 +573,7 @@ class TestDssService(unittest.TestCase):
     def test_retrievesave_longits(self):
         ## save some ts into dss file, ts may contain
         ## header.
-
+        
         ## save rts first.
         data=range(36009)
         start="12/21/2000 2:00"
@@ -517,6 +603,7 @@ class TestDssService(unittest.TestCase):
 
     def test_save2newf(self):
         """ try to save ts to a non exist file."""
+        
         ## save rts first.
         data=range(1000)
         start="12/21/2000 2:00"
