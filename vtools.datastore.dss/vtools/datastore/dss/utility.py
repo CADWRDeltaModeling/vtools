@@ -23,7 +23,7 @@ _catalog_buffer={}
 ## Public function.
 ##############################################
 
-def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False):
+def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False,overlap=None):
     """
        retrieve timesereies from a dss file on from
        specified paths within the same time_window.
@@ -40,6 +40,18 @@ def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False):
                    tuple of datetime (start,end) or tuple of time
                    string like ("10/1/1997 12:00","2/14/2001 11:45").
                    if not given, all data will be retrieved.
+        overlap: a tuple, like (0,0),(0,1),(1,0),(1,1) or None
+                 This tuple set the option of retrieving a data just preceding or
+                 following time window early and late side for irregular timeseries
+                 (0,0): only retrieve data within time window
+                 (1,0): retrieve a data preceding time window early side in addition to data within
+                 (0,1): retrieve a data following time window late side in addition to data within
+                 (1,1): retrieve a data preceding and following in addition to data within
+                 If early or late sides exactly coincide with data point, the data preceding or
+                 following the earyl or late side will still be returned when the corresponding overlap
+                 is set.
+                 dss service will raise ValueError if overlap is not None in reading regular timeseries.
+                
     ouput:
           one or more time series if succeed.
     """    
@@ -88,9 +100,9 @@ def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False):
                           "check it.")
     
     if len(data_ref)==1:
-        return dss_service.get_data(data_ref[0])
+        return dss_service.get_data(data_ref[0],overlap)
     else:
-        return map(dss_service.get_data,data_ref)
+        return map(dss_service.get_data,data_ref,overlap)
 
 
 def dss_store_ts(ts,dss_file,path):
