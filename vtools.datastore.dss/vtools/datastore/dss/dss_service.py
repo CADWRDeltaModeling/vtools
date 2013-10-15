@@ -256,7 +256,7 @@ class DssService(Service):
 
         return schema
     
-    def _get_data(self,data_ref):
+    def _get_data(self,data_ref,overlap):
         """ Return time series referenced by data_reference.
 
             note: different to standard dss lib retrieving
@@ -299,9 +299,16 @@ class DssService(Service):
         del dssf
         
         if cdtype=="RTS":
+            ## overlap option is not available for rts
+            if (overlap!=None):
+                raise ValueError("overlap option is not available for regular time series") 
             return self._retrieve_regularTS(data_ref)
         elif cdtype=="ITS":
-            return self._retrieve_irregularTS(data_ref)
+            if (overlap==(0,0))or (overlap==(1,1)) \
+               or(overlap==(1,0)) or (overlap==(0,1))or(overlap==None):
+                return self._retrieve_irregularTS(data_ref,overlap)
+            else:
+                raise ValueError("incorrect overlap format") 
         else:
             raise DssAccessError\
                   ("Not recorgizable time series in dss data reference.")
@@ -1039,7 +1046,7 @@ class DssService(Service):
         return (juls,jule,istime,ietime)               
             
 
-    def _retrieve_irregularTS(self,data_ref):
+    def _retrieve_irregularTS(self,data_ref,overlap=None):
         """ Retrieve irregular time sereis referenced by data_re.
             An instance of class TimeSereis is returned. 
         """
@@ -1053,9 +1060,15 @@ class DssService(Service):
         kval=DSS_MAX_ITS_POINTS
         lflags=True
         kheadu=DSS_MAX_HEADER_ITEMS
-        inflag=0
+        if (overlap==(0,0))or (overlap==None):
+            inflag= int(0)
+        elif (overlap==(1,1)):
+            inflag= int(3)
+        elif (overlap==(1,0)):
+            inflag= int(1)
+        else :
+            inflag= int(2)
         
-        #(itimes,data,nval,jbdate,cunits,ctype,istat)=dssf.zrits(path,juls,istime,jule,ietime,kval)
         (itimes,data,nval,jbdate,flags,lfread,cunits,ctype,headu,nheadu,istat)= \
         dssf.zritsx(path,juls,istime,jule,ietime,kval,lflags,kheadu,inflag)
         del dssf
