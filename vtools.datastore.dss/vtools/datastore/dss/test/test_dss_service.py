@@ -270,7 +270,7 @@ class TestDssService(unittest.TestCase):
         rt1=rts(data,start,interval,prop)
 
         id="vtools.datastore.dss.DssService"
-        path="/TEST/DOWNSTREAM/EC//1HOUR/STAGE/"
+        path="/TEST/DOWNSTREAM/EC//1HOUR/DWR/"
         source=self.test_file_path
         data_ref=DataReference(id,source=source,selector=path)
         self.dss_service.add_data(data_ref,rt1)
@@ -291,7 +291,7 @@ class TestDssService(unittest.TestCase):
         ## test return middle part of stored data
         ## it should get 12 numbers and value is (8,9,...,19)
         ## it start datetime should be 12/21/2000 10:00, end
-        ## at 12/21/2000 21:00 (not include to the later side)
+        ## at 12/21/2000 21:00 (not include the late side)
         extent="time_window=(12/21/2000 10:00,12/21/2000 22:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
@@ -305,7 +305,7 @@ class TestDssService(unittest.TestCase):
         ## test return middle part of stored data
         ## it should get 12 numbers and value is (8,9,...,19)
         ## it start datetime should be 12/21/2000 10:00, end
-        ## at 12/21/2000 21:00 (not include to the later side)
+        ## at 12/21/2000 21:00 (not include the late side)
         ## time window is not given at the correct hourly time points.
         extent="time_window=(12/21/2000 09:45,12/21/2000 22:15)"
         data_ref=DataReference(id,source,None,path,extent)        
@@ -319,7 +319,7 @@ class TestDssService(unittest.TestCase):
 
         ## test valid timewindow overlap exaclty the last data of
         ## the record
-        extent="time_window=(1/31/2001 17:00,1/31/2001 22:00)"
+        extent="time_window=(1/31/2001 17:00,1/31/2001 18:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
         self.assert_(len(rtt2)==1)
@@ -332,8 +332,16 @@ class TestDssService(unittest.TestCase):
         rtt2=self.dss_service.get_data(data_ref)
         self.assert_(len(rtt2)==0)
 
-        ## test invalid time window with same start and end
+        ## test invalid time window with same start and end in the
+        ## middle of time sequence
         extent="time_window=(12/21/2000 05:00,12/21/2000 05:00)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+
+        ## test invalid time window with same start and end at the
+        ## end of time sequence
+        extent="time_window=(12/21/2000 17:00,12/21/2000 17:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
         self.assert_(len(rtt2)==0)
@@ -351,7 +359,7 @@ class TestDssService(unittest.TestCase):
         self.assert_(len(rtt2)==0)
 
         ## test invalid time window with different start and end across two hour intervals
-        ## but bot intervals are incomplete, so it should return no value
+        ## but intervals are incomplete, so it should return no value
         extent="time_window=(12/21/2000 05:15,12/21/2000 06:55)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
@@ -359,7 +367,7 @@ class TestDssService(unittest.TestCase):
 
 
         ## test invalid time window with same start and end
-        ## excatly at beginig time sequence
+        ## excatly at the middle time sequence
         extent="time_window=(12/21/2000 17:15,12/21/2000 17:15)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
@@ -475,6 +483,14 @@ class TestDssService(unittest.TestCase):
         rtt2=self.dss_service.get_data(data_ref)
         self.assert_(len(rtt2)==1)
         self.assert_(rtt2.data[0]==float(3))
+
+        ## test invalid time window with same end and start not aligned with
+        ## interval
+        extent="time_window=(12/21/2000 05:15,12/21/2000 05:15)"
+        data_ref=DataReference(id,source,None,path,extent)
+        rtt2=self.dss_service.get_data(data_ref)
+        self.assert_(len(rtt2)==0)
+        
 
         
         ## test invalid time window in the middle with the same earlier and later side
