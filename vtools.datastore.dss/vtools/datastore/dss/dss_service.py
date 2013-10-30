@@ -945,15 +945,16 @@ class DssService(Service):
         ## here is a fix
         ## giving a example in reading aggregated ts, timewindow (3/14/2000,3/15/2000)
         ## time interval 1 day. number_interval will only return one interval for this
-        ## timewindow, that means dss readding function will only retreieve one value
+        ## timewindow, that means dss reading function will only retreieve one value
         ## stamped on 3/14/2000 (3/13/2000 24:00, dss file stamp time on the end of period)
-        ##, which is actully data of 3/13/2000 for daily aggregated data.
+        ##, which is actully the data of 3/13/2000 for daily aggregated data.
         ## So we need read one more value to get data stampped at
         ## 3/15/2000 (3/14/2000 24:00) which is the exact the aggreaged data on period (3/14/2000 - 3/15/2000)
         ## the extra one data will be abandoned when converting data into vtools ts object.
-        ## In case of instaneous data, this fix will works fine with the timewindow with different
-        ## early and later side. It also works fine with the timewindow with the same
-        ## early and later side if they align the time sequence of the given interval.
+        ## In case of instaneous data, this fix works ok for we want data stamped on the late side of
+        ## time window also. For instance time window (3/14/2000,3/15/2000) with interval of 1 day. We want
+        ## data on 3/14 and 3/15, but number_interval(3/14/2000,3/15/2000) will only return 1 interval, so
+        ## we can use number_interval(3/14/2000,3/16/2000)=2 as the number of data we want.
         etime=increment(etime,step)
         
         tnval=number_intervals(stime,etime,step) 

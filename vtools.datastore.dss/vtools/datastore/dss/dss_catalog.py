@@ -467,8 +467,7 @@ class DssCatalog(Catalog):
         map=[]
         for entry in self._entries:
             if entry.fully_loaded:
-                time_exent=RangeDimension(\
-                entry.dimension_scales()[0].get_range())
+                time_exent=RangeDimension(entry.dimension_scales()[0].get_range())
                 map.append(time_extent)
             else:
                 map.append(None)           
