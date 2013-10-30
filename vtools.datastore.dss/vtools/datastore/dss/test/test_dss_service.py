@@ -169,6 +169,7 @@ class TestDssService(unittest.TestCase):
         self.assert_(type(data)==TimeSeries)
         l=len(data.data)
         self.assertEqual(len(data.data),3)
+        self.assertEuqal(data.data[0],11.0)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('1/2/1997'))
         # Here dss reading func only read up to right end of
         # time window (not include).
