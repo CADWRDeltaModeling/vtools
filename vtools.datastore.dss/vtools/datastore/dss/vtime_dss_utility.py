@@ -220,7 +220,10 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
         ## then first valid data is at least located at the early side of reading
         ## time window, it should be kept
         else:
-            start_datetime=increment(start_datetime,interval_timedelta,starti)
+            ## use starti-1 here for vtools aggregated data is stamped on the
+            ## begining of interval, we need to more time read back from dss file
+            ## one interval back
+            start_datetime=increment(start_datetime,interval_timedelta,starti-1)
             ts= rts(data,start_datetime,interval_timedelta,prop)
             return ts
             

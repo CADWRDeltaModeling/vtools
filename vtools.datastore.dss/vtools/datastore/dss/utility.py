@@ -102,7 +102,10 @@ def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False,overlap=None
     if len(data_ref)==1:
         return dss_service.get_data(data_ref[0],overlap)
     else:
-        return map(dss_service.get_data,data_ref,overlap)
+        result_ts =[]
+        for a_data_ref in data_ref:
+            result_ts.append(dss_service.get_data(a_data_ref,overlap))
+        return result_ts
 
 
 def dss_store_ts(ts,dss_file,path):
