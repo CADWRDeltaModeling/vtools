@@ -1,11 +1,5 @@
 
 # Standard Library imports
-#import pdb
-
-# Application specific imports
-from enthought.traits.api import Str,HasTraits,List,Int,Dict,Any,Array##
-from enthought.traits.ui.api import View, Group, Item,CheckListEditor
-from enthought.traits.ui.menu import NoButtons 
 
 # Scipy import
 from scipy import array,string_
@@ -13,7 +7,7 @@ from scipy import array,string_
 # datetime import
 from datetime import datetime
 
-class Dimension(HasTraits):
+class Dimension(object):
     """ Parent Class store meaningful index information of a dataset
         dimension.
       
@@ -24,11 +18,11 @@ class Dimension(HasTraits):
 
     # Public traits ########################################## 
     # A single describing label used for the dimension.
-    label=Str("unkown_scale")
+    label="unkown_scale"
     # Dimension may have a name to identify it
-    name=Str("")
+    name=""
     # Dimension keep track of the index of dimension, todo: not needed?
-    dimension_index=Int(-9999)
+    #dimension_index=Int(-9999)
     
 
 class ChannelDimension(Dimension):
@@ -38,18 +32,11 @@ class ChannelDimension(Dimension):
     """
 
     # Private traits ##########################################    
-    _channel=List([])
+    _channel=[]
     #_channel=Array
-    _index_map=Dict
+    _index_map={}
 
-    # Selected channel
-    selected_channel=List(editor=CheckListEditor(name='_channel') )
-    
-#    traits_view=View(Group([Item('selected_channel')],'|[]<',show_labels=True),\
-#                     id='vtools.datastore.dimensions.ChannelDimension',\
-#                     dock='vertical',resizable=True,buttons=NoButtons)
-
-    traits_view=View(Group(['selected_channel']))
+  
     
     ########################################################################### 
     # Object interface.
@@ -65,9 +52,6 @@ class ChannelDimension(Dimension):
     ###########################################################################
     def set_channels(self,channel_list):
         """ Set internal data channel list."""
-        #self._channel=[None]*len(channel_list)
-        #for i in range(0,len(channel_list)):
-        #    val=channel_list[i]
         for e in channel_list:
             if type(e)==type(' ') or\
                type(e)==string_:
@@ -100,16 +84,6 @@ class RangeDimension(Dimension):
         dimension as a pair of start and end of some kind of value.
          
     """
-
-    # Private traits ##########################################    
-    _start=Any
-    _end=Any
-    
-#    traits_view=View(Group([Item('_start'),Item('_end')],'|[]<>',show_labels=True),\
-#                     id='vtools.datastore.dimensions.RangeDimension',\
-#                     resizable=True,buttons=NoButtons)
-    traits_view=View(Group(['_start','_end']))
-    
     
     ########################################################################### 
     # Object interface.
