@@ -26,9 +26,11 @@ p0.legend.visible = True
 # (if lesser known), and efficient for plots
 # JPEG (jpg) and encapsulated postscript (eps)
 # and bitmap (bmp) are also supported
-save_image_file(p0,"ts_line.gif")
+save_image_file(p0,"ts_line.pdf")
+#save_image_file(p0,"ts_line.pdf")
 
 # Now get a frame to display it live
+
 fig=default_frame(p0,size=(600,400))
 display_frame(fig)
 # Things you can do:
