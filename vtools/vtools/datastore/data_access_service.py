@@ -7,11 +7,11 @@ class DataAccessService(object):
     ########################################################################### 
     # Public interface.
     ###########################################################################
-    def get_data(self,dataref):
+    def get_data(self,dataref,overlap=None):
         """ Retrieve the time series specified by argument dataref.
         """
         self._check_data_reference(dataref)
-        return self._get_data(dataref)
+        return self._get_data(dataref,overlap)
 
     def add_data(self,dataref,data):
         """ Add the time series data to place specified by dataref.
