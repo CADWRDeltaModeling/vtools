@@ -1,36 +1,16 @@
 
 # Standard Library imports
-#import pdb
-
 # Application specific imports
-from enthought.traits.api import Str,HasTraits,\
-     List,Dict,Int,Any,Bool
 from copy import deepcopy
 
 # Local import
 from dimension import Dimension
 
 
-class CatalogEntry(HasTraits):
+class CatalogEntry(object):
 
     """ Single entry of a catalog of a datasource
-    """
-	# Public traits ##################
-    fully_loaded=Bool(False)
-	# Private traits ##########################################
-    # This trait can be used to bookkeep entry position in list
-    _index=Int(0)
-    # The schema list used to built this catatlog entry
-    _schema=List
-    # Dict mapping item name to index in item list as defined by
-    # the order of schema.
-    _item_name_to_index=Dict
-    _description=Str("")
-    # Store item values.
-    _metadata_items=List  
-    _dimensions=List(Dimension)
-   
-    
+    """ 
     ########################################################################### 
     # 'object' interface.
     ########################################################################### 
@@ -169,7 +149,7 @@ class CatalogEntry(HasTraits):
                
     index=property(get_index,set_index,doc="index of entry within a catalog")
     
-class Catalog(HasTraits):
+class Catalog(object):
 
     """ Class contain a list of CatalogEntry, also provide a number of operations
         on those entries.
@@ -178,9 +158,9 @@ class Catalog(HasTraits):
     ########################################################################### 
     # Private traits,
     ###########################################################################
-    _entries=List([])
-    _schemalst=List([])
-    _orginial_service=Any(None)
+    #_entries=List([])
+    #_schemalst=List([])
+    #_orginial_service=Any(None)
     
     
     ########################################################################### 
