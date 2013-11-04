@@ -22,8 +22,7 @@ import dateutil.parser
 #scipy import
 from scipy import zeros
 
-#traits import
-from enthought.traits.api import Bool,Int
+
 
 #local import 
 from vtime_dss_utility import string_to_dss_julian_date,uncondensed_Dparts
@@ -71,8 +70,8 @@ class DssCatalog(Catalog):
     ########################################################################### 
     # Public interface.
     ###########################################################################
-    need_update=Bool(False) ## if or not need to udpate database
-    changes=Int(0)
+    need_update= False ## if or not need to udpate database
+    changes= 0
     ########################################################################### 
     # Object interface.
     ###########################################################################
@@ -450,10 +449,8 @@ class DssCatalog(Catalog):
                 if key=="D": 
                     dd=Dlist[0]+"-"+Dlist[-1]
                     catalogentry.add_item(key,dd)
-                    catalogentry.add_trait(key,dd) 
                 else:
                     catalogentry.add_item(key,dic[key])
-                    catalogentry.add_trait(key,dic[key]) 
             catalogentry.index=index
             index=index+1
             self._entries.append(catalogentry)
