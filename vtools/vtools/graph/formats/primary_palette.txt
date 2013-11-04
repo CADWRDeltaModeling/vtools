@@ -1,4 +1,0 @@
-primary
-red
-blue
-green
