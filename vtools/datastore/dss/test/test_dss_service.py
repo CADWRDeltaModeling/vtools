@@ -232,12 +232,18 @@ class TestDssService(unittest.TestCase):
         data_refs=dssc.data_references(selector)
         data_ref=data_refs.next()
         ts=self.dss_service.get_data(data_ref)
+        
         self.assert_(type(ts)==TimeSeries)
         self.assert_(ts.props[AGGREGATION]==MEAN)
-        self.assert_(ts.props["DATUMN"]=="NGVD88")
-        self.assert_(ts.props["AUTHOR"]=="John Doe")
-        self.assert_(ts.props["MODEL"]=="hydro 7.5")
-        
+
+        ts.props.clear()
+        ts.props[AGGREGATION]=MEAN
+        ts.props[TIMESTAMP]='PERIOD_START'
+        ts.props[UNIT]='CFS'
+        ts.props["VDATUM"]="NGVD88"
+        ts.props["AUTHOR"]="John Doe"
+        ts.props["MODEL"]="hydro 7.5"
+    
         ## then save this ts back into dss in a different path
         ## to simulate pratical cases
         id="vtools.datastore.dss.DssService"
@@ -246,15 +252,16 @@ class TestDssService(unittest.TestCase):
         data_ref=DataReference(id,source=source,selector=path)
         self.dss_service.add_data(data_ref,ts)
 
-        ## read this ts back it AGGREATION should be MEAN
+        ## read this ts back it AGGREGATION should be MEAN
         ## also with all other properties
         dssc=self.dss_service.get_catalog(source)
         data_refs=dssc.data_references(path)
         data_ref=data_refs.next()
         ts=self.dss_service.get_data(data_ref)
+        
         self.assert_(type(ts)==TimeSeries)
         self.assert_(ts.props[AGGREGATION]==MEAN)
-        self.assert_(ts.props["DATUMN"]=="NGVD88")
+        self.assert_(ts.props["VDATUM"]=="NGVD88")
         self.assert_(ts.props["AUTHOR"]=="John Doe")
         self.assert_(ts.props["MODEL"]=="hydro 7.5")
 
