@@ -37,7 +37,7 @@ _butterworth_interval=[time_interval(minutes=15),time_interval(hours=1)]
 ## Public interface.
 ###########################################################################
 
-def butterworth(ts,order=4,cutoff_frequency=None):
+def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     
     """ low-pass butterworth filter on a regular time series.
         default order is 4, if no cutoff_frequency
@@ -48,6 +48,9 @@ def butterworth(ts,order=4,cutoff_frequency=None):
             order: order of the filter,int.
             cutoff_frequency: cut_off frequency represented
             by ratio of Nyquist frequency, should within (0,1).
+            cutoff_period   : period of cutoff frequency represented by hours,
+                              cutoff_frequency and cutoff_period can't be
+                              specified at the same time.
         output:
            a new regular time series with the same 
            interval of ts.
@@ -62,10 +65,18 @@ def butterworth(ts,order=4,cutoff_frequency=None):
     
     if not interval in _butterworth_interval:
         raise ValueError("time interval is not supported by butterworth.")
+
+    if (cutoff_frequency!=None) and (cutoff_period!=None):
+        raise ValueError("cutoff_frequency and cutoff_period can't be specified simultaneously")
     
     cf=cutoff_frequency
-    if cf==None:
-        cf=butterworth_cutoff_frequencies[interval]
+    if (cf==None):
+        if (cutoff_period !=None):
+            ## convert it to days
+            frequency_in_days = ticks(parse_interval(cutoff_period))/ticks_per_day
+            cf = 1.0/frequency_in_days
+        else:
+            cf=butterworth_cutoff_frequencies[interval]
         
     ## get butter filter coefficients.
     [b,a]=butter(order/2,cf)
