@@ -833,7 +833,7 @@ class DssService(Service):
             
             if etimet>etime:
                 etimet=etime
-                nval=number_intervals(stimet,etimet,step)+1
+                nval=number_intervals(stimet,etimet,step)
                 
             cdate=stimet.date()
             cdate=cdate.strftime('%d%b%Y') 
@@ -956,9 +956,10 @@ class DssService(Service):
         ## data on 3/14 and 3/15, but number_interval(3/14/2000,3/15/2000) will only return 1 interval, so
         ## we can use number_interval(3/14/2000,3/16/2000)=2 as the number of data we want.
         etime=increment(etime,step)
-        
-        tnval=number_intervals(stime,etime,step) 
-        return (cdate,ctime,tnval)
+
+        return self._multiple_window(stime,etime,step)
+        #tnval=number_intervals(stime,etime,step) 
+        #return (cdate,ctime,tnval)
        
     def _retrieve_regularTS(self,data_ref):
         """ Retrieve regular time sereis referenced by data_re.
@@ -969,22 +970,32 @@ class DssService(Service):
         dssf=open_dss(dss_file_path)
         time_interval=strip(split(path,"/")[5])
  
-        cdate,ctime,nval = self._gen_rts_datetime_nval(data_ref,dssf)
+        window_iter = self._gen_rts_datetime_nval(data_ref,dssf)
         
         lflags=True
         kheadu=DSS_MAX_HEADER_ITEMS
         index=0
 
-        data  =[]
-        flags =[]
-        iofse =0
-        ctype =""
+        datat =[]
+        flagst=[]
+        iofset=0
+        ccdate=""
         cunits=""
-        nheadu=0
-        headu =None
-
-        if(nval>0):
+        ctype =""
+        nnheadu=0
+        hheadu=None
+        cdate =""
+        ctime =""
+        nvalt =0
+        while True:            
+            try:
+                cdate,ctime,nval=window_iter.next()
+            except:
+                break
             
+            if nval==0:
+                break
+            nvalt = nval
             (nval,data,flags,lfread,cunits,ctype,headu,nheadu,iofset,icomp,istat)\
             =dssf.zrrtsx(path,cdate,ctime,nval,lflags,kheadu)
 
@@ -994,28 +1005,44 @@ class DssService(Service):
             if istat>5:
                 del dssf 
                 raise DssAccessError("Error access data: %s erro code:"%path)
+
+            if index==0: ## keep first set of dic and date.
+                ccdate=cdate
+                cctime=ctime
+                nnheadu=nheadu
+                hheadu=headu
+                datat=data
+                flagst=flags
+            else:
+                datat=concatenate((datat,data))
+                flagst=concatenate((flagst,flags))
+                
+            index=index+1
             
+        if strip(ccdate)=="":
+            ccdate=strip(split(path,"/")[4])
+            cctime="0000"
+
         del dssf
 
          ## add those props.
         prop={}
         
-        if (nval==0): ## return ts of zero length
+        if (nvalt==0):
             return rts([],cdate,time_interval,prop)
-        
        
         prop[UNIT]=cunits
         prop[CTYPE]=ctype
         
-        if nheadu>0:
-            hdic=self._unstuff_header(headu,nheadu,2)
+        if nnheadu>0:
+            hdic=self._unstuff_header(hheadu,nnheadu,2)
             for key in hdic.keys():
                 if not((key==UNIT)or(key==CTYPE)):
                     prop[key]=hdic[key]
 
              
         ts=dss_rts_to_ts\
-        (data,cdate,ctime,time_interval,iofset,prop,flags)
+        (datat,ccdate,cctime,time_interval,iofset,prop,flagst)
         
         return ts
                     
