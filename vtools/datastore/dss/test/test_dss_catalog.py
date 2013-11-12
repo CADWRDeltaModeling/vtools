@@ -138,7 +138,7 @@ class TestDssCatalog(unittest.TestCase):
         selector="F=DWR*"
         dl=dssc.filter_catalog(selector)
         self.assertEqual(type(dl),DssCatalog)
-        self.assertEqual(len(dl),6)
+        self.assertEqual(len(dl),7)
                 
     def test_filter_catalog_dot_bug(self):
         dssfile_path=self.test_file_path

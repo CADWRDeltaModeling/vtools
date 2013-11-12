@@ -7,7 +7,7 @@ from datetime import datetime
 from scipy import arange,sin,pi,cos
 
 from vtools.datastore.dss.utility import *
-
+from vtools.datastore.dss.dss_service import DssService,DssAccessError
    
 class TestDssUtility(unittest.TestCase):
 
@@ -73,16 +73,16 @@ class TestDssUtility(unittest.TestCase):
         self.assertAlmostEqual(ts.data[0],4.49960184)
         self.assertAlmostEqual(ts.data[-1],-0.41016656)
         
-         ## READ A VERY LONG INST REGUALR TS
+         ## READ A VERY LONG AVER REGUALR TS
         dssfile_path=self.data_file_path
-        selector="/HIST*/SLTMP017/STAGE//15MIN/DWR-CD-SURFWATER/"
+        selector="/RSAC054/MTZ/EC//15MIN/DWR-DMS-200905_PER_AVE/"
         ts=dss_retrieve_ts(dssfile_path,selector)
-        self.assertEqual(len(ts),35040)
-        self.assertEqual(ts.times[0],datetime(1997,10,1))
-        self.assertEqual(ts.props[TIMESTAMP],INST)
-        self.assertEqual(ts.props[AGGREGATION],INDIVIDUAL)
-        self.assertAlmostEqual(ts.data[0],3.73)
-        self.assertAlmostEqual(ts.data[-1],-3.00)
+        self.assertEqual(len(ts),686768)
+        self.assertEqual(ts.times[0],datetime(1989,10,31,3,0))
+        self.assertEqual(ts.props[TIMESTAMP],PERIOD_START)
+        self.assertEqual(ts.props[AGGREGATION],MEAN)
+        self.assertEqual(round(ts.data[0]-25631.9,1),0)
+        self.assertAlmostEqual(ts.data[-1],0.0)
         
         
         dssfile_path=self.data_file_path
@@ -148,14 +148,14 @@ class TestDssUtility(unittest.TestCase):
         dssfile_path=self.data_file_path
         selector="/HIST*/SLTR*/*//15MIN/*/"
         dss_delete_ts(dssfile_path,selector)
-        self.assertRaises(Warning,dss_retrieve_ts,dssfile_path,selector)
+        self.assertRaises(ValueError,dss_retrieve_ts,dssfile_path,selector)
 
 
     def test_dss_catalog(self):
         dssfile_path=self.data_file_path
         selector="/HIST*/SLTR*/*//15MIN/*/"
         cat=dss_catalog(dssfile_path)
-        self.assertEqual(len(cat),25)
+        self.assertEqual(len(cat),27)
         cat=dss_catalog(dssfile_path,selector)
         self.assertEqual(len(cat),3)
      

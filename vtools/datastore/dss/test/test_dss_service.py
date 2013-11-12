@@ -43,7 +43,7 @@ class TestDssService(unittest.TestCase):
         entries=dssc.entries()        
         for entry in entries:
             self.assert_(type(entry)==CatalogEntry)            
-        self.assertEqual(len(entries),26)
+        self.assertEqual(len(entries),27)
         
     def test_get_data(self):
 
@@ -54,7 +54,6 @@ class TestDssService(unittest.TestCase):
         # Regular time series.
       
         selector="/TUTORIAL/DOWNSTREAM/EC//15MIN/REALISTIC/"
-        
         extent="time_window=(12/1/1991 03:45,12/24/1991 01:30)"
         data_ref=DataReference(id,source,view,selector,extent)
         data=self.dss_service.get_data(data_ref)
@@ -169,7 +168,7 @@ class TestDssService(unittest.TestCase):
         self.assert_(type(data)==TimeSeries)
         l=len(data.data)
         self.assertEqual(len(data.data),3)
-        self.assertEuqal(data.data[0],11.0)
+        self.assertEqual(data.data[0],11.0)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('1/2/1997'))
         # Here dss reading func only read up to right end of
         # time window (not include).
