@@ -23,7 +23,7 @@ DSS_DATA_SOURCE="vtools.datastore.dss.DssService"
 DSS_MAX_ITS_POINTS=5000
 # The maximum number of points allowable to retrieve
 # from a regualr time sereis path in one time
-DSS_MAX_RTS_POINTS=35000
+DSS_MAX_RTS_POINTS=350000
 
 ## The maximum number of array size used in
 ## retrieving data from a path, usually dss
