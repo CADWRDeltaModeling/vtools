@@ -385,7 +385,7 @@ class DssCatalog(Catalog):
                                 if self._selected(e,select_pattern)]
                                 
         if len(qualified_entry_indexes)<1:
-            raise ValueError("input selector doesn't match any record in dss file ")
+            raise DssAccessError("input selector doesn't match any record in dss file ")
         
         
         entries=[copy(self._entries[index]) for index \
@@ -464,7 +464,7 @@ class DssCatalog(Catalog):
         map=[]
         for entry in self._entries:
             if entry.fully_loaded:
-                time_exent=RangeDimension(entry.dimension_scales()[0].get_range())
+                time_extent=RangeDimension(entry.dimension_scales()[0].get_range())
                 map.append(time_extent)
             else:
                 map.append(None)           
