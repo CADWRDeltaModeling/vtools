@@ -22,7 +22,8 @@ setup(
     install_requires = ['setuptools'],
     packages=find_packages(),
     namespace_packages=['vtools','vtools.datastore','vtools.datastore.dss'],
-    package_data={"":["doc/*.*","doc/html/*.*","*.pyd"]},
+    package_data={"vtools.datastore.dss":["doc/*.*","doc/html/*.*","*.pyd","*test/backup_dssfile/testfile.dss"],
+	              "":["doc/*.*","doc/html/*.*","*.pyd"]},
     exclude_package_data = {'': ['*.pyc','*.pyo']},
     entry_points = {
         'console_scripts': [
