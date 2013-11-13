@@ -923,10 +923,40 @@ class DssService(Service):
         # Parse string datetime into datetime instance.
         stime=dateutil.parser.parse(stime)
         etime=dateutil.parser.parse(etime)
-
         path=data_ref.selector
         time_interval=strip(split(path,"/")[5])        
         step=parse_interval(time_interval)
+
+        if (stime>etime) :
+            raise ValueError("input time window start time is behind end time.")
+       
+
+        ## find out the valid time extent of the ts 
+        (juls,istime,jule,ietime,cunits,ctype,lqual,ldouble,lfound) = dssf.ztsinfox(data_ref.selector)
+
+        if(not lfound):
+            raise DssAccessError("input path is invalid %s"%data_ref.selector)
+        
+        ts_start = dss_julian2python(juls,istime)
+        ts_end   = dss_julian2python(jule,ietime)
+
+        ## for aggregated ts move time stamp to begining of interval
+        if (ctype in RTS_DSS_PROPTY_TO_VT.keys()):
+            ts_start =ts_start - step
+            ts_end   =ts_end - step
+
+        if (etime<ts_start) or (stime>ts_end):
+            raise ValueError("input time window is out of valid data extent %s."%data_ref.selector)
+
+        if (stime<ts_start):
+            stime = ts_start
+            
+        if (etime>(ts_end+step)) and (ctype in RTS_DSS_PROPTY_TO_VT.keys()):
+            etime = ts_end+step
+        elif (etime>(ts_end)) and (not(ctype in RTS_DSS_PROPTY_TO_VT.keys())):
+            etime = ts_end
+        
+            
         cdate=stime.date()
         cdate=cdate.strftime('%d%b%Y') 
         ctime=stime.time()
