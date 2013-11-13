@@ -133,7 +133,6 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(len(ts),0)
         
     def test_retrieve_aver_ts(self):
-        
         dssfile_path=self.data_file_path
         selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2/"
         tss=dss_retrieve_ts(dssfile_path,selector)
@@ -141,14 +140,20 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(numd,938)
         startdatetime=datetime(1997,1,1)
         self.assertEqual(tss.times[0],startdatetime)
+
+        timewindow="(01/01/1997,07/28/1999)"
+        tss=dss_retrieve_ts(dssfile_path,selector,timewindow)
+        numd=len(tss)
+        self.assertEqual(numd,938)
+        self.assertEqual(tss.times[0],startdatetime)
     
         
     def test_dss_delete_ts(self):
-    
+   
         dssfile_path=self.data_file_path
         selector="/HIST*/SLTR*/*//15MIN/*/"
         dss_delete_ts(dssfile_path,selector)
-        self.assertRaises(ValueError,dss_retrieve_ts,dssfile_path,selector)
+        self.assertRaises(DssAccessError,dss_retrieve_ts,dssfile_path,selector)
 
 
     def test_dss_catalog(self):
