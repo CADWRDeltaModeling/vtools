@@ -826,10 +826,17 @@ class DssService(Service):
         stimet=stime
         
         while stimet<etime:
-            
-            etimet=increment(
-                stimet,step,DSS_MAX_RTS_POINTS)
+
             nval=DSS_MAX_RTS_POINTS
+            try:
+                etimet=increment(
+                stimet,step,DSS_MAX_RTS_POINTS)
+            except: ## in case when step is big like month, DSS_MAX_RTS_POINTS will
+                    ## cause over reasonable year range. Such case should  use
+                    ## one windows 
+                etimet=etime
+                nval=number_interval(stimet,etimet,step)
+            
             
             if etimet>etime:
                 etimet=etime
@@ -948,9 +955,11 @@ class DssService(Service):
         if (etime<ts_start) or (stime>ts_end):
             raise ValueError("input time window is out of valid data extent %s."%data_ref.selector)
 
+    
         if (stime<ts_start):
             stime = ts_start
-            
+
+        ##  for aggregated ts move a interval forward to make sure including the last data
         if (etime>(ts_end+step)) and (ctype in RTS_DSS_PROPTY_TO_VT.keys()):
             etime = ts_end+step
         elif (etime>(ts_end)) and (not(ctype in RTS_DSS_PROPTY_TO_VT.keys())):
