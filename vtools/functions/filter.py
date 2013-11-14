@@ -63,8 +63,8 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     
     interval=ts.interval
     
-    if not interval in _butterworth_interval:
-        raise ValueError("time interval is not supported by butterworth.")
+    if (not (interval in _butterworth_interval)) and (cutoff_period == None) and (cutoff_frequency==None):
+        raise ValueError("time interval is not supported by butterworth if no cuttoff period/frequency given.")
 
     if (cutoff_frequency!=None) and (cutoff_period!=None):
         raise ValueError("cutoff_frequency and cutoff_period can't be specified simultaneously")
@@ -73,8 +73,9 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     if (cf==None):
         if (cutoff_period !=None):
             ## convert it to days
-            frequency_in_days = ticks(parse_interval(cutoff_period))/ticks_per_day
-            cf = 1.0/frequency_in_days
+            cutoff_frequency_in_ticks = 1.0/float(ticks(parse_interval(cutoff_period)))
+            nyquist_frequency  = 0.5/float(ticks(interval))
+            cf = cutoff_frequency_in_ticks/nyquist_frequency
         else:
             cf=butterworth_cutoff_frequencies[interval]
         
