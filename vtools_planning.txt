@@ -1,7 +1,7 @@
 
 
 
-deployment:
+Deployment:
 simplify the distribution to a single egg
 eliminate the *.api from import statements (mark for deprecation with warning, maintain temporarily for backward compatibilty)
 x eliminate gadfly
