@@ -1,0 +1,1 @@
+sphinx-apidoc --force -o source\api ..\vtools functions\test test data\test datastore\dss\test examples data\sample_series data\constants data\api functions\test_ufunc functions\test_filter functions\test_diff
