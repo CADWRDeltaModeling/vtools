@@ -49,7 +49,7 @@ def interpolate_ts_nan(ts,method=LINEAR,**args):
 
     Parameters
     ----------
-    ts: TimeSeries
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
         The time series to be interpolated. Must be univariate.
 
     method : {LINEAR,NEAREST,PREVIOUS,NEXT,SPLINE,MSPLINE,RHIST}
@@ -97,8 +97,8 @@ def interpolate_ts(ts,intime,method=SPLINE,filter_nan=True,**dic):
     -----------
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to interpolate. Must has data of one dimension, regular or irregular.
-    intime : time_interval or time_sequence
-        In case of time interval, a rts is returned. In case of time sequence, a its is returned.
+    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     method : string, optional
         See interpolate_ts_nan
     filter_nan : boolean, optional
@@ -118,12 +118,12 @@ def interpolate_ts(ts,intime,method=SPLINE,filter_nan=True,**dic):
     
     """
     
-    if not(type(intime)==str) and isSequenceType(intime):
-       data=_interpolate_ts2array(ts,intime,method=method,\
+    if not(type(times)==str) and isSequenceType(times):
+       data=_interpolate_ts2array(ts,times,method=method,\
                                   filter_nan=filter_nan,**dic)
        ts=its(intime,data,{})
     else:
-       ts=_interpolate2rts(ts,intime,method=method,\
+       ts=_interpolate2rts(ts,times,method=method,\
                            filter_nan=filter_nan,**dic)
     return ts
 
@@ -137,8 +137,8 @@ def monotonic_spline(ts,times,filter_nan=True):
     ----------
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
-    times : time_interval
-        String which can be parsed into time interval, or sequence of datetime or integer ticks.
+    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     filter_nan: if nan points should be omitted or not.
 
     Returns
@@ -154,18 +154,18 @@ def linear(ts,times,filter_nan=True):
 
     Parameters
     ----------
-    ts: :class:`TimeSeries`
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
-    times: {'time_interval', 'time_sequence'}
-        time interval can be a vtools time interval type or a string that can be parsed into a time interval. 
+    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
    
-    filter_nan : boolean,optional
+    filter_nan : boolean, optional
         Should nan points should be omitted or not.
     
     Returns
     -------
     result : `TimeSeries`
-        A regular time series if `times` is a time interval, or irregular time series if `times` is a time sequence. 
+        A regular time series if `times` is a `time_interval`, or irregular time series if `times` is a `time_sequence`. 
     """    
     return interpolate_ts(ts,times,method=LINEAR,filter_nan=filter_nan)
 
@@ -175,11 +175,10 @@ def nearest_neighbor(ts,times,filter_nan=True,**dic):
 
     Parameters
     ----------
-    ts: timeseries 
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
-    times: time interval, time sequence or string
-        
-    
+    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     filter_nan : boolean, optional 
         True if NaN point should be ommitted or not.
     

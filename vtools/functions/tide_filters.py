@@ -79,9 +79,6 @@ def tide_butterworth(ts,order=2,cutoff_frequence=None):
     prop[AGGREGATION]=INDIVIDUAL
     return rts(d2r,ts.start,ts.interval,prop)
     
-   
-
-
 
 
 def steps_per_interval(ts,averaging_interval):

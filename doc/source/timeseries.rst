@@ -6,14 +6,22 @@ Timeseries concepts and manipulation
 Datetime and ticks
 ------------------
 
-Time intervals (deltas) for calendar and regular periods
---------------------------------------------------------
+.. _time_interval:
+
+Time intervals (deltas)
+-----------------------
+A time interval is either a timedelta or a dateutil delta.
+
+.. _time_sequence:
+
+Time sequence
+-------------
+A time sequence is a numpy array or python list of datetimes.
 
 Time windows or spans
 ---------------------
 
-Time sequence
--------------
+Ok
 
 Time series class
 ----------------------------
