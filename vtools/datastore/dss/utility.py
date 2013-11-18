@@ -24,11 +24,8 @@ _catalog_buffer={}
 ##############################################
 
 def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False,overlap=None):
-    """
-       retrieve timesereies from a dss file on from
-       specified paths within the same time_window.
-
-
+    """Retrieve timeseries from a dss file 
+    based on the specified paths within a given time_window.
     usage: rt=retrieve_dss_data(dss_file,selector)
 
     input:    

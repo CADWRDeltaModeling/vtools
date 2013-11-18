@@ -4,7 +4,8 @@ import sys
 import datetime
 from timeseries import *
 from numpy import arange
-from scipy.special import jn,nan
+from scipy import nan
+from scipy.special import jn
 
 def create_sample_series():
     numpoints=100000
