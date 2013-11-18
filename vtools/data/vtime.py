@@ -182,7 +182,7 @@ def ticks_to_interval(ticks,base=time_base):
     """Convert a number of ticks to a time interval."""
     d=ticks//ticks_per_day
     s=(ticks - d*ticks_per_day)//ticks_per_second
-    return timedelta(days=d,seconds=s)
+    return _datetime.timedelta(days=d,seconds=s)
 
 
 def is_interval(intvl):
