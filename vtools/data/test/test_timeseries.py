@@ -274,9 +274,41 @@ class TestTimeSeries(unittest.TestCase):
         ts2=rts(data,st,dt,num)
         d2=parse_time("2/28/2001")
         self.assertEqual(ts2.times[1],d2)
+    
+    def test_ts_centered(self):
         
-                
-  
+        dt=time_interval(months=1)
+        st=parse_time("1/1/1991")
+        num=120
+        data=range(num)
+        ts1=rts(data,st,dt,num)
+        
+
+        ts1_centered = ts1.centered(copy_data=False, neaten=True)
+        self.assertEqual(len(ts1_centered),num-1)
+        self.assertEqual(ts1_centered.data[0],data[0])
+        self.assertEqual(ts1_centered.data[-1],data[-2])
+        self.assertEqual(ts1_centered.times[0],parse_time("1/15/1991"))
+        ## check if new data share data with old one
+        ts1.data[0]=-9999
+        self.assertEqual(ts1_centered.data[0],ts1.data[0])
+        ## check not share data with old one
+        ts1_centered_not_share_data = ts1.centered(copy_data=True, neaten=True)
+        ts1.data[0]=-10000
+        self.assertNotEqual(ts1_centered_not_share_data.data[0],ts1.data[0])
+        
+        
+        its1_centered = self.its1.centered(copy_data=False)
+        self.assertEqual(len(its1_centered),len(self.its1)-1)
+        self.assertEqual(its1_centered.data[0],self.its1.data[0])
+        self.assertEqual(its1_centered.data[-1],self.its1.data[-2])
+        its_dt1 = self.its1.times[1]-self.its1.times[0]
+        its_dt1_half  = ticks(its_dt1)/2
+        centered_its_start = self.its1.times[0]+ticks_to_interval(its_dt1_half)
+        self.assertEqual(its1_centered.times[0],centered_its_start)
+        
+        
+
 
 if __name__ == '__main__':
     unittest.main()
