@@ -1,4 +1,8 @@
 
+Odds and ends:
+The modules "filter", "tidal_filter" and "godin" should be consolidated into a single module "filter". There should be no need for the tidal butterworth, as this should be easy for the user to do based on your new input, yes?
+
+
 
 
 Deployment:
