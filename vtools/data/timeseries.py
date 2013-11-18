@@ -337,6 +337,35 @@ class TimeSeries(object):
             newticks=self._ticks[startindex:endindex+1]
             return its(newticks,newdata,newprops)        
  
+    def centered(self,copy_data=False,neaten=True):
+        new_data=self.data[0:-1]
+        if copy_data:
+            new_data = numpy.copy(self.data[0:-1])
+        new_props=self.props
+        if (self.is_regular())and(not(is_calendar_dependent(self.interval))):
+            new_start=ticks_to_time(self._ticks[0]+ticks(self.interval)/2)
+            interval=self.interval
+            return rts(new_data,new_start,interval,new_props)
+        elif (self.is_regular())and(is_calendar_dependent(self.interval)):
+            dt=self.times[1]-self.times[0]
+            assert(dt.seconds==0)
+            interval_days=dt.days
+            ##flooring to the below of half interval
+            half_interval_days=interval_days//2
+            if (half_interval_days==int(interval_days/2)):
+                half_interval_days=half_interval_days-1
+            new_start=self.times[0]+days(half_interval_days)
+            interval=self.interval
+            return rts(new_data,new_start,interval,new_props)
+        else:
+            ticks1=self._ticks[0:-1]
+            ticks2=self._ticks[1:]
+            interval_ticks = [t2-t1 for t1,t2 in zip (ticks1,ticks2)]
+            half_interval  = [t/2 for t in interval_ticks]
+            new_ticks = [t+dt for t,dt in zip(ticks1,half_interval)]
+            return its(new_ticks,new_data,new_props)
+            
+            
  
     def ts_inplace_binary(f):
         def b(self,other):
