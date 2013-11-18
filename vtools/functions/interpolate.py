@@ -34,124 +34,160 @@ PREVIOUS="pre"
 NEXT="next"
 LINEAR="linear"
 SPLINE="spline"
-MONOTONIC_SPLINE="monotonic_spline"
-RATIONAL_HISTOSPLINE="rational histospline"
+MONOTONIC_SPLINE='mspline'
+RATIONAL_HISTOSPLINE='rhist'
+MSPLINE='mspline'
+RHIST = 'rhist'
 
 ########################################################################### 
 ## Public interface.
 ###########################################################################
 
-def interpolate_ts_nan(ts,method=LINEAR,**dic):
+def interpolate_ts_nan(ts,method=LINEAR,**args):
     
-    """ Estimate missing values within ts data by different
-        interploating methods. 
+    """ Estimate missing values within a time series by interpolation. 
 
-        usage: ts=interpolate_ts_nan(ts,method,**dic)
+    Parameters
+    ----------
+    ts: TimeSeries
+        The time series to be interpolated. Must be univariate.
+
+    method : {LINEAR,NEAREST,PREVIOUS,NEXT,SPLINE,MSPLINE,RHIST}
+        You can use our constants or the equivalent string as indicated below.
+
+        LINEAR or 'linear' 
+            Linear interpolation
+        NEAREST or 'nearest'
+            Nearest value in time
+        PREVIOUS or 'previous'
+            Previous step with data
+        NEXT or 'next'
+            Next step with data
+        SPLINE or 'spline'
+            numpy 1D spline
+        MSPLINE or 'mspline' 
+            Monotonicity (shape) preserving spline 
+        RHIST or 'rhist'
+            Rational histospline that conserves area under the curve.            
+    **args : dictonary 
+        Extra keyword parameters required by the `method`.
+
+    Returns
+    -------    
+    filled : vtools.data.time_series.TimeSeries
+        New series with missing values filled using `method`
+
         
-        input:
-             ts: timeseries, must has data of rank one
-             at the moment.
-        optional input:
-             method: what interpolation method used.
-             **dic: dictonary of extra parameters.
-        output:
-            new ts with missing vlaues filled with
-            interplolated values.
     """
-    #todo: does the signature of this method really make filter_nan necessary?
     tst=deepcopy(ts)
     indexes=where(isnan(tst.data))
     ## indexes turn out to be a tuple
     ## only the first element is what
     ## needed.
     times=take(tst.ticks,indexes[0])    
-    values=_interpolate_ts2array(tst,times,method,filter_nan=True,**dic)       
+    values=_interpolate_ts2array(tst,times,method,filter_nan=True,**args)       
     put(tst.data,indexes,values)
     return tst
 
 
-def interpolate_ts(ts,inttime,method=SPLINE,filter_nan=True,**dic):
-    """ do interpolation over a time series and return a new regular/irregular
-        time series.
+def interpolate_ts(ts,intime,method=SPLINE,filter_nan=True,**dic):
+    """ Interpolate a time series to a new time sequence.
 
-        input:
-             ts: timeseries, must has data of rank one
-             at the moment, can be regular time series
-             or irregular time series.
-             inttime: time interval or sequence of times.
-                      in case of time interval, a rts is returned
-                      in case of time sequence, a its is returned.
-        optional input:
-             method: what interpolation method used.
-             filter_nan:If nan should be ommitted or not. If not, then thoese
-                        existing nan will be used in interplation algorithm, which
-                        may cause new NAN points in resulting ts.
-             **dic: dictonary of extra parameters.        
+    Parameters
+    -----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to interpolate. Must has data of one dimension, regular or irregular.
+    intime : time_interval or time_sequence
+        In case of time interval, a rts is returned. In case of time sequence, a its is returned.
+    method : string, optional
+        See interpolate_ts_nan
+    filter_nan : boolean, optional
+        True if nan should be omitted or not. If retained, 
+        nan values in the source series will be used in interpolation algorithm, which may cause new nan points in resulting ts.
+    **dic : dictonary
+        Extra parameters.
+
+    Returns
+    -------
+    result : vtools.data.time_series.TimeSeries
+        A regular or irregular series with times based on intime and values interpolated from ts.
+        
+    See Also
+    --------
+    interpolate_ts_nan : Fill internal nan values using interpolation
     
-        returns a regular or irregular ts with interpolated values
-          
     """
     
-    if not(type(inttime)==str) and isSequenceType(inttime):
-       data=_interpolate_ts2array(ts,inttime,method=method,\
+    if not(type(intime)==str) and isSequenceType(intime):
+       data=_interpolate_ts2array(ts,intime,method=method,\
                                   filter_nan=filter_nan,**dic)
-       ts=its(inttime,data,{})
+       ts=its(intime,data,{})
     else:
-       ts=_interpolate2rts(ts,inttime,method=method,\
+       ts=_interpolate2rts(ts,intime,method=method,\
                            filter_nan=filter_nan,**dic)
     return ts
 
 
 def monotonic_spline(ts,times,filter_nan=True):
-    """
-       Interpolation by monotonic spline.
-       monotonic spline will pass data point exactly.
+    """Interpolation by monotonicity (shape) preserving spline.
+    The spline will fit the data points exactly, derivatives are
+    subject to slope limiters
        
-       Input:
-             ts: timeseries to be interpolated
-             times: time interval, string which can be parsed into
-                    time interval, or sequence of datetime or integer
-                    ticks.
-        Optional input:
-             filter_nan:if NaN point should be ommitted or not.
-        Output:
-              a regular time series if second input is time iterval,
-              or irregular time series otherwise. 
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+    times : time_interval
+        String which can be parsed into time interval, or sequence of datetime or integer ticks.
+    filter_nan: if nan points should be omitted or not.
+
+    Returns
+    -------
+    result : `vtools.data.time_series.TimeSeries`
+        A regular time series if second input is time interval, or irregular time series otherwise. 
     """
 
     return interpolate_ts(ts,times,method=MONOTONIC_SPLINE,filter_nan=filter_nan)  
 
 def linear(ts,times,filter_nan=True):
-    """
-       Interpolation by linear method.
+    """Interpolate a time series by linear interpolation.
 
-       Input:
-             ts: timeseries to be interpolated
-             times: time interval or string which can be parsed into
-                    time interval, or sequence of datetime or integer
-                    ticks.
-        Optional input:
-             filter_nan:if NaN point should be ommitted or not.
-        Output:
-              a regular time series if second input is time iterval,
-              or irregular time series otherwise. 
+    Parameters
+    ----------
+    ts: :class:`TimeSeries`
+        Series to be interpolated
+    times: {'time_interval', 'time_sequence'}
+        time interval can be a vtools time interval type or a string that can be parsed into a time interval. 
+   
+    filter_nan : boolean,optional
+        Should nan points should be omitted or not.
+    
+    Returns
+    -------
+    result : `TimeSeries`
+        A regular time series if `times` is a time interval, or irregular time series if `times` is a time sequence. 
     """    
     return interpolate_ts(ts,times,method=LINEAR,filter_nan=filter_nan)
 
 def nearest_neighbor(ts,times,filter_nan=True,**dic):
     """
-       Interpolating gaps by nearest valid neibhbors.
+       Interpolating series using nearest valid neighbor.
 
-       Input:
-             ts: timeseries to be interpolated
-             times: time interval or string which can be parsed into
-                    time interval, or sequence of datetime or integer
-                    ticks.
-        Optional input:
-             filter_nan:if NaN point should be ommitted or not.
-        Output:
-              a regular time series if second input is time iterval,
-              or irregular time series otherwise. 
+    Parameters
+    ----------
+    ts: timeseries 
+        Series to be interpolated
+    times: time interval, time sequence or string
+        
+    
+    filter_nan : boolean, optional 
+        True if NaN point should be ommitted or not.
+    
+    Returns
+    -------
+    result : TimeSeries
+    A regular time series if second input is time interval,
+             or irregular time series otherwise. 
     """
     return interpolate_ts(ts,times,method=NEAREST,filter_nan=filter_nan,**dic)  
 
