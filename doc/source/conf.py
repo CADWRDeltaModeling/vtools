@@ -39,6 +39,7 @@ extensions = [
           'matplotlib.sphinxext.only_directives',
           'matplotlib.sphinxext.plot_directive',
           'matplotlib.sphinxext.ipython_directive',
+          'sphinx.ext.intersphinx',
           'sphinx.ext.autodoc',
           'sphinx.ext.doctest','numpydoc']
           #'numpydoc']
@@ -50,6 +51,11 @@ autodoc_member_order = 'alphabetical'
           
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+# mappings for intersphinx extension
+intersphinx_mapping = {'python': ('http://docs.python.org/2.7', None)}
+#,'dateutil':('http://labix.org/python-dateutil',None)
+
 
 # The suffix of source filenames.
 source_suffix = '.rst'

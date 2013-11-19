@@ -1,9 +1,9 @@
 """ Time series module
 Module contains the TimeSeries class and the factory functions
 for creating regular and irregular time series, as well as
-some helper functions
+some helper functions.
 """
-import sys #,pdb
+import sys
 from vtime import *
 from datetime import datetime
 from datetime import timedelta
@@ -19,11 +19,18 @@ from operator import isNumberType,isSequenceType
 #from vtools.debugtools.timeprofile import debug_timeprofiler
 
 def range_union(ts0,ts1):
-    """Union of time ranges of two series
-       Returns a tuple representing the start
-       and end of the union of time
-       ranges of ts0 and ts1, as determined by the
-       earliest start and the latest end.
+    """Union of time ranges of two series.
+       
+       Parameters
+       ----------
+       ts0,ts1 : TimeSeries
+       The series whose union is to be found
+       
+       Returns
+       ------- 
+       range : tuple(datetime,datetime)
+       A tuple representing the start and end of the union of time
+       ranges of ts0 and ts1, as determined by the earliest start and the latest end.
     """
       
     union_start=min(ts0.start,ts1.start)
@@ -32,50 +39,92 @@ def range_union(ts0,ts1):
 
 def range_intersect(ts0,ts1):
     """Intersection of time ranges of two series.
-       May return result with union_start >union_end,
-       in which case there is no intersection.
-
-       Todo: In the future, may return None in this case
+    
+    May return result with union_start > union_end,
+    in which case there is no intersection.
     """
-    union_start=max(ts0.start,ts1.start)
-    union_end=min(ts0.end,ts1.end)
-    return (union_start,union_end)
+    intersect_start=max(ts0.start,ts1.start)
+    intersect_end=min(ts0.end,ts1.end)
+    return (intersect_start,intersect_end)
 
 def index_after(seq,tm):
-    """Return the index of a time sequence that
-       is on or after tm
+    """Return the integer index of a time sequence that is on or after tm
+    
+    Parameters
+    ----------
+    seq : time_sequence
+    The sequence whose index will be searched
+    
+    tm : datetime
+    Time whose index is sought
+    
+    Returns
+    -------
+    The integer index in the sequence that fall on or after tm.
+    
     """
     return bisect.bisect_right(seq,ticks(tm))
 
 def indexes_after(seq,tm):
-    """Return an array of indexes representing
-       the index of seq that is on or after each
-       member of tm
-       Arguments:
-       seq: a sequence of ticks
-       tm:  a list of ticks
+    """Return an array of indexes representing the index of seq that is on or after each
+       member of tm.
+       
+    Parameters
+    ----------
+    seq : time_sequence
+    The sequence whose index will be searched
+    
+    tm : list(datetime)
+    List of times whose index is sought
     """
 
     return scipy.searchsorted(seq,tm)
 
 
 def index_before(seq,tm):
+    """Return the integer index of a time sequence that is on or before tm
+    
+    Parameters
+    ----------
+    seq : time_sequence
+    The sequence whose index will be searched
+    
+    tm : datetime
+    Time whose index is sought
+    
+    Returns
+    -------
+    The integer index in the sequence that fall on or before tm.
+    
+    """
     return bisect.bisect_left(seq,ticks(tm))
     
 def prep_binary(ts1,ts2):
-    """Create data for time-aligned op between series
+    """Create data for time-aligned op binary operation between two series
        Returns data holders and selections required to carry out
-       a binary operation on two series.
-       Arguments:
-       ts1,ts2:  Two regular time series with similar time intervals
+       index-aligned binary operations on two series. Mostly of interest to programmers.
+       
+       Parameters
+       ----------
+       ts1,ts2 : TimeSeries
+           Two regular time series with similar time intervals
 
-       Returns:
-       A tuple containing, in order:
-       seq: time sequence representing the union of times from the series
-       start: the start of the sequence as a datetime
-       slice0: slice within seq covered by ranges of both ts1 and ts2
-       slice1: slice within ts1 representing the region intersecting ts2
-       slice2: slice within ts2 representing the region intersecting ts1
+       Returns
+       -------
+       seq : time_sequence
+           Representing the union of times from the series
+
+       start : datetime
+           The start of the sequence as a datetime
+       
+       slice0 : slice 
+           Indexing slice within seq covered by ranges of both ts1 and ts2
+       
+       slice1 : slice
+           Indexing slice within ts1 representing the region intersecting ts2
+       
+       slice2 : slice
+           Indexing slice within ts2 representing the region intersecting ts1
     """
     if not ts1.is_regular() or not ts2.is_regular():
         raise ValueError("Time series in binary operations must be regular")
@@ -93,8 +142,7 @@ def prep_binary(ts1,ts2):
 
 
 def _get_span(ts,start,end,left,right):
-    """
-       return span of index within ts according to input start and end
+    """ Return span of index within ts according to input start and end
     """
 
     if (start==None):
@@ -160,11 +208,10 @@ class TimeSeriesElement(object):
 
 
 class TimeSeries(object):
-    """ Time series
-       This is the fundamental class for both regular and
-       irregular time series. The prefered way to create a
-       time series is with the rts or its factory functions,
-       not with the constructor.
+    """ Fundamental class for both regular and irregular time series. 
+       The preferred way to create a time series is with the rts or its factory functions,
+       not with the constructor. The member attributes include the times and data in the series (which
+       are paired) as well as methods of querying the time series properties (start, end, interval) of the time series.       
     """
 
     def __init__(self, times, data, props,header=None):
@@ -191,11 +238,14 @@ class TimeSeries(object):
        
 
     def is_regular(self):
-        """returns true if the time series is regular
-           a regular series will have time samples at absolute
-           or calendar time intervals
+        """Returns true if the time series is regular
+           A regular series is considered regular if it has a sampling interval. This interval may
+           or may not be calendar dependent. 
         """
-        return hasattr(self,'interval')
+        if hasattr(self,'interval'): 
+            return not self.interval is None
+        else:
+            return False 
     
     def __len__(self):
         return len(self._ticks)
@@ -309,10 +359,33 @@ class TimeSeries(object):
             del(_data[index])
 
 
-    #perform a copy, optionally with clipped start and end
-    # if left=True, the first time point will be at or before the given start time
-    # otherwise, the first time will be at or after the given start. same for right
+
     def copy(self,start=None,end=None,left=False,right=False):
+        """ Perform a copy of this series, optionally with clipped start and end
+        
+        Parameters
+        ----------
+        start : datetime
+            Start time of copy
+        
+        end : datetime
+            End time of copy
+        
+        left : boolean, optional
+            Overlap so that the copy catches the value previous to the given start time (useful for irregular)
+
+        right : boolean, optional
+            Overlap so that the copy catches the next value after the given end time (useful for irregular)
+        
+        Returns
+        -------
+        result : TimeSeries
+            Copy of the series. Now shared data with the original, so you can manipulate it without fear of overwriting the original series.
+        
+        See also
+        --------
+        window : Same concept but with shared data.
+        """
         (startindex,endindex)=_get_span(self,start,end,left,right)
         newdata=numpy.copy(self.data[startindex:endindex+1])
         newprops=copy.copy(self.props)
@@ -340,6 +413,21 @@ class TimeSeries(object):
             return its(newticks,newdata,newprops)        
  
     def centered(self,copy_data=False,neaten=True):
+        """ Return a time series with times centered between the timestamps of the original series.
+        
+        Parameters
+        ----------
+        copy_data : boolean,optional
+            If True, the result is an entirely new series with deep copy of all data and properties. Otherwise, it will share data and properties ... more like a window than a new series.
+        
+        neaten : boolean, optional
+        
+        Returns
+        -------
+        result : TimeSeries
+            New series with shared or copied data with time centered between the timestamps of the original series. Note the new series has length one shorter than the original.
+        """
+        
         new_data=self.data[0:-1]
         if copy_data:
             new_data = numpy.copy(self.data[0:-1])
@@ -458,8 +546,6 @@ class TimeSeries(object):
     def __pow__(self, other):
         return other % self
         
-        
-        
     def __rdivmod__(self, other):
         raise NotImplementedError
 
@@ -574,17 +660,23 @@ class TimeSeries(object):
 
     
 def rts(data,start,interval,props=None):
-    """ Create a regular or calendar time series from
-        data and time parameters
+    """ Create a regular or calendar time series from data and time parameters
 
-        input:
-            data: should be a array/list of values,
-            start: may be an instance of datetime,
-                   string
-            interval: maybe timedelta or relativedelta
-                      or string.
-        output:
-            a timeseries instance.
+        Parameters
+        ----------
+        data : array_like
+            Should be a array/list of values. There is no restriction on data type, but not all functionality like addition or interpolation will work on all data.
+        
+        start : datetime
+            Can also be a string representing a datetime.
+        
+        interval : time_interval
+            Can also be a string representing an interval that is understood by :func:`vools.vtime.parse_interval`. 
+
+        Returns
+        -------
+        result : TimeSeries
+            A regular time series.
     """
     
     if type(start)==type(' '):
@@ -600,14 +692,20 @@ def rts(data,start,interval,props=None):
     return ts
 
 def its(times,data,props=None):
-    """ Create an irregular time series from time and data
-        sequences
+    """ Create an irregular time series from time and data sequences
         
-        input:
-            data: should be a array/list of values,
-            times: time sequence in ticks or datetime.
-        output:
-            a timeseries instance.
+        Parameters
+        ----------
+        times : time_sequence
+            An array or list of datetimes or ticks
+        
+        data : array or list of values
+            An array/list of values. No restriction on data type, but not all functionality will work on every data type.
+        
+        Returns
+        -------
+        result : TimeSeries
+            An irregular TimeSeries instance
     """
     # convert times to a tick sequence
     if type(data)==list:
