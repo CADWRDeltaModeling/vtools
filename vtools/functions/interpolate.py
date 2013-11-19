@@ -100,7 +100,7 @@ def interpolate_ts(ts,intime,method=SPLINE,filter_nan=True,**dic):
     times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     method : string, optional
-        See interpolate_ts_nan
+        See :func:`interpolate_ts_nan` for a list of methods
     filter_nan : boolean, optional
         True if nan should be omitted or not. If retained, 
         nan values in the source series will be used in interpolation algorithm, which may cause new nan points in resulting ts.
@@ -131,7 +131,9 @@ def interpolate_ts(ts,intime,method=SPLINE,filter_nan=True,**dic):
 def monotonic_spline(ts,times,filter_nan=True):
     """Interpolation by monotonicity (shape) preserving spline.
     The spline will fit the data points exactly, derivatives are
-    subject to slope limiters
+    subject to slope limiters. The name 'monotonicity-preserving'
+    can be a little deceptive -- this is an excellent all around 
+    choice for interpolating continuous data.
        
     Parameters
     ----------
@@ -184,95 +186,134 @@ def nearest_neighbor(ts,times,filter_nan=True,**dic):
     
     Returns
     -------
-    result : TimeSeries
+    result : `TimeSeries`
     A regular time series if second input is time interval,
              or irregular time series otherwise. 
     """
     return interpolate_ts(ts,times,method=NEAREST,filter_nan=filter_nan,**dic)  
 
 def previous_neighbor(ts,times,filter_nan=True,**dic):
-    """
-       Interpolating gaps by previous valid neighbors.
+    """Interpolate at time series using value at the previous valid neighbor
 
-       Input:
-             ts: timeseries to be interpolated
-             times: time interval or string which can be parsed into
-                    time interval, or sequence of datetime or integer
-                    ticks.
-        Optional input:
-             filter_nan:if NaN point should be ommitted or not.
-        Output:
-              a regular time series if second input is time iterval,
-              or irregular time series otherwise.        
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
+    filter_nan : boolean,optional
+    True if nan points should be omitted or not.
+    
+    Returns
+    -------
+    result : `TimeSeries`
+    A regular time series if second input is time interval,
+             or irregular time series otherwise.        
     """
     return interpolate_ts(ts,times,method=PREVIOUS,filter_nan=filter_nan,**dic)
 
 def rhistinterp(ts,interval,**dic):
-    """ Interpolating rts to a new rts with input interval by rational histospline
+    """ Interpolating a regular time series (rts) to a finer rts by rational histospline.
 
-        User may specify several optional paramters as keyward inputs:
+    The rational histospline preserves area under the curve. This is a good choice of spline for period averaged data where an interpolant is desired
+    that is 'conservative'. Note that it is the underlying continuous interpolant
+    that will be 'conservative though, not the returned discrete time series which
+    merely samples the underlying interpolant.    
+    
+    Parameters
+    ----------
 
-           p: spline tension, usually between 0 and 20. Must >-1
-           lowbound: lower bound of interpolated values.
-           tolbound: tolerance for determinign an input is on the bound.
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated, typically period averaged
+
+    interval : :ref:`time_interval <time_interval>` of output
+
+    p : float, optional 
+        Spline tension, usually between 0 and 20. Must >-1. For a 'sufficiently large' value of p, the interpolant will be monotonicity-preserving and will maintain strict positivity (always being strictly > `lowbound`.
+
+    lowbound : float, optional
+        Lower bound of interpolated values.
+    
+    tolbound : float, optional
+        Tolerance for determining if an input is on the bound.
+        
+    Returns
+    -------
+    result : `TimeSeries`
+        A regular time series with instantaneous values       
     """
     return interpolate_ts(ts,interval,method=RATIONAL_HISTOSPLINE,**dic)
 
 def next_neighbor(ts,times,filter_nan=True,**dic):
-    """
-       Interpolating gaps by next valid neighbors.
+    """Interpolate by next (forward in time) valid neighbors.
 
-       Input:
-             ts: timeseries to be interpolated
-             times: time interval or string which can be parsed into
-                    time interval, or sequence of datetime or integer
-                    ticks.
-        Optional input:
-             filter_nan:if NaN point should be ommitted or not.
-        Output:
-              a regular time series if second input is time iterval,
-              or irregular time series otherwise. 
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
+
+    filter_nan : boolean,optional
+        True if nan points should be omitted or not.
+    
+    Returns
+    -------
+    result : `TimeSeries`
+        A regular time series if `times` is time interval or irregular time series otherwise.   
+    
+              
     """
     return interpolate_ts(ts,times,method=NEXT,filter_nan=filter_nan,**dic)
 
 def spline(ts,times,filter_nan=True,**dic):    
-    """
-       Interpolating gaps by next valid neighbors.
-       spline method is not necessary to pass data point, the closeness
-       can be controlled by parameter s, s=1.0e-3 by default. the lower s is
-       , the closer is the fitted curve to data point, and less smoother.
-       this is different from monotonic spline.
-       Input:
-             ts: timeseries to be interpolated
-             times: time interval or string which can be parsed into
-                    time interval, or sequence of datetime or integer
-                    ticks.
-        Optional input:
-             filter_nan:if NaN point should be ommitted or not.
-        Output:
-              a regular time series if second input is time iterval,
-              or irregular time series otherwise. 
+    """Interpolating gaps using cubic spline.
+       The spline does not need to pass data point. The closeness
+       can be controlled by parameter s. 
+
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.
+        
+    filter_nan : boolean,optional
+        True if nan points should be omitted or not.
+    
+    s : float, optional
+        Smoothing parameter. s=1.0e-3 by default. The lower s is, the closer the fitted curve will be to the data points, and the less smoother the filter will be. This is different from monotonic spline, currently a bit slower and perhaps more robust.
+    
+    Returns
+    -------
+    result : `TimeSeries`
+        A regular time series if second input is time interval, or irregular time series otherwise.   
+    
     """
     return interpolate_ts(ts,times,method=SPLINE,filter_nan=filter_nan,**dic)
 
 def _interpolate2rts(ts,interval,method=SPLINE,filter_nan=True,**dic):
     
-    """ Interpolate on a ts to get a regular
-        ts with input interval.
+    """ Interpolate a time series to get a regular series with input `interval`.
 
-        usage: ts=interpolate_its_rts(it,interval,
-        method,filter_nan,**dic)
+    Parameters
+    -----------
         
-        input:
-             ts: timeseries, must has data of rank one
-             at the moment, can be regular time series
-             or irregular time series.
-        optional input:
-             method: what interpolation method used.
-             **dic: dictonary of extra parameters.        
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+        
+    method : string, optional
+        See :func:`interpolate_ts_nan` for a list of methods
     
-        A regular ts will be returned if succeed.
-     """
+    **dic : Dictionary
+        Dictonary of extra parameters to be passed to `method`
+    
+    Returns
+    -------
+        A regular time series.
+    """
     if type(interval)==type(" "):
         interval=parse_interval(interval)
         

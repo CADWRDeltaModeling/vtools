@@ -213,17 +213,22 @@ def is_calendar_dependent(intvl):
 
 def parse_interval(interval_string):
     """ Parse interval expressed as string and return a valid time interval
-        input:
-           interval_string: a string containing the interval to be parsed. May
-                            contain spaces, numbers, and abbreviations:
-                            s,sec,second
-                            m,min,minute
-                            h,hr,hour
-                            d,day
-                            mon,month
-                            y,yr,year
-        output: time interval of appropriate class for vtools depending on
-        calendar dependence
+    
+    Parameters
+    -----------
+        interval_string : string
+            A string representing the interval to be parsed. May contain spaces, numbers, and abbreviations:
+                - s,sec,second
+                - m,min,minute
+                - h,hr,hour
+                - d,day
+                - mon,month
+                - y,yr,year
+    
+    Returns
+    --------
+    interval : time_interval
+        time interval of appropriate class for vtools depending on calendar dependence
     """
     if not(type(interval_string)==str):
         raise TypeError("parse_interval only accept string input.")
