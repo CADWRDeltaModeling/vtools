@@ -4,6 +4,13 @@ The modules "filter", "tidal_filter" and "godin" should be consolidated into a s
 
 Change INDIVIDUAL to INST
 
+We should also look at shift(). It seems to me that this could be a member method of TimeSeries ... it seems odd that centered would be in TimeSeries and shift would be in a different place given how different they are. 
+
+For interpolation, the public interface looks good, but the implementation is really tangled. There are two high level functions interpolate_ts and interpolate_ts_nan which parameterize the names of methods.  Then there are a bunch of specific methods such as linear() and spline(). What you would expect is that the parameterized one would take the name of the method and dispatch the job to the individual method.  Instead, what seems to happen in a number of cases (but not consistently)  is that specific method calls the general method with the method parameter (say 'linear') and then the general method calls a private implementation of the specific method. That isn't going to look very sensible if anyone looks under the hood, although the public API is fine.
+
+************
+
+
 
 Deployment:
 simplify the distribution to a single egg
