@@ -17,6 +17,12 @@ Ufuncs on time series
 Period ops
 ----------
 
+Shifting
+--------
+
+Merging
+-------
+
 
 
 

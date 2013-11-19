@@ -21,7 +21,8 @@ Contents
    :maxdepth: 2
 
    Installing vtools <install_vtools>
-   Time and time series concepts <timeseries>
+   Time and time interval concepts <time_concepts>
+   Time series class <timeseries>
    Functions <vtools_functions>
    Getting data in and out of vtools <datastore>
    Plotting recipes <plotting>
