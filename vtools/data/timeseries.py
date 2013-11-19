@@ -6,6 +6,8 @@ some helper functions
 import sys #,pdb
 from vtime import *
 from datetime import datetime
+from datetime import timedelta
+import numpy as np
 import copy
 import itertools
 import scipy
