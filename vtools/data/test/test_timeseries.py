@@ -277,13 +277,22 @@ class TestTimeSeries(unittest.TestCase):
     
     def test_ts_centered(self):
         
+        
+        ## test of regular ts with interval of 15min 
+        ts1_centered=self.ts1.centered(copy_data=False)
+        self.assertEqual(len(ts1_centered),len(self.ts1)-1)
+        self.assertEqual(ts1_centered.data[0],self.ts1.data[0])
+        self.assertEqual(ts1_centered.data[-1],self.ts1.data[-2])
+        rts_dt_half  = ticks(self.ts1.interval)/2
+        centered_rts_start = self.ts1.times[0]+ticks_to_interval(rts_dt_half)
+        self.assertEqual(ts1_centered.times[0],centered_rts_start) 
+        
         dt=time_interval(months=1)
         st=parse_time("1/1/1991")
         num=120
         data=range(num)
         ts1=rts(data,st,dt,num)
-        
-
+        ## test of month interval ts
         ts1_centered = ts1.centered(copy_data=False, neaten=True)
         self.assertEqual(len(ts1_centered),num-1)
         self.assertEqual(ts1_centered.data[0],data[0])
@@ -297,7 +306,7 @@ class TestTimeSeries(unittest.TestCase):
         ts1.data[0]=-10000
         self.assertNotEqual(ts1_centered_not_share_data.data[0],ts1.data[0])
         
-        
+        ## test of irregular ts
         its1_centered = self.its1.centered(copy_data=False)
         self.assertEqual(len(its1_centered),len(self.its1)-1)
         self.assertEqual(its1_centered.data[0],self.its1.data[0])
