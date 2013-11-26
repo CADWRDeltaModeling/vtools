@@ -3,9 +3,6 @@ import sys
 from data_access_service import DataAccessService,DataAccessError
 from catalog_service import CatalogService
 
-#import pdb
-
-# this class code from Internet, author name to be added later
 class Register(type):
   """A tiny metaclass to help classes register themselves automagically"""
   
@@ -38,7 +35,6 @@ class Service(DataAccessService,CatalogService):
     factory=staticmethod(factory)
 
     def register(name,cls):
-
         identification=getattr(cls,"identification")
         Service.all_service[identification]=cls
 

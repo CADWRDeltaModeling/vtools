@@ -1,6 +1,6 @@
 
 class CatalogService(object):
-    """ abstract class defined interface of retrieveing catalog
+    """ abstract class defined interface of retrieving catalog
         from data source.
     """
 

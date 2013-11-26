@@ -30,6 +30,16 @@ class DataReference(object):
         self.view=view
         self.decoration=None ## reserved locations for future extending purposes.
         
+    def __repr__(self):
+        
+        return 'DataReference(id=%s,source=%s,view=%s,selector=%s,extent=%s)'\
+                %(self.source_type_id,self.source,self.view,self.selector,self.extent)
+                
+    def __str__(self):
+        
+        return 'source_type:%s,data_source:%s,data_view:%s,data_selector:%s,extent:%s'\
+                %(self.source_type_id,self.source,self.view,self.selector,self.extent)
+        
     ########################################################################### 
     # Public interface.
     ###########################################################################
