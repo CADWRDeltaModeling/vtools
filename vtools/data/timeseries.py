@@ -432,6 +432,8 @@ class TimeSeries(object):
         if copy_data:
             new_data = numpy.copy(self.data[0:-1])
         new_props=self.props
+        if copy_data:
+            new_props = copy.deepcopy(self.props)
         if (self.is_regular())and(not(is_calendar_dependent(self.interval))):
             new_start=ticks_to_time(self._ticks[0]+ticks(self.interval)/2)
             interval=self.interval
@@ -455,8 +457,43 @@ class TimeSeries(object):
             new_ticks = [t+dt for t,dt in zip(ticks1,half_interval)]
             return its(new_ticks,new_data,new_props)
             
-            
+    def shift(self,interval,copy_data=False):
+        """ Return a time series with the timestamps shifted by a interval.
+        
+        Parameters
+        ----------
+        interval: datetime.timedelta or dateutil.relativedelta or string 
+  
+        copy_data : boolean,optional
+            If True, the result is an entirely new series with deep copy of all data and properties. Otherwise, it will share data and properties.
+    
+        Returns
+        -------
+        result : TimeSeries
+            New series with shared or copied data with  the  shfited timestamps of the original series by inpute interval.
+        """    
+        
+        new_data=self.data
+        if copy_data:
+            new_data = numpy.copy(self.data)
+        new_props=self.props
+        if copy_data:
+            new_props = copy.deepcopy(self.props)   
  
+        if not is_interval(interval):
+            interval=parse_interval(interval)
+               
+        if self.is_regular():
+            return rts(new_data,increment(self.start,interval,1),self.interval,new_props) 
+        else:
+            new_times=[]
+            if is_calendar_dependent(interval):
+               new_times=self.times + interval
+            else:
+               new_times=self.ticks + ticks(interval)
+      
+            return its(new_times,new_data,new_props)
+            
     def ts_inplace_binary(f):
         def b(self,other):
             if( isinstance(other,TimeSeries) ):
