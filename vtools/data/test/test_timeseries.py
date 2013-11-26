@@ -276,8 +276,7 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts2.times[1],d2)
     
     def test_ts_centered(self):
-        
-        
+          
         ## test of regular ts with interval of 15min 
         ts1_centered=self.ts1.centered(copy_data=False)
         self.assertEqual(len(ts1_centered),len(self.ts1)-1)
@@ -316,8 +315,62 @@ class TestTimeSeries(unittest.TestCase):
         centered_its_start = self.its1.times[0]+ticks_to_interval(its_dt1_half)
         self.assertEqual(its1_centered.times[0],centered_its_start)
         
-        
+    def test_ts_shift_rts(self):  
 
+       # Test operations on ts of varied values.
+       # ts_start, ts_len, ts_interval, shift_interval_str, shift_interval
+        test_input=[(datetime(1990,2,3,11,15),
+                     3005,minutes(5),"1hour",),
+                    (datetime(year=1990,month=2,day=3,hour=11, minute=15),
+                     3301,days(1),"1month"),
+                    (datetime(year=1990,month=2,day=3,hour=11, minute=15),
+                     3407,hours(1),"3days"),
+                    (datetime(year=1990,month=2,day=3,hour=11, minute=45),
+                     6093,days(1),"1year"),
+                    (datetime(year=1990,month=2,day=3,hour=11, minute=15),
+                     3005,time_interval(minutes=5),"-1hour")                 
+                    ]
+
+        for (ts_start,ts_len,ts_intvl,shift_interval) in test_input:
+            
+            data=numpy.repeat(10.,ts_len)
+            diff=parse_interval(shift_interval)
+            
+            # This ts is the orignial one
+            ts0=rts(data,ts_start,ts_intvl)
+            
+            # First move forward.
+            ts=ts0.shift(shift_interval,copy_data=True)
+            
+            # Now ts ticks should has a forward
+            # difference from ts0.
+            self.assertEqual(ts0.start+diff,ts.start)
+            
+            # This line maynot work for calendar 
+            # dependent shift interval.
+            self.assertEqual(ts0.end+diff,ts.end)
+            
+           
+    def test_ts_shift_its(self):  
+    
+        ts_len=1000
+        data=numpy.repeat(10.0,ts_len)
+        ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=15)
+        times=[ts_start]*ts_len
+        
+        for i in range(1,ts_len):
+            times[i]=times[i-1]+time_interval(hours=i%5)
+            
+        ts0=its(times,data,{})        
+        test_input=[hours(1),months(1),days(3),years(1)]
+        
+        for shift_interval in test_input:           
+            ts=ts0.shift(shift_interval,copy_data=True)
+            t=ts0.times+shift_interval
+            for a1,b1 in zip(t,ts.times):
+                self.assertEqual(a1,b1)
+
+    
 
 if __name__ == '__main__':
     unittest.main()
