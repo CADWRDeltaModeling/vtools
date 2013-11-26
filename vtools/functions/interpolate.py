@@ -11,7 +11,7 @@ from copy import deepcopy
 from scipy.interpolate import interp1d
 from scipy.interpolate.fitpack import splrep,splev
 from scipy import array,logical_not,compress,\
-isnan,zeros,put,transpose,where,take,alltrue,\
+isnan,zeros,zeros_like,put,transpose,where,take,alltrue,\
 greater,less,arange,nan,resize
 
 ## vtools import. 
@@ -24,7 +24,7 @@ from vtools.data.constants import *
 from _monotonic_spline import _monotonic_spline
 from _rational_hist import *
 
-__all__=["linear","spline","monotonic_spline","nearest_neighbor",\
+__all__=["linear","spline","monotonic_spline","nearest_neighbor","gap_size",\
          "previous_neighbor","next_neighbor","interpolate_ts_nan",\
          "NEAREST","PREVIOUS","NEXT","LINEAR","SPLINE","MONOTONIC_SPLINE",\
          "interpolate_ts","rhistinterp","RATIONAL_HISTOSPLINE"]
@@ -43,7 +43,7 @@ RHIST = 'rhist'
 ## Public interface.
 ###########################################################################
 
-def interpolate_ts_nan(ts,method=LINEAR,**args):
+def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
     
     """ Estimate missing values within a time series by interpolation. 
 
@@ -80,7 +80,14 @@ def interpolate_ts_nan(ts,method=LINEAR,**args):
         
     """
     tst=deepcopy(ts)
-    indexes=where(isnan(tst.data))
+
+    if max_gap > 0:
+        gaps = gap_size(tst.data)
+        indexes = where((gaps > 0) & (gaps <= max_gap))
+    else:
+        indexes=where(isnan(tst.data))
+    
+    
     ## indexes turn out to be a tuple
     ## only the first element is what
     ## needed.
@@ -808,3 +815,31 @@ def filter_nana(ts_data,ts_ticks):
     
 
     return ts_data,ts_ticks
+
+    
+def gap_size(x):
+    from itertools import groupby
+    
+    """Find the size of gaps (blocks of nans) for every point in an array.
+    Parameters
+    ----------
+    x : array_like
+    an array that possibly has nans
+
+    Returns
+    gaps : array_like
+    An array the values of which represent the size of the gap (number of nans) for each point in x, which will be zero for non-nan points.    
+    """
+    isgap = zeros_like(x)
+    isgap[isnan(x)] = 1
+    gaps = []
+    for a, b in groupby(isgap, lambda x: x == 0):
+        if a: # Where the value is 0, simply append to the list
+            gaps.extend(list(b))
+        else: # Where the value is one, replace 1 with the number of sequential 1's
+            l = len(list(b))
+            gaps.extend([l]*l)
+    return array(gaps)
+    
+    
+    
