@@ -835,7 +835,7 @@ class DssService(Service):
                     ## cause over reasonable year range. Such case should  use
                     ## one windows 
                 etimet=etime
-                nval=number_interval(stimet,etimet,step)
+                nval=number_intervals(stimet,etimet,step)
             
             
             if etimet>etime:
