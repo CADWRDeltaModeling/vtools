@@ -128,7 +128,7 @@ def interpolate_ts(ts,times,method=SPLINE,filter_nan=True,**dic):
     if not(type(times)==str) and isSequenceType(times):
        data=_interpolate_ts2array(ts,times,method=method,\
                                   filter_nan=filter_nan,**dic)
-       ts=its(intime,data,{})
+       ts=its(times,data,{})
     else:
        ts=_interpolate2rts(ts,times,method=method,\
                            filter_nan=filter_nan,**dic)
