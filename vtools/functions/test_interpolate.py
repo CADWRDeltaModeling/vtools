@@ -91,7 +91,7 @@ class TestInterpolate(unittest.TestCase):
                            (nan_indexes,ts_len-5))
         
         self.nan_indexes=nan_indexes       
-        
+       
         put(self.rts_has_nan.data,self.nan_indexes,nan) 
         
         self.its1=self.create_its()
@@ -293,7 +293,9 @@ class TestInterpolate(unittest.TestCase):
         
     def test_interpolate_ts_nan(self):
      
-        """ Test filling nan within a regular time series"""  
+        """ Test filling nan within a regular time series
+        
+        """  
         
         #ts=self.rts_has_nan
         #if ts_len<50:
@@ -303,10 +305,45 @@ class TestInterpolate(unittest.TestCase):
             ts=deepcopy(self.rts_has_nan)
             ts=interpolate_ts_nan(ts,method=method)
             self.assert_(alltrue(isnan(ts.data))==False)
-            #put(ts.data,self.nan_indexes,nan)
+        
+        ## test max_gap option
+      
+        data=sciarray([0.3*sin(k*pi/1200+pi/15)+0.4*sin(k*pi/1100+pi/6)+1.1*sin(k*pi/990+pi/18) \
+              for k in range(50)])
+        
+        put(data,[12,13,14],nan)
+        put(data,[34,35,36,37,38,39,40,41,42,43],nan)
+        
+        max_gap=4
+        start_time="1/2/1990"
+        interval="15min"
+        
+       
+        ts_with_nans=rts(data,start_time,interval,{})
+        
+        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
+            ts_new=interpolate_ts_nan(ts_with_nans,max_gap=max_gap, method=method)
+            self.assert_(not(isnan(ts_new.data[12])))
+            self.assert_(not(isnan(ts_new.data[13])))
+            self.assert_(not(isnan(ts_new.data[14])))
+            self.assert_((isnan(ts_new.data[34])))
+            self.assert_((isnan(ts_new.data[35])))
+            self.assert_((isnan(ts_new.data[36])))
+            self.assert_((isnan(ts_new.data[37])))
+            self.assert_((isnan(ts_new.data[38])))
+            self.assert_((isnan(ts_new.data[39])))
+            self.assert_((isnan(ts_new.data[40])))
+            self.assert_((isnan(ts_new.data[41])))
+            self.assert_((isnan(ts_new.data[42])))
+            self.assert_((isnan(ts_new.data[43])))
+        
+            
+        
 
     def test_interpolate_rts_its(self):
-        """ Test create a regular ts by interpolating its"""
+        """ Test create a regular ts by interpolating its
+        
+        """
         
         its1=self.its1
         interval="1day"
@@ -328,7 +365,9 @@ class TestInterpolate(unittest.TestCase):
             self.assertEqual(rt.interval,parse_interval(interval))
 
     def test_interpolate_rts_rts(self):
-        """ Test create a finer regular ts by interpolating rts"""
+        """ Test create a finer regular ts by interpolating rts
+        
+        """
        
         rts1=self.rts1
         interval="1hour"
