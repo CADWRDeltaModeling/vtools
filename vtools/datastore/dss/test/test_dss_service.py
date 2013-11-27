@@ -43,7 +43,7 @@ class TestDssService(unittest.TestCase):
         entries=dssc.entries()        
         for entry in entries:
             self.assert_(type(entry)==CatalogEntry)            
-        self.assertEqual(len(entries),27)
+        self.assertEqual(len(entries),28)
         
     def test_get_data(self):
 
@@ -78,6 +78,20 @@ class TestDssService(unittest.TestCase):
         data=self.dss_service.get_data(data_ref)
         self.assert_(type(data)==TimeSeries)
         self.assertEqual(len(data.data),106)
+        
+        ## retrieve data of monthly interval
+        ## Note this operation will trigger the exception handling line
+        ## of funciton _multiple_window of dss_service.py. For dss_service
+        ## will try to forward input time window start time by DSS_MAX_RTS_POINTS
+        ## months, which is over the maximum year set by Python Datetime.
+        
+        selector="/SHORT/SYNTHETIC/DATA//1MON/TEST-MONTHLY-INTERVAL/"
+        extent="time_window=(12/1/1990,06/02/1991)"
+        data_ref=DataReference(id,source,view,selector,extent)
+        data=self.dss_service.get_data(data_ref)
+        self.assert_(type(data)==TimeSeries)
+        self.assertEqual(len(data.data),5)
+        
 
 
     def test_get_its_data_overlap(self):
@@ -408,20 +422,20 @@ class TestDssService(unittest.TestCase):
         ## but still overlap data block window
         extent="time_window=(12/21/2000 00:00,12/21/2000 1:00)"
         data_ref=DataReference(id,source,None,path,extent)
-        rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertRaises(ValueError,self.dss_service.get_data,data_ref)
+        
 
 
         ## test invalid timewindow overlapping data block window,
         extent="time_window=(1/31/2001 18:00,1/31/2001 22:00)"
         data_ref=DataReference(id,source,None,path,extent)
-        rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertRaises(ValueError,self.dss_service.get_data,data_ref)
+       
 
         ## test invalid timewindow not overlapping data block window
         extent="time_window=(11/21/2000 00:00,11/22/2000 1:00)"
         data_ref=DataReference(id,source,None,path,extent)
-        self.assertRaises(DssAccessError,self.dss_service.get_data,data_ref)
+        self.assertRaises(ValueError,self.dss_service.get_data,data_ref)
          
     def test_read_instant_rts_timewindow(self):
         ## save some ts into dss file, ts is hourly spaned instanteous
@@ -512,20 +526,20 @@ class TestDssService(unittest.TestCase):
         ## but still overlap data block window
         extent="time_window=(12/21/2000 00:00,12/21/2000 1:00)"
         data_ref=DataReference(id,source,None,path,extent)
-        rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertRaises(ValueError,self.dss_service.get_data,data_ref)
+        
 
 
         ## test invalid timewindow overlapping data block window,
         extent="time_window=(1/31/2001 18:00,1/31/2001 22:00)"
         data_ref=DataReference(id,source,None,path,extent)
-        rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertRaises(ValueError,self.dss_service.get_data,data_ref)
+        
 
         ## test invalid timewindow not overlapping data block window
         extent="time_window=(11/21/2000 00:00,11/22/2000 1:00)"
         data_ref=DataReference(id,source,None,path,extent)
-        self.assertRaises(DssAccessError,self.dss_service.get_data,data_ref)
+        self.assertRaises(ValueError,self.dss_service.get_data,data_ref)
 
 
                 
