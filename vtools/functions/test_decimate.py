@@ -9,11 +9,12 @@ from vtools.data.vtime import ticks,number_intervals
 from vtools.data.vtime import ticks_to_time,ticks\
      ,number_intervals,time_sequence,time_interval
 
-
-## Scipy import.
 import scipy
-## Local import 
-from _decimate import *
+## local import
+from resample import decimate
+
+
+
 
 class TestDecimate(unittest.TestCase):
 
@@ -28,16 +29,20 @@ class TestDecimate(unittest.TestCase):
         self.max_val=1000
         self.min_val=0.01
         self.large_data_size=100000
-        self.test_interval=[time_interval(minutes=30),time_interval(hours=2),
-                            time_interval(days=1)]
+        self.test_interval=[time_interval(hours=1)]
+        t=scipy.pi/3+scipy.arange(self.num_ts)*scipy.pi/12
+        data=scipy.sin(t)
+        start_time="1/1/1991"
+        interval="15min"
+        props={}
+        self.ts=rts(data,start_time,interval,props)
+		
                 
     def test_decimate_rts(self):
                 
-        t=scipy.pi/3+scipy.arange(self.num_ts)*scipy.pi/12
-        x=scipy.sin(t)
-        
-        q=4        
-        tt=decimate(x,q)
+        for resample_interval in self.test_interval:     
+            ts_resampled=decimate(self.ts,resample_interval)
+            self.assertEqual(ts_resampled.interval,resample_interval)
         
         
 
