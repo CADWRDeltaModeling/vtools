@@ -4,8 +4,6 @@ from numpy import arange,loadtxt
 from scipy import nan
 from scipy.special import jn
 from matplotlib.dates import num2date,datestr2num
-
-## vtools import
 from timeseries import *
 from  constants import *
 
@@ -31,23 +29,17 @@ def create_sample_series():
     return (ts1,ts2,ts3,ts4)
 
 
-#"tidal_no_gap"
-#"pt_reyes_tidal_with_gap"
-#"tidal_obs_vs_model"
-#"irreg_off_on"
-            
-
 def example_data(name):
   
-    if (name=="pt_reys_tidal_6min"):
-	     return pt_reys_tidal_6min_interval()
-    elif (name=="pt_reys_tidal_1hour"):
-	     return pt_reys_tidal_1hour_interval()
+    if (name=="pt_reyes_tidal_6min"):
+	     return pt_reyes_tidal_6min_interval()
+    elif (name=="pt_reyes_tidal_1hour"):
+	     return pt_reyes_tidal_1hour_interval()
     else:
 	    raise ValueError("invalid example series name")
 
-def pt_reys_tidal_6min_interval():
-    """ Sea surface level at Point Reys from NOAA with 6 min interval from 11/24/2013-11/25/2013
+def pt_reyes_tidal_6min_interval():
+    """ Sea surface level at Point Reyes from NOAA with 6 min interval from 11/24/2013-11/25/2013
 	
 	"""
 	
@@ -58,8 +50,8 @@ def pt_reys_tidal_6min_interval():
     return rts(raw_data[:,1],start,interval,props)
 	
 
-def pt_reys_tidal_1hour_interval():
-    """ Sea surface level at Point Reys from NOAA downsampled to 1hour interval from 11/01/2013-11/08/2013
+def pt_reyes_tidal_1hour_interval():
+    """ Sea surface level at Point Reyes from NOAA downsampled to 1hour interval from 11/01/2013-11/08/2013
 	
 	"""
 	
@@ -70,7 +62,58 @@ def pt_reys_tidal_1hour_interval():
     return rts(raw_data[:,1],start,interval,props)
     
     
+def arma(phi,theta,sigma,n,discard=0,verbose=0):
 
+    """ Generate a Gaussian ARMA(p,q) series. 
+    This was obtained from stack exchange and is not written in terms of 
+    a time series ... however it can be used as an ingredient in a time series
+    providing correlated random noise
+
+    Parameters
+    ----------
+
+    phi : array
+    An array of length p with the AR coefficients (the AR part of the ARMA model).
+
+    theta : array
+    An array of length q with the MA coefficients (the MA part of the ARMA model).
+
+    sigma : float
+    Standard deviation of the Gaussian noise.
+
+    n :        Length of the returned series.
+
+    discard:   Number of data points that are going to be discarded (the higher 
+          the better) to avoid dependence of the ARMA time-series on the initial values.
+          
+    Returns
+    -------
+    Numpy array from an ARMA(p,q) process
+    
+    """ 
+    from numpy import append,array
+    from numpy.random import normal
+
+    l=max(len(phi),len(theta))
+    if(discard==0):
+      discard=10*l # Burn-in elements!
+    w=normal(0,sigma,n+discard)
+    arma=array([])
+    s=0.0
+    l=max(len(phi),len(theta))
+    for i in range(n+discard):
+        if(i<l):
+          arma=append(arma,w[i])
+        else:
+          s=0.0
+          for j in range(len(phi)):
+              s=s+phi[j]*arma[i-j-1]
+          for j in range(len(theta)):
+              s=s+theta[j]*w[i-j-1]
+          arma=append(arma,s+w[i])
+    if(verbose!=0):
+      print 'Measured standard deviation: '+str(sqrt(var(w[discard:])))
+    return arma[discard:]
 
 
     

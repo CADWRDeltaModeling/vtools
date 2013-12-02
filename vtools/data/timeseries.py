@@ -12,7 +12,7 @@ import copy
 import itertools
 import scipy
 import bisect
-all = ["TimeSeries","TimeSeriesElement","prep_binary","rts","its"]
+all = ["TimeSeries","TimeSeriesElement","prep_binary","range_union","rts","its"]
 
 # python standard lib import.
 from operator import isNumberType,isSequenceType
