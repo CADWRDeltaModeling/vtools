@@ -1,5 +1,6 @@
 import sys
 import datetime
+import os
 from numpy import arange,loadtxt,put
 from numpy import nan
 from scipy.special import jn
@@ -43,7 +44,7 @@ def example_data(name):
 def _datetime_convertor(time_str):
     """ Convert input datetime string into vtools ticks
 	
-	"""
+    """
 	
     a_t=parse_time(time_str)
     return ticks(a_t)
@@ -52,9 +53,10 @@ def _datetime_convertor(time_str):
 def pt_reyes_tidal_6min_interval():
     """ Sea surface level at Point Reyes from NOAA with 6 min interval from 11/24/2013-11/25/2013
 	
-	"""
-	
-    raw_data=loadtxt("CO-OPS__9415020__wl_6min.txt",converters={0:_datetime_convertor},skiprows=1,delimiter=",")
+    """
+ 
+    data_file=os.path.join(os.path.split(__file__)[0],"CO-OPS__9415020__wl_6min.txt")
+    raw_data=loadtxt(data_file,converters={0:_datetime_convertor},skiprows=1,delimiter=",")
     start=ticks_to_time(raw_data[:,0][0])
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
@@ -64,9 +66,10 @@ def pt_reyes_tidal_6min_interval():
 def pt_reyes_tidal_1hour_interval():
     """ Sea surface level at Point Reyes from NOAA downsampled to 1hour interval from 11/01/2013-11/08/2013
 	
-	"""
-	
-    raw_data=numpy.loadtxt("CO-OPS_9415020_wl_1hour.txt",converters={0:_datetime_convertor},skiprows=1,delimiter=",")
+    """
+    
+    data_file=os.path.join(os.path.split(__file__)[0],"CO-OPS_9415020_wl_1hour.txt")
+    raw_data=numpy.loadtxt(data_file,converters={0:_datetime_convertor},skiprows=1,delimiter=",")
     start=ticks_to_time(raw_data[:,0][0])
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
@@ -76,8 +79,9 @@ def pt_reyes_tidal_with_gaps():
     """ Sea surface level at Point Reys with gaps of different length"
 	
 	"""
-	
-    raw_data=loadtxt("CO-OPS__9415020__wl_6min.txt",skiprows=1,converters={0:_datetime_convertor},delimiter=",")
+
+    data_file=os.path.join(os.path.split(__file__)[0],"CO-OPS__9415020__wl_6min.txt")
+    raw_data=loadtxt(data_file,skiprows=1,converters={0:_datetime_convertor},delimiter=",")
     start=ticks_to_time(raw_data[:,0][0])
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
