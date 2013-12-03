@@ -2,10 +2,10 @@ import sys
 import datetime
 import os
 from numpy import arange,loadtxt,put
-from numpy import nan
+from numpy import nan,cos,pi
 from scipy.special import jn
 from timeseries import *
-from  constants import *
+from constants import *
 from vtime import *
 
 
@@ -28,9 +28,52 @@ def create_sample_series():
     ts4=rts(jn(4,x),stime1,dt,None)
     return (ts1,ts2,ts3,ts4)
 
+def _synthetic_tide(t):
+    principal_tide_components=[ \
+    ##O1
+    (6.759775e-05 ,1.12898 ,7.95342),\
+    ##K1
+    (7.292117e-05,1.07731,206.56352),\
+    ##Q1
+    (6.495457e-05,1.15212,282.20352),\
+    ##P1
+    (7.251056e-05, 0.99465 ,40.40973),\
+    ##K2
+    (1.458423e-04,1.19194,233.73387),\
+    ##N2
+    (1.378797e-04,0.97487,131.77513),\
+    ##M2
+    (1.405189e-04,0.97799,217.03899),\
+    ##S2
+    (1.454441e-04,1.00142,239.89972)]
+    
+    tide=0.0
+    
+    for freq,amp,phase in  principal_tide_components:
+        tide=tide+amp*cos(freq*t+phase*pi/180)
+    return tide
+    
+
+def synthetic_tide_series():
+    """ Return a week long synthetic tide
+	
+    """
+    
+    a_week_seconds=24*7*3600
+    step=15*60
+    times = arange(0,a_week_seconds,step)
+    data=map(_synthetic_tide,times)
+    start_time=datetime(1992,1,1)
+    props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"meter"}
+    dt=time_interval(minutes=15)
+    ts=rts(data,start_time,dt,props)
+    return ts
+        
+    
+    
 
 def example_data(name):
-  
+    
     if (name=="pt_reyes_tidal_6min"):
 	     return pt_reyes_tidal_6min_interval()
     elif (name=="pt_reyes_tidal_1hour"):
