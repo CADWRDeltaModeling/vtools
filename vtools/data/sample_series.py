@@ -82,8 +82,8 @@ def pt_reyes_tidal_with_gaps():
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
     put(raw_data[:,1],range(12,14),nan)
-    put(raw_data[:,1],range(25,26),nan)
-    put(raw_data[:,1],range(30,36),nan)
+    put(raw_data[:,1],range(20,23),nan)
+    put(raw_data[:,1],range(26,45),nan)
     return rts(raw_data[:90,1],start,interval,props)
     
     
