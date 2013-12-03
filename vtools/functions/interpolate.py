@@ -117,7 +117,7 @@ def interpolate_ts(ts,times,method=SPLINE,filter_nan=True,**dic):
     Returns
     -------
     result : vtools.data.time_series.TimeSeries
-        A regular or irregular series with times based on intime and values interpolated from ts.
+        A regular or irregular series with times based on times and values interpolated from ts.
         
     See Also
     --------
