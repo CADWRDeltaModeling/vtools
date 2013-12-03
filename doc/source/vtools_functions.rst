@@ -26,6 +26,9 @@ Tidal filter
 Resampling and decimation
 -------------------------
 
+.. plot:: ../../vtools/examples/functions/resampling_examples.py
+  :include-source:
+
 Ufuncs on time series
 ---------------------
 
