@@ -54,7 +54,7 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
             raise ValueError("The item series is too short to cover one period.")
         end = start + time_interval(seconds = n_periods * period.total_seconds())
     else:
-        end = end - max_shift
+        end = time_window[1] + max_shift
     if (end - start).total_seconds() < 0.:
         raise ValueError("The time series is too short.")
     
@@ -237,6 +237,7 @@ def main():
     print "tmean %s" % tmean_error(zts0,zts1,limits=(-1.,1.))
     print "r %s" % corr_coefficient(zts0,zts1)
 
+ 
     
 all = [calculate_lag,mse,rmse,median_error,tmean_error,corr_coefficient,skill_score]
     
