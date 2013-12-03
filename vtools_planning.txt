@@ -8,15 +8,18 @@ We should also look at shift(). It seems to me that this could be a member metho
 
 For interpolation, the public interface looks good, but the implementation is really tangled. There are two high level functions interpolate_ts and interpolate_ts_nan which parameterize the names of methods.  Then there are a bunch of specific methods such as linear() and spline(). What you would expect is that the parameterized one would take the name of the method and dispatch the job to the individual method.  Instead, what seems to happen in a number of cases (but not consistently)  is that specific method calls the general method with the method parameter (say 'linear') and then the general method calls a private implementation of the specific method. That isn't going to look very sensible if anyone looks under the hood, although the public API is fine.
 
+time_sequence is type "L" which causes weird division
+
+
+f2py
 ************
 
 
 
 Deployment:
-simplify the distribution to a single egg
-eliminate the *.api from import statements (mark for deprecation with warning, maintain temporarily for backward compatibilty)
-x eliminate gadfly
---- eliminate enthought in the "main" classes (data, datastore)
+simplify the distribution
+64 bit
+Reinstate excel
 
 pydss
 possibly move away from "home brew" heclib to the standard compilation from HEC
@@ -24,9 +27,9 @@ simplify finding out about the ctype and cunit of time series
 document
 
 data:
-time series should wrap netcdf4py objects as well as numpy if feasible. maximize # functions that work for both.
-improve the depiction of multivariate data, including names/indexes/values of other dimensions.
-figure out what to do with flags: time series should wrap masked arrays?
+-- time series should wrap netcdf4py objects as well as numpy if feasible. maximize # functions that work for both.
+- improve the depiction of multivariate data, including names/indexes/values of other dimensions.
+-- figure out what to do with flags: time series should wrap masked arrays?
 
 datastore:
 Create a data service for text files (rdb,cdec csv) based on directories. retrieves ids, names, metadata
@@ -40,7 +43,6 @@ CatalogItem needs a redesign, dimensions are hard to use
 
 functions:
 ts.centered()
-create decorator and autogenerator that creates a ts equivalent function to all numpy functions such as 
 improve # of functions that work for multivariate data
 x make filters more user accessible
 make interpolation more user accessible

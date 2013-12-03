@@ -17,27 +17,32 @@ def ts_data_arg(f):
         else:
             y = targets  
         return f(x,y,**kwargs) 
-    b.__name__=f.__name__
+    b.__name__= f.__name__
+    b.__doc__ = f.__doc__
     return b
 
 def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time_interval(minutes=1)):
     """ Calculate lag of the second time series b, that maximizes the cross-correlation with a. 
+ 
         Parameters
         ----------
         a,b : vtools.data.timeseries.Timeseries
-        Two time series to compare. The time extent of b must be the same or a superset of that of a.
+            Two time series to compare. The time extent of b must be the same or a superset of that of a.
         
-        time_window : tuple representing start and end time of cross-correlation analysis
+        time_window : time_window
+            Tuple representing start and end time of cross-correlation analysis
+        
+        
         max_shift : interval
-        Maximum pos/negative time shift to consider in cross-correlation (ie, from -max_shift to +max_shift)
+            Maximum pos/negative time shift to consider in cross-correlation (ie, from -max_shift to +max_shift)
         
         period : interval, optional
-        Period that will be used to further clip the time_window of analysis to fit a periodicity.
+            Period that will be used to further clip the time_window of analysis to fit a periodicity.
         
         Returns
         -------
         
-        return : float
+        lag : float
         lag in seconds
     """
     # Get the available range from the first time series
@@ -95,66 +100,75 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         v0 = index[np.argmax(-re)]* resolution.total_seconds()
     return v0
 
-@ts_data_arg    
+@ts_data_arg
 def mse(predictions, targets):
     """Mean squared error
+
        Parameters
        ----------
        predictions, targets : array_like
+           Time series or arrays to analyze       
        
        Returns
        -------
-       Mean squared error
+       mse : vtools.data.timeseries.TimeSeries
+           Mean squared error between predictions and targets
     """
        
     import scipy
     return scipy.stats.nanmean((predictions - targets) ** 2.)
 
-@ts_data_arg    
+@ts_data_arg
 def rmse(predictions, targets):
     """Root mean squared error
+       
        Parameters
        ----------
        predictions, targets : array_like
+           Time series or arrays to analyze          
        
        Returns
        -------
        mse : float
-       Mean squared error
+           Mean squared error
     """
     import scipy
     return np.sqrt(scipy.stats.nanmean((predictions - targets) ** 2.))
 
 @ts_data_arg    
 def median_error(predictions, targets):
-    """Median error
-       Parameters
-       ----------
-       predictions, targets : array_like
-       
-       Returns
-       -------
-       med : float
-       Median error
+    """ Calculate the median error, discounting nan values
+    
+        Parameters
+        ----------
+        predictions, targets : array_like
+        
+            Time series or arrays to be analyzed
+        
+        Returns
+        -------
+        med : float
+            Median error
     """
     import scipy
     return scipy.stats.nanmedian(predictions - targets)    
 
 @ts_data_arg  
 def skill_score(predictions,targets,ref=None):
-    """Return a Nash-Sutcliffe-like skill score based on mean squared error
+    """Calculate a Nash-Sutcliffe-like skill score based on mean squared error
        
        As per the discussion in Murphy (1988) other reference forecasts (climatology, 
-       harmonic tide, etc.) are possibl.
+       harmonic tide, etc.) are possible.
        
        Parameters
        ----------
        predictions, targets : array_like
+           Time series or arrays to be analyzed
        
        Returns
        -------
        rmse : float
-       Root mean squared error
+           Root mean squared error
     """
     import scipy
     if not ref:
@@ -167,6 +181,24 @@ def skill_score(predictions,targets,ref=None):
 
 @ts_data_arg     
 def tmean_error(predictions,targets,limits=None,inclusive=[True,True]):
+    """ Calculate the (possibly trimmed) mean error, discounting nan values
+    
+        Parameters
+        ----------
+        predictions, targets : array_like
+            Time series or arrays to be analyzed
+        
+        limits : tuple(float)
+            Low and high limits for trimming 
+            
+        inclusive : [boolean, boolean]
+            True if clipping is inclusive on the low/high end
+        
+        Returns
+        -------
+        mean : float
+            Trimmed mean error
+    """
     import scipy
     y = numpy.ma.masked_invalid(predictions)
     z = numpy.ma.masked_invalid(targets)
@@ -183,15 +215,15 @@ def corr_coefficient(predictions,targets,bias=False):
     Parameters
     ----------
     predictions, targets : array_like
-        the time series to analyze
+        Time series to analyze
     
     bias : boolean
-        whether to use the biased (N) or unbiased (N-1) sample size for normalization
+        Whether to use the biased (N) or unbiased (N-1) sample size for normalization
     
-     Returns
+    Returns
     -------
     r : float
-       Correlation coefficient
+        Correlation coefficient
     """
     
     
@@ -200,7 +232,7 @@ def corr_coefficient(predictions,targets,bias=False):
     z = numpy.ma.masked_invalid(targets)
     return corrcoef(y,z,bias)[0][1]
     
-def main():
+def _main():
     from vtools.data.sample_series import arma
     start=datetime(2009,3,12)
     intvl = minutes(15)
@@ -242,4 +274,4 @@ def main():
 all = [calculate_lag,mse,rmse,median_error,tmean_error,corr_coefficient,skill_score]
     
 if __name__ == "__main__":
-    main()
+    _main()
