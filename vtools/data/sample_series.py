@@ -72,7 +72,7 @@ def pt_reyes_tidal_1hour_interval():
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
     return rts(raw_data[:,1],start,interval,props)
 	
-def pt_reys_tidal_with_gaps():
+def pt_reyes_tidal_with_gaps():
     """ Sea surface level at Point Reys with gaps of different length"
 	
 	"""
