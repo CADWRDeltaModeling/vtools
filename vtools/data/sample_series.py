@@ -34,8 +34,8 @@ def example_data(name):
 	     return pt_reyes_tidal_6min_interval()
     elif (name=="pt_reyes_tidal_1hour"):
 	     return pt_reyes_tidal_1hour_interval()
-    elif (name=="pt_reys_tidal_with_gaps"):
-	     return pt_reys_tidal_with_gaps()
+    elif (name=="pt_reyes_tidal_with_gaps"):
+	     return pt_reyes_tidal_with_gaps()
     else:
 	    raise ValueError("invalid example series name")
 		
@@ -81,10 +81,10 @@ def pt_reyes_tidal_with_gaps():
     start=ticks_to_time(raw_data[:,0][0])
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
-    put(data[:,1],range(12,14),nan)
-    put(data[:,1],range(150,160),nan)
-    put(data[:,1],range(300,303),nan)
-    return rts(raw_data[:,1],start,interval,props)
+    put(raw_data[:,1],range(12,14),nan)
+    put(raw_data[:,1],range(25,26),nan)
+    put(raw_data[:,1],range(30,36),nan)
+    return rts(raw_data[:90,1],start,interval,props)
     
     
 def arma(phi,theta,sigma,n,discard=0,verbose=0):
