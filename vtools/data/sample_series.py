@@ -1,12 +1,11 @@
 import sys
 import datetime
-from numpy import arange,loadtxt
-from scipy import nan
+from numpy import arange,loadtxt,put
+from numpy import nan
 from scipy.special import jn
-from matplotlib.dates import num2date,datestr2num
 from timeseries import *
 from  constants import *
-
+from vtime import *
 
 
 def create_sample_series():
@@ -35,17 +34,29 @@ def example_data(name):
 	     return pt_reyes_tidal_6min_interval()
     elif (name=="pt_reyes_tidal_1hour"):
 	     return pt_reyes_tidal_1hour_interval()
+    elif (name=="pt_reys_tidal_with_gaps"):
+	     return pt_reys_tidal_with_gaps()
     else:
 	    raise ValueError("invalid example series name")
+		
+		
+def _datetime_convertor(time_str):
+    """ Convert input datetime string into vtools ticks
+	
+	"""
+	
+    a_t=parse_time(time_str)
+    return ticks(a_t)
+	
 
 def pt_reyes_tidal_6min_interval():
     """ Sea surface level at Point Reyes from NOAA with 6 min interval from 11/24/2013-11/25/2013
 	
 	"""
 	
-    raw_data=loadtxt("CO-OPS__9415020__wl_6min.txt",skiprows=1,converters={0:datestr2num},delimiter=",")
-    start=num2date(raw_data[:,0])[0].replace(tzinfo=None)
-    interval=num2date(raw_data[:,0])[1]-num2date(raw_data[:,0])[0]
+    raw_data=loadtxt("CO-OPS__9415020__wl_6min.txt",converters={0:_datetime_convertor},skiprows=1,delimiter=",")
+    start=ticks_to_time(raw_data[:,0][0])
+    interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
     return rts(raw_data[:,1],start,interval,props)
 	
@@ -55,10 +66,24 @@ def pt_reyes_tidal_1hour_interval():
 	
 	"""
 	
-    raw_data=numpy.loadtxt("CO-OPS_9415020_wl_1hour.txt",skiprows=1,converters={0:datestr2num},delimiter=",")
-    start=num2date(raw_data[:,0])[0].replace(tzinfo=None)
-    interval=num2date(raw_data[:,0])[1]-num2date(raw_data[:,0])[0]
-    props={}
+    raw_data=numpy.loadtxt("CO-OPS_9415020_wl_1hour.txt",converters={0:_datetime_convertor},skiprows=1,delimiter=",")
+    start=ticks_to_time(raw_data[:,0][0])
+    interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
+    props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
+    return rts(raw_data[:,1],start,interval,props)
+	
+def pt_reys_tidal_with_gaps():
+    """ Sea surface level at Point Reys with gaps of different length"
+	
+	"""
+	
+    raw_data=loadtxt("CO-OPS__9415020__wl_6min.txt",skiprows=1,converters={0:_datetime_convertor},delimiter=",")
+    start=ticks_to_time(raw_data[:,0][0])
+    interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
+    props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
+    put(data[:,1],range(12,14),nan)
+    put(data[:,1],range(150,160),nan)
+    put(data[:,1],range(300,303),nan)
     return rts(raw_data[:,1],start,interval,props)
     
     
