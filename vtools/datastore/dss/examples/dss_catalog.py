@@ -3,7 +3,7 @@
 """
 
 ## import necessary vtools lib.
-from vtools.datastore.dss.api import *
+from vtools.datastore.dss.dss_catalog import *
 
 ## giving a existing datasource.
 source="mustexist.dss"

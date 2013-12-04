@@ -3,7 +3,7 @@
 """
 
 ## import necessary vtools lib.
-from vtools.datastore.dss.api import *
+from vtools.datastore.dss.utility import *
 
 ###########################################################
 ### examples to retrieve time series from a dss source ####
