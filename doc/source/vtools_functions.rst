@@ -34,9 +34,13 @@ Ufuncs on time series
 
 Period ops
 ----------
-
+.. plot:: ../../vtools/examples/functions/period_op_examples.py
+  :include-source:
+  
 Shifting
 --------
+.. plot:: ../../vtools/examples/functions/shifting_examples.py
+  :include-source:
 
 Merging
 -------
