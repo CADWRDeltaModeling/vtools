@@ -1,6 +1,6 @@
 import vtools
 from vtools.data.api import *
-from vtools.functions.api import *
+from vtools.functions.interpolate import *
 import numpy as np
 
 
