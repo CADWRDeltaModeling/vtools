@@ -79,6 +79,7 @@ def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
 
         
     """
+	
     tst=deepcopy(ts)
 
     if max_gap > 0:

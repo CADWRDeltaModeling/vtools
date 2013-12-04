@@ -48,7 +48,7 @@ class TestFilter(unittest.TestCase):
                 
             
     def test_butterworth(self):
-        """ test a godin filter on a series of 1hour interval with four
+        """ Butterworth filter on a series of 1hour interval with four
             frequencies.
         """
         # Test operations on ts of varied values.
@@ -63,7 +63,7 @@ class TestFilter(unittest.TestCase):
         av2=f2*pi/12
         av3=f3*pi/12
         av4=f4*pi/12
-                 
+        import pylab as plt        
         for (st,num,delta) in test_ts:
             ## this day contains components of with frequecies of 0.76/day,
             ## 0.44/day, 0.95/day, 1.23/day            

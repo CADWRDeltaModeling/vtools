@@ -13,9 +13,29 @@ __all__=["time_diff"]
 
 
 def time_diff(ts,order=1):
-    """ generate left side derative of a ts
-        of input orders.        
+    """ Generate left side derative of a ts of input orders.
+
+    Parameters
+    -----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to interpolate. Must has data of one dimension, and regular.
+    
+    order : int
+        Order of derative.
+    
+
+    Returns
+    -------
+    result : vtools.data.time_series.TimeSeries
+        A regular series with derative.
+        
+    Raise
+    --------
+    
+    ValueError
+        If input time series is shorter than order+1 or is not regular.
     """
+    
 
     if len(ts)<order+1:
         raise ValueError("input timeseries is not"
