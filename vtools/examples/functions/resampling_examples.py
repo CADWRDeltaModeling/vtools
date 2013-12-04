@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from vtools.functions.api import *
-from vtools.data.api import *
+from vtools.functions.resample import *
+from vtools.data.sample_series import *
 import matplotlib.pyplot as plt
 
 

@@ -3,7 +3,8 @@
 """
 
 ## load necessary libs.
-from vtools.functions.api import *
+from vtools.functions.interpolate import *
+from vtools.data.sample_series import *
 import matplotlib.pyplot as plt
 
 
