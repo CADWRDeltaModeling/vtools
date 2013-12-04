@@ -4,7 +4,5 @@ from period_op import *
 from merge import *
 from interpolate import *
 from filter import *
-from godin import *
-from tide_filters import *
 from diff import *
 from diffnorm import *
