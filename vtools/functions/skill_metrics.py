@@ -1,6 +1,7 @@
 import vtools
-from vtools.data.api import *
+from vtools.data.timeseries import *
 from vtools.functions.interpolate import *
+from vtools.functions.shift import *
 import numpy as np
 
 
