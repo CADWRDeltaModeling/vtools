@@ -45,7 +45,7 @@ def norm_diff_l1(ts1,ts2,window=None):
     ts2 : :class:`~vtools.data.timeseries.TimeSeries`
            Must has data of one dimension, and regular.
     
-    window :Optional, tuple
+    window :tuple,optional
            Tupleof two :class:String representing time, or Tuple
            of two :class:Datetime.Datetime.
            
@@ -76,7 +76,7 @@ def norm_diff_l2(ts1,ts2,window=None):
     ts2 : :class:`~vtools.data.timeseries.TimeSeries`
            Must has data of one dimension, and regular.
     
-    window :Optional, tuple
+    window :tuple,optional
            Tuple of two :class:String representing time, or tuple
            of two :class:Datetime.Datetime.
            
@@ -107,7 +107,7 @@ def norm_diff_linf(ts1,ts2,window=None):
     ts2 : :class:`~vtools.data.timeseries.TimeSeries`
            Must has data of one dimension, and regular.
     
-    window :Optional, tuple
+    window :tuple,optional
            Tuple of two :class:String representing time, or Tuple
            of two :class:Datetime.Datetime.
            
@@ -136,12 +136,12 @@ def ts_equal(ts1,ts2,window=None,tol=0.0e0):
     ts2 : :class:`~vtools.data.timeseries.TimeSeries`
            Must has data of one dimension, and regular.
     
-    window :Optional, tuple
-           Tupleof two :class:String representing time, or Tuple
+    window :tuple,optional
+           Tuple of two :class:String representing time, or Tuple
            of two :class:Datetime.Datetime.
            
-    tol    :Optional, float
-    
+    tol    :float,optional
+           Tolerance allowed for two equal time sereies.
     Returns
     -------
     result : bool
@@ -171,12 +171,12 @@ def ts_almost_equal(ts1,ts2,window=None,tol=1.0e-8):
     ts2 : :class:`~vtools.data.timeseries.TimeSeries`
            Must has data of one dimension, and regular.
     
-    window :Optional, tuple
+    window :tuple,optional
            Tuple of two :class:String representing time, or tuple
            of two :class:Datetime.Datetime.
            
-    tol    :Optional, float
-    
+    tol    :float,optional
+           Tolerance allowed for two almost equal time sereies.
     Returns
     -------
     result : bool
