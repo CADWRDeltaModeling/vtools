@@ -11,14 +11,14 @@ __all__=["norm_diff_l1","norm_diff_l2","norm_diff_linf","ts_equal","ts_almost_eq
 
 
 def _norm_L1_array(data):
-    """Estimate L_1 norm of input numpy array data.
+    """estimate L_1 norm of input numpy array data.
     
     """
     data=numpy.abs(data)
     return data.sum()
     
 def _norm_L2_array(data):
-    """Estimate L_2 norm of input numpy array data.
+    """estimate L_2 norm of input numpy array data.
     """
     data=numpy.square(data)
     val=data.sum()
@@ -27,7 +27,7 @@ def _norm_L2_array(data):
 
 
 def _norm_Linf_array(data):
-    """Estimate L_inf norm of input numpy array data.
+    """estimate L_inf norm of input numpy array data.
     
     """
     data=numpy.abs(data)
@@ -35,25 +35,23 @@ def _norm_Linf_array(data):
     
     
 def norm_diff_l1(ts1,ts2,window=None):
-    """ Compute L1 difference of two input time series.
+    """ compute L1 difference of two input time series.
 
     Parameters
     -----------
-    ts1 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
-    
-    ts2 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
+    ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
     
     window :tuple,optional
-           Tupleof two :class:String representing time, or Tuple
-           of two :class:Datetime.Datetime.
+        Tupleof two :class:String representing time, or Tuple
+        of two :class:Datetime.Datetime. The default implies comparing
+        the full length of two time series.
            
 
     Returns
     -------
     result : float
-        A value of total L1-difference between two input series .
+        a total L1-difference between two input series .
         
     """
 
@@ -66,25 +64,23 @@ def norm_diff_l1(ts1,ts2,window=None):
     
     
 def norm_diff_l2(ts1,ts2,window=None):
-    """ Compute L2 difference of two input time series.
+    """ compute L2 difference of two input time series.
 
     Parameters
     -----------
-    ts1 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
-    
-    ts2 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
+    ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
     
     window :tuple,optional
-           Tuple of two :class:String representing time, or tuple
-           of two :class:Datetime.Datetime.
+        Tuple of two :class:String representing time, or tuple
+        of two :class:Datetime.Datetime.The default implies comparing
+        the full length of two time series.
            
 
     Returns
     -------
     result : float
-        A value of total L2-difference between two input series .
+        A total L2-difference between two input series .
         
     """
     if window is None:
@@ -97,25 +93,26 @@ def norm_diff_l2(ts1,ts2,window=None):
     
     
 def norm_diff_linf(ts1,ts2,window=None):
-    """ Compute L_inf difference of two input time series.
+    """ compute L_inf difference of two input time series.
 
     Parameters
     -----------
     ts1 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
+        Must has data of one dimension, and regular.
     
     ts2 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
+        Must has data of one dimension, and regular.
     
     window :tuple,optional
-           Tuple of two :class:String representing time, or Tuple
-           of two :class:Datetime.Datetime.
+        Tuple of two :class:String representing time, or Tuple
+        of two :class:Datetime.Datetime. The default implies comparing
+        the full length of two time series.
            
 
     Returns
     -------
     result : float
-        A value of total L_infinite difference between two input series .
+        A total L_infinite difference between two input series .
         
     """
     if window is None:
@@ -126,26 +123,25 @@ def norm_diff_linf(ts1,ts2,window=None):
     return _norm_Linf_array(diffts.data)
             
 def ts_equal(ts1,ts2,window=None,tol=0.0e0):
-    """Compare two ts by absolute difference.
+    """compare two ts by absolute difference.
 
     Parameters
     -----------
-    ts1 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
-    
-    ts2 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
+    ts1.ts2 : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
     
     window :tuple,optional
-           Tuple of two :class:String representing time, or Tuple
-           of two :class:Datetime.Datetime.
+        Tuple of two :class:String representing time, or Tuple
+        of two :class:Datetime.Datetime. The default implies comparing
+        the full length of two time series.
            
     tol    :float,optional
-           Tolerance allowed for two equal time sereies.
+        Tolerance allowed for two equal time sereies.
+        
     Returns
     -------
     result : bool
-        If equal within allowed tolerance, return True .
+        if equal within allowed tolerance, return True .
         
     """
     if window is None:
@@ -161,22 +157,24 @@ def ts_equal(ts1,ts2,window=None,tol=0.0e0):
         return False
         
 def ts_almost_equal(ts1,ts2,window=None,tol=1.0e-8):
-    """Compare two ts by absolute difference.
+    """compare two ts by absolute difference.
 
     Parameters
     -----------
     ts1 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
+        Must has data of one dimension, and regular.
     
     ts2 : :class:`~vtools.data.timeseries.TimeSeries`
-           Must has data of one dimension, and regular.
+        Must has data of one dimension, and regular.
     
     window :tuple,optional
-           Tuple of two :class:String representing time, or tuple
-           of two :class:Datetime.Datetime.
+        Tuple of two :class:String representing time, or tuple
+        of two :class:Datetime.Datetime.The default implies comparing
+        the full length of two time series.
            
     tol    :float,optional
-           Tolerance allowed for two almost equal time sereies.
+        Tolerance allowed for two almost equal time sereies.
+        
     Returns
     -------
     result : bool
