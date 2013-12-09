@@ -31,9 +31,9 @@ def time_diff(ts,order=1):
         
     Raise
     --------
-    
     ValueError
         If input time series is shorter than order+1 or is not regular.
+        
     """
     
 

@@ -38,23 +38,43 @@ _butterworth_interval=[time_interval(minutes=15),time_interval(hours=1)]
 ###########################################################################
 
 def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
-    
+
     """ low-pass butterworth filter on a regular time series.
         default order is 4, if no cutoff_frequency
         is given, default will be used.
-
-        input:
-            ts: regular time series to be filtered.
-            order: order of the filter,int.
-            cutoff_frequency: cut_off frequency represented
-            by ratio of Nyquist frequency, should within (0,1).
-            cutoff_period   : period of cutoff frequency represented by hours,
-                              cutoff_frequency and cutoff_period can't be
-                              specified at the same time.
-        output:
-           a new regular time series with the same 
-           interval of ts.
+        
+    Parameters
+    -----------
+    ts1 : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
+    
+    order: int ,optional
+        The default is 4.
+        
+    cutoff_frequency: float,optional
+        Cutting off frequency expressed as the ratio of Nyquist frequency,
+        should within (0,1).
+                      
+    cutoff_period : string or :ref:'time_interval<time_interval>'
+         Period of cutting off frequency. If input as a string, it must 
+         be  convertible to :ref:'time_interval<time_interval>'
+         cutoff_frequency and cutoff_period can't be specified at the same time.
+           
+    Returns
+    -------
+    result : :class:`~vtools.data.timeseries.TimeSeries`
+        A new regular time series with the same interval of ts.
+        
+    Raise
+    --------
+    ValueError
+        If input order is not even, or input timeseries is not regular, 
+        or neither cutoff_period and cutoff_frequency is given while input
+        time series interval is not 15min or 1 hour, or  cutoff_period and cutoff_frequency 
+        are given at the same time.
+        
     """
+    
     if (order%2):
         raise ValueError("only even order is accepted")
         
@@ -99,23 +119,31 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
 
 
 def boxcar(ts,before,after):
-    """ moving averaging over ts with before- 
-        and after- interval/number
-        about sampling points.
-       
-       input:
-          ts: timeseries to be processed.
-          
-          before:length of averging interval 
-                 before the sampling 
-                 points.
-                 
-          after: length of averging interval 
-                after the sampling 
-                points.
-                
-       output:
-           a new smoothed regular time series.
+    """ low-pass butterworth filter using moving average.
+        
+    Parameters
+    -----------
+    ts1 : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
+    
+    before: int,or :ref:'time_interval<time_interval>', or string
+        Length of averging interval before the sampling points.
+
+    after: int,or :ref:'time_interval<time_interval>', or string
+        Length of averging interval after the sampling points.
+        
+    Returns
+    -------
+    result : :class:`~vtools.data.timeseries.TimeSeries`
+        A new regular time series with the same interval of ts.
+        
+    Raise
+    --------
+    ValueError
+        If input timeseries is not regular, 
+        or before and after are not integer, time_interval or string,
+        or before and after is time interval calendar dependent.
+        
     """
     
     t=time_interval(minutes=15)
@@ -156,8 +184,18 @@ def boxcar(ts,before,after):
     return rts(new_data,ts.start,ts.interval,prop)
 
 def daily_average(ts):
-    """
-       Classic moving average over 24 hours.
+    """Classic moving average over 24 hours.
+    
+    Parameters
+    -----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
+     
+    Returns
+    -------
+    result : :class:`~vtools.data.timeseries.TimeSeries`
+        A new regular time series with the same interval of ts.
+        
     """
     before=parse_interval("1day")
     after=parse_interval("0min")   
@@ -171,12 +209,18 @@ godin_interval={time_interval(minutes=15):(48,49),\
 
 
 def godin(ts):
-    
     """ Godin filtering method on a regular time series.
-        input:
-            ts: regular time series to be filtered
-        output:
-            new regular time series with the same interval of ts.
+    
+    Parameters
+    -----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
+     
+    Returns
+    -------
+    result : :class:`~vtools.data.timeseries.TimeSeries`
+        A new regular time series with the same interval of ts.
+        
     """
     
     if not ts.is_regular():
@@ -210,20 +254,27 @@ def godin(ts):
 ###########################################################################
 
 def _boxcar(data,nbefore,nafter):
-    """ Inside boxcar averaging function doing real
-        works.
+    """ Inside boxcar averaging function doing real works.
         
-        input: 
-            data: data samples at regular intervals, must be 
-                  array.
-            nbefore: number of samples before the point
-                     to be averaged (not including this 
-                     point).
-            nafter: number of samples after the point
-                     to be averaged (not including this 
-                     point).
-         output:
-            a new averaged data samples.
+    Parameters
+    -----------
+    
+    data: array
+        data samples at regular intervals.
+                  
+    nbefore: int
+        number of samples before the point to be averaged
+        (not including this point).
+        
+    nafter: int
+        number of samples after the point to be averaged 
+        (not including this point).
+        
+    Returns:
+    --------
+    
+    Results: array
+        a new averaged data samples.
             
     """
     ntotal=nbefore+nafter+1
@@ -259,8 +310,8 @@ def _boxcar(data,nbefore,nafter):
 
 
 def steps_per_interval(ts,averaging_interval):
-    """
-       number of ts interval over a averaging interval.
+    """ number of ts interval over a averaging interval.
+       
     """
     
     return int(ticks(averaging_interval)/ticks(ts.interval))

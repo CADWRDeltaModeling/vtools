@@ -210,7 +210,7 @@ def previous_neighbor(ts,times,filter_nan=True,**dic):
     times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     filter_nan : boolean,optional
-    True if nan points should be omitted or not.
+        True if nan points should be omitted or not.
     
     Returns
     -------
@@ -315,13 +315,23 @@ def _interpolate2rts(ts,interval,method=SPLINE,filter_nan=True,**dic):
     method : string, optional
         See :func:`interpolate_ts_nan` for a list of methods
     
+    filter_nan : boolean,optional
+        True if nan points should be omitted or not.
+    
     **dic : Dictionary
         Dictonary of extra parameters to be passed to `method`
     
     Returns
     -------
         A regular time series.
+    
+    Raise
+    --------
+    ValueError
+        If input 'interval' is wider than time serie' interval.
+        
     """
+
     if type(interval)==type(" "):
         interval=parse_interval(interval)
         
@@ -346,12 +356,38 @@ def _interpolate2rts(ts,interval,method=SPLINE,filter_nan=True,**dic):
     return rt
     
 def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
+    """ Interpolate a time series to input 'times'.
+
+    Parameters
+    -----------
+        
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+        
+    method : string, optional
+        See :func:`interpolate_ts_nan` for a list of methods.
+        
+    filter_nan : boolean,optional
+        True if nan points should be omitted or not.
     
-    """ Interpolate on given times within ts,
-        a array of interpolated values
-        will be return if succeed.
+    **dic : Dictionary
+        Dictonary of extra parameters to be passed to `method`
+    
+    Returns
+    -------
+     result: array 
+        interpolated values.
+        
+    Raise
+    --------
+    ValueError
+        If interpolate method is not supported.
+        
     """
-    
+
     if method==LINEAR:
         values=_linear(ts,times,filter_nan=filter_nan)
     elif method==SPLINE:
@@ -368,9 +404,29 @@ def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
 
 
 def _inner_histospline(ts,times,**dic):
-    """ inner histospline funcs, depends on wether tolbound is given or not
+    """ inner histospline funcs
+        depends on wether tolbound is given or not
         _rhistinterpbound or _rhisterinterp will be used.
+        
+    Parameters
+    -----------
+        
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+    
+    **dic : Dictionary
+        Dictonary of extra parameters to be passed to histospline
+    
+    Returns
+    -------
+     result: array 
+        interpolated values.
+        
     """
+
     p=10
     if "p" in dic.keys():
         p=dic["p"]
@@ -388,14 +444,36 @@ def _inner_histospline(ts,times,**dic):
 
 def _rhistinterp(ts,times,p=10,lowbound=0):
     """ Wrapper of the histospline rhistinerp from _rational_hist.
- 
-         It only accept ts with time averaged values which is stamped at
-         begining of period.If no such props is given in ts, function
-         will assume input ts has such property.
+        It only accept ts with time averaged values which is stamped at
+        begining of period.If no such props is given in ts, function
+        will assume input ts has such property.
 
          Input:
               times must be array of ticks.
               p is spline tension.
+    Parameters
+    -----------
+        
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+    
+     p : float
+        spline tension, must >-1.
+    
+     lowbound: float
+        lower bound for the data
+        
+    Returns
+    -------
+     result: array 
+        interpolated values.
+    
+     See Also
+    --------
+    _rhistinterpbound : 
     """
 
     if not ts.is_regular():
@@ -433,11 +511,19 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
 
 
 def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
-    """ Wrapper of the histospline rhistinerp from _rational_hist.
- 
-         It only accept ts with time averaged values which is stamped at
-         begining of period.If no such props is given in ts, function
-         will assume input ts has such property.
+    """ Wrapper of the histospline rhistinerp from _rational_hist where the data have a lower bound.
+        It only accept ts with time averaged values which is stamped at
+        begining of period.If no such props is given in ts, function
+        will assume input ts has such property.
+        
+        In piecewise intervals the data are treated as follows: 
+        1. If the input data lie above lobound for the interval,
+        the spline will be forced (using parameters p and q)
+        to lie above the bound
+        2. If the input data lie along lobound (within a distance 
+        tolobound), the spline will be a flat line on lobound.
+        3. If the input data lie more than a distance tolobound below
+        lobound, an error occurs and the routine aborts.
 
          Input:
               times must be array of ticks.
