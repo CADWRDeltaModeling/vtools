@@ -443,14 +443,12 @@ def _inner_histospline(ts,times,**dic):
 
 
 def _rhistinterp(ts,times,p=10,lowbound=0):
-    """ Wrapper of the histospline rhistinerp from _rational_hist.
+    """ Wrapper of the histospline rhistinerp without lowbound tolerance.
         It only accept ts with time averaged values which is stamped at
         begining of period.If no such props is given in ts, function
         will assume input ts has such property.
 
-         Input:
-              times must be array of ticks.
-              p is spline tension.
+        
     Parameters
     -----------
         
@@ -460,10 +458,10 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
     times : :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated.
     
-     p : float
+     p : float,optional
         spline tension, must >-1.
     
-     lowbound: float
+     lowbound: float,optional
         lower bound for the data
         
     Returns
@@ -473,7 +471,8 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
     
      See Also
     --------
-    _rhistinterpbound : 
+    _rhistinterpbound : Wrapper of the histospline rhistinerp from _rational_hist.
+    
     """
 
     if not ts.is_regular():
@@ -511,11 +510,37 @@ def _rhistinterp(ts,times,p=10,lowbound=0):
 
 
 def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
-    """ Wrapper of the histospline rhistinerp from _rational_hist where the data have a lower bound.
+    """ Wrapper of the histospline rhistinerp from _rational_hist.
         It only accept ts with time averaged values which is stamped at
         begining of period.If no such props is given in ts, function
         will assume input ts has such property.
         
+        
+    Parameters
+    -----------
+        
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+    
+    p : float,optional
+        spline tension, must >-1.
+    
+    lowbound: float,optional
+        lower bound for the data
+    
+    tolbound:float,optional
+        lower bound tolerance for the data
+        
+    Returns
+    -------
+     result: array 
+        interpolated values.
+    
+        
+    .. note:: 
         In piecewise intervals the data are treated as follows: 
         1. If the input data lie above lobound for the interval,
         the spline will be forced (using parameters p and q)
@@ -525,9 +550,7 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
         3. If the input data lie more than a distance tolobound below
         lobound, an error occurs and the routine aborts.
 
-         Input:
-              times must be array of ticks.
-              p is spline tension.
+         
     """
     if not ts.is_regular():
         raise ValueError("Only regular time series can be"
@@ -563,18 +586,25 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
 
     
 def _inner_monotonic_spline(ts,times,filter_nan=True):
-    # todo: none of our public API should return arrays
-    """ Wrapped monotonic spline function for time
-        series operation.
+    """ Wrapper of monotonic spline function.
+    
+    Parameters
+    -----------
+        
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
 
-        input:
-             ts: timeseries
-             times: a single datetime or list/array
-                    of datetime, or ticks.
-             filter_nan: if null data points of ts
-                         are omitted. 
-        output:
-            a array of interpolated vlaues is returned.        
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+    
+    filter_nan:boolean,optional
+        if true, null data points of input timeseries are omitted. 
+        
+    Returns
+    -------
+     result: array 
+        interpolated values.
+        
     """
 
     if isSequenceType(times) and len(times)==0:
@@ -618,17 +648,25 @@ def _inner_monotonic_spline(ts,times,filter_nan=True):
         
 def _linear(ts,times,filter_nan=True):
     
-    """ Estimate values within ts data by linear
-        interploate at given times.
+    """ Estimate values within ts data by linear interploate at given times.
         
-        input:
-             ts: timeseries
-             times: a single datetime or list/array
-                    of datetime, or ticks.
-             filter_nan: if null data points of ts
-                         are omitted. 
-        output:
-            a array of interpolated vlaues is returned.
+    Parameters
+    -----------
+        
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+    
+    filter_nan:boolean,optional
+        if true, null data points of input timeseries are omitted. 
+        
+    Returns
+    -------
+     result: array 
+        interpolated values.
+        
     """
     
     if isSequenceType(times) and len(times)==0:
@@ -653,21 +691,36 @@ def _linear(ts,times,filter_nan=True):
 
 
 def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
-    """ 
-        Estimate timeseries values at given times by
-        flat methods (previous known value, next known 
-        vlaue, and nearest known value)
+    
+    """  Estimate timeseries values at given times by flat methods 
+         use previous known value, next known vlaue, and nearest known value to
+         fill missed data.
+         
+    Parameters
+    -----------
         
-        input:
-           ts: timeseries
-           times: single or list of datetime or ticks
-           method: optional, choice PREVIOUS,NEXT,NEAREST
-           filter_nan: to filter out invalid data or not
-           extroplate: input as integer (num of interval,whether
-                       or not do a number of extra extroplation
-                       at the end of new ts data. 
-        return:
-           a array of interpolated values 
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+        
+    method: int,optional
+        Choice of PREVIOUS,NEXT,NEAREST
+    
+    filter_nan:boolean,optional
+        if true, null data points of input timeseries are omitted. 
+        
+    **dic : Dictionary
+        Dictonary of extra parameters to be passed in. For instance , input
+        'extroplate'  as integer (num of interval,whether or not do a number
+        of extra extroplation at the end of new ts data). 
+        
+    Returns
+    -------
+     result: array 
+        interpolated values.
+        
     """    
 
     if isSequenceType(times) and len(times)==0:
@@ -739,49 +792,67 @@ def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
 
 def _spline(ts,times,time_begin=None,time_end=None,\
             k=3,s=1.0e-3,filter_nan=True,per=0):
+    """ Estimate missing values within ts data by B-spline interpolation.
     
-    """ Estimate missing values within ts data by
-        B-spline interpolation.
+    Parameters
+    -----------
         
-        input:
-            ts: time series
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Series to be interpolated
+
+    times : :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated.
+        
+    time_begin, time_end: int or datetime,optional
+        the boundary of approximating, Default means whole time series will
+        be fitted.
+        
+    k: int,optional
+       The order of the spline fit. 
+       
+    s:  float,optional 
+       A smoothing condition.
+       
+    filter_nan:boolean,optional
+        If true, null data points of input timeseries are omitted. 
+        
+    per:int,optional
+        If non-zero, data points are considered periodic.
+        
+    Returns
+    -------
+     result: array 
+        interpolated values.
+        
+    
+        
             
-            times: the time points on which interpolation wanted.
+    ..note::
             
-            time_begin, time_end: the boundary of approximating, must
-                                  be given as ticks or datetime.
-                                  if not set, whole time series will
-                                  be fitted.
-            
-            k:  The order of the spline fit.  It is recommended 
-                to use cubic splines.Even order splines should be
-                avoided especially with small s values.
-                1 <= k <= 5.
+    k:  It is recommended 
+    to use cubic splines.Even order splines should be
+    avoided especially with small s values.
+    1 <= k <= 5.
                 
-            s:  A smoothing condition.  The amount of smoothness
-                is determined by satisfying the conditions: 
-                sum((w * (y - g))**2,axis=0) <= s where g(x) is 
-                the smoothed interpolation of (x,y).  The user can 
-                use s to control the tradeoff between closeness and 
-                smoothness of fit.  Larger s means more smoothing 
-                while smaller values of s indicate less smoothing. 
-                Recommended values of s depend on the weights, w.  
-                If the weights represent the inverse of the 
-                standard-deviation of y, then a good s value should 
-                be found in the range (m-sqrt(2*m),m+sqrt(2*m))
-                where m is the number of datapoints in x, y, and w.
-                default : s=m-sqrt(2*m).
+    s:  The amount of smoothness
+    is determined by satisfying the conditions: 
+    sum((w * (y - g))**2,axis=0) <= s where g(x) is 
+    the smoothed interpolation of (x,y).  The user can 
+    use s to control the tradeoff between closeness and 
+    smoothness of fit.  Larger s means more smoothing 
+    while smaller values of s indicate less smoothing. 
+    Recommended values of s depend on the weights, w.  
+    If the weights represent the inverse of the 
+    standard-deviation of y, then a good s value should 
+    be found in the range (m-sqrt(2*m),m+sqrt(2*m))
+    where m is the number of datapoints in x, y, and w.
+    default : s=m-sqrt(2*m).
                 
-           filter_nan: if null data points of ts are omitted. 
-                         
-           per: If non-zero, data points are considered periodic with
-                period x[m-1] - x[0] and a smooth periodic spline 
-                approximation is returned.Values of y[m-1] and w[m-1]
-                are not used.
+    per: If non-zero, data points are considered periodic with
+    period x[m-1] - x[0] and a smooth periodic spline 
+    approximation is returned.Values of y[m-1] and w[m-1]
+    are not used.
                 
-        output:
-            a array of interpolated vlaues is returned.               
-               
     """
 
     if isSequenceType(times) and len(times)==0:
