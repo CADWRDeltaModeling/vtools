@@ -66,8 +66,7 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
     
     # This is actual time series to calculate lag
     a_part = a.window(start, end)
-    a_part.data[np.isnan(a_part.data)] = 0.
-    
+    a_part_masked = np.ma.masked_invalid(a_part.data, np.nan)
 
     # Interpolate the second vector
     factor = a_avail.interval.total_seconds() / resolution.total_seconds()
@@ -87,7 +86,7 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
     def unnorm_xcor(lag):
         lag = np.floor(lag)
         b_part = b_interpolated.data[lag:lag+factor*n-1:factor]
-        return -np.inner(a_part.data, b_part)
+        return -np.ma.inner(a_part_masked, b_part)
     index = np.arange(-max_shift_tick, max_shift_tick + 1)
         
     brent=0
