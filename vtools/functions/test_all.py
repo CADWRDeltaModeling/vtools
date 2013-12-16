@@ -4,7 +4,6 @@ from test_period_op import TestPeriodOp
 from test_interpolate import TestInterpolate
 from test_decimate import TestDecimate
 from test_filter import TestFilter
-from test_godin import TestGodin
 from test_merge import TestMerge
 from test_shift import TestShift
 from test_resample import TestResamplefunctions
@@ -47,9 +46,9 @@ def suite():
     suite.addTest(TestFilter("test_butterworth_noevenorder")) 
 
     ## godin
-    suite.addTest(TestGodin("test_godin"))
-    suite.addTest(TestGodin("test_godin_15min"))
-    suite.addTest(TestGodin("test_godin_2d"))
+    suite.addTest(TestFilter("test_godin"))
+    suite.addTest(TestFilter("test_godin_15min"))
+    suite.addTest(TestFilter("test_godin_2d"))
 
     ## merge
     suite.addTest(TestMerge("test_merge_rts_no_intersect"))

@@ -73,7 +73,7 @@ def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
 
     Returns
     -------    
-    filled : vtools.data.time_series.TimeSeries
+    filled : :class:`~vtools.data.timeseries.TimeSeries`
         New series with missing values filled using `method`
 
         
@@ -116,7 +116,7 @@ def interpolate_ts(ts,times,method=SPLINE,filter_nan=True,**dic):
 
     Returns
     -------
-    result : vtools.data.time_series.TimeSeries
+    result : :class:`~vtools.data.timeseries.TimeSeries`
         A regular or irregular series with times based on times and values interpolated from ts.
         
     See Also
@@ -152,7 +152,7 @@ def monotonic_spline(ts,times,filter_nan=True):
 
     Returns
     -------
-    result : `vtools.data.time_series.TimeSeries`
+    result : :class:`~vtools.data.timeseries.TimeSeries`
         A regular time series if second input is time interval, or irregular time series otherwise. 
     """
 
@@ -173,7 +173,7 @@ def linear(ts,times,filter_nan=True):
     
     Returns
     -------
-    result : `TimeSeries`
+    result : :class:`~vtools.data.timeseries.TimeSeries`
         A regular time series if `times` is a `time_interval`, or irregular time series if `times` is a `time_sequence`. 
     """    
     return interpolate_ts(ts,times,method=LINEAR,filter_nan=filter_nan)
@@ -193,7 +193,7 @@ def nearest_neighbor(ts,times,filter_nan=True,**dic):
     
     Returns
     -------
-    result : `TimeSeries`
+    result : :class:`~vtools.data.timeseries.TimeSeries`
     A regular time series if second input is time interval,
              or irregular time series otherwise. 
     """
@@ -213,7 +213,7 @@ def previous_neighbor(ts,times,filter_nan=True,**dic):
     
     Returns
     -------
-    result : `TimeSeries`
+    result : :class:`~vtools.data.timeseries.TimeSeries`
     A regular time series if second input is time interval,
              or irregular time series otherwise.        
     """
@@ -246,7 +246,7 @@ def rhistinterp(ts,interval,**dic):
         
     Returns
     -------
-    result : `TimeSeries`
+    result : :class:`~vtools.data.timeseries.TimeSeries`
         A regular time series with instantaneous values       
     """
     return interpolate_ts(ts,interval,method=RATIONAL_HISTOSPLINE,**dic)
@@ -267,7 +267,7 @@ def next_neighbor(ts,times,filter_nan=True,**dic):
     
     Returns
     -------
-    result : `TimeSeries`
+    result : :class:`~vtools.data.timeseries.TimeSeries`
         A regular time series if `times` is time interval or irregular time series otherwise.   
     
               
@@ -295,7 +295,7 @@ def spline(ts,times,filter_nan=True,**dic):
     
     Returns
     -------
-    result : `TimeSeries`
+    result : :class:`~vtools.data.timeseries.TimeSeries`
         A regular time series if second input is time interval, or irregular time series otherwise.   
     
     """
@@ -322,6 +322,7 @@ def _interpolate2rts(ts,interval,method=SPLINE,filter_nan=True,**dic):
     
     Returns
     -------
+    result: :class:`~vtools.data.timeseries.TimeSeries`
         A regular time series.
     
     Raise

@@ -3,7 +3,7 @@
     will start on the first day of the month).
 """
 
-import pdb
+
 
 ## Python libary import.
 import datetime
@@ -45,28 +45,41 @@ LEFTSUM="leftsum" ## TEMPORARY NAME
 RECT=LEFTSUM
 
 def period_op(ts,interval,op,method=None):
-    """
-         Apply a period operation on a time series
-        and return a new series with period valued results
-
-        input:
+    """Apply a period operation on a time series.
+    
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be operated.
         
-           ts: time series operation is applied on, must
-           be regular time series, only valid data will be 
-           considered
-           
-           interval: time interval or string that can be parsed
-           to be interval
-           
-           op: operation name(MAX,MIN,MEAN).
-
-           method: the averaging method going to be used, only
-                   meaningful for averaging operation, if not
-                   given, function will select one method based
-                   on the timestamp property of time seris.
-        output:
-            a new time series with period interval that is the result
-            of applying op consecutively over calendar periods
+    interval: :ref:`time_interval <time_interval>` 
+        Interval of operation.
+        
+    op: string
+        three optiona are avaible,MAX,MIN and MEAN.
+        See :mod:'~vtools.data'
+        
+    method : string, optional
+        the averaging method going to be used, only
+        meaningful for averaging operation, if not
+        given, function will select one method based
+        on the timestamp property of time seris.
+    
+    Returns
+    -------    
+    Result : :class:`~vtools.data.timeseries.TimeSeries`
+         a new time series with period interval that is the result
+         of applying op consecutively over calendar periods
+        
+    Raise
+    --------
+    ValueError
+        If input time series is not regular, or regular interval is calendar
+        dependent, or input downsampling interval is narrower than original
+        one.
+        
+    .. note::  only valid data of input 'ts' will be considered
+       
     """
     
     if not is_interval(interval):

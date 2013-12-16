@@ -60,7 +60,7 @@ def resample_ftt(ts,interval,window=BOXCAR):
     
     Returns
     -------    
-    Resampled : vtools.data.time_series.TimeSeries
+    Resampled : :class:`~vtools.data.timeseries.TimeSeries`
         A new resampled time series if success.
         
     Raise
@@ -144,7 +144,7 @@ def resample(ts,interval,aligned=True):
     
     Returns
     -------    
-    Resampled : vtools.data.time_series.TimeSeries
+    Resampled : :class:`~vtools.data.timeseries.TimeSeries`
         A new resampled time series if success.
         
     Raise
@@ -194,13 +194,46 @@ def resample(ts,interval,aligned=True):
 def decimate(ts,interval,**dic):
     """ Downsample timeseries by decimating.
         A wrapper of GNU Octave function decimate.m function.
-        
-        this will
-        remove the influence of aliasing on downsampled
+        This will remove the influence of aliasing on downsampled
         ts.
         
-       
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be resampled.
+        
+    interval: :ref:`time_interval <time_interval>` 
+        Interval of resampled time series.
+        
+    **dic : Dictionary
+        Dictonary of extra parameters to be passed in. For instance , input
+        'align_calendar'  as boolean to align resampled timeseries with the
+        downsampling interval. 
+    
+    Returns
+    -------    
+    Resampled : :class:`~vtools.data.timeseries.TimeSeries`
+        A new resampled time series if success.
+        
+    Raise
+    --------
+    ValueError
+        If input time series is not regular, or regular interval is calendar
+        dependent, or input downsampling interval is narrower than original
+        one.
+        
     """
+    
+    if ts.is_regular():
+        tsdelta=ts.interval
+        if is_calendar_dependent(tsdelta):
+            raise ValueError("Resampling of a regular time series \
+            with calendar dependent interval is not defined.")
+    else:
+        raise ValueError("input timeseris for resampling operation \
+            must be regualr timeserise with calendar independent interval.")
+            
+    
     if "align_calendar" in dic.keys():
         align_calendar=dic["align_calendar"]
         del dic["align_calendar"]

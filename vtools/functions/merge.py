@@ -28,7 +28,7 @@ def merge(*lts):
 
     Returns
     -------    
-    merged : vtools.data.time_series.TimeSeries
+    merged : :class:`~vtools.data.timeseries.TimeSeries`
         A new time series with time interval same as the inputs, time extent
         the union of the inputs, and filled first with ts1, then with remaining
         gaps filled with ts2, then ts3....
@@ -57,7 +57,7 @@ def _merge(ts1,ts2):
 
     Returns
     -------    
-    merged : vtools.data.time_series.TimeSeries
+    merged : :class:`~vtools.data.timeseries.TimeSeries`
         A new merged time series if success. In the intersection zone
         of two ts, ts1 data take priority unless it is nan. Time extent of
         output ts will be union of two ts' extent.
