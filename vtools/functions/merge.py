@@ -1,8 +1,7 @@
-""" Merge two time series ts1,ts2, a new time series with combination of 
+""" Merge multiple time series ts1,ts2 ..., a new time series with combination of 
     ts1,ts2 data will be returned. 
 """
 
-import pdb
 
 ## Vtool vtime import.
 from vtools.data.vtime import ticks_to_time
@@ -19,12 +18,17 @@ __all__=["merge",]
 ###########################################################################
 def merge(*lts):
     """ merge a number of timeseries together and return a new ts.
-        Input:
-        ts1,ts2... two or more regular timeseries (number of args is variable),
-                   each with the same interval, with the
-                   highest priority time series listed first
+    
+    Parameters
+    ----------
+    *lts : :class:`~vtools.data.timeseries.TimeSeries`
+        Two or more regular timeseries (number of args is variable). 
+        Each with the same interval with the highest priority time
+        series listed first
 
-        Output:
+    Returns
+    -------    
+    merged : vtools.data.time_series.TimeSeries
         A new time series with time interval same as the inputs, time extent
         the union of the inputs, and filled first with ts1, then with remaining
         gaps filled with ts2, then ts3....
@@ -41,21 +45,23 @@ def merge(*lts):
 
     return ts
 
-def _merge(ts1,ts2):
+def _merge(ts1,ts2): 
+    """ Merge data from timeseries ts1 and ts2.
     
-    """ 
-        Merge data from timeseries ts1 and ts2.
+    Parameters
+    ----------
+    ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
+        Two or more regular timeseries (number of args is variable). 
+        Each with the same interval with the highest priority time
+        series listed first
 
-        input:
-           ts1: regular time series.
-           ts2: regular time series with same interval as ts1
-                
-        returns:
-            a new merged time series if success. In the intersection zone
-            of two ts, ts1 data take priority unless it is nan. Time extent of
-            output ts will be union of two ts' extent.
-            
-    
+    Returns
+    -------    
+    merged : vtools.data.time_series.TimeSeries
+        A new merged time series if success. In the intersection zone
+        of two ts, ts1 data take priority unless it is nan. Time extent of
+        output ts will be union of two ts' extent.
+
     """
     
     if not (ts1.is_regular() and ts2.is_regular()):      

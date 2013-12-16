@@ -44,7 +44,6 @@ RHIST = 'rhist'
 ###########################################################################
 
 def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
-    
     """ Estimate missing values within a time series by interpolation. 
 
     Parameters
@@ -234,7 +233,7 @@ def rhistinterp(ts,interval,**dic):
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated, typically period averaged
 
-    interval : :ref:`time_interval <time_interval>` of output
+    interval : :ref:`time_interval <time_interval>` 
 
     p : float, optional 
         Spline tension, usually between 0 and 20. Must >-1. For a 'sufficiently large' value of p, the interpolant will be monotonicity-preserving and will maintain strict positivity (always being strictly > `lowbound`.

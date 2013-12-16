@@ -44,50 +44,60 @@ BARTHANN="barthann"
 SLEPIAN="slepian"
 
 def resample_ftt(ts,interval,window=BOXCAR):
+    """ Do a resample operation on a time series "ts".
+        A wrapper of scipy.signal.resample function.
     
-    """ 
-        Do a resample operation on a time series
-        and return a new one.
-
-        input:
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be resampled.
         
-           ts: time series operation is applied on, maybe 
-           regular or irregular one.
+    interval: :ref:`time_interval <time_interval>` 
+        Interval of resampled time series.
+        
+    window: string, tuple,or float
+        windowing method option.
     
-           interval: number of resampling points desired
-           
-           window: windowing method option, those are 
-           available:             
-                    BOXCAR
-                    TRIANG
-                    PARZEN
-                    BOHMAN
-                    BLACKMANHARRIS
-                    NUTTALL
-                    BARTHANN
-                    TRIANG
-                    BLACKMAN   
-                    HAMMING        
-                    BARTLETT  
-                    SLEPIAN    # needs (width)  
-                    HANNING    # requires parameter (beta)
-                    KAISER     # requires parameter (beta)
-                    GAUSSIAN   # requires parameter (std.)
-                    GENERALGAUSS # Needs parameter (power, width)
-                   
-                   To use window without parameter input window
-                   as a constant: BOXCAR, etc.
-                   
-                   To use windows with parameter input
-                   window as a tuple: (GAUSSIAN,0.5)
-                   (GENERALGAUSS,2,1024),etc.
-                   
-                   if a single float point used as window, 
-                   KAISER window will be used with input
-                   value as beta of KAISER window.           
-        output:
-            a new resampled time series.
-    
+    Returns
+    -------    
+    Resampled : vtools.data.time_series.TimeSeries
+        A new resampled time series if success.
+        
+    Raise
+    --------
+    ValueError
+        If input time series is not regular, or regular interval is calendar
+        dependent.
+
+    ..note :: Those windowing method option  are available:    
+        BOXCAR
+        TRIANG
+        PARZEN
+        BOHMAN
+        BLACKMANHARRIS
+        NUTTALL
+        BARTHANN
+        TRIANG
+        BLACKMAN   
+        HAMMING        
+        BARTLETT  
+        SLEPIAN    # needs (width)  
+        HANNING    # requires parameter (beta)
+        KAISER     # requires parameter (beta)
+        GAUSSIAN   # requires parameter (std.)
+        GENERALGAUSS # Needs parameter (power, width)
+       
+       To use window without parameter input window
+       as a constant: BOXCAR, etc.
+       
+       To use windows with parameter input
+       window as a tuple: (GAUSSIAN,0.5)
+       (GENERALGAUSS,2,1024),etc.
+       
+       if a single float point used as window, 
+       KAISER window will be used with input
+       value as beta of KAISER window.           
+       
     """
     
     # Resampling regular time series with calendar dependent 
@@ -118,24 +128,34 @@ def resample_ftt(ts,interval,window=BOXCAR):
 ########################################################################### 
 ## Public interface.
 ###########################################################################
-def resample(ts,interval,window=BOXCAR,aligned=True):
-    
-    """ 
-        Do a resample operation on a time series
-        and return a new one. This is a simple
-        resample method, but has side effect of
-        aliasing.
-
-        input:
+def resample(ts,interval,aligned=True): 
+    """ Do a resampling operation on a time series.
         
-           ts: time series operation is applied on, maybe 
-           regular or irregular one.
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be resampled.
+        
+    interval: :ref:`time_interval <time_interval>` 
+        Interval of resampled time series.
+        
+    aligned: boolean
+        Default is true which means aligning result' time with input 'interval'.
     
-           interval: number of resampling points desired
-                  
-        output:
-            a new time series created by resampling the input ts
+    Returns
+    -------    
+    Resampled : vtools.data.time_series.TimeSeries
+        A new resampled time series if success.
+        
+    Raise
+    --------
+    ValueError
+        If input time series is not regular, or regular interval is calendar
+        dependent.
     
+     .. note::This is a simple resample method with side effect of
+        aliasing.
+        
     """
     
     # Resampling regular time series with calendar dependent 
@@ -155,7 +175,7 @@ def resample(ts,interval,window=BOXCAR,aligned=True):
 
     if aligned:
         aligned_start=align(ts.start,interval,1)
-        return resample(ts.window(aligned_start,ts.end),interval,window,False)
+        return resample(ts.window(aligned_start,ts.end),interval,False)
     else:
         num=number_intervals(ts.start,ts.end,interval) 
         steps=int(ticks(interval)/ticks(ts.interval))   
@@ -172,16 +192,14 @@ def resample(ts,interval,window=BOXCAR,aligned=True):
         return new_ts
 
 def decimate(ts,interval,**dic):
-    
-    """ Downsample timeseries by decimating, this will
+    """ Downsample timeseries by decimating.
+        A wrapper of GNU Octave function decimate.m function.
+        
+        this will
         remove the influence of aliasing on downsampled
         ts.
         
-        input:
-            ts: time series to be downsampled.
-            interval: new interval of downsampling.
-        output:
-            a new rts with input interval.
+       
     """
     if "align_calendar" in dic.keys():
         align_calendar=dic["align_calendar"]

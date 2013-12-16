@@ -46,7 +46,7 @@ RECT=LEFTSUM
 
 def period_op(ts,interval,op,method=None):
     """
-        Apply a period operation on a time series
+         Apply a period operation on a time series
         and return a new series with period valued results
 
         input:
