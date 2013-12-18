@@ -93,7 +93,7 @@ There is also a parsing function for string representations (:func:`~vtools.data
     intvl=parse_interval("1day")
     intvl=parse_interval("1mon")
     intvl=parse_interval("1year")
-Vtools function usually accept string representation of time interval, such as "1hour", "15min" and so on.
+Vtools function usually accepts string representation of time interval, such as "1hour", "15min" and so on.
 
 Verifying an interval
 ^^^^^^^^^^^^^^^^^^^^^
