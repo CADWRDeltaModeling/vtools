@@ -53,7 +53,7 @@ You can convert ticks to time using :func:`~vtools.data.vtime.ticks`
 
 Note that you don't usually have to work with ticks for basic analyses and you should not ever work with the base time. The reverse conversion :func:`~vtools.data.vtime.ticks_to_time` is also available:
 ::
-    >>> from vtools.data.api import *
+    >>> from vtools.data.vtime import *
     >>> import datetime
     >>> dt = datetime.datetime(2005,3,12)
     >>> ticks(dt)
@@ -62,6 +62,7 @@ Note that you don't usually have to work with ticks for basic analyses and you s
     datetime.datetime(2005, 3, 12, 0, 20)
     
 
+.. _time_intervals:
 
 Time intervals
 --------------
@@ -92,12 +93,12 @@ There is also a parsing function for string representations (:func:`~vtools.data
     intvl=parse_interval("1day")
     intvl=parse_interval("1mon")
     intvl=parse_interval("1year")
-
+Vtools function usually accept string representation of time interval, such as "1hour", "15min" and so on.
 Verifying an interval
 ^^^^^^^^^^^^^^^^^^^^^
 Because time_intervals are a concept represented by several classes, there is a need sometimes to verify that an object meets the requirements of a vtools time interval. This is done safely by passing it to the :func:`~vtools.data.vtime.is_interval` function:
 ::
-    >>> from vtools.data.api import *
+    >>> from vtools.data.vtime import *
     intvl = "a string"
     >>> is_interval(intvl)
     False
@@ -109,7 +110,7 @@ Calendar-dependence
 ^^^^^^^^^^^^^^^^^^^
 Units up to a day always have the same length. Months (28-31 days) and years (365-366 days) have slightly different lengths depending on the calendar month or year. If you want to query whether an interval is calendar dependent or not, the safest and shortest way to do it is with the utility `is_calendar_dependent`
 ::
-    >>> from vtools.data.api import *
+    >>> from vtools.data.vtime import *
     >>> is_calendar_dependent(months(1))
     True
     >>> is_calendar_dependent(hours(13))
@@ -127,7 +128,7 @@ Datetimes can be incremented or decremented by intervals as you would expect:
     >>> tm = datetime.datetime(2009,3,10,4,0)
     >>> tm
     datetime.datetime(2009, 3, 10, 4, 0)
-    >>> from vtools.data.api import *
+    >>> from vtools.data.vtime import *
     >>> tm + days(1)
     datetime.datetime(2009, 3, 11, 4, 0)
     >>> tm - time_interval(hours=3)
@@ -157,6 +158,7 @@ It is not common to create time_sequences from scratch. More often, you will get
 ::
     seq = ts.times
 
+.. _time_window:
 
 Time windows
 ------------

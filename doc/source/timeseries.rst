@@ -26,12 +26,16 @@ HEC-DSS and some real time storage programs have a convention of storing period-
 
 For plotting or cell-centered numerical work, it can also be convenient to have times and ticks that are period centered. The :meth:`TimeSeries.centered(copy_data=[True,False]) <vtools.data.timeseries.TimeSeries.centered>` method will created a shared or copied-data version of the parent time series.
 
-Indexing, slicing and shifting
-------------------------------
+Indexing, slicing
+-----------------
 
-Iterating and TimeSeriesElement
--------------------------------
-Occasionally (if you follow good programming practices and emphasize functional programming) it is necessary to march through the elements of a time series. Time series do provide their own iterator:
+Shifting series and centering period averaged data
+--------------------------------------------------
+
+Iterating through time
+----------------------
+Occasionally it is necessary to march through the elements of a time series. You should avoid stepwise iteration as much as possible (vtools, numpy and python in general recommend "functional programming" on entire arrays or time series). When necessary, though, time series do provide their own iterator so this will work 
+to traverse through a series by time steps:
 ::
     for elem in ts:
         print elem
