@@ -94,6 +94,7 @@ There is also a parsing function for string representations (:func:`~vtools.data
     intvl=parse_interval("1mon")
     intvl=parse_interval("1year")
 Vtools function usually accept string representation of time interval, such as "1hour", "15min" and so on.
+
 Verifying an interval
 ^^^^^^^^^^^^^^^^^^^^^
 Because time_intervals are a concept represented by several classes, there is a need sometimes to verify that an object meets the requirements of a vtools time interval. This is done safely by passing it to the :func:`~vtools.data.vtime.is_interval` function:
