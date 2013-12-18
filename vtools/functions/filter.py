@@ -38,14 +38,14 @@ _butterworth_interval=[time_interval(minutes=15),time_interval(hours=1)]
 ###########################################################################
 
 def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
-
     """ low-pass butterworth filter on a regular time series.
-        default order is 4, if no cutoff_frequency
-        is given, default will be used.
+      
         
     Parameters
     -----------
-    ts1 : :class:`~vtools.data.timeseries.TimeSeries`
+    
+    
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
     order: int ,optional
@@ -55,9 +55,9 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
         Cutting off frequency expressed as the ratio of Nyquist frequency,
         should within (0,1).
                       
-    cutoff_period : string or :ref:'time_interval<time_interval>'
+    cutoff_period : string  or  :ref:`time_interval<time_intervals>`
          Period of cutting off frequency. If input as a string, it must 
-         be  convertible to :ref:'time_interval<time_interval>'
+         be  convertible to :ref:`Time interval<time_intervals>`.
          cutoff_frequency and cutoff_period can't be specified at the same time.
            
     Returns
@@ -112,7 +112,7 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
         prop[key]=val
     prop[TIMESTAMP]=INST
     prop[AGGREGATION]=INDIVIDUAL
-    
+    time_interval
     return rts(d2,ts.start,ts.interval,prop)
     
    
@@ -126,12 +126,13 @@ def boxcar(ts,before,after):
     ts1 : :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
-    before: int,or :ref:'time_interval<time_interval>', or string
-        Length of averging interval before the sampling points.
+    before : :ref:`time_interval<time_intervals>`, int
+          Length of averging interval before the sampling points or number of points.
+          
 
-    after: int,or :ref:'time_interval<time_interval>', or string
-        Length of averging interval after the sampling points.
-        
+    after : :ref:`time_interval<time_intervals>`, int
+          Length of averging interval after the sampling points or number of points..
+       
     Returns
     -------
     result : :class:`~vtools.data.timeseries.TimeSeries`

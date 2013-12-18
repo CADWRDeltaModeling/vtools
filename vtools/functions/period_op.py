@@ -47,39 +47,39 @@ RECT=LEFTSUM
 def period_op(ts,interval,op,method=None):
     """Apply a period operation on a time series.
     
-    Parameters
-    ----------
-    ts : :class:`~vtools.data.timeseries.TimeSeries`
-        A regular timeseries to be operated.
-        
-    interval: :ref:`time_interval <time_interval>` 
-        Interval of operation.
-        
-    op: string
-        three optiona are avaible,MAX,MIN and MEAN.
-        See :mod:'~vtools.data'
-        
-    method : string, optional
-        the averaging method going to be used, only
-        meaningful for averaging operation, if not
+    .. note:: 
+        Only valid data of input 'ts' will be considered.
+        The 'method' input is only meaningful for averaging operation, if not
         given, function will select one method based
         on the timestamp property of time seris.
-    
-    Returns
-    -------    
-    Result : :class:`~vtools.data.timeseries.TimeSeries`
+        
+     Parameters
+     ----------
+     ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be operated.
+        
+     interval : :ref:`time_interval <time_intervals>` 
+        Interval of operation.
+        
+     op: string
+        three optiona are avaible, MAX,MIN and MEAN (in :mod:`vtools.data.constants` )
+            
+     method : string, optional
+        the averaging method going to be used, Two option avaiable, TRAPEZOID and RECT
+        
+     Returns
+     -------    
+     Result : :class:`~vtools.data.timeseries.TimeSeries`
          a new time series with period interval that is the result
          of applying op consecutively over calendar periods
         
-    Raise
-    --------
-    ValueError
+     Raises
+     --------
+     error : :py:class:`ValueError`
         If input time series is not regular, or regular interval is calendar
         dependent, or input downsampling interval is narrower than original
         one.
-        
-    .. note::  only valid data of input 'ts' will be considered
-       
+          
     """
     
     if not is_interval(interval):
@@ -151,83 +151,114 @@ def period_op(ts,interval,op,method=None):
     return ntt
 
 def period_min(ts,interval):
-    """
-        Find a period minimum values on a time series
-        and return a new one.
+    """Find a period minimum values on a time series.
 
-        input:
+     Parameters
+     ----------
+     ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be operated.
         
-           ts: time series operation is applied on, must
-           be regular time series.
+     interval : :ref:`time_interval <time_intervals>` 
+        Interval of operation.
     
-           interval: time interval or string that can be parsed
-           to be interval
-           
-        output:
-
-            a new time series.
+        
+     Returns
+     -------    
+     Result : :class:`~vtools.data.timeseries.TimeSeries`
+         a new time series with period interval that is the result
+         of applying min operation consecutively over calendar periods
+        
+     Raises
+     --------
+     error : :py:class:`ValueError`
+        If input time series is not regular, or regular interval is calendar
+        dependent, or input downsampling interval is narrower than original
+        one.
     """
     
     
     return period_op(ts,interval,MIN)
 
 def period_max(ts,interval):
-    """
-        Find a period maximum on a time series
-        and return a new one.
-
-        input:
+    """Find a period maximum on a time series.
+ 
+     Parameters
+     ----------
+     ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be operated.
         
-           ts: time series operation is applied on, must
-           be regular time series.
+     interval : :ref:`time_interval <time_intervals>` 
+        Interval of operation.
     
-           interval: time interval or string that can be parsed
-           to be interval
-           
-        output:
-
-            a new time series.
+        
+     Returns
+     -------    
+     Result : :class:`~vtools.data.timeseries.TimeSeries`
+         a new time series with period interval that is the result
+         of applying min operation consecutively over calendar periods
+        
+     Raises
+     --------
+     error : :class:`ValueError`
+        If input time series is not regular, or regular interval is calendar
+        dependent, or input downsampling interval is narrower than original
+        one.
     """
     
     
     return period_op(ts,interval,MAX)
 
 def period_ave(ts,interval,method=None):
-    """
-        Find a period mean on a time series
-        and return a new one.
-
-        input:
-        
-           ts: time series operation is applied on, must
-           be regular time series.
+    """Find a period mean on a time series.
     
-           interval: time interval or string that can be parsed
-           to be interval
-           
-        output:
-
-            a new time series.
+     Parameters
+     ----------
+     ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be operated.
+        
+     interval : :ref:`time_interval <time_intervals>` 
+        Interval of operation.
+    
+        
+     Returns
+     -------    
+     Result : :class:`~vtools.data.timeseries.TimeSeries`
+         a new time series with period interval that is the result
+         of applying average operation consecutively over calendar periods
+        
+     Raises
+     --------
+     error : :class:`ValueError`
+        If input time series is not regular, or regular interval is calendar
+        dependent, or input downsampling interval is narrower than original
+        one.
     """    
     return period_op(ts,interval,MEAN,method)
 
 def period_sum(ts,interval):
+    """Find a period sum on a time series.
 
-    """
-        Find a period sum on a time series
-        and return a new one.
-
-        input:
+     Parameters
+     ----------
+     ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be operated.
         
-           ts: time series operation is applied on, must
-           be regular time series.
+     interval : :ref:`time_interval <time_intervals>` 
+        Interval of operation.
     
-           interval: time interval or string that can be parsed
-           to be interval
-           
-        output:
-
-            a new time series.
+        
+     Returns
+     -------    
+     Result : :class:`~vtools.data.timeseries.TimeSeries`
+         a new time series with period interval that is the result
+         of applying sum operation consecutively over calendar periods
+        
+     Raises
+     --------
+     error : :py:class:`ValueError`
+        If input time series is not regular, or regular interval is calendar
+        dependent, or input downsampling interval is narrower than original
+        one.
     """
     return period_op(ts,interval,SUM)
 

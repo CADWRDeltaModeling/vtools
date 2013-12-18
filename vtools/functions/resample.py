@@ -46,46 +46,25 @@ SLEPIAN="slepian"
 def resample_ftt(ts,interval,window=BOXCAR):
     """ Do a resample operation on a time series "ts".
         A wrapper of scipy.signal.resample function.
-    
-    Parameters
-    ----------
-    ts : :class:`~vtools.data.timeseries.TimeSeries`
-        A regular timeseries to be resampled.
         
-    interval: :ref:`time_interval <time_interval>` 
-        Interval of resampled time series.
+     .. note::  resample provides those windowing method options:  
         
-    window: string, tuple,or float
-        windowing method option.
-    
-    Returns
-    -------    
-    Resampled : :class:`~vtools.data.timeseries.TimeSeries`
-        A new resampled time series if success.
-        
-    Raise
-    --------
-    ValueError
-        If input time series is not regular, or regular interval is calendar
-        dependent.
-
-    ..note :: Those windowing method option  are available:    
-        BOXCAR
-        TRIANG
-        PARZEN
-        BOHMAN
-        BLACKMANHARRIS
-        NUTTALL
-        BARTHANN
-        TRIANG
-        BLACKMAN   
-        HAMMING        
-        BARTLETT  
-        SLEPIAN    # needs (width)  
-        HANNING    # requires parameter (beta)
-        KAISER     # requires parameter (beta)
-        GAUSSIAN   # requires parameter (std.)
-        GENERALGAUSS # Needs parameter (power, width)
+        BOXCAR\n
+        TRIANG\n
+        PARZEN\n
+        BOHMAN\n
+        BLACKMANHARRIS\n
+        NUTTALL\n
+        BARTHANN\n
+        TRIANG\n
+        BLACKMAN\n   
+        HAMMING\n        
+        BARTLETT\n  
+        SLEPIAN    # needs (width) \n  
+        HANNING    # requires parameter (beta) \n
+        KAISER     # requires parameter (beta) \n
+        GAUSSIAN   # requires parameter (std.) \n
+        GENERALGAUSS # Needs parameter (power, width)\n
        
        To use window without parameter input window
        as a constant: BOXCAR, etc.
@@ -96,7 +75,33 @@ def resample_ftt(ts,interval,window=BOXCAR):
        
        if a single float point used as window, 
        KAISER window will be used with input
-       value as beta of KAISER window.           
+       value as beta of KAISER window.     
+       
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be resampled.
+        
+    interval : :ref:`time_interval <time_intervals>`  
+        Interval of resampled time series.
+        
+    window: string, tuple,or float
+        windowing method option.
+        
+   
+    
+    Returns
+    -------    
+    Resampled : :class:`~vtools.data.timeseries.TimeSeries`
+        A new resampled time series if success.
+        
+    Raises
+    --------
+    error : :py:class:`ValueError`
+        If input time series is not regular, or regular interval is calendar
+        dependent.
+
+          
        
     """
     
@@ -136,7 +141,7 @@ def resample(ts,interval,aligned=True):
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         A regular timeseries to be resampled.
         
-    interval: :ref:`time_interval <time_interval>` 
+    interval : :ref:`time_interval <time_intervals>` 
         Interval of resampled time series.
         
     aligned: boolean
@@ -147,9 +152,9 @@ def resample(ts,interval,aligned=True):
     Resampled : :class:`~vtools.data.timeseries.TimeSeries`
         A new resampled time series if success.
         
-    Raise
+    Raises
     --------
-    ValueError
+    error : :py:class:`ValueError`
         If input time series is not regular, or regular interval is calendar
         dependent.
     
@@ -202,7 +207,7 @@ def decimate(ts,interval,**dic):
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         A regular timeseries to be resampled.
         
-    interval: :ref:`time_interval <time_interval>` 
+    interval : :ref:`time_interval <time_intervals>` 
         Interval of resampled time series.
         
     **dic : Dictionary
@@ -215,9 +220,9 @@ def decimate(ts,interval,**dic):
     Resampled : :class:`~vtools.data.timeseries.TimeSeries`
         A new resampled time series if success.
         
-    Raise
+    Raises
     --------
-    ValueError
+    error : :py:class:`ValueError`
         If input time series is not regular, or regular interval is calendar
         dependent, or input downsampling interval is narrower than original
         one.

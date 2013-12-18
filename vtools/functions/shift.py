@@ -23,17 +23,21 @@ __all__=["shift"]
 
 def shift(ts,interval):
     
-    """ 
-        Shift entire time series by a given interval
-
-        input:
-           ts: time series operation is applied on, maybe
-           regular or irregular one.
-           interval: time interval or string that can be parsed
-           to be interval
-           
-        output:
-           A new time series with time shifted.
+    """Shift entire time series by a given interval
+    
+    Parameters
+    ----------
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        A regular timeseries to be shifted.
+        
+    interval : :ref:`time_interval <time_intervals>` 
+        Interval of the shifting. 
+        
+    
+    Returns
+    -------    
+    shifted : :class:`~vtools.data.timeseries.TimeSeries`
+        A new time series with shifted times.
     
     """
     

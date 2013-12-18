@@ -11,8 +11,8 @@ from copy import deepcopy
 from scipy.interpolate import interp1d
 from scipy.interpolate.fitpack import splrep,splev
 from scipy import array,logical_not,compress,\
-isnan,zeros,zeros_like,put,transpose,where,take,alltrue,\
-greater,less,arange,nan,resize
+  isnan,zeros,zeros_like,put,transpose,where,take,alltrue,\
+  greater,less,arange,nan,resize
 
 ## vtools import. 
 from vtools.data.vtime import ticks,time_sequence,\
@@ -104,7 +104,7 @@ def interpolate_ts(ts,times,method=SPLINE,filter_nan=True,**dic):
     -----------
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to interpolate. Must has data of one dimension, regular or irregular.
-    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+    times : :ref:`time_interval <time_intervals>`  or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     method : string, optional
         See :func:`interpolate_ts_nan` for a list of methods
@@ -146,7 +146,7 @@ def monotonic_spline(ts,times,filter_nan=True):
     ----------
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
-    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+    times : :ref:`time_interval <time_intervals>`  or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     filter_nan: if nan points should be omitted or not.
 
@@ -165,9 +165,8 @@ def linear(ts,times,filter_nan=True):
     ----------
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
-    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
-        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
-   
+    times : :ref:`time_interval <time_intervals>`  or :ref:`time_sequence <time_sequence>`
+        The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.    
     filter_nan : boolean, optional
         Should nan points should be omitted or not.
     
@@ -186,7 +185,7 @@ def nearest_neighbor(ts,times,filter_nan=True,**dic):
     ----------
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
-    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+    times : :ref:`time_interval <time_intervals>`  or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     filter_nan : boolean, optional 
         True if NaN point should be ommitted or not.
@@ -206,7 +205,7 @@ def previous_neighbor(ts,times,filter_nan=True,**dic):
     ----------
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
-    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+    times : :ref:`time_interval <time_intervals>`  or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
     filter_nan : boolean,optional
         True if nan points should be omitted or not.
@@ -233,7 +232,7 @@ def rhistinterp(ts,interval,**dic):
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated, typically period averaged
 
-    interval : :ref:`time_interval <time_interval>` 
+    interval : :ref:`time_interval <time_intervals>`  
 
     p : float, optional 
         Spline tension, usually between 0 and 20. Must >-1. For a 'sufficiently large' value of p, the interpolant will be monotonicity-preserving and will maintain strict positivity (always being strictly > `lowbound`.
@@ -259,7 +258,7 @@ def next_neighbor(ts,times,filter_nan=True,**dic):
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
 
-    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+    times : :ref:`time_interval <time_intervals>`  or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval. 
 
     filter_nan : boolean,optional
@@ -284,7 +283,7 @@ def spline(ts,times,filter_nan=True,**dic):
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Series to be interpolated
 
-    times : :ref:`time_interval <time_interval>` or :ref:`time_sequence <time_sequence>`
+    times : :ref:`time_interval <time_intervals>`  or :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.
         
     filter_nan : boolean,optional
