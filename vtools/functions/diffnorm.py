@@ -43,7 +43,7 @@ def norm_diff_l1(ts1,ts2,time_window=None):
     ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
               Must has data of one dimension, and regular.
     
-    time_window : :ref:`Time windows<time_window>` ,optional 
+    time_window : :ref:`time_window<time_window>` ,optional 
         The default implies comparing the full length of two time series.
    
     Returns
@@ -69,7 +69,7 @@ def norm_diff_l2(ts1,ts2,time_window=None):
     ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
-    time_window : :ref:`Time windows<time_window>`,optional
+    time_window : :ref:`time_window<time_window>`,optional
         The default implies comparing the full length of two time series.
            
 
@@ -96,7 +96,7 @@ def norm_diff_linf(ts1,ts2,time_window=None):
     ts1,ts2: :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
-    time_window : :ref:`Time windows<time_window>`,optional
+    time_window : :ref:`time_window<time_window>`,optional
         The default implies comparing the full length of two time series.
 
     Returns
@@ -120,7 +120,7 @@ def ts_equal(ts1,ts2,time_window=None,tol=0.0e0):
     ts1.ts2 : :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
-    time_window : :ref:`Time windows<time_window>`,optional
+    time_window : :ref:`time_window<time_window>`,optional
         The default implies comparing the full length of two time series.
            
     tol    :float,optional
@@ -152,7 +152,7 @@ def ts_almost_equal(ts1,ts2,time_window=None,tol=1.0e-8):
     ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
-    time_window : :ref:`Time windows<time_window>`,optional
+    time_window : :ref:`time_window<time_window>`,optional
         The default implies comparing the full length of two time series.
            
     tol    :float,optional
