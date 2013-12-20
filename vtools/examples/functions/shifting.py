@@ -2,11 +2,12 @@
 
 from vtools.functions.shift import *
 from vtools.data.sample_series import *
+from vtools.data.vtime import hours
 import matplotlib.pyplot as plt
 
 
 ts=synthetic_tide_series()
-ts_shifted=shift(ts,"1day")
+ts_shifted=shift(ts, hours(2))
 fig=plt.figure()
 ax0 = fig.add_subplot(111)
 ax0.set_ylabel("surface (feet)")
