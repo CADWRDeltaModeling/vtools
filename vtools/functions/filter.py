@@ -52,8 +52,12 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
         The default is 4.
         
     cutoff_frequency: float,optional
-        Cutting off frequency expressed as the ratio of Nyquist frequency,
-        should within (0,1).
+        Cutoff frequency expressed as a ratio of a Nyquist frequency,
+        should within the range (0,1). For example, if the sampling frequency
+        is 1 hour, the Nyquist frequency is 1 sample/2 hours. If we want a
+        36 hour cutoff period, the frequency is 1/36 or 0.0278 cycles per hour. 
+        Hence the cutoff frequency argument used here would be
+        0.0278/0.5 = 0.056.
                       
     cutoff_period : string  or  :ref:`time_interval<time_intervals>`
          Period of cutting off frequency. If input as a string, it must 
@@ -92,8 +96,10 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     cf=cutoff_frequency
     if (cf==None):
         if (cutoff_period !=None):
-            ## convert it to days
-            cutoff_frequency_in_ticks = 1.0/float(ticks(parse_interval(cutoff_period)))
+            ## convert it to ticks
+            if not (is_interval(cutoff_period)):
+                cutoff_period=parse_interval(cutoff_period)
+            cutoff_frequency_in_ticks = 1.0/float(ticks(cutoff_period))
             nyquist_frequency  = 0.5/float(ticks(interval))
             cf = cutoff_frequency_in_ticks/nyquist_frequency
         else:
