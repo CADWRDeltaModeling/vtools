@@ -1,27 +1,26 @@
-## example of using boxcar and butterworth filter
-## remember: boxcar and butterworth filter
-## can only be used on regular time series.
-
-## import necessary lib
-from vtools.functions.api import *
-from vtools.data.vtime import *
 
 
-## use boxcar filter do a centered moving average
-## over 24 hours
-intl=parse_interval("12hour")
-ts_24=boxcar(ts,intl,intl)
+from vtools.functions.filter import *
+from vtools.data.sample_series import *
+import matplotlib.pyplot as plt
 
 
-## use boxcar filter do a forward moving average
-## over 24 hours
-intl_after=parse_interval("24hour")
-intl_before=parse_interval("0min")
-ts_24=boxcar(ts,intl,intl)
 
-
-## use butterworth filter to low passing a series.
-ts_new=butterworth(ts)
-
+ts_1week=example_data("pt_reyes_tidal_1hour")
+ts_butt=butterworth(ts_1week,cutoff_period=hours(30))
+boxcar_aver_interval = hours(25)
+ts_box=boxcar(ts_1week,boxcar_aver_interval,boxcar_aver_interval)
+ts_god=godin(ts_1week)
+fig=plt.figure()
+ax0 = fig.add_subplot(111)
+ax0.set_ylabel("surface (feet)")
+p0=ax0.plot(ts_1week.times,ts_1week.data,color='green',linewidth=1.2)
+p1=ax0.plot(ts_butt.times,ts_butt.data,color='red',linewidth=0.5)
+p2=ax0.plot(ts_box.times,ts_box.data,color='blue',linewidth=0.5)
+p2=ax0.plot(ts_god.times,ts_god.data,color='black',linewidth=0.5)
+plt.legend(["Surface","Butterworth","Boxcar","Godin"])
+plt.grid(b=True, which='both', color='0.9', linestyle='-', linewidth=0.5)
+fig.autofmt_xdate()
+plt.show()
 
 
