@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 
 
 ts_1week=example_data("pt_reyes_tidal_1hour")
-ts_butt=butterworth(ts_1week,cutoff_period="30hour")
-boxcar_aver_interval = parse_interval("25hour")
-ts_box=boxcar(ts_1week,boxcar_aver_interval,boxcar_aver_interval)
+ts_butt=butterworth(ts_1week,cutoff_period=hours(36))
+boxcar_aver_interval = hours(25)
+ts_box=boxcar(ts_1week,boxcar_aver_interval,hours(25))
 ts_god=godin(ts_1week)
 fig=plt.figure()
 ax0 = fig.add_subplot(111)
