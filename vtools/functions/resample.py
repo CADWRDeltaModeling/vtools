@@ -259,24 +259,8 @@ def decimate(ts,interval,**dic):
     Resampled : :class:`~vtools.data.timeseries.TimeSeries`
         A new resampled time series if success.
         
-    Raises
-    --------
-    error : :py:class:`ValueError`
-        If input time series is not regular, or regular interval is calendar
-        dependent, or input downsampling interval is narrower than original
-        one.
-        
     """
     
-    if ts.is_regular():
-        tsdelta=ts.interval
-        if is_calendar_dependent(tsdelta):
-            raise ValueError("Resampling of a regular time series \
-            with calendar dependent interval is not defined.")
-    else:
-        raise ValueError("input timeseris for resampling operation \
-            must be regualr timeserise with calendar independent interval.")
-            
     
     if "align_calendar" in dic.keys():
         align_calendar=dic["align_calendar"]
