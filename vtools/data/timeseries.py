@@ -23,14 +23,14 @@ def range_union(ts0,ts1):
        
        Parameters
        ----------
-       ts0,ts1 : TimeSeries
-       The series whose union is to be found
+       ts0,ts1 : :class:`~vtools.data.timeseries.TimeSeries`
+              The series whose union is to be found
        
        Returns
        ------- 
-       range : tuple(datetime,datetime)
-       A tuple representing the start and end of the union of time
-       ranges of ts0 and ts1, as determined by the earliest start and the latest end.
+       range : (:py:class:`datetime.datetime`, :py:class:`datetime.datetime`)
+              A tuple representing the start and end of the union of time
+              ranges of ts0 and ts1, as determined by the earliest start and the latest end.
     """
       
     union_start=min(ts0.start,ts1.start)
@@ -40,8 +40,20 @@ def range_union(ts0,ts1):
 def range_intersect(ts0,ts1):
     """Intersection of time ranges of two series.
     
-    May return result with union_start > union_end,
-    in which case there is no intersection.
+      .. note::
+         may return result with union_start > union_end,
+         in which case there is no intersection.
+    
+       Parameters
+       ----------
+       ts0,ts1 : :class:`~vtools.data.timeseries.TimeSeries`
+              The series whose union is to be found
+       
+       Returns
+       ------- 
+       range : (:py:class:`datetime.datetime`, :py:class:`datetime.datetime`)
+              A tuple representing the start and end of the intersect of time ranges of ts0 and ts1
+            
     """
     intersect_start=max(ts0.start,ts1.start)
     intersect_end=min(ts0.end,ts1.end)
@@ -52,10 +64,10 @@ def index_after(seq,tm):
     
     Parameters
     ----------
-    seq : time_sequence
+    seq : :ref:`time_sequence<time_sequence>`
     The sequence whose index will be searched
     
-    tm : datetime
+    tm : :py:class:`datetime.datetime`
     Time whose index is sought
     
     Returns
@@ -71,10 +83,10 @@ def indexes_after(seq,tm):
        
     Parameters
     ----------
-    seq : time_sequence
+    seq : :ref:`time_sequence<time_sequence>`
     The sequence whose index will be searched
     
-    tm : list(datetime)
+    tm : list of  :py:class:`datetime.datetime`
     List of times whose index is sought
     """
 
@@ -86,10 +98,10 @@ def index_before(seq,tm):
     
     Parameters
     ----------
-    seq : time_sequence
+    seq : :ref:`time_sequence<time_sequence>`
     The sequence whose index will be searched
     
-    tm : datetime
+    tm : :py:class:`datetime.datetime`
     Time whose index is sought
     
     Returns
@@ -106,15 +118,15 @@ def prep_binary(ts1,ts2):
        
        Parameters
        ----------
-       ts1,ts2 : TimeSeries
+       ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
            Two regular time series with similar time intervals
 
        Returns
        -------
-       seq : time_sequence
+       seq : :ref:`time_sequence<time_sequence>`
            Representing the union of times from the series
 
-       start : datetime
+       start : py:class:`datetime.datetime`
            The start of the sequence as a datetime
        
        slice0 : slice 
@@ -365,10 +377,10 @@ class TimeSeries(object):
         
         Parameters
         ----------
-        start : datetime
+        start : :py:class:`datetime.datetime`
             Start time of copy
         
-        end : datetime
+        end : :py:class:`datetime.datetime`
             End time of copy
         
         left : boolean, optional
@@ -379,8 +391,8 @@ class TimeSeries(object):
         
         Returns
         -------
-        result : TimeSeries
-            Copy of the series. Now shared data with the original, so you can manipulate it without fear of overwriting the original series.
+        result : :class:`~vtools.data.timeseries.TimeSeries`
+            Copy of the series. No shared data with the original, so you can manipulate it without fear of overwriting the original series.
         
         See also
         --------
@@ -397,10 +409,39 @@ class TimeSeries(object):
             newticks=numpy.copy(self._ticks[startindex:endindex+1])
             return its(newticks,newdata,newprops)
     
-    # provide a shared-memory ts (shared data and props) with a reduced time window 
-    # if left=True, the first time point will be at or before the given start time
-    # otherwise, the first time will be at or after the given start. same for right
+    # 
+    # 
     def window(self,start=None, end=None, left=False, right=False):
+        """Provide a shared-memory ts (shared data and props) with a reduced time window 
+        
+           .. note::
+               if left=True, the first time point will be at or before the given start time
+               otherwise, the first time will be at or after the given start. same for right.
+               
+        Parameters
+        ----------
+        start : :py:class:`datetime.datetime`
+            Start time of window
+        
+        end : :py:class:`datetime.datetime`
+            End time of window
+        
+        left : boolean, optional
+            Overlap so that the copy catches the value previous to the given start time (useful for irregular)
+
+        right : boolean, optional
+            Overlap so that the copy catches the next value after the given end time (useful for irregular)
+        
+        Returns
+        -------
+        result : :class:`~vtools.data.timeseries.TimeSeries`
+            Copy of the series,shared data with the original.
+        
+        See also
+        --------
+        copy : Same concept but with copied data.
+        
+        """
         (startindex,endindex)=_get_span(self,start,end,left,right)
         newdata=self.data[startindex:endindex+1]
         newprops=self.props
@@ -424,7 +465,7 @@ class TimeSeries(object):
         
         Returns
         -------
-        result : TimeSeries
+        result : :class:`~vtools.data.timeseries.TimeSeries`
             New series with shared or copied data with time centered between the timestamps of the original series. Note the new series has length one shorter than the original.
         """
         
@@ -462,14 +503,14 @@ class TimeSeries(object):
         
         Parameters
         ----------
-        interval: datetime.timedelta or dateutil.relativedelta or string 
+        interval : :py:class:`dateutil.relativedelta`, :py:class:`datetime.timedelta`, string 
   
         copy_data : boolean,optional
             If True, the result is an entirely new series with deep copy of all data and properties. Otherwise, it will share data and properties.
     
         Returns
         -------
-        result : TimeSeries
+        result : :class:`~vtools.data.timeseries.TimeSeries`
             New series with shared or copied data with  the  shfited timestamps of the original series by inpute interval.
         """    
         
@@ -704,15 +745,15 @@ def rts(data,start,interval,props=None):
         data : array_like
             Should be a array/list of values. There is no restriction on data type, but not all functionality like addition or interpolation will work on all data.
         
-        start : datetime
+        start : :py:class:`datetime.datetime`
             Can also be a string representing a datetime.
         
-        interval : time_interval
+        interval : :ref:`time_interval<time_intervals>`
             Can also be a string representing an interval that is understood by :func:`vools.vtime.parse_interval`. 
 
         Returns
         -------
-        result : TimeSeries
+        result :  :class:`~vtools.data.timeseries.TimeSeries`
             A regular time series.
     """
     
@@ -733,7 +774,7 @@ def its(times,data,props=None):
         
         Parameters
         ----------
-        times : time_sequence
+        times : :ref:`time_sequence<time_sequences>`
             An array or list of datetimes or ticks
         
         data : array or list of values
@@ -741,7 +782,7 @@ def its(times,data,props=None):
         
         Returns
         -------
-        result : TimeSeries
+        result :  :class:`~vtools.data.timeseries.TimeSeries`
             An irregular TimeSeries instance
     """
     # convert times to a tick sequence
@@ -755,11 +796,30 @@ def its(times,data,props=None):
 
 def its2rts(its,interval,original_dates=True):
    """ Convert an irregular time series to a regular.
+   
+       .. note::
        This function assumes observations were taken at "almost regular" intervals with some 
        variation due to clocks/recording. It nudges the time to "neat" time points to obtain the
        corresponding regular index, allowing gaps. There is no correctness checking, 
        The dates are stored at the original "imperfect" time points if original_dates == True,
        otherwise at the "nudged" regular times.
+       
+        Parameters
+        ----------
+        its : :class:`~vtools.data.timeseries.TimeSeries`
+             A irregular time series.
+             
+        
+        interval : :ref:`time_interval<time_intervals>`
+            Interval of resulting regular timeseries,Can also be a string representing an interval that is understood by :func:`vools.vtime.parse_interval`. 
+
+        original_dates:boolean,optional
+            Use original datetime or nudged regular times.
+        
+        Returns
+        -------
+        result :  :class:`~vtools.data.timeseries.TimeSeries`
+            A regular time series.
        
    """
    if not isinstance(interval, timedelta): 
