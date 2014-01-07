@@ -1,6 +1,6 @@
 
 
-class ExcelFormatEntry(Object):
+class ExcelFormatEntry(object):
     """ A helper class to store Excel stroing
         and retrieving format setting.
     """
