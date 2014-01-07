@@ -104,6 +104,19 @@ class TestInterpolate(unittest.TestCase):
 ##    functions. 
 ##            
 ###############################################      
+
+    def test_rts_extrapolation_error(self):
+      """ Test doing extrapolation using interpolating function.
+      """
+
+      msgtr="at  test_rts_extrapolation_error"        
+      ts=self.rts1
+      movetime=minutes(5)
+      intpolate_points=time_sequence(ts.start-movetime, minutes(15), 10)
+      methods=[NEAREST,PREVIOUS,NEXT,LINEAR,SPLINE,MSPLINE,RHIST]
+      
+      for method in methods:
+          self.assertRaises(ValueError, interpolate_ts,ts,intpolate_points,method=method)
        
     def test_rts_at_regular_points(self):
         
@@ -278,7 +291,7 @@ class TestInterpolate(unittest.TestCase):
 
         ## Interpolation time locations.
         st=[2,9,19,20,29,34,50,72.4]
-         
+        
         for func in [nearest_neighbor,previous_neighbor,next_neighbor]:            
             irt=func(ts,st)
             for vv in irt.data:

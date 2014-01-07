@@ -27,7 +27,7 @@ from _rational_hist import *
 __all__=["linear","spline","monotonic_spline","nearest_neighbor","gap_size",\
          "previous_neighbor","next_neighbor","interpolate_ts_nan",\
          "NEAREST","PREVIOUS","NEXT","LINEAR","SPLINE","MONOTONIC_SPLINE",\
-         "interpolate_ts","rhistinterp","RATIONAL_HISTOSPLINE"]
+         "interpolate_ts","rhistinterp","RATIONAL_HISTOSPLINE","MSPLINE","RHIST"]
 
 NEAREST="nearest"
 PREVIOUS="pre"
@@ -383,10 +383,19 @@ def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
     Raise
     --------
     ValueError
-        If interpolate method is not supported.
+        If interpolate method is not supported, or input time sequence is 
+        not a subset of input timeseries datetime range.
         
     """
+    ## do a check of extrapolation, which is not allowed
+    ts_start=ts.ticks[0]
+    ts_end=ts.ticks[-1]
+    tticks=_check_input_times(times)
 
+    if not ((ts_start<=(tticks[0])) and (ts_end>=(tticks[-1]))):
+        raise ValueError("Input time sequence is not subset of \
+        input timeseries valid datetime range")
+    
     if method==LINEAR:
         values=_linear(ts,times,filter_nan=filter_nan)
     elif method==SPLINE:
@@ -881,7 +890,6 @@ def _spline(ts,times,time_begin=None,time_end=None,\
         ## Generate spline representation.
         tck=splrep(ts_ticks,ts_data,s=s,per=per,k=k) 
         ## Calculate values.
-    
         v=splev(tticks,tck,der=0)
         if not isSequenceType(v):
             v=array([v])
