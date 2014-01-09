@@ -11,7 +11,7 @@ from operator import add,sub
 ## Vtool vtime import.
 from vtools.data.vtime import number_intervals,\
 ticks,ticks_to_time,is_calendar_dependent,\
-parse_interval,is_interval,align
+ticks_to_interval,parse_interval,is_interval,align
 from vtools.data.timeseries import rts,its
 from vtools.data.constants import *
 
@@ -90,7 +90,7 @@ def resample(ts,interval,aligned=True):
         new_ts=rts(nt,st,interval,prop)                
         return new_ts
 
-def _decimate(x, q, n=None, ftype='iir', axis=-1):
+def _decimate(x, q, n=None, ftype='fir', axis=-1):
     """downsample the signal x by an integer factor q, using an order n filter
     
     By default, an order 8 Chebyshev type I filter is used or a 30 point FIR 
@@ -124,10 +124,10 @@ def _decimate(x, q, n=None, ftype='iir', axis=-1):
         y = lfilter(b, 1., x, axis=axis)
     else:
         (b, a) = cheby1(n, 0.05, 0.8/q)
-
         y = lfilter(b, a, x, axis=axis)
 
-    return y.swapaxes(0,axis)[::q].swapaxes(0,axis)
+    phase_shift = (n)/2 ## in original sample interval
+    return y.swapaxes(0,axis)[::q].swapaxes(0,axis),phase_shift
 
 def decimate(ts,interval,**dic):
     """ Downsample timeseries by decimating.
@@ -180,16 +180,21 @@ def decimate(ts,interval,**dic):
     is narrower than orginal timeseries,try a wider one.")
     
     if ts.data.ndim==1:
-        data=_decimate(ts.data,n,**dic)
-        d1=data[::-1].copy()
-        d2=_decimate(d1,1,**dic)
-        data=d2[::-1].copy()
+        data,shift=_decimate(ts.data,n,**dic)
+#        d1=data[::-1].copy()
+#        d2=_decimate(d1,1,**dic)
+#        data=d2[::-1].copy()
     elif ts.data.ndim==2:
-        data=_decimate(ts.data,n,axis=0,**dic)
-        d1=data[::-1].copy()
-        d2=_decimate(d1,1,axis=0,**dic)
-        data=d2[::-1].copy()
-        
+        data,shift=_decimate(ts.data,n,axis=0,**dic)
+#        d1=data[::-1].copy()
+#        d2=_decimate(d1,1,axis=0,**dic)
+#        data=d2[::-1].copy()
+    
+    #shift is in time inteval
+    interval_ticks=ticks(ts.interval)
+    left_shift=interval_ticks*shift
+    resample_start=resample_start-ticks_to_interval(left_shift)
+    
     ll=data.shape[0]    
     prop={}
     for key,val in ts.props.items():
