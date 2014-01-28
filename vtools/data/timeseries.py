@@ -5,8 +5,7 @@ some helper functions.
 """
 import sys
 from vtime import *
-from datetime import datetime
-from datetime import timedelta
+import datetime as _datetime
 import numpy as np
 import copy
 import itertools
@@ -161,13 +160,13 @@ def _get_span(ts,start,end,left,right):
         start=ts.start
     elif isinstance(start,int) or isinstance(start,str):
         start=parse_time(start)
-    elif not isinstance(start,datetime):
+    elif not isinstance(start,_datetime.datetime):
         raise TypeError("input start must be None,integer ticks,time string or datetime")
     if (end==None):
         end=ts.end
     elif isinstance(end,int) or isinstance(end,str):
         end=parse_time(end)
-    elif not isinstance(end,datetime):
+    elif not isinstance(end,_datetime.datetime):
         raise TypeError("input end must be None,integer ticks,time string or datetime")
 
     if start>end:
@@ -237,7 +236,7 @@ class TimeSeries(object):
         # are times input as times or as a sequence
         # of ticks?
         if(len(times)>0):
-            if isinstance(times[0],datetime):
+            if isinstance(times[0],_datetime.datetime):
                 self._ticks = scipy.array(map(ticks,times))
             else:
                 self._ticks = times
@@ -295,7 +294,7 @@ class TimeSeries(object):
         else:
             test_tm=tm
         
-        if isinstance(test_tm,datetime):
+        if isinstance(test_tm,_datetime.datetime):
             if issequence:
                    tm=map(ticks,tm)
             else:
@@ -320,7 +319,7 @@ class TimeSeries(object):
         if type(key)==int:
             # return element
             return TimeSeriesElement( (self._ticks[key],self.data[key]))
-        elif isinstance(key,datetime):
+        elif isinstance(key,_datetime.datetime):
             ndx = self.index_before(key)
             if self._ticks[ndx] == ticks(key):
                 return TimeSeriesElement( (self._ticks[ndx],self._data[ndx]))
@@ -331,15 +330,15 @@ class TimeSeries(object):
             endndx=key.stop
             if key.start:
                 if not (type(key.start) == int or
-                        isinstance(key.start,datetime)):
+                        isinstance(key.start,_datetime.datetime)):
                     raise TypeError("slice index start must be integer or datetime")
-                if isinstance(key.start,datetime):
+                if isinstance(key.start,_datetime.datetime):
                     begndx = self.index_after(key.start)
             if key.stop:
                 if not(type(key.stop) == int or
-                       isinstance(key.stop,datetime)):
+                       isinstance(key.stop,_datetime.datetime)):
                     raise TypeError("slice index stop must be integer or datetime")
-                if isinstance(key.stop,datetime):
+                if isinstance(key.stop,_datetime.datetime):
                     endndx = self.index_after(key.stop)
             props2=copy.copy(self._props)
             props2["sliced_from"]=(self.start,self.end)
@@ -354,7 +353,7 @@ class TimeSeries(object):
     def __setitem__(self,key,item):
         if type(key) == int:
             self.data[key] = item
-        elif isinstance(key,datetime):
+        elif isinstance(key,_datetime.datetime):
             ndx = self.index_before(key)
             if self._ticks[ndx] == ticks(key):
                 self.data[ndx] = item
@@ -822,7 +821,7 @@ def its2rts(its,interval,original_dates=True):
             A regular time series.
        
    """
-   if not isinstance(interval, timedelta): 
+   if not isinstance(interval, _datetime.timedelta): 
        raise ValueErrror("Only exact regular intervals (secs, mins, hours, days) accepted in its2rts")
    start = round_ticks(its.ticks[0],interval)
    stime = ticks_to_time(start)
