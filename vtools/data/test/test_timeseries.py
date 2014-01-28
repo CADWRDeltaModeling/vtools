@@ -1,6 +1,6 @@
 import unittest
 import numpy
-import datetime
+import datetime as _datetime
 from vtools.data.timeseries import *
 from vtools.data.vtime import *
 from vtools.data.constants import *
@@ -9,16 +9,16 @@ class TestTimeSeries(unittest.TestCase):
     def setUp(self):
         self.size1=100000
         self.arr=numpy.arange(self.size1,dtype=float)
-        self.stime1=datetime(1992,3,7)
-        self.stime2=datetime(1992,3,7,1,0)
+        self.stime1=_datetime.datetime(1992,3,7)
+        self.stime2=_datetime.datetime(1992,3,7,1,0)
         self.dt=time_interval(minutes=15)
         props={TIMESTAMP:INST,AGGREGATION:MEAN,"UNIT":"CFS"}
         self.ts1=rts(self.arr,self.stime1,self.dt,props)
         self.ts2=rts(self.arr+2,self.stime2,self.dt,None)
         irreg_data=numpy.arange(5.,dtype=float)
-        irreg_times=numpy.array([datetime(1994,1,2),datetime(1994,1,24),
-                                 datetime(1994,2,3),datetime(1994,2,16),
-                                 datetime(1994,2,18)])
+        irreg_times=numpy.array([_datetime.datetime(1994,1,2),_datetime.datetime(1994,1,24),
+                                 _datetime.datetime(1994,2,3),_datetime.datetime(1994,2,16),
+                                 _datetime.datetime(1994,2,18)])
         self.its1=its(irreg_times,irreg_data,None)
 
 
@@ -29,10 +29,10 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(len(self.ts1),self.size1)
 
     def testSlice(self):
-        #x=self.ts1[datetime(1992,3,7,0,0):datetime(1992,3,7,1,45)]
-        x=self.ts1[datetime(1992,3,7,1,0):datetime(1992,3,7,1,45)]
+        #x=self.ts1[_datetime.datetime(1992,3,7,0,0):_datetime.datetime(1992,3,7,1,45)]
+        x=self.ts1[_datetime.datetime(1992,3,7,1,0):_datetime.datetime(1992,3,7,1,45)]
         self.assertEqual(len(x),3)  # assure that the values is clipped noninclusively on right
-        x=self.ts1[datetime(1992,3,7,0,0):datetime(1992,3,7,0,45,1)]
+        x=self.ts1[_datetime.datetime(1992,3,7,0,0):_datetime.datetime(1992,3,7,0,45,1)]
         self.assertEqual(len(x),4)
         x=self.ts1[self.ts1.end - minutes(15): self.ts1.end]
         self.assertEqual(x,self.ts1.data[-2:-1])
@@ -47,14 +47,14 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts3.start,self.stime1)
         self.assertEqual(len(ts3),self.size1+4)
         self.assertEqual(ts3.end, increment(self.stime2,self.dt,(self.size1 - 1)))
-        dt1=datetime(1992,3,7,1,30)
-        dt2=datetime(1992,3,7,2,30)
+        dt1=_datetime.datetime(1992,3,7,1,30)
+        dt2=_datetime.datetime(1992,3,7,2,30)
         self.assertEqual(ts3[5].value,8.0)
 
     def testAverageTimeseries(self):
         # test average multiple ts together
-        stime=datetime(1992,2,10)
-        stime2=datetime(1992,2,11)
+        stime=_datetime.datetime(1992,2,10)
+        stime2=_datetime.datetime(1992,2,11)
         arr=numpy.arange(20)
         #arr2=2*arr
         #arr3=1.5*arr
@@ -319,15 +319,15 @@ class TestTimeSeries(unittest.TestCase):
 
        # Test operations on ts of varied values.
        # ts_start, ts_len, ts_interval, shift_interval_str, shift_interval
-        test_input=[(datetime(1990,2,3,11,15),
+        test_input=[(_datetime.datetime(1990,2,3,11,15),
                      3005,minutes(5),"1hour",),
-                    (datetime(year=1990,month=2,day=3,hour=11, minute=15),
+                    (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
                      3301,days(1),"1month"),
-                    (datetime(year=1990,month=2,day=3,hour=11, minute=15),
+                    (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
                      3407,hours(1),"3days"),
-                    (datetime(year=1990,month=2,day=3,hour=11, minute=45),
+                    (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=45),
                      6093,days(1),"1year"),
-                    (datetime(year=1990,month=2,day=3,hour=11, minute=15),
+                    (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
                      3005,time_interval(minutes=5),"-1hour")                 
                     ]
 
@@ -355,7 +355,7 @@ class TestTimeSeries(unittest.TestCase):
     
         ts_len=1000
         data=numpy.repeat(10.0,ts_len)
-        ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=15)
+        ts_start=_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
         times=[ts_start]*ts_len
         
         for i in range(1,ts_len):

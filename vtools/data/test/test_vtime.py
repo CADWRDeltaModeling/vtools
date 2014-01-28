@@ -1,14 +1,14 @@
 import unittest
+import datetime as _datetime
 from vtools.data.vtime import *
 from dateutil.relativedelta import relativedelta
-from datetime import timedelta
-from datetime import datetime
+
 
 class TestVTime(unittest.TestCase):
 
     def setUp(self):
-        self.stime1=datetime(1992,3,7)
-        self.stime2=datetime(1992,3,7,1,0)
+        self.stime1=_datetime.datetime(1992,3,7)
+        self.stime2=_datetime.datetime(1992,3,7,1,0)
         return
 
     def testTimeInterval(self):
@@ -22,88 +22,88 @@ class TestVTime(unittest.TestCase):
         return
 
     def testIncrement(self):
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     years(10),10
                                     ),
-                          datetime(2092,3,7))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(2092,3,7))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     months(10),12
                                     ),
-                          datetime(2002,3,7))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(2002,3,7))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     days(10),37
                                     ),
-                          datetime(1993,3,12))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(1993,3,12))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     hours(10),24
                                     ),
-                          datetime(1992,3,17))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(1992,3,17))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     minutes(10),240
                                     ),
-                          datetime(1992,3,8,16,0))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(1992,3,8,16,0))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     seconds(10),360
                                     ),
-                          datetime(1992,3,7,1,0))        
+                          _datetime.datetime(1992,3,7,1,0))        
 
     def testIncrementNegative(self):
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     years(10),-10
                                     ),
-                          datetime(1892,3,7))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(1892,3,7))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     years(-10),10
                                     ),
-                          datetime(1892,3,7))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(1892,3,7))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     months(-10),12
                                     ),
-                          datetime(1982,3,7))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(1982,3,7))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     months(10),-12
                                     ),
-                          datetime(1982,3,7))
+                          _datetime.datetime(1982,3,7))
         
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     days(10),-37
                                     ),
-                          datetime(1991,3,3))
-        self.assertEquals(increment(datetime(1992,3,7,0,0,0),
+                          _datetime.datetime(1991,3,3))
+        self.assertEquals(increment(_datetime.datetime(1992,3,7,0,0,0),
                                     days(-10),37
                                     ),
-                          datetime(1991,3,3))
+                          _datetime.datetime(1991,3,3))
         
 
 
     def testNumberIntervalsTime(self):
-        self.assertEquals(number_intervals(datetime(1992,3,7,0,0,0),
-                                           datetime(1992,3,8,1,0,0),
+        self.assertEquals(number_intervals(_datetime.datetime(1992,3,7,0,0,0),
+                                           _datetime.datetime(1992,3,8,1,0,0),
                                            time_interval(minutes=15)),
                           100)
-        self.assertEquals(number_intervals(datetime(1992,3,7,0,0,0),
-                                           datetime(1992,3,8,1,1,0),
+        self.assertEquals(number_intervals(_datetime.datetime(1992,3,7,0,0,0),
+                                           _datetime.datetime(1992,3,8,1,1,0),
                                            time_interval(minutes=15)),
                           100)
 
-        self.assertEquals(number_intervals(datetime(1993,2,7,0,0,0),
-                                           datetime(1993,3,8,0,0,0),
+        self.assertEquals(number_intervals(_datetime.datetime(1993,2,7,0,0,0),
+                                           _datetime.datetime(1993,3,8,0,0,0),
                                            time_interval(hours=1)),
                           (29*24))
  
-        self.assertEquals(number_intervals(datetime(1993,2,7,0,0,0),
-                                           datetime(1993,3,8,1,1,0),
+        self.assertEquals(number_intervals(_datetime.datetime(1993,2,7,0,0,0),
+                                           _datetime.datetime(1993,3,8,1,1,0),
                                            time_interval(hours=1)),
                           (29*24+1))
 
 
-        self.assertEquals(number_intervals(datetime(1993,2,7,0,0,0),
-                                           datetime(1994,2,8,1,1,0),
+        self.assertEquals(number_intervals(_datetime.datetime(1993,2,7,0,0,0),
+                                           _datetime.datetime(1994,2,8,1,1,0),
                                            time_interval(days=2)),
                           183)
 
-        self.assertEquals(number_intervals(datetime(1993,2,7,0,0,0),
-                                           datetime(1993,2,7,1,17,0),
+        self.assertEquals(number_intervals(_datetime.datetime(1993,2,7,0,0,0),
+                                           _datetime.datetime(1993,2,7,1,17,0),
                                            time_interval(hours=1)),
                           1)
         return
@@ -111,28 +111,28 @@ class TestVTime(unittest.TestCase):
     def testNumberIntervalsCalendar(self):
         for i in range(1,12):
             for j in range(i,13):
-                #if number_intervals(datetime(1992,i,7,0,0,0),
-                #                                   datetime(1992,j,7,0,0,0),
+                #if number_intervals(_datetime.datetime(1992,i,7,0,0,0),
+                #                                   _datetime.datetime(1992,j,7,0,0,0),
                 #                                   time_interval(months=2)) != \
                 #    (j-i)//2:
                 #    print "*****************i:%s j:%s" % (i,j)
-                self.assertEquals(number_intervals(datetime(1992,i,7,0,0,0),
-                                                   datetime(1992,j,7,0,0,0),
+                self.assertEquals(number_intervals(_datetime.datetime(1992,i,7,0,0,0),
+                                                   _datetime.datetime(1992,j,7,0,0,0),
                                                    time_interval(months=2)),
                                   (j-i)//2)
                 
-                self.assertEquals(number_intervals(datetime(1992,i,7,0,0,0),
-                                                   datetime(1992,j,8,0,0,0),
+                self.assertEquals(number_intervals(_datetime.datetime(1992,i,7,0,0,0),
+                                                   _datetime.datetime(1992,j,8,0,0,0),
                                                    time_interval(months=1)),
                                   j-i)
         
-            self.assertEquals(number_intervals(datetime(1992,i,7,0,0,0),
-                                               datetime(1992,i+1,6,0,0,0),
+            self.assertEquals(number_intervals(_datetime.datetime(1992,i,7,0,0,0),
+                                               _datetime.datetime(1992,i+1,6,0,0,0),
                                                time_interval(months=1)),
                               0)
 
-            self.assertEquals(number_intervals(datetime(1980,2,29,0,0,0),
-                                               datetime(1990,3,1,0,0,0),
+            self.assertEquals(number_intervals(_datetime.datetime(1980,2,29,0,0,0),
+                                               _datetime.datetime(1990,3,1,0,0,0),
                                                time_interval(years=1)),
                               10)
 
@@ -142,8 +142,8 @@ class TestVTime(unittest.TestCase):
      
      
     def testTimeSequenceTime(self):
-        from datetime import timedelta
-        interval=timedelta(days=1)
+        
+        interval=_datetime.timedelta(days=1)
         interval_ticks=ticks(interval)
         sticks=ticks(self.stime1)
         n=1000
@@ -159,8 +159,8 @@ class TestVTime(unittest.TestCase):
         self.assertEqual(len(timeseq),1)
 
     def testTimeSequenceZeroLen(self):
-        from datetime import timedelta
-        interval=timedelta(days=1)
+        
+        interval=_datetime.timedelta(days=1)
         n=0
         timeseq=time_sequence(self.stime1,interval,n)
         self.assertEqual(len(timeseq),0)
@@ -208,7 +208,7 @@ class TestVTime(unittest.TestCase):
                    ('1 year',years(1)),
                    ('1y1mon2h3min',time_interval(years=1,months=1,hours=2,minutes=3)),
                    ('1year 2month 2hours 10minutes',time_interval(years=1,months=2,hours=2,minutes=10)),
-                   ('15minutes',timedelta(minutes=15)),('10h',timedelta(hours=10)),('60 min',timedelta(minutes=60)))
+                   ('15minutes',_datetime.timedelta(minutes=15)),('10h',_datetime.timedelta(hours=10)),('60 min',_datetime.timedelta(minutes=60)))
                    
 
         for (in1,out1) in testcases:
@@ -235,29 +235,29 @@ class TestVTime(unittest.TestCase):
 #                   valid_dt.hours*ticks_per_minute*60 + valid_dt.minutes*ticks_per_minute
 #        self.assertEqual(ticks(valid_dt),dt_ticks)
 
-        valid_dt=timedelta(days=1,hours=2,minutes=3,seconds=35)
+        valid_dt=_datetime.timedelta(days=1,hours=2,minutes=3,seconds=35)
         dt_ticks=valid_dt.days*ticks_per_day + valid_dt.seconds*ticks_per_second
         self.assertEqual(ticks(valid_dt),dt_ticks)
 
     def testRoundTime(self):
 
-        stime=datetime(1992,3,7,10,24)
-        correct_result= datetime(1992,3,7,10)
+        stime=_datetime.datetime(1992,3,7,10,24)
+        correct_result= _datetime.datetime(1992,3,7,10)
         stime_rounded = round_time(stime,interval=hours(1))[0]
         self.assertEqual(stime_rounded,correct_result)
 
-        stime=datetime(1992,3,7,10,35)
-        correct_result= datetime(1992,3,7,11)
+        stime=_datetime.datetime(1992,3,7,10,35)
+        correct_result= _datetime.datetime(1992,3,7,11)
         stime_rounded = round_time(stime,interval=hours(1))[0]
         self.assertEqual(stime_rounded,correct_result)
         
-        correct_result= datetime(1992,3,7,10,30)
+        correct_result= _datetime.datetime(1992,3,7,10,30)
         stime_rounded = round_time(stime,interval=minutes(15))[0]
         self.assertEqual(stime_rounded,correct_result)
 
     def testAlignTime(self):
-        stime=datetime(1992,3,7,10)
-        correct_result= datetime(1992,3,7,10)
+        stime=_datetime.datetime(1992,3,7,10)
+        correct_result= _datetime.datetime(1992,3,7,10)
         left  = -1
         right = 1
         stime_aligned = align(stime,hours(1),left)
@@ -266,9 +266,9 @@ class TestVTime(unittest.TestCase):
         self.assertEqual(stime_aligned,correct_result)
 
 
-        stime=datetime(1992,3,7,10,24)
-        correct_result_left_aligned = datetime(1992,3,7,10)
-        correct_result_right_aligned= datetime(1992,3,7,11)
+        stime=_datetime.datetime(1992,3,7,10,24)
+        correct_result_left_aligned = _datetime.datetime(1992,3,7,10)
+        correct_result_right_aligned= _datetime.datetime(1992,3,7,11)
         left  = -1
         right = 1
         stime_aligned_left = align(stime,hours(1),left)
