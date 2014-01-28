@@ -1,5 +1,5 @@
 import sys
-import datetime
+import datetime as _datetime
 import os
 from numpy import arange,loadtxt,put
 from numpy import nan,cos,pi
@@ -16,8 +16,8 @@ def create_sample_series():
     high = 85.0
     x = arange(low, high+0.001, (high-low)/numpoints)
 
-    stime1=datetime(1992,3,7)
-    stime2=datetime(1992,3,7,1,0)
+    stime1=_datetime.datetime(1992,3,7)
+    stime2=_datetime.datetime(1992,3,7,1,0)
     dt=time_interval(minutes=15)
     ts1=rts(jn(1,x),stime1,dt,None)
     ts1.data[11100:13900] = nan
@@ -63,7 +63,7 @@ def synthetic_tide_series():
     step=15*60
     times = arange(0,a_week_seconds,step)
     data=map(_synthetic_tide,times)
-    start_time=datetime(1992,1,1)
+    start_time=_datetime.datetime(1992,1,1)
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"meter"}
     dt=time_interval(minutes=15)
     ts=rts(data,start_time,dt,props)
