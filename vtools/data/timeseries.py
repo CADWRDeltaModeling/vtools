@@ -369,7 +369,10 @@ class TimeSeries(object):
             del(_ticks[index])
             del(_data[index])
 
-
+    def has_gap(self):
+        """ find out if timeseries has nan data"""
+        
+        return np.any(np.isnan(self.data))
 
     def copy(self,start=None,end=None,left=False,right=False):
         """ Perform a copy of this series, optionally with clipped start and end
