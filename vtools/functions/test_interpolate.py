@@ -349,6 +349,37 @@ class TestInterpolate(unittest.TestCase):
             self.assert_((isnan(ts_new.data[41])))
             self.assert_((isnan(ts_new.data[42])))
             self.assert_((isnan(ts_new.data[43])))
+            
+        
+            
+        ## test no nan exits
+        data=sciarray([0.3*sin(k*pi/1200+pi/15)+0.4*sin(k*pi/1100+pi/6)+1.1*sin(k*pi/990+pi/18) \
+              for k in range(50)])
+        
+        ts_without_nans=rts(data,start_time,interval,{})
+        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
+            ts_new=interpolate_ts_nan(ts_without_nans,max_gap=max_gap,method=method)
+            for old_value, new_value in zip(ts_without_nans.data,ts_new.data):
+                self.assert_(old_value==new_value)
+                
+        
+        data=sciarray([0.3*sin(k*pi/1200+pi/15)+0.4*sin(k*pi/1100+pi/6)+1.1*sin(k*pi/990+pi/18) \
+              for k in range(50)])
+        
+        put(data,[12,13,14],nan)
+        
+        max_gap=2
+        ## should do nothing for its gap wider than max_gap
+        ts_less_nans=rts(data,start_time,interval,{})
+
+        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
+            ts_new=interpolate_ts_nan(ts_less_nans,max_gap=max_gap,method=method)
+            self.assert_((isnan(ts_new.data[12])))
+            self.assert_((isnan(ts_new.data[13])))
+            self.assert_((isnan(ts_new.data[14])))
+        
+        
+            
         
             
         

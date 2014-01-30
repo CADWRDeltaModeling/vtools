@@ -9,7 +9,7 @@ from copy import deepcopy
 
 ## scipy import.
 from scipy.interpolate import interp1d
-from scipy.interpolate.fitpack import splrep,splev
+from scipy.interpolate import splrep,splev
 from scipy import array,logical_not,compress,\
   isnan,zeros,zeros_like,put,transpose,where,take,alltrue,\
   greater,less,arange,nan,resize
@@ -67,7 +67,12 @@ def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
         MSPLINE or 'mspline' 
             Monotonicity (shape) preserving spline 
         RHIST or 'rhist'
-            Rational histospline that conserves area under the curve.            
+            Rational histospline that conserves area under the curve. 
+            
+    max_gap: int,optional
+        The maximum number of continous nan data to allow interpolation. By default
+        0, which means doing interpolation no matter how big is the continous nan block.
+        
     **args : dictonary 
         Extra keyword parameters required by the `method`.
 
@@ -78,7 +83,9 @@ def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
 
         
     """
-	
+    if not(ts.has_gap()):
+        return ts
+        
     tst=deepcopy(ts)
 
     if max_gap > 0:
@@ -87,6 +94,9 @@ def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
     else:
         indexes=where(isnan(tst.data))
     
+    ## no nan just return
+    if(len(indexes[0])<1):
+        return ts
     
     ## indexes turn out to be a tuple
     ## only the first element is what
