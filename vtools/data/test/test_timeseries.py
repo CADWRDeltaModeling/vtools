@@ -21,7 +21,17 @@ class TestTimeSeries(unittest.TestCase):
                                  _datetime.datetime(1994,2,18)])
         self.its1=its(irreg_times,irreg_data,None)
 
-
+    def testHasnan(self):
+        
+        self.assertEqual(self.ts1.has_gap(),False)
+        
+        dt=time_interval(months=1)
+        st=parse_time("1/1/1991")
+        data=numpy.array([1.0])
+        numpy.put(data,[0],numpy.nan)        
+        ts=rts(data,st,dt)
+        self.assertEqual(ts.has_gap(),True)
+        
     def testRTSInterval(self):
         self.assertEquals(self.ts1.interval, time_interval(minutes=15))
         self.assertEqual(self.ts1.start,self.stime1)
