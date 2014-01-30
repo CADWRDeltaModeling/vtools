@@ -28,6 +28,7 @@ from scipy import zeros
 from vtime_dss_utility import string_to_dss_julian_date,uncondensed_Dparts
 from dss_constants import DSS_DATA_SOURCE
 
+
 __all__=["DssCatalogError","DssCatalog"]
 
 class DssCatalogError(Exception):
@@ -385,7 +386,7 @@ class DssCatalog(Catalog):
                                 if self._selected(e,select_pattern)]
                                 
         if len(qualified_entry_indexes)<1:
-            raise DssAccessError("input selector doesn't match any record in dss file ")
+            raise DssCatalogError("input selector doesn't match any record in dss file ")
         
         
         entries=[copy(self._entries[index]) for index \

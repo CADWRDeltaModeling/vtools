@@ -37,9 +37,8 @@ from vtools.data.vtime import parse_interval,\
 from vtools.datastore.data_reference import *
 #from vtools.debugtools.timeprofile import debug_timeprofiler
 
-#local import
-from dss_catalog import DssCatalog
-from dss_constants import *
+from vtools.datastore.dss.dss_catalog import DssCatalog
+from vtools.datastore.dss.dss_constants import *
 from vtime_dss_utility import dss_rts_to_ts
 from vtime_dss_utility import dss_its_to_ts
 from vtime_dss_utility import datetime_to_dss_julian_date
