@@ -170,13 +170,13 @@ def _get_span(ts,start,end,left,right):
         raise TypeError("input end must be None,integer ticks,time string or datetime")
 
     if start>end:
-        raise ValueError("intput start is after end")
+        raise ValueError("Requested end of window is after time series end.")
        
     start_index=ts.index_before(start)
     start=ticks(start)
 
     if (start_index==0) and (not(start==ts.ticks[start_index])) and left:
-        raise ValueError("requested start index is before the ts start ")
+        raise ValueError("Requested start of window is before time series start.")
     
     if (not(start_index==0)) and (not(start==ts.ticks[start_index])):
         if left:
@@ -186,7 +186,7 @@ def _get_span(ts,start,end,left,right):
     end=ticks(end)
 
     if (end_index==(len(ts)-1)) and (not(end==ts.ticks[end_index])) and right:
-        raise ValueError("requested end index is after the ts end ")   
+        raise ValueError("Requested end of window is after time series end.")   
     
     if (not(end_index==(len(ts)-1))) and (not(end==ts.ticks[end_index])):
         if not right:
@@ -358,7 +358,7 @@ class TimeSeries(object):
             if self._ticks[ndx] == ticks(key):
                 self.data[ndx] = item
             else:
-                raise ValueError("Subscript date must exactly match existing date in series")
+                raise IndexError("Subscript date must exactly match existing date in series")
         else:
             raise KeyError("Key not understood")
     # 
