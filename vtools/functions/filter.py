@@ -2,12 +2,14 @@
 """
 
 ## Python libary import.
-
+from numpy import abs
 ## Scipy import.
 from scipy import array as sciarray
 from scipy import nan, isnan,add,convolve, \
 transpose
-from scipy.signal import lfilter
+from scipy import pi, sin
+from scipy.signal import lfilter,firwin
+from scipy.signal import fftconvolve,freqz
 from scipy.signal.filter_design import butter
 from numpy import sqrt
 ## Vtool vtime import.
@@ -16,7 +18,7 @@ from vtools.data.vtime import *
 from vtools.data.timeseries import rts
 from vtools.data.constants import *
 
-__all__=["boxcar","butterworth","daily_average","godin"]
+__all__=["boxcar","butterworth","daily_average","godin","cosine_lanczos","lowpass_cosine_lanczos_filter_coef"]
 
 
 
@@ -38,7 +40,7 @@ _butterworth_interval=[time_interval(minutes=15),time_interval(hours=1)]
 ###########################################################################
 
 def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
-    """ low-pass butterworth filter on a regular time series.
+    """ low-pass butterworth-squared filter on a regular time series.
       
         
     Parameters
@@ -112,6 +114,85 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     d2=lfilter(b,a,d1,0)
     d2=d2[len(d2)::-1]
     #d2=sqrt(d2)
+    
+    prop={}
+    for key,val in ts.props.items():
+        prop[key]=val
+    prop[TIMESTAMP]=INST
+    prop[AGGREGATION]=INDIVIDUAL
+    time_interval
+    return rts(d2,ts.start,ts.interval,prop)
+    
+
+def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,M=20):
+    """ low-pass cosine lanczos squared filter on a regular time series.
+      
+        
+    Parameters
+    -----------
+    
+    ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
+    
+    M  : int
+        Size of lanczos window, default is 20.
+        
+    cutoff_frequency: float,optional
+        Cutoff frequency expressed as a ratio of a Nyquist frequency,
+        should within the range (0,1). For example, if the sampling frequency
+        is 1 hour, the Nyquist frequency is 1 sample/2 hours. If we want a
+        36 hour cutoff period, the frequency is 1/36 or 0.0278 cycles per hour. 
+        Hence the cutoff frequency argument used here would be
+        0.0278/0.5 = 0.056.
+                      
+    cutoff_period : string  or  :ref:`time_interval<time_intervals>`
+         Period of cutting off frequency. If input as a string, it must 
+         be  convertible to :ref:`Time interval<time_intervals>`.
+         cutoff_frequency and cutoff_period can't be specified at the same time.
+           
+    Returns
+    -------
+    result : :class:`~vtools.data.timeseries.TimeSeries`
+        A new regular time series with the same interval of ts.
+        
+    Raise
+    --------
+    ValueError
+        If input timeseries is not regular, 
+        or, cutoff_period and cutoff_frequency are given at the same time,
+        or, neither cutoff_period nor curoff_frequence is given.
+        
+    """
+    
+    if not ts.is_regular():
+        raise ValueError("Only regular time series can be filtered.")
+    
+    interval=ts.interval
+    
+
+    if (cutoff_frequency!=None) and (cutoff_period!=None):
+        raise ValueError("cutoff_frequency and cutoff_period can't be specified simultaneously")
+    
+    cf=cutoff_frequency
+    if (cf==None):
+        if (cutoff_period !=None):
+            ## convert it to ticks
+            if not (is_interval(cutoff_period)):
+                cutoff_period=parse_interval(cutoff_period)
+            cutoff_frequency_in_ticks = 1.0/float(ticks(cutoff_period))
+            nyquist_frequency  = 0.5/float(ticks(interval))
+            cf = cutoff_frequency_in_ticks/nyquist_frequency
+        else:
+            raise ValueError("you must give me either cutoff_frequency or cutoff_period")
+        
+    ## get butter filter coefficients.
+    coefs=_lowpass_cosine_lanczos_filter_coef(cf,M)
+    d1=lfilter(coefs, 1.0, ts.data,axis=0)
+    d1=d1[len(d1)::-1]
+    d2=lfilter(coefs,1.0,d1,axis=0)
+    d2=d2[len(d2)::-1]
+    
+
     
     prop={}
     for key,val in ts.props.items():
@@ -277,7 +358,7 @@ def _boxcar(data,nbefore,nafter):
         number of samples after the point to be averaged 
         (not including this point).
         
-    Returns:
+    Returns
     --------
     
     Results: array
@@ -324,18 +405,95 @@ def steps_per_interval(ts,averaging_interval):
     return int(ticks(averaging_interval)/ticks(ts.interval))
 
 
+
+def lowpass_cosine_lanczos_filter_coef(cf,m,normalize=True):
+    """For test purpose only
+    """
+    return  _lowpass_cosine_lanczos_filter_coef(cf,m,normalize)
+    
+
+def _lowpass_cosine_lanczos_filter_coef(cf,m,normalize=True):
+    """return the convolution coefficients for low pass lanczos filter.
+      
+    Parameters
+    -----------
+    
+    Cf: float
+      Cutoff frequency expressed as a ratio of a Nyquist frequency.
+                  
+    M: int
+      Size of filtering window size.
+        
+    Returns
+    --------
+    pdb.set_trace()
+    Results: list
+           Coefficients of filtering window.
+    
+    """
+    
+    coscoef=[cf*sin(pi*k*cf)/(pi*k*cf) for k in range(1,m+1,1)]
+    sigma=[sin(pi*k/m)/(pi*k/m) for k in range(1,m+1,1)]
+    prod= [c*s for c,s in zip(coscoef,sigma)]
+    temp = prod[-1::-1]+[cf]+prod
+    res=sciarray(temp)
+    if normalize:
+        res = res/res.sum()
+    return res
     
     
+from pylab import *
+
+def mfreqz(b,a=1):
+    w,h = freqz(b,a)
+    ## is the response of squred filter, just squre response h
+    h2=h*h
+    hdb = 20 * log10 (abs(h))
+    subplot(211)
+    #plot(w/max(w),h_dB)
+    plot(w/max(w),abs(h),label="consine_lanczos")
+    plot(w/max(w),abs(h2),label="squared_consine_lanczos")
+    legend()
+    ylim(-.2,1.5)
+    #ylim(-150, 5)
+    ylabel('Magnitude')
+    xlabel(r'Normalized Frequency (x$\pi$rad/sample)')
+    title(r'Frequency response')
+    subplot(212)
+    h_phase = unwrap(arctan2(imag(h),real(h)))
+    h_phase2 = unwrap(arctan2(imag(h2),real(h2)))
+    plot(w/max(w),h_phase,label="consine_lanczos")
+    plot(w/max(w),h_phase2,label="squared_consine_lanczos")
+    legend(loc="lower left")
+    ylabel('Phase (radians)')
+    xlabel(r'Normalized Frequency (x$\pi$rad/sample)')
+    title(r'Phase response')
+    subplots_adjust(hspace=0.5) 
+    
+def impz(b,a=1):
+    l = len(b)
+    impulse = repeat(0.,l); impulse[0] =1.
+    x = arange(0,l)
+    response = lfilter(b,a,impulse)
+    subplot(211)
+    stem(x, response)
+    ylabel('Amplitude')
+    xlabel(r'n (samples)')
+    title(r'Impulse response')
+    subplot(212)
+    step = cumsum(response)
+    stem(x, step)
+    ylabel('Amplitude')
+    xlabel(r'n (samples)')
+    title(r'Step response')
+    subplots_adjust(hspace=0.5)
     
     
-    
-    
-    
-    
-    
-    
-    
-    
+if __name__=="__main__":
+
+    b=_lowpass_cosine_lanczos_filter_coef(0.4,10)
+    mfreqz(b)
+    show()
     
     
     
