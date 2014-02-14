@@ -69,19 +69,42 @@ def synthetic_tide_series():
     ts=rts(data,start_time,dt,props)
     return ts
         
-    
-    
 
+def _simple_averaged_series():
+    """Return a short dayily average time series
+     
+    """
+    data = [
+        0.35977895,  0.49610614,  0.33600347, -0.33929111, -1.78860056, 
+       -1.19358623, -1.59885151, -1.34639294, -0.98803911, -0.88551162,
+       -0.76594505, -0.12272514, -0.00707276,  0.29447027, -1.16436027,
+       -0.15500166, -2.07909746, -1.03036495, -1.1203458 , -0.61648268,
+       -0.35637202, -1.01066368, -1.39075717, -2.26135669, -1.0009255 ,
+       -0.0864468 ,  0.40756031, -0.2405488 , -1.75927452, -1.54574444,
+       -1.65559729, -1.93787822, -1.64870846, -1.01962762,  0.15908214,
+       -1.65212711, -0.73391301, -2.40375821, -1.61226897, -2.56966441,
+       -0.41231294, -1.01557373, -0.32144617, -1.30285661,  0.2111761 ,
+       -0.2439111 ,  0.82562786,  1.29276909,  1.02799982, -0.46857839,
+       -1.56194382, -2.48521823, -0.97877336, -1.51789715, -0.50294601
+       ]
+    stime=_datetime.datetime(1992,3,7)
+    dt=time_interval(days=1)
+    props={AGGREGATION:MEAN,TIMESTAMP:PERIOD_START,UNIT:"meter"}
+    ts=rts(data,stime,dt,props)
+    return ts
+    
 def example_data(name):
     
     if (name=="pt_reyes_tidal_6min"):
-	     return pt_reyes_tidal_6min_interval()
+        return pt_reyes_tidal_6min_interval()
     elif (name=="pt_reyes_tidal_1hour"):
-	     return pt_reyes_tidal_1hour_interval()
+	  return pt_reyes_tidal_1hour_interval()
     elif (name=="pt_reyes_tidal_with_gaps"):
-	     return pt_reyes_tidal_with_gaps()
+	  return pt_reyes_tidal_with_gaps()
+    elif  (name=="simple_average"):
+        return _simple_averaged_series()
     else:
-	    raise ValueError("invalid example series name")
+        raise ValueError("invalid example series name")
 		
 		
 def _datetime_convertor(time_str):
