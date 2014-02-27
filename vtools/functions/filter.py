@@ -8,7 +8,8 @@ from scipy import array as sciarray
 from scipy import nan, isnan,add,convolve, \
 transpose
 from scipy import pi, sin
-from scipy.signal import lfilter,firwin
+from scipy import where,arange,clip
+from scipy.signal import lfilter,firwin,filtfilt
 from scipy.signal import fftconvolve,freqz
 from scipy.signal.filter_design import butter
 from numpy import sqrt
@@ -109,11 +110,11 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
         
     ## get butter filter coefficients.
     [b,a]=butter(order/2,cf)
-    d1=lfilter(b, a, ts.data,0)
-    d1=d1[len(d1)::-1]
-    d2=lfilter(b,a,d1,0)
-    d2=d2[len(d2)::-1]
-    #d2=sqrt(d2)
+#    d1=lfilter(b, a, ts.data,0)
+#    d1=d1[len(d1)::-1]
+#    d2=lfilter(b,a,d1,0)
+#    d2=d2[len(d2)::-1]
+    d2=filtfilt(b,a,ts.data,axis=0)
     
     prop={}
     for key,val in ts.props.items():
@@ -124,7 +125,7 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     return rts(d2,ts.start,ts.interval,prop)
     
 
-def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,M=20):
+def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,m=20):
     """ low-pass cosine lanczos squared filter on a regular time series.
       
         
@@ -134,7 +135,7 @@ def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,M=20):
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
-    M  : int
+    m  : int
         Size of lanczos window, default is 20.
         
     cutoff_frequency: float,optional
@@ -149,6 +150,7 @@ def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,M=20):
          Period of cutting off frequency. If input as a string, it must 
          be  convertible to :ref:`Time interval<time_intervals>`.
          cutoff_frequency and cutoff_period can't be specified at the same time.
+         
            
     Returns
     -------
@@ -165,13 +167,28 @@ def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,M=20):
     """
     
     if not ts.is_regular():
-        raise ValueError("Only regular time series can be filtered.")
+        raise ValueError("Only regular time series are supported.")
+        
     
     interval=ts.interval
     
 
     if (cutoff_frequency!=None) and (cutoff_period!=None):
         raise ValueError("cutoff_frequency and cutoff_period can't be specified simultaneously")
+        
+        
+    ##find out nan location and fill with 0.0. This way we can use the
+    ## signal processing filtrations out-of-the box without nans causing trouble
+    idx=where(isnan(ts.data))[0]
+    data=sciarray(ts.data).copy()
+    
+    ## figure out indexes that will be nan after the filtration,which
+    ## will "grow" the nan region around the original nan by 2*m-1 
+    ## slots in each direction
+    if  len(idx)>0:
+        data[idx]=0.0
+        shifts=arange(-2*m+2,2*m-1)
+        result_nan_idx=clip(add.outer(shifts,idx),0,len(ts)-1).ravel()
     
     cf=cutoff_frequency
     if (cf==None):
@@ -185,15 +202,17 @@ def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,M=20):
         else:
             raise ValueError("you must give me either cutoff_frequency or cutoff_period")
         
-    ## get butter filter coefficients.
-    coefs=_lowpass_cosine_lanczos_filter_coef(cf,M)
-    d1=lfilter(coefs, 1.0, ts.data,axis=0)
-    d1=d1[len(d1)::-1]
-    d2=lfilter(coefs,1.0,d1,axis=0)
-    d2=d2[len(d2)::-1]
-    
+    ## get filter coefficients.
+    coefs=_lowpass_cosine_lanczos_filter_coef(cf,m)
+#    d1=lfilter(coefs, 1.0, ts.data,axis=0)
+#    d1=d1[len(d1)::-1]
+#    d2=lfilter(coefs,1.0,d1,axis=0)
+#    d2=d2[len(d2)::-1]
+    d2=filtfilt(coefs,[1.0],data,axis=0)
 
-    
+    if(len(idx)>0):
+        d2[result_nan_idx]=nan
+        
     prop={}
     for key,val in ts.props.items():
         prop[key]=val
@@ -312,7 +331,7 @@ def godin(ts):
     """
     
     if not ts.is_regular():
-        raise ValueError("Only regular time series can be filtered.")
+        raise ValueError("Only regular time series is supported.")
     
     interval=ts.interval
     
@@ -376,10 +395,10 @@ def _boxcar(data,nbefore,nafter):
     ##dd=[add.reduce(data[i-nbefore:i+nafter+1]) for i in range(nbefore,len_data-nafter)]
     if data.ndim==1:
         dim2_size=1
-        dd=convolve(data,b,mode=0) 
+        dd=convolve(data,b,mode="valid") 
     elif data.ndim==2: ## for multi-dimension data,convolve can't handle it directly
         dim2_size=data.shape[1]
-        dd=[convolve(data[:,i],b,mode=0) for i in range(dim2_size)]
+        dd=[convolve(data[:,i],b,mode="valid") for i in range(dim2_size)]
         dd=sciarray(dd)
         dd=transpose(dd)            
     else:
@@ -451,8 +470,8 @@ def mfreqz(b,a=1):
     hdb = 20 * log10 (abs(h))
     subplot(211)
     #plot(w/max(w),h_dB)
-    plot(w/max(w),abs(h),label="consine_lanczos")
-    plot(w/max(w),abs(h2),label="squared_consine_lanczos")
+    plot(w/max(w),abs(h),label="cosine_lanczos")
+    plot(w/max(w),abs(h2),label="squared_cosine_lanczos")
     legend()
     ylim(-.2,1.5)
     #ylim(-150, 5)
@@ -488,12 +507,161 @@ def impz(b,a=1):
     title(r'Step response')
     subplots_adjust(hspace=0.5)
     
+import matplotlib.pyplot as plt
+from matplotlib.font_manager import FontProperties
+def compare_response():
+    """ plot frequence response of cosine_lanczos and godin filter"""
+    ## cosin_lanczos cut off period is set at 40h
+    ## the normailzed cutoff frequence is 2/40=0.05 for hourly data
+    cf=0.05
+    m1=40
+    a=1
+    b1 = _lowpass_cosine_lanczos_filter_coef(cf,m1,normalize=True)
+    m2=60
+    b2 = _lowpass_cosine_lanczos_filter_coef(cf,m2,normalize=True)
+    w1,h1 = freqz(b1,a)
+    w2,h2 = freqz(b2,a)
+    
+    ## godin response is computed by multiplying responses of 
+    ## three boxcar filter on hourly data (23,23,24)
+    b3_1 = [1.0/23]*23
+    b3_2 = [1.0/23]*23
+    b3_3 = [1.0/24]*24
+    w3_1,h3_1 = freqz(b3_1,a)
+    w3_2,h3_2 = freqz(b3_2,a)
+    w3_3,h3_3 = freqz(b3_3,a)
+    
+    fig = plt.figure(figsize=(6,6),dpi=300)
+    
+    ax = fig.add_subplot(1,1,1)
+    ax.set_ylim(-.2,1.5)
+    ax.set_xlim(0,0.2)
+    
+    legend_font = FontProperties()
+    legend_font.set_family("sans-serif")
+    legend_font.set_size(11)
+    axis_font = FontProperties()
+    axis_font.set_family("sans-serif")
+    axis_font.set_size(11)
+    ticks_font = FontProperties()
+    ticks_font.set_family("sans-serif")
+    ticks_font.set_size(11)
+    
+    ax.plot(w1/max(w1),abs(h1),color="black",linewidth=1,label="cosine size=40") 
+    ax.plot(w1/max(w1),abs(h2),color="r",linewidth=1,label="cosine size=60")
+    ax.plot(w3_1/max(w3_1),abs(h3_1*h3_2*h3_3),color="blue",linewidth=1,label="godin")
+    
+    ax.set_ylabel(r'Magnitude',fontproperties=axis_font)
+    ax.set_xlabel(r'Normalized Frequency (x$\pi$rad/sample)',fontproperties=axis_font)
+    
+    for label in ax.get_xticklabels():
+        label.set_fontproperties(ticks_font)
+
+    for label in ax.get_yticklabels():
+        label.set_fontproperties(ticks_font)
+    plt.grid(b=True, which='both', color='0.9', linestyle='-', linewidth=0.5)
+    plt.tight_layout()
+  
+    legend()
+   
+import pdb
+def compare_response2():
+    """ plot frequence response of boxcar times godin filter"""
+    ## cosin_lanczos cut off period is set at 40h
+    
+    cf=0.05
+    m1=40
+    a=1.0
+    cb1 = _lowpass_cosine_lanczos_filter_coef(cf,m1,normalize=True)
+    cf=0.005
+    m2=480
+    cb2 = _lowpass_cosine_lanczos_filter_coef(cf,m2,normalize=True)
+    cw1,ch1 = freqz(cb1,a)
+    cw2,ch2 = freqz(cb2,a)
+    
+    ## godin response is computed by multiplying responses of 
+    ## three boxcar filter on hourly data (23,23,24)
+    gb1 = [1.0/23]*23
+    gb2 = [1.0/23]*23
+    gb3 = [1.0/24]*24
+    gw1,gh1 = freqz(gb1,a)
+    gw2,gh2 = freqz(gb2,a)
+    gw3,gh3 = freqz(gb3,a)
+    gw=gw3
+    gh=gh1*gh2*gh3 ## godin response
+    
+    
+    ## three boxcar coeffice for hourly data
+    p1=int(15*24) ## 15day
+    p2=int(15*24+12) ## 15.5day
+    p3=int(16*24) ## 16day
+    
+    b1=[1.0/p1]*p1
+    b2=[1.0/p2]*p2
+    b3=[1.0/p3]*p3
+    
+    bw1,bh1=freqz(b1,a)
+    bw2,bh2=freqz(b2,a)
+    bw3,bh3=freqz(b3,a)
+    
+        
+    
+    
+    fig = plt.figure(figsize=(6,6),dpi=300)
+    
+    ax = fig.add_subplot(1,1,1)
+    ax.set_ylim(-.1,1.1)
+    ax.set_xlim(1,10000)
+    ax.set_xscale('log')
+    
+    legend_font = FontProperties()
+    legend_font.set_family("sans-serif")
+    legend_font.set_size(11)
+    axis_font = FontProperties()
+    axis_font.set_family("sans-serif")
+    axis_font.set_size(11)
+    ticks_font = FontProperties()
+    ticks_font.set_family("sans-serif")
+    ticks_font.set_size(11)
+    pdb.set_trace()
+    
+    gw[0]=0.00001
+    period=1.0/gw
+    
+#    ax.plot(period,abs(gh*bh1),color="black",linewidth=1,label="godin*box_15day") 
+#    ax.plot(period,abs(gh*bh2),color="red",linewidth=1,label="godin*box_15.5day")
+#    ax.plot(period,abs(gh*bh3),color="green",linewidth=1,label="godin*box_16day")
+#    ax.plot(period,abs(ch2*bh1),color="black",linestyle="-",linewidth=1,label="cl_480*box_15day") 
+#    ax.plot(period,abs(ch2*bh2),color="red",linestyle="-",linewidth=1,label="cl_480*box_15.5day")
+    ax.plot(period,abs(ch2),color="green",linestyle="-",linewidth=1,label="cl_480_16day")
+   
+    
+    ax.set_ylabel(r'Magnitude',fontproperties=axis_font)
+    ax.set_xlabel(r'period(hours)',fontproperties=axis_font)
+    
+    for label in ax.get_xticklabels():
+        label.set_fontproperties(ticks_font)
+
+    for label in ax.get_yticklabels():
+        label.set_fontproperties(ticks_font)
+    plt.grid(b=True, which='both', color='0.9', linestyle='-', linewidth=0.5)
+    plt.tight_layout()
+  
+    legend(loc="upper left")
+   
+    
+    
     
 if __name__=="__main__":
 
-    b=_lowpass_cosine_lanczos_filter_coef(0.4,10)
-    mfreqz(b)
-    show()
+    #b=_lowpass_cosine_lanczos_filter_coef(0.4,10)
+    #mfreqz(b)
+    #show()
+#    compare_response()
+#    plt.savefig('frequency_response',bbox_inches=0)
+   # compare_response2()
+   # plt.savefig('frequency_response2',bbox_inches=0)
+    #plt.show()
     
     
     
