@@ -628,11 +628,11 @@ def compare_response2():
     gw[0]=0.00001
     period=1.0/gw
     
-#    ax.plot(period,abs(gh*bh1),color="black",linewidth=1,label="godin*box_15day") 
-#    ax.plot(period,abs(gh*bh2),color="red",linewidth=1,label="godin*box_15.5day")
-#    ax.plot(period,abs(gh*bh3),color="green",linewidth=1,label="godin*box_16day")
-#    ax.plot(period,abs(ch2*bh1),color="black",linestyle="-",linewidth=1,label="cl_480*box_15day") 
-#    ax.plot(period,abs(ch2*bh2),color="red",linestyle="-",linewidth=1,label="cl_480*box_15.5day")
+    #    ax.plot(period,abs(gh*bh1),color="black",linewidth=1,label="godin*box_15day") 
+    #    ax.plot(period,abs(gh*bh2),color="red",linewidth=1,label="godin*box_15.5day")
+    #    ax.plot(period,abs(gh*bh3),color="green",linewidth=1,label="godin*box_16day")
+    #    ax.plot(period,abs(ch2*bh1),color="black",linestyle="-",linewidth=1,label="cl_480*box_15day") 
+    #    ax.plot(period,abs(ch2*bh2),color="red",linestyle="-",linewidth=1,label="cl_480*box_15.5day")
     ax.plot(period,abs(ch2),color="green",linestyle="-",linewidth=1,label="cl_480_16day")
    
     
@@ -653,20 +653,13 @@ def compare_response2():
     
     
 if __name__=="__main__":
-
+    pass
     #b=_lowpass_cosine_lanczos_filter_coef(0.4,10)
     #mfreqz(b)
     #show()
-#    compare_response()
-#    plt.savefig('frequency_response',bbox_inches=0)
-   # compare_response2()
-   # plt.savefig('frequency_response2',bbox_inches=0)
+    #    compare_response()
+    #    plt.savefig('frequency_response',bbox_inches=0)
+    # compare_response2()
+    # plt.savefig('frequency_response2',bbox_inches=0)
     #plt.show()
-    
-    
-    
-    
-    
-    
-    
-    
+ 
