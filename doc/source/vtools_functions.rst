@@ -10,7 +10,7 @@ Fill data gaps
 .. plot:: ../../vtools/examples/functions/interpolation.py
   :include-source:
 
-Filtering (low-pass, tidal)
+Filtering (low-pass, tidal,spring-neap)
 ---------------------------
 
 Low-pass filter
@@ -22,6 +22,12 @@ Tidal filter
 
 .. plot:: ../../vtools/examples/functions/tidal.py
   :include-source:
+  
+Spring-neap filter
+
+.. plot:: ../../vtools/examples/functions/spring_neap_tide.py
+  :include-source:
+
 
 Resampling and decimation
 -------------------------
