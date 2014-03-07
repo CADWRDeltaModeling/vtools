@@ -10,7 +10,7 @@ ts=example_data("pt_reyes_tidal_1hour")
 ## only plot part of result 
 window_start=datetime.datetime(2013,11,25)
 window_end=datetime.datetime(2013,12,2)
-ts_lowpass=cosine_lanczos(ts,cutoff_period=hours(30),M=30).window(window_start,window_end)
+ts_lowpass=cosine_lanczos(ts,cutoff_period=hours(30),m=30).window(window_start,window_end)
 ts_butt=butterworth(ts,cutoff_period=hours(60),order=4).window(window_start,window_end)
 boxcar_aver_interval = hours(12)
 ts_box=boxcar(ts,boxcar_aver_interval,boxcar_aver_interval).window(window_start,window_end)
