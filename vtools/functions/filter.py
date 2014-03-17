@@ -125,7 +125,8 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     return rts(d2,ts.start,ts.interval,prop)
     
 
-def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,m=20):
+def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,m=20,
+                   padtype='odd',padlen=None):
     """ low-pass cosine lanczos squared filter on a regular time series.
       
         
@@ -208,7 +209,7 @@ def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,m=20):
 #    d1=d1[len(d1)::-1]
 #    d2=lfilter(coefs,1.0,d1,axis=0)
 #    d2=d2[len(d2)::-1]
-    d2=filtfilt(coefs,[1.0],data,axis=0)
+    d2=filtfilt(coefs,[1.0],data,axis=0,padtype=padtype,padlen=padlen)
 
     if(len(idx)>0):
         d2[result_nan_idx]=nan
