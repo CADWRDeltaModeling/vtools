@@ -125,8 +125,8 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     return rts(d2,ts.start,ts.interval,prop)
     
 
-def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,m=20,
-                   padtype='odd',padlen=None):
+def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
+                   padtype='even',padlen=None):
     """ low-pass cosine lanczos squared filter on a regular time series.
       
         
@@ -202,6 +202,18 @@ def cosine_lanczos(ts,cutoff_frequency=None,cutoff_period=None,m=20,
             cf = cutoff_frequency_in_ticks/nyquist_frequency
         else:
             raise ValueError("you must give me either cutoff_frequency or cutoff_period")
+            
+            
+    ## if m is none set it to number of interval within filter_period*1.25
+    if m==None:
+        ## cf reverse is twice of the interval within filtering period
+        m=int(1.25/(2.0*cf))
+
+    if m<1:
+        raise ValueError("bad input cutoff period or frequency")
+    
+    if padlen==None:
+        padlen=3*m
         
     ## get filter coefficients.
     coefs=_lowpass_cosine_lanczos_filter_coef(cf,m)
