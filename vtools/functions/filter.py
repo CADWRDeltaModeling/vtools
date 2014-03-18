@@ -152,7 +152,17 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
          be  convertible to :ref:`Time interval<time_intervals>`.
          cutoff_frequency and cutoff_period can't be specified at the same time.
          
-           
+     padtype : str or None, optional
+         Must be 'odd', 'even', 'constant', or None. This determines the type
+         of extension to use for the padded signal to which the filter is applied. 
+         If padtype is None, no padding is used. The default is 'even'.
+
+     padlen : int or None, optional
+          The number of elements by which to extend x at both ends of axis 
+          before applying the filter. This value must be less than x.shape[axis]-1. 
+          padlen=0 implies no padding. If padtye is not None and padlen is not
+          given, padlen is be set to 6*m.
+  
     Returns
     -------
     result : :class:`~vtools.data.timeseries.TimeSeries`
@@ -212,15 +222,16 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
     if m<1:
         raise ValueError("bad input cutoff period or frequency")
     
-    if padlen==None:
-        padlen=3*m
+    if (padlen==None) and (not(padtype==None)):
+        padlen=6*m
+        
+    if padlen>len(data):
+        raise ValueError("Padding length is more  than data size")
         
     ## get filter coefficients.
     coefs=_lowpass_cosine_lanczos_filter_coef(cf,m)
-#    d1=lfilter(coefs, 1.0, ts.data,axis=0)
-#    d1=d1[len(d1)::-1]
-#    d2=lfilter(coefs,1.0,d1,axis=0)
-#    d2=d2[len(d2)::-1]
+    
+    
     d2=filtfilt(coefs,[1.0],data,axis=0,padtype=padtype,padlen=padlen)
 
     if(len(idx)>0):
