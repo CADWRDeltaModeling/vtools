@@ -290,7 +290,7 @@ class TestFilter(unittest.TestCase):
         
         ## cutoff period is 30 hours, filterd result should be xlow
         ## approximately
-        nt1=cosine_lanczos(ts,cutoff_period=hours(30),m=20)
+        nt1=cosine_lanczos(ts,cutoff_period=hours(30),filter_len=20,padtype="odd")
         self.assertAlmostEqual(numpy.abs(nt1.data-xlow).max(),0,places=1)
         
     
@@ -308,16 +308,37 @@ class TestFilter(unittest.TestCase):
         ts=rts(x,st,delta,{})
         
     
-        nt1=cosine_lanczos(ts,cutoff_period=hours(30),m=20)
+        nt1=cosine_lanczos(ts,cutoff_period=hours(30),filter_len=20,\
+                          padtype="even")
         
         ## cutoff_frequency is expressed as ratio of nyquist frequency
         ## ,which is 1/0.5/hours
         cutoff_frequency=2.0/30
-        nt2=cosine_lanczos(ts,cutoff_frequency=cutoff_frequency,m=20)
+        nt2=cosine_lanczos(ts,cutoff_frequency=cutoff_frequency,filter_len=20,\
+                           padtype="even")
         
         self.assertEqual(numpy.abs(nt1.data-nt2.data).max(),0)
         
    
+    def test_lanczos_cos_filter_len(self):
+        """ test cosine lanczos input filter length api"""
+        
+        data=[2.0*numpy.math.cos(2*pi*i/5+0.8)+3.0*numpy.math.cos(2*pi*i/45+0.1)\
+             +7.0*numpy.math.cos(2*pi*i/55+0.3) for i in range(1000)]
+        data=numpy.array(data)
+        st=datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
+        delta=time_interval(hours=1)
+        ts=rts(data,st,delta,{})
+        
+        filter_len=24
+        t1=cosine_lanczos(ts,cutoff_period=hours(30),filter_len=filter_len)
+        
+        filter_len=days(1)
+        t2=cosine_lanczos(ts,cutoff_period=hours(30),filter_len=filter_len)
+        
+        assert_array_equal(t1.data,t2.data)
+   
+
     def test_lanczos_cos_filter_nan(self):
         """ Test the data with a nan filtered by cosine lanczos filter"""
         data=[2.0*numpy.math.cos(2*pi*i/5+0.8)+3.0*numpy.math.cos(2*pi*i/45+0.1)\
@@ -329,11 +350,11 @@ class TestFilter(unittest.TestCase):
         delta=time_interval(hours=1)
         ts=rts(data,st,delta,{})
         m=20
-        nt1=cosine_lanczos(ts,cutoff_period=hours(30),m=m)
-        
+     
+        nt1=cosine_lanczos(ts,cutoff_period=hours(30),filter_len=m,padtype="even")
         ## result should have nan from nanidx-2*m+2 to nanidx+2*m-1
         nanidx=numpy.where(numpy.isnan(nt1.data))[0]
-        nanidx_should_be=numpy.arange(nanloc-2*m+2,nanloc+2*m-1)
+        nanidx_should_be=numpy.arange(nanloc-2*m,nanloc+2*m+1)
         assert_array_equal(nanidx,nanidx_should_be)
         
 #        
@@ -344,18 +365,6 @@ class TestFilter(unittest.TestCase):
 #        legend()
 #        show()
         
-    def test_lanczos_cos_filter_short(self):
-        """ test filter behavior when data is short"""
-        filter_size=20
-        data_len=15
-        data=[2.0*numpy.math.cos(2*pi*i/5+0.8)+3.0*numpy.math.cos(2*pi*i/45+0.1)\
-             +7.0*numpy.math.cos(2*pi*i/55+0.3) for i in range(data_len)]
-        data=numpy.array(data)
-        st=datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
-        delta=time_interval(hours=1)
-        ts=rts(data,st,delta,{})
-    
-        self.assertRaises(ValueError,cosine_lanczos,ts,cutoff_period=hours(30),m=filter_size)
         
     
     def test_fill__godin_nan(self):
