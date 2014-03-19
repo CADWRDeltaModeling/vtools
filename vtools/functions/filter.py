@@ -126,7 +126,7 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     
 
 def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
-                   padtype='even',padlen=None):
+                   padtype=None,padlen=None):
     """ low-pass cosine lanczos squared filter on a regular time series.
       
         
@@ -155,7 +155,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
      padtype : str or None, optional
          Must be 'odd', 'even', 'constant', or None. This determines the type
          of extension to use for the padded signal to which the filter is applied. 
-         If padtype is None, no padding is used. The default is 'even'.
+         If padtype is None, no padding is used. The default is None.
 
      padlen : int or None, optional
           The number of elements by which to extend x at both ends of axis 
@@ -166,14 +166,18 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
     Returns
     -------
     result : :class:`~vtools.data.timeseries.TimeSeries`
-        A new regular time series with the same interval of ts.
+        A new regular time series with the same interval of ts. If no pading 
+        is used the beigning and ending 4*m resulting data will be set to nan
+        to remove edge effect.
         
     Raise
     --------
     ValueError
         If input timeseries is not regular, 
         or, cutoff_period and cutoff_frequency are given at the same time,
-        or, neither cutoff_period nor curoff_frequence is given.
+        or, neither cutoff_period nor curoff_frequence is given,
+        or, padtype is not "odd","even","constant",or None,
+        or, padlen is larger than data size
         
     """
     
@@ -194,11 +198,11 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
     data=sciarray(ts.data).copy()
     
     ## figure out indexes that will be nan after the filtration,which
-    ## will "grow" the nan region around the original nan by 2*m-1 
+    ## will "grow" the nan region around the original nan by 2*m
     ## slots in each direction
     if  len(idx)>0:
         data[idx]=0.0
-        shifts=arange(-2*m+2,2*m-1)
+        shifts=arange(-2*m,2*m+1)
         result_nan_idx=clip(add.outer(shifts,idx),0,len(ts)-1).ravel()
     
     cf=cutoff_frequency
@@ -221,6 +225,10 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
 
     if m<1:
         raise ValueError("bad input cutoff period or frequency")
+        
+    if not(padtype==None):
+        if (not padtype in ["odd","even","constant"]):
+            raise ValueError("unkown padtype :"+padtype)
     
     if (padlen==None) and (not(padtype==None)):
         padlen=6*m
@@ -228,7 +236,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
     if padlen>len(data):
         raise ValueError("Padding length is more  than data size")
         
-    ## get filter coefficients.
+    ## get filter coefficients. sizeo of coefis is 2*m+1 in fact
     coefs=_lowpass_cosine_lanczos_filter_coef(cf,m)
     
     
@@ -236,6 +244,11 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
 
     if(len(idx)>0):
         d2[result_nan_idx]=nan
+    
+    ## replace edge points with nan if pading is not used
+    if padtype==None:
+        d2[0:4*m]=nan
+        d2[len(d2)-4*m:len(d2)]=nan
         
     prop={}
     for key,val in ts.props.items():
