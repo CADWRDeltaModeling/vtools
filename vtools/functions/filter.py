@@ -125,8 +125,8 @@ def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
     return rts(d2,ts.start,ts.interval,prop)
     
 
-def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
-                   padtype=None,padlen=None):
+def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
+                   padtype=None,padlen=None,fill_edge_nan=True):
     """ low-pass cosine lanczos squared filter on a regular time series.
       
         
@@ -136,7 +136,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
     ts : :class:`~vtools.data.timeseries.TimeSeries`
         Must has data of one dimension, and regular.
     
-    m  : int
+    filter_len  : int, time_interval
         Size of lanczos window, default is 20.
         
     cutoff_frequency: float,optional
@@ -186,7 +186,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
         
     
     interval=ts.interval
-    
+    m=filter_len
 
     if (cutoff_frequency!=None) and (cutoff_period!=None):
         raise ValueError("cutoff_frequency and cutoff_period can't be specified simultaneously")
@@ -217,11 +217,21 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
         else:
             raise ValueError("you must give me either cutoff_frequency or cutoff_period")
             
-            
+      
+    
+        
+    if is_interval(m):
+        m=int(ticks(m)/ticks(ts.interval))
     ## if m is none set it to number of interval within filter_period*1.25
-    if m==None:
+    elif  m==None:
         ## cf reverse is twice of the interval within filtering period
         m=int(1.25/(2.0*cf))
+    elif type(1)==type(m):
+        ## nothing to do
+        m=m
+    else:
+        raise TypeError("unkown filter length type")
+    
 
     if m<1:
         raise ValueError("bad input cutoff period or frequency")
@@ -246,7 +256,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,m=None,
         d2[result_nan_idx]=nan
     
     ## replace edge points with nan if pading is not used
-    if padtype==None:
+    if (padtype==None) and (fill_edge_nan==True):
         d2[0:4*m]=nan
         d2[len(d2)-4*m:len(d2)]=nan
         
