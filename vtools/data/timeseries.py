@@ -745,13 +745,15 @@ def rts(data,start,interval,props=None):
         Parameters
         ----------
         data : array_like
-            Should be a array/list of values. There is no restriction on data type, but not all functionality like addition or interpolation will work on all data.
+            Should be a array/list of values. There is no restriction on data 
+             type, but not all functionality like addition or interpolation will work on all data.
         
         start : :py:class:`datetime.datetime`
             Can also be a string representing a datetime.
         
         interval : :ref:`time_interval<time_intervals>`
-            Can also be a string representing an interval that is understood by :func:`vools.vtime.parse_interval`. 
+            Can also be a string representing an interval that is
+            understood by :func:`vools.vtime.parse_interval`. 
 
         Returns
         -------
@@ -780,7 +782,8 @@ def its(times,data,props=None):
             An array or list of datetimes or ticks
         
         data : array or list of values
-            An array/list of values. No restriction on data type, but not all functionality will work on every data type.
+            An array/list of values. No restriction on data type,
+            but not all functionality will work on every data type.
         
         Returns
         -------
@@ -813,7 +816,8 @@ def its2rts(its,interval,original_dates=True):
              
         
         interval : :ref:`time_interval<time_intervals>`
-            Interval of resulting regular timeseries,Can also be a string representing an interval that is understood by :func:`vools.vtime.parse_interval`. 
+            Interval of resulting regular timeseries,Can also be a string 
+            representing an interval that is understood by :func:`vools.vtime.parse_interval`. 
 
         original_dates:boolean,optional
             Use original datetime or nudged regular times.
@@ -825,7 +829,8 @@ def its2rts(its,interval,original_dates=True):
        
    """
    if not isinstance(interval, _datetime.timedelta): 
-       raise ValueErrror("Only exact regular intervals (secs, mins, hours, days) accepted in its2rts")
+       raise ValueErrror("Only exact regular intervals (secs, mins, hours, days)\
+                        accepted in its2rts")
    start = round_ticks(its.ticks[0],interval)
    stime = ticks_to_time(start)
    end = round_ticks(its.ticks[-1],interval)
@@ -841,7 +846,8 @@ def its2rts(its,interval,original_dates=True):
         badndx = np.extract(ndx[1:] == ndx[:-1],ndx[1:])
         badtime = tseq[badndx]
         for t in badtime:
-            print "Warning multiple time steps map to a single neat output step near: %s " % ticks_to_time(t)
+            print "Warning multiple time steps map to a single \
+                   neat output step near: %s " % ticks_to_time(t)
    data[ndx]=its.data
    if original_dates:
        tseq[ndx]=its.ticks
@@ -849,10 +855,103 @@ def its2rts(its,interval,original_dates=True):
    ts.interval = interval
    return ts
 
-              
 
+def rts_constant(start,end,interval,val=np.nan):
+    
+    """ Create a regular or calendar time series filled with constant value
 
+        Parameters
+        ----------
+        start : :py:class:`datetime.datetime`
+            Starting time, can also be a string representing a datetime.
+        
+        end : :py:class:`datetime.datetime`
+            Ending time,can also be a string representing a datetime.
+        
+        interval : :ref:`time_interval<time_intervals>`
+            Can also be a string representing an interval that is 
+            understood by :func:`vools.vtime.parse_interval`. 
             
+        val : float,int
+            Constant will be filled into the time series.
+            Optional, default is nan.
+            
+        Returns
+        -------
+        result :  :class:`~vtools.data.timeseries.TimeSeries`
+            A regular time series wiht constant values
+    """
+    
+    
+    num_data=number_intervals(start,end,interval)+1
+    data=np.empty(num_data)
+    data.fill(val)
+    ts=rts(data,start,interval,{})
+    return ts
+        
+
+def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
+    
+    """ Extend a regular time series with newer start/end 
+
+        Parameters
+        ----------
+        start : :py:class:`datetime.datetime`
+            The starting time to be extended to.Optional, default no extension.
+        
+        end : :py:class:`datetime.datetime`
+           The ending time to be extended to.Optional,default no extension.
+        
+        method : :string
+            Method to fill the extended part of resulting series. either
+            "taper" or"constant". default constant.
+            
+        val : float
+            Constant will be filled or the value that the last non-nan
+            gets tapered to.
+            
+        Returns
+        -------
+        result :  :class:`~vtools.data.timeseries.TimeSeries`
+           An new time series extended to the input start and end.
+    """
+    if start==None:
+        start=ts.start
+    if end==None:
+        end=ts.end
+        
+    head_extended=number_intervals(start,ts.start,ts.interval)
+    tail_extended=number_intervals(ts.end,end,ts.interval)
+    
+    new_len=len(ts)+head_extended+tail_extended
+    data=np.empty(new_len)
+    old_len=len(ts)
+    data[head_extended:head_extended+old_len]=ts.data[:]
+    
+
+    if method=="constant":
+        data[0:head_extended]=val
+        data[head_extended+old_len:new_len-1]=val
+    elif method=="taper":
+        if np.isnan(val):
+            raise ValueError("You must input a valid value for taper method")
+        ## find out first and last non val
+        temp=ts.data[~np.isnan(ts.data)]
+        begin_taper_to=temp[0]
+        end_taper_from=temp[-1]
+        
+        head_taper_step=(begin_taper_to-val)/(head_extended-1)
+        tail_taper_step=(val-end_taper_from)/(tail_extended)
+        data[0:head_extended-1]=np.arange(start=val,\
+                                stop=begin_taper_to,step=head_taper_step)
+        data[old_len+head_extended:new_len]=np.arange(start=end_taper_from+tail_taper_step,\
+                                stop=val+tail_taper_step,step=tail_taper_step)
+        
+    else:
+        raise ValueError("Unkonw filling method:"+method)
+        
+    new_ts=rts(data,start,ts.interval,{})
+    return new_ts
         
     
     
