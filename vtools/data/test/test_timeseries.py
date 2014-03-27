@@ -380,6 +380,69 @@ class TestTimeSeries(unittest.TestCase):
             for a1,b1 in zip(t,ts.times):
                 self.assertEqual(a1,b1)
 
+    def test_rts_const(self):
+        
+        val =1.0
+        start=_datetime.datetime(1990,2,3)
+        end  =_datetime.datetime(1990,3,1)
+        interval =hours(1)
+        ts=rts_constant(start,end,interval,val=val)
+        self.assertEqual(start,ts.start)
+        self.assertEqual(end,ts.end)
+        self.assertEqual(interval,ts.interval)
+        self.assertEqual(ts.data[-1],val)
+        
+    
+        start=_datetime.datetime(1990,2,3)
+        end  =_datetime.datetime(1990,3,1)
+        interval =hours(1)
+        ts=rts_constant(start,end,interval)
+        self.assertEqual(start,ts.start)
+        self.assertEqual(end,ts.end)
+        self.assertEqual(interval,ts.interval)
+       
+        self.assertTrue(np.isnan(ts.data).all())
+        
+        
+    def test_ts_extension(self):
+        
+        dt=time_interval(hours=1)
+        st=parse_time("1/1/1991")
+        num=120
+        data=range(100,num+100)
+        ts1=rts(data,st,dt,num)
+        
+        new_start=parse_time("12/23/1990")
+        new_end=parse_time("1/11/1991")
+        val=1.0
+        ts_new=extrapolate_ts(ts1,new_start,end=new_end,method="constant",val=val)
+        self.assertEqual(new_start,ts_new.start)
+        self.assertEqual(new_end,ts_new.end)
+        index=0
+        touchBegin=False
+        touchEnd=False
+        for index in range(len(ts_new)):
+            if ts_new.data[index]==ts1.data[0]:
+                self.assertEqual(ts_new.times[index],ts1.times[0])
+                touchBegin=True
+            if ts_new.data[index]==ts1.data[-1]:
+                self.assertEqual(ts_new.times[index],ts1.times[-1])
+                touchEnd=True
+        self.assertTrue(touchBegin)
+        self.assertTrue(touchEnd)
+        
+        ## test taper methods
+        ts_new=extrapolate_ts(ts1,new_start,end=new_end,method="taper",val=val)
+        self.assertAlmostEqual(ts_new.data[0],val)
+        self.assertAlmostEqual(ts_new.data[-1],val)
+        
+        ## test taper with nan in old ts
+        data[0]=np.nan
+        ts1=rts(data,st,dt,num)
+        ts_new=extrapolate_ts(ts1,new_start,end=new_end,method="taper",val=val)
+    
+        
+        
     
 
 if __name__ == '__main__':
