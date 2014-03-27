@@ -940,9 +940,9 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
         begin_taper_to=temp[0]
         end_taper_from=temp[-1]
         
-        head_taper_step=(begin_taper_to-val)/(head_extended-1)
+        head_taper_step=(begin_taper_to-val)/(head_extended)
         tail_taper_step=(val-end_taper_from)/(tail_extended)
-        data[0:head_extended-1]=np.arange(start=val,\
+        data[0:head_extended]=np.arange(start=val,\
                                 stop=begin_taper_to,step=head_taper_step)
         data[old_len+head_extended:new_len]=np.arange(start=end_taper_from+tail_taper_step,\
                                 stop=val+tail_taper_step,step=tail_taper_step)
