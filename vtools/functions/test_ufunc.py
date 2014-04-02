@@ -34,7 +34,21 @@ class TestUFunc(unittest.TestCase):
         time_window=(ts0.times[5],ts0.times[30])
         truemax=data[30]
         tsmax=ts_max(ts0.window(ts0.times[5],ts0.times[30]))
-        self.assertEqual(tsmax,truemax)          
+        self.assertEqual(tsmax,truemax)    
+    
+    def test_ts_maximum(self):
+        ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
+        ts_len=100
+        ts_intvl=days(1)            
+        data=range(ts_len)
+        ts0=rts(data,ts_start,ts_intvl)
+        tsmax=ts_maximum(ts0)
+        self.assertEqual(tsmax,data[-1])
+
+        time_window=(ts0.times[5],ts0.times[30])
+        truemax=data[30]
+        tsmax=ts_max(ts0.window(ts0.times[5],ts0.times[30]))
+        self.assertEqual(tsmax,truemax)         
 
     def test_ts_minimum(self):
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
