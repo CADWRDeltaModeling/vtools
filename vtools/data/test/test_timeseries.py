@@ -132,8 +132,15 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts4[0].value,-5.)
         self.assertEqual(ts4.start,self.ts1.start)
         self.assertEqual(len(ts4),len(self.ts1))
-        #self.assertEqual(ts4.interval,self.ts1.interval)
+        self.assertEqual(ts4.interval,self.ts1.interval)
         self.assertEqual(ts4.end,self.ts1.end)
+        
+        ts5=5.0-self.ts1
+        self.assertEqual(ts5[0].value,5.)
+        self.assertEqual(ts5.start,self.ts1.start)
+        self.assertEqual(len(ts5),len(self.ts1))
+        self.assertEqual(ts5.interval,self.ts1.interval)
+        self.assertEqual(ts5.end,self.ts1.end)
 
 
     def testRightSubtractScalar(self):
@@ -440,10 +447,8 @@ class TestTimeSeries(unittest.TestCase):
         data[0]=np.nan
         ts1=rts(data,st,dt,num)
         ts_new=extrapolate_ts(ts1,new_start,end=new_end,method="taper",val=val)
-    
-        
-        
-    
+        self.assertAlmostEqual(ts_new.data[0],val)
+        self.assertAlmostEqual(ts_new.data[-1],val)
 
 if __name__ == '__main__':
     unittest.main()
