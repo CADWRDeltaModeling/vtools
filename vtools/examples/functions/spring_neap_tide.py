@@ -2,10 +2,11 @@
 from vtools.functions.filter import *
 from vtools.data.sample_series import *
 import matplotlib.pyplot as plt
-import datetime
+import datetime as dtm
 
-ts=example_data("oldriver_flow")
-ts_lowpass=cosine_lanczos(ts,cutoff_period=days(28),m=480)
+window=(dtm.datetime(2012,12,27),None)
+ts=example_data("oldriver_flow").window(*window)
+ts_lowpass=cosine_lanczos(ts,cutoff_period=days(28),filter_len=480)
 boxcar_aver_interval = days(14)
 ts_box=boxcar(ts,boxcar_aver_interval,boxcar_aver_interval)
 ts_box_god=godin(ts_box)
