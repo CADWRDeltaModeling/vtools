@@ -141,26 +141,6 @@ class DssService(Service):
         """
         self._remove_dssfile_catalog(dss_file_path)
 
-    def reload_dss_records(self,dss_file_path):
-        """ Update db info about dss file and return new
-            info necessary to update a catalog instance.
-        """
-        self._update_dss_file_catalog(dss_file_path)
-
-        self.dbcursor.execute(selsql,(strip(dss_file_path),))
-        findex=self.dbcursor.fetchone()[0]
-        createviewsql="create view tv as select A,B,C,D,E,F \
-                       from dsscatalog where F_ID="+str(findex)
-        
-        self.dbcursor.execute(createviewsql)        
-        selsql="select * from tv"        
-        self._reduce_catalog(selsql,None)
-
-        records=self.dbcursor.fetchall()        
-        dropviewsql="drop view tv"
-        self.dbcursor.execute(dropviewsql)
-        return records
-
     def update_db(self,dss_file_path):
         """ update db record about dss file."""
         self._update_dss_file_catalog(dss_file_path)
@@ -214,12 +194,11 @@ class DssService(Service):
             ## test_modify right after test_save_data, sometimes two times are            ##
             ## the same,even file is different already).No solution currrently            ##
             #########################################
-            if not(last_modified_time==\
-                   os.stat(dss_file_path)[8]):
-                self._remove_dssfile_catalog(dss_file_path)
-                return self._cataloging_dss_file(strip(dss_file_path))
-            else:
-                return self._dss_catalogs[info[0]]
+            #if not(last_modified_time==os.stat(dss_file_path)[8]):
+            self._remove_dssfile_catalog(dss_file_path)
+            return self._cataloging_dss_file(strip(dss_file_path))
+            #else:
+            #    return self._dss_catalogs[info[0]]
         else:
             return self._cataloging_dss_file(strip(dss_file_path))
 
@@ -529,8 +508,9 @@ class DssService(Service):
                         for pn in range(6):
                             pre_parts[pn]=parts[pn]
                 nrec=nrec+1
-                
-        dtt.append((self.dss_file_index,pre_parts[0],pre_parts[1],pre_parts[2],\
+        
+        if nrec>0:
+            dtt.append((self.dss_file_index,pre_parts[0],pre_parts[1],pre_parts[2],\
                 pre_parts[5],pre_parts[4],pre_parts[3]))
         return dtt
 
@@ -558,13 +538,22 @@ class DssService(Service):
   
         [lopnca,lcatlg,lopncd,lcatcd,nrecs]=zopnca(fpath,cf0,True,cd0,True)
         
+        ## lopnca is ture if the catalog file is successfully opened. If 
+        ## the file could not be opened, lopnca will be set to false
         if not(lopnca):
             raise DssCatalogServiceError\
                   ("unable to open/create catalog file for dss file %s"%fname)
 
+        ## lcatlg logical variable returned as ture if file contains
+        ## valid catalog, if lcatlg is false , zcat should be called to
+        ## generated a new catalog of the dss file
         if not(lcatlg):
             dssfile=open_dss(fpath)
             [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,True)
+            ## if lcadcat is true, a condensed catalog is
+            ## produced.
+            if not(lcdcat):
+                print "Warning:condensed catalog is not created for %s"%fpath
             dssfile.close()
             del dssfile
 
@@ -588,7 +577,7 @@ class DssService(Service):
         if index>=DSS_MAX_FILE_NUM:## if catalogs saved in db is too much,
                                    ## try to empty db, restart a new one.
             index=0
-            self._clean_catalogs()
+            self._clean_db()
             DssService.dss_file_index_used=[]
             #raise DssCatalogServiceError("not enough index for dss file")
             
