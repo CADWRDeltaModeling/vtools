@@ -337,6 +337,11 @@ class TestFilter(unittest.TestCase):
         t2=cosine_lanczos(ts,cutoff_period=hours(30),filter_len=filter_len)
         
         assert_array_equal(t1.data,t2.data)
+        
+        
+        filter_len="invalid"
+        self.assertRaises(TypeError,cosine_lanczos,ts,cutoff_period=hours(30),\
+                          filter_len=filter_len)
    
 
     def test_lanczos_cos_filter_nan(self):
@@ -357,11 +362,16 @@ class TestFilter(unittest.TestCase):
         nanidx_should_be=numpy.arange(nanloc-2*m,nanloc+2*m+1)
         assert_array_equal(nanidx,nanidx_should_be)
         
+        delta=time_interval(minutes=15)
+        data[nanloc:nanloc+10]=numpy.nan
+        ts=rts(data,st,delta,{})
+        m=20
+        nt2=cosine_lanczos(ts,cutoff_period=hours(1),filter_len=m,padtype="even")
 #        
 #        subplot(111)
 ##        
 #        plot(ts.times,ts.data,label="data",color='black')
-#        plot(nt1.times,nt1.data,label="C-L",color="red")
+#        plot(nt2.times,nt2.data,label="C-L",color="red")
 #        legend()
 #        show()
         
