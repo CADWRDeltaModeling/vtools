@@ -319,6 +319,23 @@ class TestFilter(unittest.TestCase):
         
         self.assertEqual(numpy.abs(nt1.data-nt2.data).max(),0)
         
+    def test_lanczos_cos_filter_len_api(self):
+        """ Test the filter len api of the cosine filter"""
+        
+        ## a signal that is sum of two sine waves with frequency of
+        ## 5 and 250HZ, sampled at 2000HZ
+        t=numpy.linspace(0,1.0,2001)
+        xlow=numpy.sin(2*numpy.pi*5*t)
+        xhigh=numpy.sin(2*numpy.pi*250*t)
+        x=xlow+xhigh
+        st=datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
+        delta=time_interval(hours=1)
+        ts=rts(x,st,delta,{})
+        
+        ## filter len is none
+        nt1=cosine_lanczos(ts,cutoff_period=hours(30),padtype="even")
+        self.assertTrue(nt1.is_regular())
+    
    
     def test_lanczos_cos_filter_len(self):
         """ test cosine lanczos input filter length api"""
@@ -395,7 +412,32 @@ class TestFilter(unittest.TestCase):
 #        plot(ts_nan_godin.times,ts_nan_godin.data,label="godin_nan",color="blue")
 #        plot(ts_0_godin.times,ts_0_godin.data,label="godin_0",color="brown")
 #        plot(ts_m_godin.times,ts_m_godin.data,label="godin_m",color="red")
-    
+
+    def test_gaussian_filter(self):
+       """ Test the nan data with gaussian filter"""
+       data=[2.0*numpy.math.cos(2*pi*i/5+0.8)+3.0*numpy.math.cos(2*pi*i/45+0.1)\
+             +7.0*numpy.math.cos(2*pi*i/55+0.3) for i in range(1000)]
+       data=numpy.array(data)
+       nanloc=336
+       data[nanloc]=numpy.nan
+       st=datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
+       delta=time_interval(hours=1)
+       ts=rts(data,st,delta,{})
+       sigma=2
+     
+       nts=[]
+       for order in range(4):
+           nts.append(ts_gaussian_filter(ts,sigma,order=order))
+           
+#       subplot(111)   
+#       plot(ts.times,ts.data,label="data",color='black')
+#       orders=range(4)
+#       colors=["red","green","brown","grey"]
+#       for nt,order,color in zip(nts,orders,colors):
+#           plot(nt.times,nt.data,label="gaussian_order_"+str(order),\
+#                color=color)
+#       legend()
+#       show()    
          
               
 if __name__=="__main__":

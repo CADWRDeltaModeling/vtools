@@ -12,6 +12,7 @@ from scipy import where,arange,clip
 from scipy.signal import lfilter,firwin,filtfilt
 from scipy.signal import fftconvolve
 from scipy.signal.filter_design import butter
+from scipy.ndimage.filters import gaussian_filter 
 from numpy import sqrt
 ## Vtool vtime import.
 
@@ -19,7 +20,8 @@ from vtools.data.vtime import *
 from vtools.data.timeseries import rts
 from vtools.data.constants import *
 
-__all__=["boxcar","butterworth","daily_average","godin","cosine_lanczos","lowpass_cosine_lanczos_filter_coef"]
+__all__=["boxcar","butterworth","daily_average","godin","cosine_lanczos",\
+         "lowpass_cosine_lanczos_filter_coef","ts_gaussian_filter"]
 
 
 
@@ -231,14 +233,6 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
         shifts=arange(-2*m,2*m+1)
         result_nan_idx=clip(add.outer(shifts,idx),0,len(ts)-1).ravel()
     
-   
-            
-      
-    
-        
-   
-    
-
     if m<1:
         raise ValueError("bad input cutoff period or frequency")
         
@@ -274,8 +268,62 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     time_interval
     return rts(d2,ts.start,ts.interval,prop)
     
-   
 
+def ts_gaussian_filter(ts,sigma,order=0,mode="reflect",cval=0.0):
+    """ wrapper of scipy gaussian_filter.
+    
+    Parameters
+    -----------
+    ts: :class:`~vtools.data.timeseries.TimeSeries`
+        Must has data of one dimension, and regular.
+    
+    sigma: int or :ref:`time_interval<time_intervals>`
+          Standard deviation for Gaussian kernel presented as number of
+          samples, or time interval.
+          
+    order: int,optional
+          Order of the gaussian filter. Must be one of 0,1,2,3. Default 0.
+          
+    mode : {'reflect', 'constant', 'nearest', 'mirror', 'wrap'}, optional
+         This input determines how the array borders are handled, 
+         where cval is the value when mode is 'constant'. 
+         Default is 'reflect'
+
+    cval : scalar, optional
+        Value to fill past edges of input if mode is 'constant'.
+        Default is 0.0
+
+       
+    Returns
+    -------
+    result : :class:`~vtools.data.timeseries.TimeSeries`
+        A new regular time series with the same interval of ts.
+        
+    Raise
+    --------
+    ValueError
+        If input timeseries is not regular, 
+        or input order is not 0,1,2,3.
+    """
+    
+    if not ts.is_regular():
+        raise ValueError("Only regular time series are supported by\
+                         guassian filter")
+
+    sigma_int=1
+    if is_interval(sigma):
+        ticks_sigma=ticks(sigma)
+        ticks_interval=ticks(ts.inteval)
+        sigma_int=int(ticks_sigma/ticks_interval)
+    elif type(sigma)==type(1):
+        sigma_int=sigma
+    else:
+        raise ValueError("sigma must be int or timeinterval")
+        
+    filtered_data=gaussian_filter(ts.data,sigma_int,order=order,\
+                  mode=mode,cval=cval)
+    filtered_ts=rts(filtered_data,ts.start,ts.interval)
+    return filtered_ts    
 
 def boxcar(ts,before,after):
     """ low-pass butterworth filter using moving average.
@@ -311,8 +359,8 @@ def boxcar(ts,before,after):
     len_after=0
     
     if not ts.is_regular():
-        raise ValueError("Only regular time series are accpted by"
-                         "boxcar function")
+        raise ValueError("Only regular time series are accpted by\
+                         boxcar function")
     
     if type(before)==type(1) and type(after)==type(1):
         len_before=before
