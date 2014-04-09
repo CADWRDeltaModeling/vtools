@@ -187,6 +187,21 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     
     interval=ts.interval
     m=filter_len
+    if (cutoff_frequency!=None) and (cutoff_period!=None):
+        raise ValueError("cutoff_frequency and cutoff_period can't\
+        be specified simultaneously")
+        
+    cf=cutoff_frequency
+    if (cf==None):
+        if (cutoff_period !=None):
+            ## convert it to ticks
+            if not (is_interval(cutoff_period)):
+                cutoff_period=parse_interval(cutoff_period)
+            cutoff_frequency_in_ticks = 1.0/float(ticks(cutoff_period))
+            nyquist_frequency  = 0.5/float(ticks(interval))
+            cf = cutoff_frequency_in_ticks/nyquist_frequency
+        else:
+            raise ValueError("you must give me either cutoff_frequency or cutoff_period")
     
     if is_interval(m):
         m=int(ticks(m)/ticks(ts.interval))
@@ -200,9 +215,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     else:
         raise TypeError("unkown filter length type")
 
-    if (cutoff_frequency!=None) and (cutoff_period!=None):
-        raise ValueError("cutoff_frequency and cutoff_period can't\
-        be specified simultaneously")
+   
         
         
     ##find out nan location and fill with 0.0. This way we can use the
@@ -218,17 +231,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
         shifts=arange(-2*m,2*m+1)
         result_nan_idx=clip(add.outer(shifts,idx),0,len(ts)-1).ravel()
     
-    cf=cutoff_frequency
-    if (cf==None):
-        if (cutoff_period !=None):
-            ## convert it to ticks
-            if not (is_interval(cutoff_period)):
-                cutoff_period=parse_interval(cutoff_period)
-            cutoff_frequency_in_ticks = 1.0/float(ticks(cutoff_period))
-            nyquist_frequency  = 0.5/float(ticks(interval))
-            cf = cutoff_frequency_in_ticks/nyquist_frequency
-        else:
-            raise ValueError("you must give me either cutoff_frequency or cutoff_period")
+   
             
       
     
