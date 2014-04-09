@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from vtools.datastore.dss.dss_service import DssService,DssAccessError
 from vtools.datastore.data_service_manager import DataServiceManager
-from vtools.datastore.dss.dss_catalog import DssCatalog
+from vtools.datastore.dss.dss_catalog import DssCatalog,DssCatalogError
 from vtools.datastore.dss.dss_constants import *
 from vtools.datastore.catalog import CatalogEntry
 from vtools.data.constants import *
@@ -12,7 +12,7 @@ from vtools.data.timeseries import TimeSeries,rts,its,minutes
 from vtools.data.vtime import ticks_to_time,parse_time
 from dateutil.parser import parse
  
-   
+ 
 class TestDssService(unittest.TestCase):
 
     """ test functionality of dss service """
@@ -35,6 +35,7 @@ class TestDssService(unittest.TestCase):
     def tearDown(self):
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
+        
 
     def test_get_catalog(self):
         dssfile_path=self.test_file_path
@@ -95,7 +96,7 @@ class TestDssService(unittest.TestCase):
 
 
     def test_get_its_data_overlap(self):
-        import pdb
+        
         id="vtools.datastore.dss.DssService"
         view=""
         source=self.test_file_path
@@ -227,11 +228,23 @@ class TestDssService(unittest.TestCase):
         data_ref=DataReference(id,source=source,selector=path)
         self.dss_service.add_data(data_ref,ts)
 
-        ## read this ts back it be same length as original one
+        ## read this ts back it be sa me length as original one
         data_refs=dssc.data_references(selector)
         data_ref=data_refs.next()
         nts=self.dss_service.get_data(data_ref)
         self.assert_(len(ts)==len(nts))
+        
+        ##clean up this temp data
+        cat=self.dss_service.get_catalog(source)
+        cat_filtered=cat.filter_catalog(path)
+        cat_filtered.set_editable()
+        cat_filtered.remove(cat_filtered.entries()[0])
+        
+        ##read catalog again, this path shouldn't be there
+        cat_new=self.dss_service.get_catalog(source)
+        self.assertEqual(len(cat_new),len(cat)-1)
+        self.assertRaises(DssCatalogError,cat_new.filter_catalog,path)
+        
     
         
     def test_save_ts_props(self):
@@ -277,6 +290,14 @@ class TestDssService(unittest.TestCase):
         self.assert_(ts.props["VDATUM"]=="NGVD88")
         self.assert_(ts.props["AUTHOR"]=="John Doe")
         self.assert_(ts.props["MODEL"]=="hydro 7.5")
+        
+        
+        ##clean up this temp data
+        cat=self.dss_service.get_catalog(source)
+        cat_filtered=cat.filter_catalog(path)
+        cat_filtered.set_editable()
+        cat_filtered.remove(cat_filtered.entries()[0])
+    
 
     def test_read_aggregated_rts_timewindow(self):
         ## save some ts into dss file, ts is hourly averaged
@@ -663,6 +684,33 @@ class TestDssService(unittest.TestCase):
         self.dss_service.add_data(data_ref,rt1)
 
         self.assert_(os.path.exists(source))
+        
+        
+    def test_get_two_catalog_same_time(self):
+        """ test get two catlogs of same file"""
+        c1=self.dss_service.get_catalog(self.test_file_path)
+        c2=self.dss_service.get_catalog(self.test_file_path)
+        self.assertEqual(len(c1),len(c2))
+     
+        
+    def test_get_save_ts_manytimes(self):
+        """ get some ts from test file and save it back, repeat many times"""
+        
+        selector="/RLTM+CHAN/*/*//*/*/"
+        loops =100
+        print "this is a time consuming test case ,be patient..."
+        for i in range(loops):
+            c=self.dss_service.get_catalog(self.test_file_path)
+            data_ref=[df for df in c.data_references(selector)]
+            tslist=[]
+            for a_data_ref in data_ref:
+                ts=self.dss_service.get_data(a_data_ref)
+                tslist.append(ts)
+
+            for a_data_ref,ts in zip(data_ref,tslist):
+                self.dss_service.add_data(a_data_ref,ts)
+        print "finish repeating get and save ts %i rounds"%loops
+           
            
       
         
