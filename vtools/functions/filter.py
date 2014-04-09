@@ -187,9 +187,22 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     
     interval=ts.interval
     m=filter_len
+    
+    if is_interval(m):
+        m=int(ticks(m)/ticks(ts.interval))
+    ## if m is none set it to number of interval within filter_period*1.25
+    elif  m==None:
+        ## cf reverse is twice of the interval within filtering period
+        m=int(1.25/(2.0*cf))
+    elif type(1)==type(m):
+        ## nothing to do
+        m=m
+    else:
+        raise TypeError("unkown filter length type")
 
     if (cutoff_frequency!=None) and (cutoff_period!=None):
-        raise ValueError("cutoff_frequency and cutoff_period can't be specified simultaneously")
+        raise ValueError("cutoff_frequency and cutoff_period can't\
+        be specified simultaneously")
         
         
     ##find out nan location and fill with 0.0. This way we can use the
@@ -220,17 +233,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
       
     
         
-    if is_interval(m):
-        m=int(ticks(m)/ticks(ts.interval))
-    ## if m is none set it to number of interval within filter_period*1.25
-    elif  m==None:
-        ## cf reverse is twice of the interval within filtering period
-        m=int(1.25/(2.0*cf))
-    elif type(1)==type(m):
-        ## nothing to do
-        m=m
-    else:
-        raise TypeError("unkown filter length type")
+   
     
 
     if m<1:
