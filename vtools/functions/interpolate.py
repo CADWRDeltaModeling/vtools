@@ -454,7 +454,7 @@ def _inner_histospline(ts,times,**dic):
         lowbound=dic["lowbound"]
         
     if "tolbound" in dic.keys():
-        totlbound=dic["tolbound"]
+        tolbound=dic["tolbound"]
         return _rhistinterpbound(ts,times,p=p,lowbound=lowbound,tolbound=tolbound)
     else:
         return _rhistinterp(ts,times,p=p,lowbound=lowbound)
