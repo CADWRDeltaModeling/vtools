@@ -42,7 +42,7 @@ _butterworth_interval=[time_interval(minutes=15),time_interval(hours=1)]
 ## Public interface.
 ###########################################################################
 
-def butterworth(ts,order=4,cutoff_frequency=None,cutoff_period=None):
+def butterworth(ts,order=4,cutoff_period=None,cutoff_frequency=None):
     """ low-pass butterworth-squared filter on a regular time series.
       
         
@@ -209,8 +209,8 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
         m=int(ticks(m)/ticks(ts.interval))
     ## if m is none set it to number of interval within filter_period*1.25
     elif  m==None:
-        ## cf reverse is twice of the interval within filtering period
-        m=int(1.25/(2.0*cf))
+        ## cf reverse is half of the interval within filtering period
+        m=int(1.25*2.0/cf)
     elif type(1)==type(m):
         ## nothing to do
         m=m
