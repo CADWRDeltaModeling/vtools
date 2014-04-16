@@ -4,8 +4,9 @@
 
 # python standard lib import.
 from operator import isNumberType,isSequenceType
-import datetime,pdb
+import datetime
 from copy import deepcopy
+from numpy import ones
 
 ## scipy import.
 from scipy.interpolate import interp1d
@@ -22,7 +23,8 @@ from vtools.data.constants import *
 
 ## local import.
 from _monotonic_spline import _monotonic_spline
-from _rational_hist import *
+#from _rational_hist import *
+from rhist import rhist_bound
 
 __all__=["linear","spline","monotonic_spline","nearest_neighbor","gap_size",\
          "previous_neighbor","next_neighbor","interpolate_ts_nan",\
@@ -415,119 +417,16 @@ def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
     elif method==MONOTONIC_SPLINE:
         values=_inner_monotonic_spline(ts,times,filter_nan=filter_nan)
     elif method==RATIONAL_HISTOSPLINE:
-        values=_inner_histospline(ts,times,**dic)
+        values=_rhistinterpbound(ts,times,filter_nan=filter_nan,**dic)
     else:
         raise ValueError("Not supported interpolation method.")  
     return values
 
 
-def _inner_histospline(ts,times,**dic):
-    """ inner histospline funcs
-        depends on wether tolbound is given or not
-        _rhistinterpbound or _rhisterinterp will be used.
-        
-    Parameters
-    -----------
-        
-    ts : :class:`~vtools.data.timeseries.TimeSeries`
-        Series to be interpolated
-
-    times : :ref:`time_sequence <time_sequence>`
-        The new times to which the series will be interpolated.
-    
-    **dic : Dictionary
-        Dictonary of extra parameters to be passed to histospline
-    
-    Returns
-    -------
-     result: array 
-        interpolated values.
-        
-    """
-
-    p=10
-    if "p" in dic.keys():
-        p=dic["p"]
-        
-    lowbound=0
-    if "lowbound" in dic.keys():
-        lowbound=dic["lowbound"]
-        
-    if "tolbound" in dic.keys():
-        tolbound=dic["tolbound"]
-        return _rhistinterpbound(ts,times,p=p,lowbound=lowbound,tolbound=tolbound)
-    else:
-        return _rhistinterp(ts,times,p=p,lowbound=lowbound)
 
 
-def _rhistinterp(ts,times,p=10,lowbound=0):
-    """ Wrapper of the histospline rhistinerp without lowbound tolerance.
-        It only accept ts with time averaged values which is stamped at
-        begining of period.If no such props is given in ts, function
-        will assume input ts has such property.
-
-        
-    Parameters
-    -----------
-        
-    ts : :class:`~vtools.data.timeseries.TimeSeries`
-        Series to be interpolated
-
-    times : :ref:`time_sequence <time_sequence>`
-        The new times to which the series will be interpolated.
-    
-     p : float,optional
-        spline tension, must >-1.
-    
-     lowbound: float,optional
-        lower bound for the data
-        
-    Returns
-    -------
-     result: array 
-        interpolated values.
-    
-     See Also
-    --------
-    _rhistinterpbound : Wrapper of the histospline rhistinerp from _rational_hist.
-    
-    """
-
-    if not ts.is_regular():
-        raise ValueError("Only regular time series can be"
-                        " interpolated by histospline")
-    
-    if AGGREGATION in ts.props.keys():
-        if not ts.props[AGGREGATION]==MEAN:
-            raise ValueError("Only time series with averaged values can be"
-                             " interpolated by histospline")
-    if TIMESTAMP in ts.props.keys():
-        if not ts.props[TIMESTAMP]==PERIOD_START:
-            raise ValueError("Input time series values must be stamped at start"
-                              " of individual period")
-    x=ts.ticks
-    extra_x=ticks((ts[-1].time+ts.interval))
-    x=resize(x,len(x)+1)
-    x[-1]=extra_x
-    y=ts.data    
-    q=p
-    y0=y[0]
-    yn=y[-1]
-    (ynew,iflag)=rhistinterpbound(x,y,times,p,lowbound,[y0,yn,q])
-
-    if iflag==1:
-        raise ValueError("Input time series must be longer than 3")
-    if iflag==2:
-        raise ValueError("Error in solving the linear system (TRIDIU)")
-    if iflag==3:
-        raise ValueError("Lowbound violation")
-    if iflag==12:
-        raise ValueError("Spline tension parameter must be larger than -1")
-
-    return ynew
-
-
-def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
+def _rhistinterpbound(ts,times,filter_nan=True,p=10,lowbound=None,\
+                     floor_eps=1.e-4,maxiter=5,pfactor=2):
     """ Wrapper of the histospline rhistinerp from _rational_hist.
         It only accept ts with time averaged values which is stamped at
         begining of period.If no such props is given in ts, function
@@ -542,6 +441,9 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
 
     times : :ref:`time_sequence <time_sequence>`
         The new times to which the series will be interpolated.
+        
+    filter_nan : boolean,optional
+        True if nan points should be omitted or not.
     
     p : float,optional
         spline tension, must >-1.
@@ -571,8 +473,8 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
          
     """
     if not ts.is_regular():
-        raise ValueError("Only regular time series can be"
-                        " interpolated by histospline")
+        raise ValueError("Only regular time series are"
+                        " supported by histospline")
     
     if AGGREGATION in ts.props.keys():
         if not ts.props[AGGREGATION]==MEAN:
@@ -582,24 +484,26 @@ def _rhistinterpbound(ts,times,p=10,lowbound=0,tolbound=1.e-4):
         if not ts.props[TIMESTAMP]==PERIOD_START:
             raise ValueError("Input time series values must be stamped at start"
                               " of individual period")
-    x=ts.ticks
+    tticks=_check_input_times(times)
+    
+    ts_data=ts.data
+    ts_ticks=ts.ticks
+    if filter_nan:
+        ts_data,ts_ticks=filter_nana(ts.data,ts.ticks)
+    
+    x=ts_ticks
     extra_x=x[-1]+ticks(ts.interval)
     x=resize(x,len(x)+1)
     x[-1]=extra_x
-    y=ts.data    
+    y=ts_data    
+    p=ones(len(x)-1,dtype='d')*p
     q=p
     y0=y[0]
     yn=y[-1]
-    (ynew,iflag)=rhistinterpbound(x,y,times,p,lowbound,[y0,yn,q,tolbound])
-    if iflag==1:
-        raise ValueError("Input time series must be longer than 3")
-    if iflag==2:
-        raise ValueError("Error in solving the linear system (TRIDIU)")
-    if iflag==3:
-        raise ValueError("Lowbound violation")
-    if iflag==12:
-        raise ValueError("spline tension must be larger than -1")
-
+    ynew=rhist_bound(array(x).astype("float"),array(y),tticks.astype("float"),\
+                            y0,yn,p,lbound=lowbound,\
+                            maxiter=maxiter,pfactor=pfactor,\
+                            floor_eps=floor_eps)
     return ynew    
 
     
