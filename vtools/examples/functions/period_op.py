@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from vtools.functions.period_op import *
+from vtools.data.vtime import days
 from vtools.data.sample_series import *
 import matplotlib.pyplot as plt
 
 
-ts=synthetic_tide_series()
+ts_week=synthetic_tide_series()
+## get 2 days of data
+ts=ts_week.window(ts_week.times[0],ts_week.times[0]+days(2))
 ts_max=period_max(ts,hours(1))
 fig=plt.figure()
 ax0 = fig.add_subplot(111)
