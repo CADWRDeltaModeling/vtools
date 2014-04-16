@@ -95,7 +95,7 @@ class TestInterpolate(unittest.TestCase):
         put(self.rts_has_nan.data,self.nan_indexes,nan) 
         
         self.its1=self.create_its()
-        self.function_to_test=[linear,spline,monotonic_spline]
+        self.function_to_test=[linear,spline,monotonic_spline,rhistinterp]
 
                 
 ###############################################
@@ -161,7 +161,7 @@ class TestInterpolate(unittest.TestCase):
         ts=self.rts1
         years=self.rts1_years
         start_year=ts.start.year
-        times=self.create_irregular_timesequence(start_year,years)     
+        times=self.create_irregular_timesequence(start_year,years)    
         for funcs in self.function_to_test:
             nts=funcs(ts,times)
             self.assertEqual(len(nts),len(times),"test of %s fail %s."%(funcs.__name__,msgstr))
@@ -175,8 +175,8 @@ class TestInterpolate(unittest.TestCase):
         msgstr="at test_its_at_irregular_points"
         ts=self.its1
         times=self.create_irregular_timesequence2(ts.start.year,self.its1_years-1)
-        
-        for funcs in self.function_to_test:
+        function_to_test=[linear,spline,monotonic_spline]
+        for funcs in function_to_test:
             nts=funcs(ts,times)
             self.assertEqual(len(nts),len(times),"test of %s fail %s."%(funcs.__name__,msgstr))
         
@@ -199,7 +199,8 @@ class TestInterpolate(unittest.TestCase):
 
         nt1=[]
         i=0
-        for funcs in self.function_to_test:
+        function_to_test=[linear,spline,monotonic_spline]
+        for funcs in function_to_test:
             nt1.append(funcs(ts,times))
             self.assertEqual(len(nt1[i]),len(times),"test of %s fail %s."%(funcs.__name__,msgstr))
             i=i+1
@@ -207,7 +208,7 @@ class TestInterpolate(unittest.TestCase):
         ## Repeat same task by datetime list instead of ticks array above.
         nt2=[]
         i=0
-        for funcs in self.function_to_test:
+        for funcs in function_to_test:
             nt2.append(funcs(ts,times2))
             self.assertEqual(len(nt2[i]),len(times2),"test of %s fail %s."%(funcs.__name__,msgstr))
             self.assert_(allclose(nt1[i].data,nt2[i].data),"test of %s fail %s."%(funcs.__name__,msgstr))
@@ -217,7 +218,7 @@ class TestInterpolate(unittest.TestCase):
         times3=sciarray(map(ticks_to_time,times))
         nt3=[]
         i=0
-        for funcs in self.function_to_test:
+        for funcs in function_to_test:
             nt3.append(funcs(ts,times3))
             self.assertEqual(len(nt3[i]),len(times3),"test of %s fail %s."%(funcs.__name__,msgstr))
             self.assert_(allclose(nt1[i].data,nt3[i].data),"test of %s fail %s."%(funcs.__name__,msgstr))
@@ -271,7 +272,7 @@ class TestInterpolate(unittest.TestCase):
         ts=rts(data,datetime(year=1990,month=1,day=2),parse_interval("1hour"),{})
         times=time_sequence(datetime(year=1990,month=1,day=3),\
                             parse_interval("1hour"),50)
-        
+        ##rhsit won't pass this test
         for funcs in self.function_to_test:
              nts=funcs(ts,times,filter_nan=False)
              self.assertEqual(len(nts),len(times),\
