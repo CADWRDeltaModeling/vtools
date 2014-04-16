@@ -8,7 +8,8 @@ from scipy import arange,sin,pi,cos
 
 from vtools.datastore.dss.utility import *
 from vtools.datastore.dss.dss_service import DssService,DssAccessError
-   
+from vtools.datastore.dss.dss_catalog import DssCatalogError
+
 class TestDssUtility(unittest.TestCase):
 
     """ test utility functions of dss  """
@@ -59,6 +60,8 @@ class TestDssUtility(unittest.TestCase):
             dss_store_ts(ts,destination,path)
 
         self.assert_(os.path.exists(destination))
+        
+
 
     def test_retrieve_ts(self):
         
@@ -123,6 +126,13 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(type(ts),TimeSeries)
         self.assertEqual(ts.start,start)
         self.assertEqual(ts.end,end)
+        
+    def test_retrieve_uniqe_sel(self):
+        
+        selector="/HIST+CHAN/*/*//*/*/"
+        dssfile_path=self.data_file_path
+        self.assertRaises(Warning,dss_retrieve_ts,dssfile_path,selector,\
+                          unique=True)
 
     def test_retrieve_irreg_ts(self):
  
@@ -153,14 +163,14 @@ class TestDssUtility(unittest.TestCase):
         dssfile_path=self.data_file_path
         selector="/HIST*/SLTR*/*//15MIN/*/"
         dss_delete_ts(dssfile_path,selector)
-        self.assertRaises(DssAccessError,dss_retrieve_ts,dssfile_path,selector)
+        self.assertRaises(DssCatalogError,dss_retrieve_ts,dssfile_path,selector)
 
 
     def test_dss_catalog(self):
         dssfile_path=self.data_file_path
         selector="/HIST*/SLTR*/*//15MIN/*/"
         cat=dss_catalog(dssfile_path)
-        self.assertEqual(len(cat),27)
+        self.assertEqual(len(cat),28)
         cat=dss_catalog(dssfile_path,selector)
         self.assertEqual(len(cat),3)
      
