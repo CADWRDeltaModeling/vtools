@@ -5,7 +5,6 @@ import sys,os,shutil,unittest,pdb
 
 ## vtools import
 from vtools.datastore.dss.utility import dss_catalog
-from vtools.datastore.hdf5.utility import hdf_catalog
 from vtools.datastore.catalog import catalog_string
 from vtools.data.timeseries import TimeSeries
 from vtools.datastore.service import get_data
