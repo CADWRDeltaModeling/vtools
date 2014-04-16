@@ -97,9 +97,9 @@ class DssCatalog(Catalog):
             self._populate_entries(records_iterator)
             self.entry_dimension_map=self._built_entry_dimension_map()
 
-    ##def __del__(self):
+    def __del__(self):
         ## Clean up its records in db.       
-        ## self._orginial_service.remove_dssfile(self._dss_file_path)
+        self._orginial_service.remove_dssfile_catalog(self._dss_file_path)
     ###########################################################################
     ## public methods
     ###########################################################################
