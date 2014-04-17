@@ -333,9 +333,12 @@ class TestFilter(unittest.TestCase):
         ts=rts(x,st,delta,{})
         
         ## filter len is none
-        nt1=cosine_lanczos(ts,cutoff_period=hours(30),padtype="even")
+        nt1=cosine_lanczos(ts,cutoff_period=hours(40),padtype="even")
         self.assertTrue(nt1.is_regular())
-    
+        ## filter len by defaut lis 40*1.25=50, use it explicitly and
+        ## see if the result is the same as the nt1
+        nt2=cosine_lanczos(ts,cutoff_period=hours(40),filter_len=50,padtype="even")
+        self.assertEqual(numpy.abs(nt1.data-nt2.data).max(),0)
    
     def test_lanczos_cos_filter_len(self):
         """ test cosine lanczos input filter length api"""
@@ -379,12 +382,12 @@ class TestFilter(unittest.TestCase):
         nanidx_should_be=numpy.arange(nanloc-2*m,nanloc+2*m+1)
         assert_array_equal(nanidx,nanidx_should_be)
         
-        delta=time_interval(minutes=15)
-        data[nanloc:nanloc+10]=numpy.nan
-        ts=rts(data,st,delta,{})
-        m=20
-        nt2=cosine_lanczos(ts,cutoff_period=hours(1),filter_len=m,padtype="even")
-#        
+#        delta=time_interval(minutes=15)
+#        data[nanloc:nanloc+10]=numpy.nan
+#        ts=rts(data,st,delta,{})
+#        m=20
+#        nt2=cosine_lanczos(ts,cutoff_period=hours(1),filter_len=m,padtype="even")
+##        
 #        subplot(111)
 ##        
 #        plot(ts.times,ts.data,label="data",color='black')
