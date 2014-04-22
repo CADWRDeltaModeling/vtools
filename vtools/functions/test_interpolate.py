@@ -15,11 +15,11 @@ from scipy import array as sciarray
 from scipy import add as sciadd
 from scipy import minimum as sciminimum
 from scipy import maximum as scimaximum
-from scipy import nan,isnan,allclose,reshape,\
+from numpy import nan,isnan,allclose,reshape,\
 put,take,alltrue,sin,pi,greater,choose,\
 concatenate,arange
 
-
+from numpy import abs
 ## Interpolate func import.
 from interpolate import *
 
@@ -266,19 +266,30 @@ class TestInterpolate(unittest.TestCase):
         
         msgstr="on test_multidimension_tsdata"
         num=1000
-        data=[random.uniform(self.min_val,self.max_val) \
-              for k in range(num)]
+        data=[sin(2.0*pi*k/250.0) for k in range(num)]
         data=sciarray(data).reshape(num/4,4)
-        ts=rts(data,datetime(year=1990,month=1,day=2),parse_interval("1hour"),{})
+        id=1
+        ts=rts(data,datetime(year=1990,month=1,day=2),\
+               parse_interval("1hour"),{})
+        ts_single_dimension=rts(data[:,id],datetime(year=1990,month=1,day=2),\
+                            parse_interval("1hour"),{})
         times=time_sequence(datetime(year=1990,month=1,day=3),\
                             parse_interval("1hour"),50)
+        self.assertEqual(abs(ts_single_dimension.data-ts.\
+                          data[:,id]).max(),0.0)
         ##rhsit won't pass this test
-        for funcs in self.function_to_test:
+        function_to_test=[linear,spline,monotonic_spline]
+        for funcs in function_to_test:
              nts=funcs(ts,times,filter_nan=False)
+             nts_single_dimension=funcs(ts_single_dimension,times,\
+                                  filter_nan=False)
              self.assertEqual(len(nts),len(times),\
                               msg="test of %s fail %s."%(funcs.__name__,msgstr))
              self.assertEqual(nts.data.shape[1],ts.data.shape[1],\
                               msg="test of %s fail %s."%(funcs.__name__,msgstr))
+             self.assertEqual(abs(nts_single_dimension.data-nts.\
+                              data[:,id]).max(),0.0)
+             
              
     def test_flat(self):
         
@@ -335,7 +346,7 @@ class TestInterpolate(unittest.TestCase):
        
         ts_with_nans=rts(data,start_time,interval,{})
         
-        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
+        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST,RHIST]:
             ts_new=interpolate_ts_nan(ts_with_nans,max_gap=max_gap, method=method)
             self.assert_(not(isnan(ts_new.data[12])))
             self.assert_(not(isnan(ts_new.data[13])))
@@ -351,7 +362,9 @@ class TestInterpolate(unittest.TestCase):
             self.assert_((isnan(ts_new.data[42])))
             self.assert_((isnan(ts_new.data[43])))
             
-        
+        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST,RHIST]:
+            self.assertRaises(TypeError,interpolate_ts_nan,\
+                             ts_with_nans,maxgap=max_gap, method=method)
             
         ## test no nan exits
         data=sciarray([0.3*sin(k*pi/1200+pi/15)+0.4*sin(k*pi/1100+pi/6)+1.1*sin(k*pi/990+pi/18) \

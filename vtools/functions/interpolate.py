@@ -409,13 +409,13 @@ def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
         input timeseries valid datetime range")
     
     if method==LINEAR:
-        values=_linear(ts,times,filter_nan=filter_nan)
+        values=_linear(ts,times,filter_nan=filter_nan,**dic)
     elif method==SPLINE:
         values=_spline(ts,times,filter_nan=filter_nan,**dic)
     elif method==NEXT or method==PREVIOUS or method==NEAREST:
         values=_flat(ts,times,method,filter_nan=filter_nan,**dic)
     elif method==MONOTONIC_SPLINE:
-        values=_inner_monotonic_spline(ts,times,filter_nan=filter_nan)
+        values=_inner_monotonic_spline(ts,times,filter_nan=filter_nan,**dic)
     elif method==RATIONAL_HISTOSPLINE:
         values=_rhistinterpbound(ts,times,filter_nan=filter_nan,**dic)
     else:
@@ -698,9 +698,13 @@ def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
     dum_val=take(tss.data,dum_index)
     vals2=where(same_points_index<ts_len,dum_val,vals1)
 
-        
+   
     ## if is required by user, do some extra extrapolation at the
     ## end of new ts using last value, thus new ts will be longer
+    for keyword in dic.keys():
+        if not(keyword=="extrapolate"):
+            raise TypeError("unexpected keyword %s"%keyword)
+
     if "extrapolate" in dic.keys():
         new_ts_len=len(vals2)
         extrapolate_num=dic["extrapolate"]
@@ -815,7 +819,7 @@ def _spline(ts,times,time_begin=None,time_end=None,\
         ## transpose orginal data for speed up
         temp_data=transpose(ts_data)
         for i in range(ts_data.shape[1]):
-            tck=splrep(ts_ticks,temp_data[i,:],s=s,per=per,k=1)
+            tck=splrep(ts_ticks,temp_data[i,:],s=s,per=per,k=k)
             v=splev(tticks,tck,der=0)
             indices=arange(i*l,(i+1)*l)
             put(values,indices,v)
