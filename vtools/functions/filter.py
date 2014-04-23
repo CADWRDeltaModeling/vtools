@@ -164,6 +164,11 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
           before applying the filter. This value must be less than x.shape[axis]-1. 
           padlen=0 implies no padding. If padtye is not None and padlen is not
           given, padlen is be set to 6*m.
+    
+     fill_edge_nan: bool,optional
+          If pading is not used and fill_edge_nan is true, resulting data on 
+          the both ends are filled with nan to account for edge effect. This is
+          2*m on the either end of the result. Default is true.
   
     Returns
     -------
@@ -257,8 +262,8 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     
     ## replace edge points with nan if pading is not used
     if (padtype==None) and (fill_edge_nan==True):
-        d2[0:4*m]=nan
-        d2[len(d2)-4*m:len(d2)]=nan
+        d2[0:2*m]=nan
+        d2[len(d2)-2*m:len(d2)]=nan
         
     prop={}
     for key,val in ts.props.items():
