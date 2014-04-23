@@ -6,8 +6,8 @@ import datetime as dtm
 
 window=(dtm.datetime(2012,12,27),None)
 ts=example_data("oldriver_flow").window(*window)
-ts_lowpass=cosine_lanczos(ts,cutoff_period=days(28),filter_len=480)
-boxcar_aver_interval = days(14)
+ts_lowpass=cosine_lanczos(ts,cutoff_period=days(18),filter_len=2000)
+boxcar_aver_interval = days(8)
 ts_box=boxcar(ts,boxcar_aver_interval,boxcar_aver_interval)
 ts_box_god=godin(ts_box)
 fig=plt.figure()
