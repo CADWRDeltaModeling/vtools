@@ -274,6 +274,35 @@ class TestTimeSeries(unittest.TestCase):
         self.assert_(newts.data[10]==self.ts1.data[11])
 
         self.assertRaises(ValueError,self.ts1.copy,etime,stime)    
+    
+    def test_ts_replace(self):
+        
+        dt=time_interval(hours=1)
+        data=[1.0,1.0,1.0,1.0,1.0,1.0]
+        st=parse_time("1/30/1991")
+        ts=rts(data,st,dt)
+        start=parse_time("1/30/1991 1:00")
+        end=parse_time("1/30/1991 3:00")
+        val=2.0
+        new_ts=ts.replace(val,start,end)
+        self.assertEqual(new_ts.data[1],val)
+        self.assertEqual(new_ts.data[2],val)
+        self.assertEqual(new_ts.data[3],val)
+        self.assertEqual(new_ts.data[0],ts.data[0])
+        self.assertEqual(new_ts.data[4],ts.data[4])
+        self.assertEqual(new_ts.data[5],ts.data[5])
+        ts2=rts([val,val,val],start,dt)
+        new_ts=ts.replace(ts2,start,end)
+        self.assertEqual(new_ts.data[1],val)
+        self.assertEqual(new_ts.data[2],val)
+        self.assertEqual(new_ts.data[3],val)
+        
+        self.assertRaises(TypeError, ts.replace,"invalid",start,end)
+        ts2=rts([val,val,val],start,time_interval(days=1))
+        self.assertRaises(ValueError, ts.replace,ts2,start,end)
+        ts2=rts([],start,dt)
+        self.assertRaises(ValueError, ts.replace,ts2,start,end)
+        
 
     def test_ts_start_after_28_with_relativedelta(self):
         dt=time_interval(months=1)
@@ -281,14 +310,14 @@ class TestTimeSeries(unittest.TestCase):
         num=120
         d2=parse_time("2/28/1991")
         data=range(num)
-        ts1=rts(data,st,dt,num)
+        ts1=rts(data,st,dt)
         self.assertEqual(ts1.times[1],d2)
         
         dt=time_interval(years=1)
         st=parse_time("2/29/2000")
         num=20
         data=range(num)
-        ts2=rts(data,st,dt,num)
+        ts2=rts(data,st,dt)
         d2=parse_time("2/28/2001")
         self.assertEqual(ts2.times[1],d2)
     
@@ -307,7 +336,7 @@ class TestTimeSeries(unittest.TestCase):
         st=parse_time("1/1/1991")
         num=120
         data=range(num)
-        ts1=rts(data,st,dt,num)
+        ts1=rts(data,st,dt)
         ## test of month interval ts
         ts1_centered = ts1.centered(copy_data=False, neaten=True)
         self.assertEqual(len(ts1_centered),num-1)
@@ -417,7 +446,7 @@ class TestTimeSeries(unittest.TestCase):
         st=parse_time("1/1/1991")
         num=120
         data=range(100,num+100)
-        ts1=rts(data,st,dt,num)
+        ts1=rts(data,st,dt)
         
         new_start=parse_time("12/23/1990")
         new_end=parse_time("1/11/1991")
@@ -445,7 +474,7 @@ class TestTimeSeries(unittest.TestCase):
         
         ## test taper with nan in old ts
         data[0]=np.nan
-        ts1=rts(data,st,dt,num)
+        ts1=rts(data,st,dt)
         ts_new=extrapolate_ts(ts1,new_start,end=new_end,method="taper",val=val)
         self.assertAlmostEqual(ts_new.data[0],val)
         self.assertAlmostEqual(ts_new.data[-1],val)
