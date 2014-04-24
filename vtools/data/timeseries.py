@@ -155,6 +155,9 @@ def prep_binary(ts1,ts2):
 def _get_span(ts,start,end,left,right):
     """ Return span of index within ts according to input start and end
     """
+    
+    if len(ts)==0:
+        raise ValueError("invalid input time series")
 
     if (start==None):
         start=ts.start
@@ -453,8 +456,59 @@ class TimeSeries(object):
             return rts(newdata,newstart,interval,newprops)
         else:
             newticks=self._ticks[startindex:endindex+1]
-            return its(newticks,newdata,newprops)        
- 
+            return its(newticks,newdata,newprops)      
+    
+    def replace(self,ts,start,end):
+        """Return a time series with data replaced by input ts or constant
+        
+         
+        Parameters
+        ----------
+        ts    : :class:`~vtools.data.timeseries.TimeSeries` or constant
+             Data or constant to be used for replacing            
+            
+        start : :py:class:`datetime.datetime`
+            Start time of window
+        
+        end : :py:class:`datetime.datetime`
+            End time of window
+        
+        Returns
+        -------
+        result : :class:`~vtools.data.timeseries.TimeSeries`
+            A new time series.
+        
+        """
+
+        left=False
+        right=False
+        replacingWithTs=False
+        
+        if type(ts)==type(self):
+            if not ((ts.is_regular() and self.is_regular())):
+                raise TypeError("only support replacing between two regular time series")
+            elif not (ts.interval==self.interval):
+                raise ValueError("two operating time series must have same interval")
+            replacingWithTs=True
+        elif not (type(ts)==type(1.0)):
+            raise TypeError("unsupported input type%s"%type(ts))
+                  
+        (startIndex,endIndex)=_get_span(self,start,end,left,right)
+        
+        new_data=self.data[:]        
+        if not replacingWithTs:
+            new_data[startIndex:endIndex+1]=ts
+        else:
+            try:
+                (tsStart,tsEnd)=_get_span(ts,start,end,left,right)
+            except :
+                raise ValueError("invalid input time series")
+                
+            if not((tsEnd-tsStart)==(endIndex-startIndex)):
+                raise ValueError("replacing time series doesn't have enought length")
+            new_data[startIndex:endIndex+1]=ts.data[tsStart:tsEnd+1]
+        return rts(new_data,self.start,self.interval,self.props)
+    
     def centered(self,copy_data=False,neaten=True):
         """ Return a time series with times centered between the timestamps of the original series.
         
@@ -768,7 +822,12 @@ def rts(data,start,interval,props=None):
     timeseq=time_sequence(start,interval,len(data))
     if type(data)==list:
         data=scipy.array(data)
-    if props == None: props = {}
+    if props == None:
+        props = {}
+    elif not(type(props)==type({})):
+        raise TypeError("input props must be a dictionary")
+    
+    
     ts=TimeSeries(timeseq,data,props)
     ts.interval=interval
     return ts
