@@ -129,7 +129,7 @@ def butterworth(ts,order=4,cutoff_period=None,cutoff_frequency=None):
 
 def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
                    padtype=None,padlen=None,fill_edge_nan=True):
-    """ low-pass cosine lanczos squared filter on a regular time series.
+    """ squared low-pass cosine lanczos  filter on a regular time series.
       
         
     Parameters
