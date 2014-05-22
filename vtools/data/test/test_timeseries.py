@@ -233,7 +233,7 @@ class TestTimeSeries(unittest.TestCase):
         self.ts1.data[0]+=2.0
         self.assert_(not(newts.data[0]==self.ts1.data[0]))
        
-          
+        
         stime=self.its1.times[0]
         etime=self.its1.times[4]
         newits=self.its1.copy(start=stime,end=etime)
@@ -253,6 +253,29 @@ class TestTimeSeries(unittest.TestCase):
         self.assert_(newts.data[0]==self.ts1.data[0])
         self.ts1.data[0]+=2.0
         self.assert_(newts.data[0]==self.ts1.data[0])
+        
+        stime=ticks_to_time(self.ts1.ticks[0]+ticks(self.ts1.interval)/2)
+        etime=ticks_to_time(self.ts1.ticks[8]+ticks(self.ts1.interval)/2)
+        newts1=self.ts1.window(start=stime,end=etime)
+        self.assertEqual(len(newts1),8)
+        self.assertEqual(newts1.data[0],self.ts1.data[1])
+        self.assertEqual(newts1.data[7],self.ts1.data[8])
+        
+        newts1=self.ts1.window(start=stime,end=etime,left=True)
+        self.assertEqual(len(newts1),9)
+        self.assertEqual(newts1.data[0],self.ts1.data[0])
+        self.assertEqual(newts1.data[8],self.ts1.data[8])
+        
+        newts1=self.ts1.window(start=stime,end=etime,right=True)
+        self.assertEqual(len(newts1),9)
+        self.assertEqual(newts1.data[0],self.ts1.data[1])
+        self.assertEqual(newts1.data[8],self.ts1.data[9])
+        
+        newts1=self.ts1.window(start=stime,end=etime,right=True,left=True)
+        self.assertEqual(len(newts1),10)
+        self.assertEqual(newts1.data[0],self.ts1.data[0])
+        self.assertEqual(newts1.data[9],self.ts1.data[9])
+          
                  
         stime=self.its1.times[0]
         etime=self.its1.times[4]
@@ -261,6 +284,8 @@ class TestTimeSeries(unittest.TestCase):
         self.assert_(newits.data[0]==self.its1.data[0])
         self.its1.data[0]+=2.0
         self.assert_(newits.data[0]==self.its1.data[0])
+        
+        
                 
 
     def test_ts_copy_left_right(self):
