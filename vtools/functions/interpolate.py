@@ -6,14 +6,14 @@
 from operator import isNumberType,isSequenceType
 import datetime
 from copy import deepcopy
-from numpy import ones
+from numpy import ones,searchsorted
 
 ## scipy import.
 from scipy.interpolate import interp1d
 from scipy.interpolate import splrep,splev
 from scipy import array,logical_not,compress,\
   isnan,zeros,zeros_like,put,transpose,where,take,alltrue,\
-  greater,less,arange,nan,resize
+  greater,less,arange,nan,resize,array
 
 ## vtools import. 
 from vtools.data.vtime import ticks,time_sequence,\
@@ -407,25 +407,78 @@ def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
     if not ((ts_start<=(tticks[0])) and (ts_end>=(tticks[-1]))):
         raise ValueError("Input time sequence is not subset of \
         input timeseries valid datetime range")
+        
+    if filter_nan and ts.data.ndim>1:
+        raise ValueError( " filtering nan is only defined for"+  
+                          " one dimensional time series data." )  
+    valid_ts_data=ts.data
+    valid_ts_ticks=ts.ticks
+    if filter_nan:
+        valid_ts_data,valid_ts_ticks=filter_nana(ts.data,ts.ticks)
+    valid_start=valid_ts_ticks[0]
+    valid_end=valid_ts_ticks[-1]
+    
+    ## find out the indexes within tticks that can be interpolated by
+    ## valid ts data
+    indexes1=where(tticks>=valid_start)
+    indexes2=where(tticks<=valid_end)
+   
+    if (len(indexes1)==0) or (len(indexes2)==0):
+        raise ValueError("interpolation point is out of valid data range")
+    
+    s1=indexes1[0][0]
+    s2=indexes2[0][-1]
+    
+    valid_tticks=tticks[s1:s2+1]
+    
+    if isSequenceType(valid_tticks) and len(valid_tticks)==0:
+        raise ValueError(" interpolation point sequence is out of valid data range")
+
+    if ts.data.ndim==1:
+        values=array([nan]*len(tticks))
+    elif ts.data.ndim==2:
+        values=array([[nan]*ts.data.shape[1]]*len(tticks))
+    else:
+        raise ValueError("interpolation over data with dimension more than 2 is not supported")
+    
     
     if method==LINEAR:
-        values=_linear(ts,times,filter_nan=filter_nan,**dic)
+        temp=_linear(valid_ts_data,valid_ts_ticks,valid_tticks,**dic)
     elif method==SPLINE:
-        values=_spline(ts,times,filter_nan=filter_nan,**dic)
+        temp=_spline(valid_ts_data,valid_ts_ticks,valid_tticks,**dic)
     elif method==NEXT or method==PREVIOUS or method==NEAREST:
-        values=_flat(ts,times,method,filter_nan=filter_nan,**dic)
+        temp=_flat(valid_ts_data,valid_ts_ticks,valid_tticks,method,**dic)
     elif method==MONOTONIC_SPLINE:
-        values=_inner_monotonic_spline(ts,times,filter_nan=filter_nan,**dic)
+        temp=_inner_monotonic_spline(valid_ts_data,valid_ts_ticks,valid_tticks,**dic)
     elif method==RATIONAL_HISTOSPLINE:
-        values=_rhistinterpbound(ts,times,filter_nan=filter_nan,**dic)
+        if not ts.is_regular():
+            raise ValueError("Only regular time series are"
+                        " supported by histospline")
+    
+        if AGGREGATION in ts.props.keys():
+            if not ts.props[AGGREGATION]==MEAN:
+                raise ValueError("Only time series with averaged values can be"
+                             " interpolated by histospline")
+        if TIMESTAMP in ts.props.keys():
+            if not ts.props[TIMESTAMP]==PERIOD_START:
+                raise ValueError("Input time series values must be stamped at start"
+                              " of individual period")
+        temp=_rhistinterpbound(valid_ts_data,valid_ts_ticks,valid_tticks,**dic)
     else:
         raise ValueError("Not supported interpolation method.")  
+    
+    assert(len(temp)==len(valid_tticks))   
+    if ts.data.ndim==1:
+        put(values,arange(s1,s2+1),temp)
+    else:
+        for index in arange(0,ts.data.shape[1]):
+            put(values[:,index],arange(s1,s2+1),temp[:,index])
     return values
 
 
 
 
-def _rhistinterpbound(ts,times,filter_nan=True,p=10,lowbound=None,\
+def _rhistinterpbound(ts_data,ts_ticks,tticks,p=10,lowbound=None,\
                      floor_eps=1.e-4,maxiter=5,pfactor=2):
     """ Wrapper of the histospline rhistinerp from _rational_hist.
         It only accept ts with time averaged values which is stamped at
@@ -472,27 +525,12 @@ def _rhistinterpbound(ts,times,filter_nan=True,p=10,lowbound=None,\
 
          
     """
-    if not ts.is_regular():
-        raise ValueError("Only regular time series are"
-                        " supported by histospline")
-    
-    if AGGREGATION in ts.props.keys():
-        if not ts.props[AGGREGATION]==MEAN:
-            raise ValueError("Only time series with averaged values can be"
-                             " interpolated by histospline")
-    if TIMESTAMP in ts.props.keys():
-        if not ts.props[TIMESTAMP]==PERIOD_START:
-            raise ValueError("Input time series values must be stamped at start"
-                              " of individual period")
-    tticks=_check_input_times(times)
-    
-    ts_data=ts.data
-    ts_ticks=ts.ticks
-    if filter_nan:
-        ts_data,ts_ticks=filter_nana(ts.data,ts.ticks)
+    if len(ts_ticks)<2:
+        raise ValueError("data length is too short to do interpolation")
     
     x=ts_ticks
-    extra_x=x[-1]+ticks(ts.interval)
+    ts_interval_ticks=x[1]-x[0]
+    extra_x=x[-1]+ts_interval_ticks
     x=resize(x,len(x)+1)
     x[-1]=extra_x
     y=ts_data    
@@ -507,7 +545,7 @@ def _rhistinterpbound(ts,times,filter_nan=True,p=10,lowbound=None,\
     return ynew    
 
     
-def _inner_monotonic_spline(ts,times,filter_nan=True):
+def _inner_monotonic_spline(ts_data,ts_ticks,tticks):
     """ Wrapper of monotonic spline function.
     
     Parameters
@@ -529,26 +567,11 @@ def _inner_monotonic_spline(ts,times,filter_nan=True):
         
     """
 
-    if isSequenceType(times) and len(times)==0:
-        raise ValueError(" invalid time sequence input.")
-
-    if filter_nan and ts.data.ndim>1:
-        raise ValueError(" filtering nan is only defined for"
-                          " one dimensional time series data.")
-    
-    tticks=_check_input_times(times)
-        
-    ts_ticks=ts.ticks
-    ts_data=ts.data
-    
-    if filter_nan:
-        ts_data,ts_ticks=filter_nana(ts_data,ts_ticks)
-
-    if ts.data.ndim==1:
+    if ts_data.ndim==1:
         new_data=_monotonic_spline(ts_ticks,ts_data,tticks)
     else:
         l=len(tticks) ## length of data
-        n=ts.data.shape[1] ## num of data elements
+        n=ts_data.shape[1] ## num of data elements
         ## a nan matrix with shape of n*l,
         new_data=zeros([n,l])+nan
         ## transpose original data to speed up
@@ -567,8 +590,8 @@ def _inner_monotonic_spline(ts,times,filter_nan=True):
         
     return new_data    
     
-        
-def _linear(ts,times,filter_nan=True):
+     
+def _linear(ts_data,ts_ticks,tticks):
     
     """ Estimate values within ts data by linear interploate at given times.
         
@@ -590,21 +613,6 @@ def _linear(ts,times,filter_nan=True):
         interpolated values.
         
     """
-    
-    if isSequenceType(times) and len(times)==0:
-        return
-
-    if filter_nan and ts.data.ndim>1:
-        raise ValueError( " filtering nan is only defined for"+  
-                          " one dimensional time series data." )    
-    
-    tticks=_check_input_times(times)
-        
-    ts_ticks=ts.ticks
-    ts_data=ts.data
-    
-    if filter_nan:
-        ts_data,ts_ticks=filter_nana(ts_data,ts_ticks)
 
     interpolator=interp1d(ts_ticks,ts_data,axis=0,\
                           copy=False, bounds_error=False)
@@ -612,7 +620,7 @@ def _linear(ts,times,filter_nan=True):
     return new_data
 
 
-def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
+def _flat(ts_data,ts_ticks,tticks,method=NEAREST):
     
     """  Estimate timeseries values at given times by flat methods 
          use previous known value, next known vlaue, and nearest known value to
@@ -644,23 +652,10 @@ def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
         interpolated values.
         
     """    
-
-    if isSequenceType(times) and len(times)==0:
-        return
-    
-    if filter_nan and ts.data.ndim>1:
-        raise ValueError( " filtering nan is only defined for"+ 
-                          " one dimensional time series data." )
-        
-    tticks=_check_input_times(times)
-    
-    ## Filter out nan from data
-    if filter_nan:
-        ts_data,ts_ticks=filter_nana(ts.data,ts.ticks)
-        tss=its(ts_ticks,ts_data)
-    else:
-        tss=ts
-
+   
+    tss=its(ts_ticks,ts_data)
+   
+   
     ## find out index of interpolating points that exists in
     ## in original ts, thus orginal value can be reused in
     ## interpolated ts.
@@ -701,22 +696,22 @@ def _flat(ts,times,method=NEAREST,filter_nan=True,**dic):
    
     ## if is required by user, do some extra extrapolation at the
     ## end of new ts using last value, thus new ts will be longer
-    for keyword in dic.keys():
-        if not(keyword=="extrapolate"):
-            raise TypeError("unexpected keyword %s"%keyword)
-
-    if "extrapolate" in dic.keys():
-        new_ts_len=len(vals2)
-        extrapolate_num=dic["extrapolate"]
-        dum_val2=zeros(new_ts_len+extrapolate_num)
-        dum_val2[0:new_ts_len]=vals2[0:new_ts_len]
-        last_val=vals2[new_ts_len-1]
-        dum_val2[new_ts_len:new_ts_len+extrapolate_num]=last_val
-        vals2=dum_val2        
+#    for keyword in dic.keys():
+#        if not(keyword=="extrapolate"):
+#            raise TypeError("unexpected keyword %s"%keyword)
+#
+#    if "extrapolate" in dic.keys():
+#        new_ts_len=len(vals2)
+#        extrapolate_num=dic["extrapolate"]
+#        dum_val2=zeros(new_ts_len+extrapolate_num)
+#        dum_val2[0:new_ts_len]=vals2[0:new_ts_len]
+#        last_val=vals2[new_ts_len-1]
+#        dum_val2[new_ts_len:new_ts_len+extrapolate_num]=last_val
+#        vals2=dum_val2        
     return vals2
 
 
-def _spline(ts,times,time_begin=None,time_end=None,\
+def _spline(data,ticks,tticks,time_begin=None,time_end=None,\
             k=3,s=1.0e-3,filter_nan=True,per=0):
     """ Estimate missing values within ts data by B-spline interpolation.
     
@@ -780,27 +775,23 @@ def _spline(ts,times,time_begin=None,time_end=None,\
     are not used.
                 
     """
-
-    if isSequenceType(times) and len(times)==0:
-        return
     
     if k<1 or k>5:
         raise ValueError("Unsupported spline interpolation order.")
     
-    tticks=_check_input_times(times)
+
     
-    (start_i,end_i)=_check_fitting_bounds(ts,time_begin,time_end)
+    (start_i,end_i)=_check_fitting_bounds(ticks,k,time_begin,time_end)
     
-    if not(start_i==0) or not(end_i==(len(ts.data)-1)):
+    if not(start_i==0) or not(end_i==(len(data)-1)):
         ## Sliceing is needed
-        ts_ticks=ts.ticks[start_i:end_i]
-        ts_data=ts.data[start_i:end_i]
+        ts_ticks=ticks[start_i:end_i]
+        ts_data=data[start_i:end_i]
     else:
-        ts_ticks=ts.ticks
-        ts_data=ts.data
+        ts_ticks=ticks
+        ts_data=data
    
-    if filter_nan:
-        ts_data,ts_ticks=filter_nana(ts_data,ts_ticks)
+   
     
     ## splrep cann't hanle multi-rank data directly.
     ## so,it needes to be done here.    
@@ -861,11 +852,11 @@ def _check_input_times(times):
 
     return tticks
 
-def _check_fitting_bounds(ts,time_begin,time_end):
+def _check_fitting_bounds(ts_ticks,k,time_begin,time_end):
     
     # If boundary is given findout boundary index within ts.    
     begin_index=0
-    end_index=len(ts.data)-1
+    end_index=len(ts_ticks)-1
 
     if type(time_begin)==datetime.datetime:
         time_begin=ticks(time_begin)
@@ -874,14 +865,14 @@ def _check_fitting_bounds(ts,time_begin,time_end):
         time_end=ticks(time_end)    
     
     if time_begin:
-        begin_index=ts.index_after(time_begin)
-        if begin_index>len(ts.data)-3+k:
+        begin_index=searchsorted(ts_ticks,time_begin,side='right')
+        if begin_index>(len(ts_ticks)-3+k):
             raise ValueError(" Fitting interval is out of available timesers data."+ 
                              " Move interval begining time backward.")
 
     if time_end:
-        end_index=ts.index_after(time_end)-1
-        if end_index>len(ts.data)-3+k:
+        end_index=searchsorted(ts_ticks,time_end,side='right')-1
+        if end_index>(len(ts_ticks)-3+k):
             raise ValueError(" Fitting interval is out of available timesers data."+ 
                              "Move interval begining time backward.")
     
