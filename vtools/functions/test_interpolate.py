@@ -81,7 +81,7 @@ class TestInterpolate(unittest.TestCase):
         #self.nan_indexes=sample(range(5,ts_len-5,1),ts_len/5)
         ## bulit a array for position of nan will be put
         ## into rts_has_nan
-        nan_indexes=sciarray([5,12,14,15,20,21,22,23,45,49,101,112,\
+        nan_indexes=sciarray([0,5,12,14,15,20,21,22,23,45,49,101,112,\
                           203,204,205])
         ii=arange(500,520)
         ii2=sciarray([600,607,700,709])
@@ -326,10 +326,16 @@ class TestInterpolate(unittest.TestCase):
         #if ts_len<50:
         #    raise VlaueError("Test data is not long enough, skip test_interpolate_ts")
 
-        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
+        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST,RHIST]:
             ts=deepcopy(self.rts_has_nan)
+            ts.data[0:5]=numpy.nan
+            ts.data[len(ts)-5:len(ts)]=numpy.nan 
+            old_len=len(ts)
             ts=interpolate_ts_nan(ts,method=method)
+            self.assertEqual(len(ts),old_len)
             self.assert_(alltrue(isnan(ts.data))==False)
+            self.assertTrue(alltrue(isnan(ts.data[0:5])))
+            self.assertTrue(alltrue(isnan(ts.data[len(ts)-5:len(ts)])))
         
         ## test max_gap option
       
@@ -452,20 +458,20 @@ class TestInterpolate(unittest.TestCase):
             self.assert_(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
 
-    def test_interpolate_flat_extroplate_end(self):
-        """ Test interoplation using flat method with extrapolation
-            at the end of ts. 
-        """
-
-        delta=months(1)
-        num=103
-        rts1=self.create_rts(delta,num)
-        interval="1day"
-        for method in [PREVIOUS,NEXT,NEAREST]:
-            rt=interpolate_ts(rts1,interval,method=method,extrapolate=3)
-            self.assert_(rt.is_regular())
-            self.assertEqual(rt.interval,parse_interval(interval))            
-            self.assertEqual(rt.data[-1],rt.data[-4])
+#    def test_interpolate_flat_extroplate_end(self):
+#        """ Test interoplation using flat method with extrapolation
+#            at the end of ts. 
+#        """
+#
+#        delta=months(1)
+#        num=103
+#        rts1=self.create_rts(delta,num)
+#        interval="1day"
+#        for method in [PREVIOUS,NEXT,NEAREST]:
+#            rt=interpolate_ts(rts1,interval,method=method,extrapolate=3)
+#            self.assert_(rt.is_regular())
+#            self.assertEqual(rt.interval,parse_interval(interval))            
+#            self.assertEqual(rt.data[-1],rt.data[-4])
 
     def test_rhistinterp(self):
         """ test interpolating by  histospline"""
