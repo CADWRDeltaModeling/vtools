@@ -47,20 +47,21 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         lag in seconds
     """
     # Get the available range from the first time series
-    time_window = (max(time_window[0], a.start), min(time_window[1], a.end))
+    time_window_b = (max(time_window[0], b.start), min(time_window[1], b.end))
+    a_avail = a.window(time_window_b[0], time_window_b[1])
+    time_window = (a_avail.start, a_avail.end)
     if (time_window[1] - time_window[0]).total_seconds() <= 0.:
         raise ValueError('No available time series in the given time_window')
-    a_avail = a.window(time_window[0], time_window[1])
 
     # Calculate actual time range to use
     start = time_window[0] + max_shift
     if period is not None:
         n_periods = np.floor(((time_window[1] - max_shift) - start).total_seconds() / period.total_seconds())
         if n_periods <= 0.:
-            raise ValueError("The item series is too short to cover one period.")
+            raise ValueError("The time series is too short to cover one period.")
         end = start + time_interval(seconds = n_periods * period.total_seconds())
     else:
-        end = time_window[1] + max_shift
+        end = time_window[1] - max_shift
     if (end - start).total_seconds() < 0.:
         raise ValueError("The time series is too short.")
     
@@ -76,7 +77,8 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         factor = int(np.floor(factor))
         
     old_n = len(a_avail)
-    new_n = old_n * factor
+    # new_n = (old_n - 1) * factor + 1
+    new_n = int((end - start + 2 * max_shift).total_seconds() / resolution.total_seconds()) + 1
     max_shift_tick = int(max_shift.total_seconds() / resolution.total_seconds())
     length = 2 * max_shift_tick + 1
     re = np.empty(length)
