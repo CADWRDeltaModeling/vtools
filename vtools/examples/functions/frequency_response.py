@@ -12,13 +12,13 @@ from scipy.signal import freqz
 
 from pylab import *
 
-def compare_response(cutoff_period,interval):
+def compare_response(cutoff_period):
     """ plot frequence response of squared cosine_lanczos,godin filter
         boxcar
         cutoff_period and interval are input as hours
     """
-    data_interval=interval
-    cf=2.0*data_interval/cutoff_period
+    interval=0.25
+    cf=2.0*interval/cutoff_period
     
     ## C_L of size 70hours
     m0=int(70.0/interval)
@@ -37,10 +37,10 @@ def compare_response(cutoff_period,interval):
     
     ## godin response is computed by multiplying responses of 
     ## three boxcar filter on hourly data (23,23,24)
-    ## correct for nonhourly data
-    l1=int(23.0/interval)
-    l2=int(23.0/interval)
-    l3=int(24.0/interval)
+    ## 15
+    l1=99
+    l2=96
+    l3=96
     b3_1 = [1.0/l1]*l1
     b3_2 = [1.0/l2]*l2
     b3_3 = [1.0/l3]*l3
@@ -111,6 +111,6 @@ if __name__=="__main__":
 
 
     ## compare response for data with 15min interval 
-    compare_response(40,0.25)
+    compare_response(40)
     plt.savefig('frequency_response',bbox_inches=0)
     
