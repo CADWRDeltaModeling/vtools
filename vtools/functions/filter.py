@@ -139,7 +139,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
         Must has data of one dimension, and regular.
     
     filter_len  : int, time_interval
-        Size of lanczos window, default is 20.
+        Size of lanczos window, default is to number of interval within filter_period*1.25.
         
     cutoff_frequency: float,optional
         Cutoff frequency expressed as a ratio of a Nyquist frequency,
