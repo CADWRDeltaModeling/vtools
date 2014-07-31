@@ -3,6 +3,7 @@ from vtools.data.sample_series import *
 
 import matplotlib.pyplot as plt
 
+## 1 day of tide at point reyes 
 ts_1day=example_data("pt_reyes_tidal_6min")
 ts_butt=butterworth(ts_1day,cutoff_period="1hour")
 boxcar_aver_interval = parse_interval("1hour")
