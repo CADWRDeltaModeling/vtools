@@ -43,8 +43,8 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         Returns
         -------
         
-        lag : float
-        lag in seconds
+        lag : datetime.timedelta
+            lag
     """
     # Get the available range from the first time series
     time_window_b = (max(time_window[0], b.start), min(time_window[1], b.end))
@@ -100,7 +100,7 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         for i in range(length):
             re[i] = unnorm_xcor(i)
         v0 = index[np.argmax(-re)]* resolution.total_seconds()
-    return v0
+    return time_interval(seconds=v0)
 
 @ts_data_arg
 def mse(predictions, targets):
