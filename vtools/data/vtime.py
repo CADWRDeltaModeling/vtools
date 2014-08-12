@@ -209,6 +209,66 @@ def is_calendar_dependent(intvl):
     else:
         return False
 
+        
+def infer_interval(time_sequence,fraction,standard = None):
+    """ Infer a time interval from a time sequence using differences
+        
+    Parameters
+    -----------
+    time_sequence  : time_sequence 
+    sequence to be analyzed
+    
+    fraction : float
+    fraction of intervals in the sample that must conform once times are
+    rounded to one minute. For instance, if four times are input,
+    this will create three differences, so a fraction=0.67 would require that two out
+    of three agree.
+    standard : list of standard intervals. If None, any non-calendar interval is accepted
+    as is an interval of one month. Otherwise, this argument should be a list and 
+    a ValueError is generated if the interval isn't on the list.
+    
+    Returns
+    --------
+    interval : time_interval
+        time interval of appropriate class inferred from data
+    """
+    import numpy as np
+    import scipy
+    onemin = minutes(1)
+    arr = np.array([round_time(x,onemin)[0] for x in time_sequence],copy=False)
+    diff = arr[1:] - arr[:-1]
+    md,count = scipy.stats.mode(diff)
+    if len(md) != 1:
+        return None
+    else:
+        md = md[0]
+        count = count[0]
+    if md.days < 27:
+        if count/len(diff) < fraction:
+            return None
+        if standard:
+            if md in standard:
+                return md
+            else:
+                return None
+        else:
+            return md
+    elif md.days > 27 and md.days < 32:
+        add_month = (arr + months(1))[:-1]
+        if float(np.count_nonzero(add_month == arr[1:]))/len(add_month) >= fraction:
+            return months(1)
+        else:
+            return None
+    else:
+        return None
+    
+        
+    
+    
+    
+    
+    
+
 def parse_interval(interval_string):
     """ Parse interval expressed as string and return a valid time interval
     
