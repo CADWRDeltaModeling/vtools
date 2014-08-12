@@ -195,7 +195,7 @@ def _get_span(ts,start,end,left,right):
         if not right:
           end_index-=1;
           
-    assert end_index>start_index 
+    assert (end_index<0) or (end_index>start_index) 
     
     return (start_index,end_index)
 
