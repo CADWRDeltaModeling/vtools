@@ -9,12 +9,16 @@ from vtools.datastore.data_service_manager import \
      DataServiceManager
 
 ## vtools time series function import
-from vtools.functions.api import *
+from vtools.functions.resample import *
+from vtools.functions.period_op import *
+from vtools.functions.filter import *
+from vtools.functions.shift import *
+
 
 ## vtools data service import
-from vtools.datastore.dss.api import *
-from vtools.datastore.excel.api import *
-from vtools.datastore.hdf5.api import *
+from vtools.datastore.dss.dss_service import *
+from vtools.datastore.excel.excel_service import *
+
 
 class TestTransfer(unittest.TestCase):
     """ test functionality of data transfer """
