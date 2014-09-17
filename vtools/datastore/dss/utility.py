@@ -11,6 +11,7 @@ from vtools.data.timeseries import rts,its
 from vtools.data.constants import *
 from vtools.datastore.data_reference import DataReferenceFactory
 
+from pydss.hecdss import zchkpn
 
 __all__=["dss_retrieve_ts","dss_store_ts","dss_catalog",\
          "visual_dss_format","dss_delete_ts","is_valid_dss"]
@@ -120,6 +121,10 @@ def dss_store_ts(ts,dss_file,path):
     """
     if(len(ts)==0):
         raise ValueError("timeseries to be written is empty")
+    try:
+        error = zchkpn(path)  
+    except Exception:
+        raise ValueError("input path %s is invalid"%path)
     ref=DataReferenceFactory(DSS_DATA_SOURCE,\
                              source=dss_file,\
                              selector=path)
