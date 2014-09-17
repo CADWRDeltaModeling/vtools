@@ -91,7 +91,7 @@ release = '0.1.1'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['test*']
+exclude_patterns = ['*test*']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -102,7 +102,7 @@ exclude_patterns = ['test*']
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-#add_module_names = True
+add_module_names = False
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
@@ -174,7 +174,7 @@ html_static_path = ['_static']
 #html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = True
+html_domain_indices = ['py-modindex']
 
 # If false, no index is generated.
 #html_use_index = True
