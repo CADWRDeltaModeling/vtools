@@ -3,9 +3,10 @@
 # Imports
 #from vtools.data import *
 from vtools.data.vtime import *
+import datetime as dtm
 
 # Creating a datetime
-t0=datetime(1994,1,1,14,0) # 01JAN1994 14:00
+t0=dtm.datetime(1994,1,1,14,0) # 01JAN1994 14:00
 
 # Parsing a datetime
 t1=parse_time("01Jan1990 00:00")
@@ -22,7 +23,7 @@ t0.strftime("%m/%d/%y")          # '01/01/94'
 
 # Some useful calendar ops
 import calendar
-t0=datetime(1994,1,1,14,0)
+t0=dtm.datetime(1994,1,1,14,0)
 calendar.isleap(t0.year)     # test is 1994 a leap year (True/False)
 calendar.leapdays(1994,2008) # number of leapdays in range
                              # (be careful of range convention)
@@ -53,7 +54,7 @@ intvl=parse_interval("1mon")
 intvl=parse_interval("1year")
 
 # Time interval arithmetic
-t=datetime(1994,1,1)
+t=dtm.datetime(1994,1,1)
 t=t+days(1) # or equivalently t+=days(1)
 intvl=months(1)
 #t=t+2*intvl  # this case is a known bug - causes exception
@@ -69,11 +70,11 @@ cd = is_calendar_dependent(intvl)
 
 # Convert between datetime and a numerical value used, say,
 # in a time series. You won't use this much.
-t=datetime(1994,1,1)
+t=dtm.datetime(1994,1,1)
 tk=ticks(t)
 
 # Aligning an interval to make it "neat"
-t=datetime(1994,1,1,1,17) # 01JAN1994 01:17
+t=dtm.datetime(1994,1,1,1,17) # 01JAN1994 01:17
 t=align(t,minutes(15),-1) # 01JAN1994 01:15
 t=align(t,minutes(15),1)  # 01JAN1994 01:30
 t=align(t,days(1),-1)     # 01JAN1994 00:00

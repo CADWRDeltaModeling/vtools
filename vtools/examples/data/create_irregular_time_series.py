@@ -36,7 +36,4 @@ data.append(1.)
 props={DATUM:"NGVD88"}
 
 # create the series
-ts=its(data,start,dt,props)
-
-print ts[0]                          # todo: time series elements don't print
-print ts[1]
+ts=its(times,data,props)

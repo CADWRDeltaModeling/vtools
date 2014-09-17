@@ -10,12 +10,10 @@ from matplotlib.font_manager import FontProperties
 from vtools.functions.filter import *
 from scipy.signal import freqz
 
-from pylab import *
 
 def compare_response(cutoff_period):
-    """ plot frequence response of squared cosine_lanczos,godin filter
-        boxcar
-        cutoff_period and interval are input as hours
+    """ Generate a comparison plot of the frequency response of filters used in tidal work
+        The comparison includes, squared cosine-Lanczos, Godin and boxcar.
     """
     interval=0.25
     cf=2.0*interval/cutoff_period
