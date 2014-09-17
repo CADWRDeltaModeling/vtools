@@ -211,7 +211,7 @@ class TestInterpolate(unittest.TestCase):
         for funcs in function_to_test:
             nt2.append(funcs(ts,times2))
             self.assertEqual(len(nt2[i]),len(times2),"test of %s fail %s."%(funcs.__name__,msgstr))
-            self.assert_(allclose(nt1[i].data,nt2[i].data),"test of %s fail %s."%(funcs.__name__,msgstr))
+            self.assertTrue(allclose(nt1[i].data,nt2[i].data),"test of %s fail %s."%(funcs.__name__,msgstr))
             i=i+1
         
         ## Repeat same task again by datetime array.
@@ -221,7 +221,7 @@ class TestInterpolate(unittest.TestCase):
         for funcs in function_to_test:
             nt3.append(funcs(ts,times3))
             self.assertEqual(len(nt3[i]),len(times3),"test of %s fail %s."%(funcs.__name__,msgstr))
-            self.assert_(allclose(nt1[i].data,nt3[i].data),"test of %s fail %s."%(funcs.__name__,msgstr))
+            self.assertTrue(allclose(nt1[i].data,nt3[i].data),"test of %s fail %s."%(funcs.__name__,msgstr))
             i=i+1
         
     def test_rts_near_nan_point(self):
@@ -257,7 +257,7 @@ class TestInterpolate(unittest.TestCase):
                 self.assertAlmostEqual(nt.data[0],(ts.data[pos-1]+ts.data[pos+1])/2,\
                                    msg="test of %s fail %s."%(funcs.__name__,msgstr))
             else:
-                self.assert_(not(isnan(nt.data[0])),\
+                self.assertTrue(not(isnan(nt.data[0])),\
                              "test of %s fail %s."%(funcs.__name__,msgstr))
         
     def test_multidimension_tsdata(self):
@@ -307,7 +307,7 @@ class TestInterpolate(unittest.TestCase):
         for func in [nearest_neighbor,previous_neighbor,next_neighbor]:            
             irt=func(ts,st)
             for vv in irt.data:
-                self.assert_(vv in ts.data)
+                self.assertTrue(vv in ts.data)
 
 ###############################################
 ##
@@ -321,11 +321,7 @@ class TestInterpolate(unittest.TestCase):
         """ Test filling nan within a regular time series
         
         """  
-        
-        #ts=self.rts_has_nan
-        #if ts_len<50:
-        #    raise VlaueError("Test data is not long enough, skip test_interpolate_ts")
-
+        ## test ts with leading and trailing nan without nan in middle
         for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST,RHIST]:
             ts=deepcopy(self.rts_has_nan)
             ts.data[0:5]=numpy.nan
@@ -333,11 +329,31 @@ class TestInterpolate(unittest.TestCase):
             old_len=len(ts)
             ts=interpolate_ts_nan(ts,method=method)
             self.assertEqual(len(ts),old_len)
-            self.assert_(alltrue(isnan(ts.data))==False)
+            self.assertTrue(alltrue(isnan(ts.data))==False)
             self.assertTrue(alltrue(isnan(ts.data[0:5])))
             self.assertTrue(alltrue(isnan(ts.data[len(ts)-5:len(ts)])))
         
         ## test max_gap option
+       #test interpolate nan with leading and trailing nans
+        data=sciarray([0.3*sin(k*pi/1200+pi/15)+0.4*sin(k*pi/1100+pi/6)+1.1*sin(k*pi/990+pi/18) \
+              for k in range(50)])
+        
+        put(data,[0,1,2,12,47,48,49],nan)
+        
+        max_gap=2
+        start_time="1/2/1990"
+        interval="15min"
+        ts_less_nans=rts(data,start_time,interval,{})
+        
+        for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
+            ts_new=interpolate_ts_nan(ts_less_nans,max_gap=max_gap,method=method)
+            self.assertTrue((isnan(ts_new.data[0])))
+            self.assertTrue((isnan(ts_new.data[1])))
+            self.assertTrue((isnan(ts_new.data[2])))
+            self.assertTrue((isnan(ts_new.data[47])))
+            self.assertTrue((isnan(ts_new.data[48])))
+            self.assertTrue((isnan(ts_new.data[49])))
+            self.assertFalse((isnan(ts_new.data[12])))
       
         data=sciarray([0.3*sin(k*pi/1200+pi/15)+0.4*sin(k*pi/1100+pi/6)+1.1*sin(k*pi/990+pi/18) \
               for k in range(50)])
@@ -346,27 +362,26 @@ class TestInterpolate(unittest.TestCase):
         put(data,[34,35,36,37,38,39,40,41,42,43],nan)
         
         max_gap=4
-        start_time="1/2/1990"
-        interval="15min"
+       
         
        
         ts_with_nans=rts(data,start_time,interval,{})
         
         for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST,RHIST]:
             ts_new=interpolate_ts_nan(ts_with_nans,max_gap=max_gap, method=method)
-            self.assert_(not(isnan(ts_new.data[12])))
-            self.assert_(not(isnan(ts_new.data[13])))
-            self.assert_(not(isnan(ts_new.data[14])))
-            self.assert_((isnan(ts_new.data[34])))
-            self.assert_((isnan(ts_new.data[35])))
-            self.assert_((isnan(ts_new.data[36])))
-            self.assert_((isnan(ts_new.data[37])))
-            self.assert_((isnan(ts_new.data[38])))
-            self.assert_((isnan(ts_new.data[39])))
-            self.assert_((isnan(ts_new.data[40])))
-            self.assert_((isnan(ts_new.data[41])))
-            self.assert_((isnan(ts_new.data[42])))
-            self.assert_((isnan(ts_new.data[43])))
+            self.assertTrue(not(isnan(ts_new.data[12])))
+            self.assertTrue(not(isnan(ts_new.data[13])))
+            self.assertTrue(not(isnan(ts_new.data[14])))
+            self.assertTrue((isnan(ts_new.data[34])))
+            self.assertTrue((isnan(ts_new.data[35])))
+            self.assertTrue((isnan(ts_new.data[36])))
+            self.assertTrue((isnan(ts_new.data[37])))
+            self.assertTrue((isnan(ts_new.data[38])))
+            self.assertTrue((isnan(ts_new.data[39])))
+            self.assertTrue((isnan(ts_new.data[40])))
+            self.assertTrue((isnan(ts_new.data[41])))
+            self.assertTrue((isnan(ts_new.data[42])))
+            self.assertTrue((isnan(ts_new.data[43])))
             
         for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST,RHIST]:
             self.assertRaises(TypeError,interpolate_ts_nan,\
@@ -380,7 +395,7 @@ class TestInterpolate(unittest.TestCase):
         for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
             ts_new=interpolate_ts_nan(ts_without_nans,max_gap=max_gap,method=method)
             for old_value, new_value in zip(ts_without_nans.data,ts_new.data):
-                self.assert_(old_value==new_value)
+                self.assertTrue(old_value==new_value)
                 
         
         data=sciarray([0.3*sin(k*pi/1200+pi/15)+0.4*sin(k*pi/1100+pi/6)+1.1*sin(k*pi/990+pi/18) \
@@ -394,16 +409,13 @@ class TestInterpolate(unittest.TestCase):
 
         for method in [SPLINE,MONOTONIC_SPLINE,LINEAR,PREVIOUS,NEXT,NEAREST]:
             ts_new=interpolate_ts_nan(ts_less_nans,max_gap=max_gap,method=method)
-            self.assert_((isnan(ts_new.data[12])))
-            self.assert_((isnan(ts_new.data[13])))
-            self.assert_((isnan(ts_new.data[14])))
+            self.assertTrue((isnan(ts_new.data[12])))
+            self.assertTrue((isnan(ts_new.data[13])))
+            self.assertTrue((isnan(ts_new.data[14])))
         
+       
+      
         
-            
-        
-            
-        
-
     def test_interpolate_rts_its(self):
         """ Test create a regular ts by interpolating its
         
@@ -416,7 +428,7 @@ class TestInterpolate(unittest.TestCase):
                        LINEAR,PREVIOUS,NEXT,NEAREST]:
             #pdb.set_trace()
             rt=interpolate_ts(its1,interval,method=method)
-            self.assert_(rt.is_regular())
+            self.assertTrue(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
 
         # change interval to 1hour
@@ -425,7 +437,7 @@ class TestInterpolate(unittest.TestCase):
                        LINEAR,PREVIOUS,NEXT,NEAREST]:
 
             rt=interpolate_ts(its1,interval,method=method)
-            self.assert_(rt.is_regular())
+            self.assertTrue(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
 
     def test_interpolate_rts_rts(self):
@@ -439,7 +451,7 @@ class TestInterpolate(unittest.TestCase):
                        LINEAR,PREVIOUS,NEXT,NEAREST]:
            
             rt=interpolate_ts(rts1,interval,method=method)
-            self.assert_(rt.is_regular())
+            self.assertTrue(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
             
     
@@ -455,7 +467,7 @@ class TestInterpolate(unittest.TestCase):
         for method in [SPLINE,MONOTONIC_SPLINE,\
                        LINEAR,PREVIOUS,NEXT,NEAREST]:
             rt=interpolate_ts(rts1,interval,method=method)
-            self.assert_(rt.is_regular())
+            self.assertTrue(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
 
 #    def test_interpolate_flat_extroplate_end(self):
@@ -469,7 +481,7 @@ class TestInterpolate(unittest.TestCase):
 #        interval="1day"
 #        for method in [PREVIOUS,NEXT,NEAREST]:
 #            rt=interpolate_ts(rts1,interval,method=method,extrapolate=3)
-#            self.assert_(rt.is_regular())
+#            self.assertTrue(rt.is_regular())
 #            self.assertEqual(rt.interval,parse_interval(interval))            
 #            self.assertEqual(rt.data[-1],rt.data[-4])
 
