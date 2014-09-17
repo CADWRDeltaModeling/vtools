@@ -61,7 +61,20 @@ class TestDssUtility(unittest.TestCase):
 
         self.assert_(os.path.exists(destination))
         
+    def test_save_ts_invalid_path(self):
+        start=datetime(1990,1,1,0,0)
+        dt = hours(1)
+        n=1000
+        x=arange(n)
+        data=sin(2*pi*x/24.)
+        ts=rts(data,start,dt,{})
+        destination=self.test_file_path
 
+        #pdb.set_trace()
+        
+        path="invalid_path"
+        self.assertRaises(ValueError,dss_store_ts,ts,destination,path)
+        
 
     def test_retrieve_ts(self):
         

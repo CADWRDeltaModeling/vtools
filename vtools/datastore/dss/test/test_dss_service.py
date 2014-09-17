@@ -1,5 +1,6 @@
 import sys,os,unittest,shutil ,pdb
 from copy import deepcopy
+import datetime as dtm
 
 from vtools.datastore.dss.dss_service import DssService,DssAccessError
 from vtools.datastore.data_service_manager import DataServiceManager
@@ -594,7 +595,7 @@ class TestDssService(unittest.TestCase):
         self.assert_(len(rtt)==len(data))
         self.assert_(rtt.props[TIMESTAMP]==PERIOD_START)
         self.assert_(rtt.props[AGGREGATION]==MEAN)      
-
+        self.assert_(rtt.times[0],dtm.datetime(2000,12,21,2))
         extent="time_window=(12/21/2000 02:00,01/31/2001 18:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
