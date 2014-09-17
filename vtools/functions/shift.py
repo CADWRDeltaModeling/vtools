@@ -1,8 +1,7 @@
-""" Shift operation over a time series, orginal time series with shifted
-    star_time,end_time and times is return.
+""" Shift operations over a time series, original time series with shifted
+    start_time,end_time and times is return.
 """
 
-import pdb
 ## Python lib import.
 from operator import add,sub
 from copy import deepcopy
