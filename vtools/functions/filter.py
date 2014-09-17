@@ -5,8 +5,7 @@
 from numpy import abs
 ## Scipy import.
 from scipy import array as sciarray
-from scipy import nan, isnan,add,convolve, \
-transpose
+from scipy import nan, isnan,add,convolve,transpose
 from scipy import pi, sin
 from scipy import where,arange,clip
 from scipy.signal import lfilter,firwin,filtfilt

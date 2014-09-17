@@ -16,15 +16,22 @@ __all__=["merge",]
 ########################################################################### 
 ## Public interface.
 ###########################################################################
-def merge(*lts):
+def merge(ts0,ts1,*lts):
     """ merge a number of timeseries together and return a new ts.
     
     Parameters
     ----------
-    *lts : :class:`~vtools.data.timeseries.TimeSeries`
-        Two or more regular timeseries (number of args is variable). 
-        Each with the same interval with the highest priority time
-        series listed first
+    ts0  :  :class:`~vtools.data.timeseries.TimeSeries`
+        Highest priority time series.
+              
+    ts1  :  :class:`~vtools.data.timeseries.TimeSeries`
+        Next highest priority time series, used to replace nans in ts0.
+              
+    
+    *other_ts : :class:`~vtools.data.timeseries.TimeSeries`
+        Additional regular time series arguments (number of args is variable)
+        to merge with ts0 to cover nan data. Each must have
+        with the same interval and should be listed in decreasing priority
 
     Returns
     -------    
@@ -35,13 +42,11 @@ def merge(*lts):
         
     """
 
-    if len(lts)<2:
-        raise ValueError("Merge require at least two input timeseries.")
-    ts=_merge(lts[0],lts[1])
+    ts=_merge(ts0,ts1)
     
-    if len(lts)>2:
-        for i in range(2,len(lts)):
-            ts=_merge(ts,lts[i])
+    if len(other_ts)>0:
+        for i in range(len(other_ts)):
+            ts=_merge(ts,other_ts[i])
 
     return ts
 
