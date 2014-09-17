@@ -103,6 +103,8 @@ def example_data(name):
 	  return pt_reyes_tidal_with_gaps()
     elif  (name=="simple_average"):
         return _simple_averaged_series()
+    elif (name=="oldriver_flow"):
+        return  old_river_head_flow()
     else:
         raise ValueError("invalid example series name")
 		
@@ -155,6 +157,19 @@ def pt_reyes_tidal_with_gaps():
     put(raw_data[:,1],range(20,23),nan)
     put(raw_data[:,1],range(26,45),nan)
     return rts(raw_data[:90,1],start,interval,props)
+    
+    
+def old_river_head_flow():
+    """ flow rate of old river at head with 15 minutes interval"""
+    data_file=os.path.join(os.path.split(__file__)[0],\
+              "ord_b95400_flow_15min_20121001_20130930.txt")
+    flow=numpy.fromfile(data_file,sep=" ")
+    start=_datetime.datetime(2012,10,1)
+    interval=minutes(15)
+    props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"cfs"}
+    return rts(flow,start,interval,props)
+    
+    
     
     
 def arma(phi,theta,sigma,n,discard=0,verbose=0):
