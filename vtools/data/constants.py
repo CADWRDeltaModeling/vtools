@@ -9,18 +9,18 @@ __all__=["AGGREGATION","MAX","MIN","MEAN","SUM","INDIVIDUAL","INST","TIMESTAMP",
          "TS_PROPERTIES","UNIT","INTERVAL","UND"]
 
 ################################
-AGGREGATION="aggregation"  #: Period op representing how samples are aggregated
+AGGREGATION="aggregation"  #: Attribute name for sample aggregation over steps
 ## below are its possible values.
-MAX="MAX"                  #: Period max
-MIN="MIN"                  #: Period min
-MEAN="MEAN"                #: Period mean
-SUM="ACCUM"                #: Accumulation
-INDIVIDUAL="INST-VAL"      #: Instantaneous values
+MAX="MAX"                  #: AGGREGATION value: Period max
+MIN="MIN"                  #: AGGREGATION value: Period min
+MEAN="MEAN"                #: AGGREGATION value: Period mean
+SUM="ACCUM"                #: AGGREGATION value: Accumulation
+INDIVIDUAL="INST-VAL"      #: AGGREGATION value: Instantaneous values
 ################################
-TIMESTAMP="timestamp"
+TIMESTAMP="timestamp"      #: TIMESTAMP value: Attribute name for time stamping convention 
 ## below are its possible values.
-PERIOD_START="PERIOD_START"
-PERIOD_END="PERIOD_END"
+PERIOD_START="PERIOD_START" #: TIMESTAMP value: Stamped at beginning of period
+PERIOD_END="PERIOD_END"     #: TIMESTAMP value: Stamped at end of period
 INST="INST-VAL"
 ################################
 START_SHIFTED="start_shifted"

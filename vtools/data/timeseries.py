@@ -74,7 +74,12 @@ def index_after(seq,tm):
     The integer index in the sequence that fall on or after tm.
     
     """
-    return bisect.bisect_right(seq,ticks(tm))
+    tm_ticks = ticks(tm)
+    candidate = bisect.bisect_left(seq,tm_ticks)
+    if seq[candidate] >= tm_ticks:
+        return candidate
+    elif seq[candidate] < tm_ticks and candidate < (len(seq)-1): 
+        return candidate + 1
 
 def indexes_after(seq,tm):
     """Return an array of indexes representing the index of seq that is on or after each
@@ -108,7 +113,12 @@ def index_before(seq,tm):
     The integer index in the sequence that fall on or before tm.
     
     """
-    return bisect.bisect_left(seq,ticks(tm))
+    tm_ticks = ticks(tm)
+    candidate = bisect.bisect_left(seq,tm_ticks)
+    if seq[candidate] <= tm_ticks:
+        return candidate
+    if seq[candidate] > tm_ticks and candidate > 0: 
+        return candidate - 1
     
 def prep_binary(ts1,ts2):
     """Create data for time-aligned op binary operation between two series
@@ -175,7 +185,7 @@ def _get_span(ts,start,end,left,right):
     if start>end:
         raise ValueError("Requested end of window is after time series end.")
        
-    start_index=ts.index_before(start)
+    start_index=ts.index_after(start)
     start=ticks(start)
 
     if (start_index==0) and (not(start==ts.ticks[start_index])) and left:
@@ -186,15 +196,17 @@ def _get_span(ts,start,end,left,right):
           start_index-=1;
     
     end_index=ts.index_before(end)
-    end=ticks(end)
-
-    if (end_index==(len(ts)-1)) and (not(end==ts.ticks[end_index])) and right:
-        raise ValueError("Requested end of window is after time series end.")   
+    end_ticks=ticks(end)
     
-    if (not(end_index==(len(ts)-1))) and (not(end==ts.ticks[end_index])):
-        if not right:
-          end_index-=1;
-          
+    tslast = len(ts)-1
+    if right:
+        if (end_index==(len(ts)-1)) and (not(end_ticks==ts.ticks[end_index])):
+            raise ValueError("Requested end of window is after time series end and user requested a right buffer.")   
+        if ts.ticks[end_index] < end_ticks and end_index < tslast:
+            end_index += 1
+   
+   
+    assert end_index < len(ts)          
     assert (end_index<0) or (end_index>start_index) 
     
     return (start_index,end_index)
@@ -245,8 +257,8 @@ class TimeSeries(object):
                 self._ticks = times
         else:
             self._ticks=[]
-        self._data = data    # must validate data sequence properties
-        self._props = props  # must validate props        
+        self._data = data
+        self._props = props     
         self._len = len(times)
         self._len = len(data)
        
@@ -887,6 +899,7 @@ def its2rts(its,interval,original_dates=True):
             A regular time series.
        
    """
+   import warnings
    if not isinstance(interval, _datetime.timedelta): 
        raise ValueErrror("Only exact regular intervals (secs, mins, hours, days)\
                         accepted in its2rts")
@@ -904,9 +917,9 @@ def its2rts(its,interval,original_dates=True):
    if any(ndx[1:] == ndx[:-1]):
         badndx = np.extract(ndx[1:] == ndx[:-1],ndx[1:])
         badtime = tseq[badndx]
+        # todo: use warnings.warn()
         for t in badtime:
-            print "Warning multiple time steps map to a single \
-                   neat output step near: %s " % ticks_to_time(t)
+            warnings.warn("Warning multiple time steps map to a single neat output step near: %s " % ticks_to_time(t))
    data[ndx]=its.data
    if original_dates:
        tseq[ndx]=its.ticks
