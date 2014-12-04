@@ -6,16 +6,13 @@
 =================
 Introduction
 =================
-Welcome to the vtools documentation page. Vtools is a package to perform time-aligned operations on time series, as well as some specialty analyses encountered in hydrology and hydrodynamic work and modeling. The goal of vtools is to fill in around tools like `pandas <http://pandas.sourceforge.net/>`_  and `netcdf4-python <http://code.google.com/p/netcdf4-python/>`_ and to provide a bridge between netcdf and the legacy format HEC-DSS from the Hydrologic Engineering Center of the Army Corps of Engineers.
+Vtools is a package to perform time-aligned operations on time series, as well as some specialty analyses encountered in hydrology and hydrodynamic work and modeling. The goal of vtools is to fill in around tools like `pandas <http://pandas.sourceforge.net/>`_  and `netcdf4-python <http://unidata.github.io/netcdf4-python/>`_ and to provide a bridge between netcdf and the legacy format HEC-DSS from the Hydrologic Engineering Center of the Army Corps of Engineers.
 
 ====================
 Documentation 
 ====================
 Learning vtools is something you can mostly learn by example, so most of the topics below are coding examples with a few explanations. There is some traditional api documentation as well.
 
-
-Contents
---------
 
 .. toctree::
    :maxdepth: 2
@@ -25,12 +22,9 @@ Contents
    Time series class <timeseries>
    Functions <vtools_functions>
    Getting data in and out of vtools <datastore>
-   Plotting recipes <plotting>
 
 
-Test of inline class doc
-------------------------
-See :class:`~vtools.data.timeseries.TimeSeries`
+
 
 Indices and tables
 ------------------

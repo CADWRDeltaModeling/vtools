@@ -5,22 +5,40 @@ Timeseries concepts and manipulation
 
 Datetime and ticks
 ------------------
-Vtools uses the Python standard library class :py:class:`datetime.datetime` to represent time. The term "ticks" refers to the numerical representation of time in an application-dependent unit (seconds, milliseconds) from a starting time datum.
+Vtools uses the Python standard library class :py:class:`datetime.datetime` to represent time. The term "ticks" refers to the numerical representation of time in an application-dependent unit (seconds) from a starting time datum. 
+Ticks are currently long integers, but you shouldn't count on this because
+it may change to floats.
 
 Creating and parsing times
 ^^^^^^^^^^^^^^
 Creating datetimes is done with the datetime constructor, which takes arguments in decreasing order of length (year, month, day, hour, etc.). Seldom do you go out to microseconds ... you can simplify by using as many or as few arguments as you want: 
 ::
-    from datetime import datetime
-    dt1 = datetime(2012,4)       # April 1, 2012, 00:00
-    dt2 = datetime(2012,4,10,16) # April 10, 2012, 4:00PM
+    import datetime as dtm
+    dt1 = dtm.datetime(2012,4)       # April 1, 2012, 00:00
+    dt2 = dtm.datetime(2012,4,10,16) # April 10, 2012, 4:00PM
     
-Python date and time classes have methods (:py:meth:`datetime.datetime.strptime`) for parsing dates from strings and :py:func:`datetime.datetime.isoformat`. The function `dateutil.parse` in the `dateutil` module can guess at a lot of formats. Vtools provides :func:`~vtools.data.vtime.parse_time` if you have the format '12MAR2005 23:00' or just '12MAR2005':
+Python date and time classes have methods (:py:meth:`datetime.datetime.strptime`) for parsing dates from strings and :py:meth:`datetime.datetime.isoformat`. Note the "T" between the date and time in the ISO standard, which is convenient when parsing data in columns because you don't have to deal with recombining date and time.
+
+Here are some examples using strftime, isotime and strptime. Note that these functions are both part of the datetime class, which is inside the datetime module:
+::
+    >>> import datetime as dtm
+    >>> t = dtm.datetime(1990, 1, 21, 0, 30)
+    >>> t.isoformat()
+    '1990-01-21T00:30:00'    
+    >>> t.strftime("%Y-%m-%d %H:%M")
+    '1990-01-21 00:30'
+    >>> dtm.datetime.strptime('2/21/02 00:30',"%m/%d/%y %H:%M")
+    datetime.datetime(2002, 2, 21, 0, 30)
+
+
+The function `dateutil.parse` in the `dateutil` module can guess at a lot of formats. Vtools provides :func:`~vtools.data.vtime.parse_time` if you have the format '12MAR2005 23:00' or just '12MAR2005':
 ::
     >>> from vtools.data.vtime import *
     >>> parse_time("21JAN1990 00:30")
     datetime.datetime(1990, 1, 21, 0, 30)
 
+        
+    
 Rounding times
 ^^^^^^^^^^^^^^
 There are routines to do the equivalent of round (nearest neat value), floor and ceiling to produce neat times. See :func:`~vtools.data.vtime.round_time`, :func:`~vtools.data.vtime.align` and :func:`~vtools.data.vtime.round_ticks`
