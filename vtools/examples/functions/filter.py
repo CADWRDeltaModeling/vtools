@@ -11,10 +11,10 @@ ts_box=boxcar(ts_1day,boxcar_aver_interval,boxcar_aver_interval)
 ts_cos=cosine_lanczos(ts_1day,cutoff_period=hours(1),filter_len=10)
 fig=plt.figure()
 ax0 = fig.add_subplot(111)
-ax0.set_ylabel("surface (feet)")
+ax0.set_ylabel("Elev (feet)")
 lwidth=0.8
 p0=ax0.plot(ts_1day.times,ts_1day.data,color='green',\
-            linewidth=lwidth,label="Surface")
+            linewidth=lwidth,label="Water level")
 p1=ax0.plot(ts_butt.times,ts_butt.data,color='red',\
             linewidth=lwidth,label="Butterworth")
 p2=ax0.plot(ts_box.times,ts_box.data,color='black',\
