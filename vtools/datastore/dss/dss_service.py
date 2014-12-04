@@ -549,7 +549,7 @@ class DssService(Service):
         ## generated a new catalog of the dss file
         if not(lcatlg):
             dssfile=open_dss(fpath)
-            [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,True)
+            [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,True) 
             ## if lcadcat is true, a condensed catalog is
             ## produced.
             if not(lcdcat):
@@ -845,7 +845,7 @@ class DssService(Service):
                                 lhigh=False,iprec=0):
         """ Save values of regular time sereis into dss by calling zsrtsx of pydss."""
         
-        path=dataref.selector        
+        path=dataref.selector      
         dss_file_path=dataref.source
         dssf=open_dss(dss_file_path)
         
@@ -1158,8 +1158,8 @@ class DssService(Service):
             interval=ts.interval
             path=data_reference.selector
             pp=path.split("/")
-            d=pp[5].strip()
-            if d=="${interval}" or  d=="${INTERVAL}" :
+            d=pp[5].strip()         
+            if d=="${interval}" or  d=="${INTERVAL}":
                 ii=valid_dss_interval_dic_in_delta.index(ts.interval)
                 dt=interval_to_D[ii]
                 data_reference.selector=path.replace(d,dt)

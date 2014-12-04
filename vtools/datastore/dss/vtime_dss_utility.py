@@ -488,7 +488,6 @@ def _validate_dss_data_series(data,flags=None,OnlyStartLen=0):
 
     if not type(data)==type(array([2,3])):
         data=array(data)
-    
     data=where((data==float(-901)) | (data==float(-902)),nan,data)
     ## set nan according to if 3,4,5 bits of flag set or not.
     ## operation is implemented by bit_wise or/and.
