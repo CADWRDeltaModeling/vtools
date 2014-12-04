@@ -32,7 +32,7 @@ __all__=["linear","spline","monotonic_spline","nearest_neighbor","gap_size",\
          "interpolate_ts","rhistinterp","RATIONAL_HISTOSPLINE","MSPLINE","RHIST"]
 
 NEAREST="nearest"
-PREVIOUS="pre"
+PREVIOUS="previous"
 NEXT="next"
 LINEAR="linear"
 SPLINE="spline"
@@ -405,8 +405,8 @@ def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
     tticks=_check_input_times(times)
 
     if not ((ts_start<=(tticks[0])) and (ts_end>=(tticks[-1]))):
-        raise ValueError("Input time sequence is not subset of \
-        input timeseries valid datetime range")
+        raise ValueError("Interpolation time sequence is not subset of \
+        input timeseries valid time range")
         
     if filter_nan and ts.data.ndim>1:
         raise ValueError( " filtering nan is only defined for"+  
