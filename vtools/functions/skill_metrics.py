@@ -59,14 +59,16 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         n_periods = np.floor(((time_window[1] - max_shift) - start).total_seconds() / period.total_seconds())
         if n_periods <= 0.:
             raise ValueError("The time series is too short to cover one period.")
-        end = start + time_interval(seconds = n_periods * period.total_seconds())
+        end = start + time_interval(seconds=n_periods * period.total_seconds())
     else:
         end = time_window[1] - max_shift
     if (end - start).total_seconds() < 0.:
         raise ValueError("The time series is too short.")
-    
+
     # This is actual time series to calculate lag
     a_part = a.window(start, end)
+    start = a_part.start
+    end = a_part.end
     a_part_masked = np.ma.masked_invalid(a_part.data, np.nan)
 
     # Interpolate the second vector
@@ -75,22 +77,20 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         raise ValueError('The interval of the time series is not integer multiple of the resolution.')
     else:
         factor = int(np.floor(factor))
-        
+
     old_n = len(a_avail)
-    # new_n = (old_n - 1) * factor + 1
-    new_n = int((end - start + 2 * max_shift).total_seconds() / resolution.total_seconds()) + 1
+    new_n = np.ceil((end - start + 2 * max_shift).total_seconds() / resolution.total_seconds()) + 1
     max_shift_tick = int(max_shift.total_seconds() / resolution.total_seconds())
     length = 2 * max_shift_tick + 1
     re = np.empty(length)
     n = len(a_part)
     b_interpolated = monotonic_spline(b, time_sequence(a_part.start-max_shift, resolution, new_n))
-    
+
     def unnorm_xcor(lag):
-        lag = np.floor(lag)
         b_part = b_interpolated.data[lag:lag+factor*n-1:factor]
         return -np.ma.inner(a_part_masked, b_part)
+
     index = np.arange(-max_shift_tick, max_shift_tick + 1)
-        
     brent=0
     if brent:
         from scipy.optimize import minimize_scalar
