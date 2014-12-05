@@ -209,16 +209,13 @@ class TestVTime(unittest.TestCase):
                    ('1y1mon2h3min',time_interval(years=1,months=1,hours=2,minutes=3)),
                    ('1year 2month 2hours 10minutes',time_interval(years=1,months=2,hours=2,minutes=10)),
                    ('15minutes',_datetime.timedelta(minutes=15)),('10h',_datetime.timedelta(hours=10)),('60 min',_datetime.timedelta(minutes=60)))
-                   
 
         for (in1,out1) in testcases:
-
             out=parse_interval(in1)
             self.assertEqual(out,out1)
 
         invalidinput={}
         self.assertRaises(TypeError,parse_interval, invalidinput)
-
         invalidstring="not a time"
         self.assertRaises(ValueError,parse_interval, invalidstring)
 
@@ -276,9 +273,26 @@ class TestVTime(unittest.TestCase):
         stime_aligned_right = align(stime,hours(1),right)
         self.assertEqual(stime_aligned_right,correct_result_right_aligned)
 
-        
 
-                
+    def testInferInterval(self):
+        time_seq = [_datetime.datetime(1990,3,2,0,1,27),_datetime.datetime(1990,3,2,0,15,28),
+                    _datetime.datetime(1990,3,2,0,30,28),_datetime.datetime(1990,3,2,0,45,28),
+                    _datetime.datetime(1990,3,2,1,1,27),_datetime.datetime(1990,3,2,1,15,28),
+                    _datetime.datetime(1990,3,2,1,30,28),_datetime.datetime(1990,3,2,1,45,28),
+                    _datetime.datetime(1990,3,2,2,1,27),_datetime.datetime(1990,3,2,2,16,31)]
+        self.assertEqual(minutes(15),infer_interval(time_seq,4./9.-0.001))
+        self.assertFalse(infer_interval(time_seq,4./9.+0.001))
+        self.assertFalse(infer_interval(time_seq,0.6,standard = [minutes(6),hours(1)]))
+        self.assertEqual(infer_interval(time_seq,0.7,standard = [minutes(6),minutes(15),hours(1)]),minutes(15))
+        time_seq = [_datetime.datetime(1990,3,2,0,1,27),_datetime.datetime(1990,3,2,0,15,0),
+                    _datetime.datetime(1990,3,2,0,31,28),_datetime.datetime(1990,3,2,0,45,18),
+                    _datetime.datetime(1990,3,2,1,1,27),_datetime.datetime(1990,3,2,1,15,28),
+                    _datetime.datetime(1990,3,2,1,30,28),_datetime.datetime(1990,3,2,1,45,28),
+                    _datetime.datetime(1990,3,2,2,1,27),_datetime.datetime(1990,3,2,2,16,31)]  
+        ntvl = infer_interval(time_seq,0.7,standard = [minutes(6),minutes(15),hours(1)])
+        print ntvl        
+        self.assertEqual(ntvl,minutes(15))       
+        print "Done"        
 
 if __name__ == '__main__':
     unittest.main()
