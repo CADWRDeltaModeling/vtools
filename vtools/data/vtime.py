@@ -233,7 +233,8 @@ def infer_interval(time_sequence,fraction,standard = None):
         time interval of appropriate class inferred from data
     """
     import numpy as np
-    import scipy
+    import scipy.stats
+    from itertools import imap
     onemin = minutes(1)
     arr = np.array([round_time(x,onemin)[0] for x in time_sequence],copy=False)
     diff = arr[1:] - arr[:-1]
@@ -243,16 +244,21 @@ def infer_interval(time_sequence,fraction,standard = None):
     else:
         md = md[0]
         count = count[0]
+        
     if md.days < 27:
-        if count/len(diff) < fraction:
-            return None
         if standard:
             if md in standard:
                 return md
             else:
+                for s in standard:
+                    frac_almost = sum(imap(lambda d: abs(s.total_seconds() - d.total_seconds()) < 80.,diff))/len(diff)
+                    if frac_almost >= fraction:
+                        return s
                 return None
         else:
-            return md
+            if count/len(diff) > fraction:
+                return md       
+            return None
     elif md.days > 27 and md.days < 32:
         add_month = (arr + months(1))[:-1]
         if float(np.count_nonzero(add_month == arr[1:]))/len(add_month) >= fraction:
