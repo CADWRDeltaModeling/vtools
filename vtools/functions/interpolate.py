@@ -136,12 +136,24 @@ def interpolate_ts(ts,times,method=SPLINE,filter_nan=True,**dic):
     interpolate_ts_nan : Fill internal nan values using interpolation
     
     """
-    
-    if not(type(times)==str) and isSequenceType(times):
+    from vtools.data.api import TimeSeries
+    if type(times) == TimeSeries:
+        if times.start < ts.start or times.end > ts.end:
+            raise ValueError("Time series used to provide requested interpolation times is outside the original series")
+        interval=times.interval if times.is_regular() else None
+        seq = times.times
+        data=_interpolate_ts2array(ts,seq,method=method,\
+                                  filter_nan=filter_nan,**dic)
+        if interval:
+            return rts(data,seq[0],interval)
+        else:
+            return its(times,data)
+    elif not(type(times)==str) and isSequenceType(times):
        data=_interpolate_ts2array(ts,times,method=method,\
                                   filter_nan=filter_nan,**dic)
        ts=its(times,data,{})
     else:
+       # interval
        ts=_interpolate2rts(ts,times,method=method,\
                            filter_nan=filter_nan,**dic)
     return ts
@@ -335,11 +347,6 @@ def _interpolate2rts(ts,interval,method=SPLINE,filter_nan=True,**dic):
     -------
     result: :class:`~vtools.data.timeseries.TimeSeries`
         A regular time series.
-    
-    Raise
-    --------
-    ValueError
-        If input 'interval' is wider than time serie' interval.
         
     """
 
@@ -350,13 +357,14 @@ def _interpolate2rts(ts,interval,method=SPLINE,filter_nan=True,**dic):
         raise TypeError("second input must be a time interval or can be "
                         "parsed as time interval")
     
-    if ts.is_regular():
-        if ts.start+interval>ts.start+ts.interval:
-            raise ValueError("interpolating interval is wider than"
-                             "input time series' interval")
+    #if ts.is_regular():
+    #    if ts.start+interval>ts.start+ts.interval:
+    #        raise ValueError("interpolating interval is wider than"
+    #                         "input time series' interval")
         
     rt_start=align(ts.start,interval,1)
-    num=number_intervals(rt_start,ts.end+interval,interval)
+    rt_end = align(ts.end,interval,-1)
+    num=number_intervals(rt_start,rt_end,interval)+1
     times=time_sequence(rt_start,interval,num)
     values=_interpolate_ts2array(ts,times,method,filter_nan,**dic)
     
