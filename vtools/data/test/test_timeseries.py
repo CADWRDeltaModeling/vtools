@@ -217,9 +217,12 @@ class TestTimeSeries(unittest.TestCase):
         ts=rts(data,start,interval,{})
         
         t1=ts.ticks[0]
-        i=ts.index_after(t1)
-        
+        i=ts.index_after(t1)        
         self.assertEqual(i,0)
+        
+        t2=ts.ticks[-1]
+        i=ts.index_after(t2)
+        self.assertEqual(i,len(ts)-1)        
 
     def test_index_before(self):
         data=range(1000)
@@ -288,9 +291,8 @@ class TestTimeSeries(unittest.TestCase):
         
         stime=self.ts1.start + minutes(5)
         etime=self.ts1.times[8] + minutes(5)
+        
         newts1=self.ts1.window(start=stime,end=etime)
-
-
         self.assertEqual(len(newts1),8)
 
         self.assertEqual(newts1.data[0],self.ts1.data[1])
