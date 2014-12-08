@@ -221,6 +221,37 @@ class TestTimeSeries(unittest.TestCase):
         
         self.assertEqual(i,0)
 
+    def test_index_before(self):
+        data=range(1000)
+        start=self.stime1
+        interval=time_interval(months=1)
+
+        ts=rts(data,start,interval,{})
+        # First one
+        t1=ts.times[0]
+        i=ts.index_before(t1)
+        self.assertEqual(i, 0)
+
+        # Between the first and second one
+        t1=ts.times[0] + minutes(10)
+        i=ts.index_before(t1)
+        self.assertEqual(i, 0)
+
+        # Last one
+        t1=ts.times[-1]
+        i=ts.index_before(t1)
+        self.assertEqual(i, len(ts)-1)
+
+        # Before the first one
+        t1=ts.times[0] - minutes(10)
+        i=ts.index_before(t1)
+        self.assertEqual(i, 0)
+
+        # After the last one
+        t1=ts.times[-1] + minutes(1)
+        i=ts.index_before(t1)
+        self.assertEqual(i, len(ts)-1)
+
     def test_ts_copy(self):
         ## test copy part of a ts      
         stime=self.ts1.times[0]

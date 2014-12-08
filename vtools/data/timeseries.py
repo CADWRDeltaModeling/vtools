@@ -114,15 +114,12 @@ def index_before(seq,tm):
     
     """
     tm_ticks = ticks(tm)
-    candidate = bisect.bisect_left(seq,tm_ticks)
-    if candidate == len(seq):
-        if candidate > 0:
-            return candidate - 1
-        else:
-            return 0
+    candidate = bisect.bisect_right(seq,tm_ticks) - 1
+    if candidate < 0:
+        return 0
     else:
         return candidate
-    
+
 def prep_binary(ts1,ts2):
     """Create data for time-aligned op binary operation between two series
        Returns data holders and selections required to carry out
