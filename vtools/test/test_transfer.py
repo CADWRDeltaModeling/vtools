@@ -47,8 +47,6 @@ class TestTransfer(unittest.TestCase):
         self.service_manager=DataServiceManager()
         self.dss_service=self.service_manager.get_service\
         ("vtools.datastore.dss.DssService")
-        self.hdf_service=self.service_manager.get_service\
-        ("vtools.datastore.hdf5.HDF5Service")
         self.excel_service=self.service_manager.get_service\
         ("vtools.datastore.excel.ExcelService")
         
@@ -186,28 +184,7 @@ class TestTransfer(unittest.TestCase):
         translation="dsstoexcel_plainstyle"
         batch_transfer(dssfile_path,dest,selector,time_window,translation)
 
-    def test_batch_transfer_dss2excel_file_selector(self):
-        """ test batch transfer to excel file with selector from data file"""
-        dssfile_path=self.test_file_path
-        selector=self.path_file
-        translation="dsstoexcel_file_selector$B10,name=${B}_${C},unit=\
-        ${unit},write_times=all"
-        dest=self.xls_file
-        batch_transfer(dssfile_path,dest,selector,None,translation)
-        
-    def test_batch_transfer_hdf2dss(self):
-        """ test transfer timeseries from hdf file to dss source."""
-        hdf="hist.h5"
-
-        path="/hydro/data/channel_flow"
-        extent="channel_number=1;channel_location=upstream"
-        time_window="time_window=(1991-10-3 12:00,1991-10-4 13:00);"
-        extent=time_window+extent        
-
-        dssf="hdf2dss.dss"
-        selector2="/hydro/channel_flow/upstream//1hour/HDF/"
-        batch_transfer(hdf,dssf,path,extent,selector2)
-        
+    
                                             
 if __name__=="__main__":
     

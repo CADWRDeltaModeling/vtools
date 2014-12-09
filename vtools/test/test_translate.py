@@ -7,6 +7,9 @@ from pydss.hecdss import open_dss
 from vtools.datastore.translate import *
 from vtools.datastore.data_service_manager import DataServiceManager 
 
+from vtools.datastore.dss.dss_service import *
+
+
 class TestTranslate(unittest.TestCase):
 
     """ test functionality of translate data references """
