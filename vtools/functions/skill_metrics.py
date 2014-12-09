@@ -100,6 +100,7 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
         for i in range(length):
             re[i] = unnorm_xcor(i)
         v0 = index[np.argmax(-re)]* resolution.total_seconds()
+    import matplotlib.pyplot as plt
     return time_interval(seconds=v0)
 
 @ts_data_arg

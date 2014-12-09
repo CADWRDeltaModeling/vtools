@@ -1,18 +1,30 @@
 .. _install_vtools
 
-Installing vtools
-=================
-
-VTools can be installed from the vtools egg available from the `Delta Modeling Section  Tools`_ website. 
-
-.. _Delta Modeling Section Tools: http://baydeltaoffice.water.ca.gov/modeling/deltamodeling/deltaevaluation.cfm
-
-Only version 2.7 of Python is currently supported in 32 or 64 bit flavors. We will make the jump to 3.x when it is fully supported in ArcGIS.
+Getting and Installing VTools
+=============================
 
 
 Prerequisites
 -------------
+
+If you want HEC-DSS functionality, you will need pydss, our Python bindings for the HEC-DSS storage format. The package
+is currently only available for Windows and in binaries, linked to the binary library with permission from the Hydrologic Engineering Center. Our portion of the code is offered using an MIT license. Linux will be supported.
+
+`pydss installer (Python 2.7, Windows 64 bit) <https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_amd64.exe>`_
+
 VTools makes extensive use of numpy, scipy as well as interfaces to data sources. There is a trend now with python towards fully featured scientific distrubtions, and we don't particularly recommend trying to build up a full featured tool a la carte. To that end, we recommend the `Anaconda <https://store.continuum.io/cshop/anaconda/>`_ distribution. One of the main developers on our time has also used Python(x,y). 
+
+VTools Install
+--------------
+VTools is installed via a python "egg". The vtools egg available here:
+`vtools-1.0_r0-py2.7.egg (Python 2.7, Windows 64 bit) <https://msb.water.ca.gov/documents/86683/266737/vtools-1.0_r0-py2.7.egg>`_
+
+Use the command::
+$ pip install vtools-1.0_r0-py2.7.egg
+
+(easy_install will also work fine)
+
+Version 2.7 of Python is currently supported in 32 or 64 bit flavors. We will make the jump to 3.x when it is fully supported in ArcGIS.
 
 
 Building from source

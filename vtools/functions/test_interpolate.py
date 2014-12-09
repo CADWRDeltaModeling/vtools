@@ -154,7 +154,7 @@ class TestInterpolate(unittest.TestCase):
             
     def test_rts_at_irregular_points(self):
         
-        """ Test interpolation of  regular timeseries at
+        """ Test interpolation of  regular time series at
             irregular points.
         """
         msgstr="at test_rts_at_irregular_points"
@@ -454,7 +454,32 @@ class TestInterpolate(unittest.TestCase):
             self.assertTrue(rt.is_regular())
             self.assertEqual(rt.interval,parse_interval(interval))
             
-    
+
+    def test_interpolate_rts_to_larger_dt(self):
+        """ Test interpolating a fine ts to a coarser one
+        
+        """
+        import numpy as np
+        import datetime as dt
+        ts = rts(np.arange(100.),dt.datetime(2000,1,1,0,6),minutes(6))
+        ts1 = interpolate_ts(ts,hours(1),method=LINEAR)
+        self.assertTrue(ts[9].value == ts1[0].value)
+        ts2 = interpolate_ts(ts,ts1,method=LINEAR)
+        self.assertTrue(ts1[3].value == ts2[3].value)
+        its1 = its(ts1.times,ts1.data)
+        ts3 = interpolate_ts(ts,its1,method=LINEAR)
+        self.assertTrue(ts1[3].value == ts3[3].value)
+        
+        ts = rts(np.arange(98.),dt.datetime(2000,1,1,0,3),minutes(6))
+        ts2 = interpolate_ts(ts,hours(1),method=LINEAR)
+        self.assertTrue(ts2[0].value == 9.5)
+        #self.assertTrue(rt.is_regular())
+        #self.assertEqual(rt.interval,parse_interval(interval))
+
+        ts_too_wide = rts(np.arange(120.),dt.datetime(1999,12,31,23),hours(1))
+        self.assertRaises(ValueError, interpolate_ts,ts,ts_too_wide)
+        
+            
          
     def test_interpolate_rts_rts_month2day(self):
         """ Test create a finer regular ts by interpolating rts"""

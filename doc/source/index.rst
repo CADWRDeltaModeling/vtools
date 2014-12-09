@@ -17,7 +17,7 @@ Learning vtools is something you can mostly learn by example, so most of the top
 .. toctree::
    :maxdepth: 2
 
-   Installing vtools <install_vtools>
+   Getting and Installing vtools <install_vtools>
    Time and time interval concepts <time_concepts>
    Time series class <timeseries>
    Functions <vtools_functions>
