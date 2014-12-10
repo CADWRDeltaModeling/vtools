@@ -21,9 +21,11 @@ setup(
     license="PSF or ZPL",
     install_requires = ['setuptools'],
     packages=find_packages(),
-    namespace_packages=['vtools','vtools.datastore','vtools.datastore.dss'],
-    package_data={"vtools.datastore.dss":["doc/*.*","doc/html/*.*","*.pyd","*test/backup_dssfile/testfile.dss"],
-	              "":["doc/*.*","doc/html/*.*","*.pyd"]},
+    namespace_packages=['vtools','vtools.datastore','vtools.examples','vtools.datastore.dss','vtools.datastore.excel'],
+    package_data={"vtools.datastore.dss":["doc/*.*","doc/html/*.*","*.pyd","test/backup_dssfile/testfile.dss"],
+	              "":["doc/*.*","doc/html/*.*","*.pyd"],"vtools.datastore.excel":["test/backup_excelfile/test.xls"],
+                  "vtools.test":["backup/testfile.dss"],
+				  "vtools.data":["*.txt"]},
     exclude_package_data = {'': ['*.pyc','*.pyo']},
     entry_points = {
         'console_scripts': [
