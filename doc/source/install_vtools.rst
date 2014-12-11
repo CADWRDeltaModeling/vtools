@@ -29,10 +29,12 @@ Use the command::
 
 Version 2.7 of Python is currently supported in 32 or 64 bit flavors. We will make the jump to 3.x when it is fully supported in ArcGIS.
 
+VTools is offered under the MIT license. You should receive a copy of the license with the package.
 
-Building from source
---------------------
-The source code is available from GitHub. VTools is offered under the BSD license. PyDSS is also included and is fully tested with several versions of the DSS library. Note, however, that we are redistributing the HEC-DSS license with permission from the Hydrologic Engineering Center and don't have explicit permission to distribute their source code.
+PyDSS
+-----
+If you want to use VTools with HEC-DSS data, you will need PyDSS. PyDSS is also licensed under the MIT license.
+We are redistributing the HEC-DSS library with permission from the Hydrologic Engineering Center and don't have explicit permission to distribute their source code. Currently we only have a Windows Build.
 
-VTools relies on native code for provision of the DSS interface.
-
+  - `pydss_0.8_py2.7_win32.exe <https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_win32.exe>`_
+  - `pydss_0.8_py2.7_amd64.exe <https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_amd64.exe>`_
