@@ -17,10 +17,13 @@ VTools makes extensive use of numpy, scipy as well as interfaces to data sources
 VTools Install
 --------------
 VTools is installed via a python "egg". The vtools egg available here:
-`vtools-1.0_r0-py2.7.egg (Python 2.7, Windows 64 bit) <https://msb.water.ca.gov/documents/86683/266737/vtools-1.0_r0-py2.7.egg>`_
+  
+  - `vtools-1.1-py2.7.egg (Python 2.7, Windows 64 bit) <https://msb.water.ca.gov/documents/86683/266737/vtools-1.1-py2.7.egg>`_
+  - `vtools-1.0-py2.7_win32.egg (Python 2.7, Windows 32 bit) <https://msb.water.ca.gov/documents/86683/266737/vtools-1.0-py2.7_win32.egg>`_
 
 Use the command::
-$ pip install vtools-1.0_r0-py2.7.egg
+
+  $ pip install vtools-1.1-py2.7.egg
 
 (easy_install will also work fine)
 

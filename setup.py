@@ -7,7 +7,7 @@ from setuptools import setup,find_packages
 
 # Metadata
 PACKAGE_NAME = "vtools"
-PACKAGE_VERSION = "1.0"
+PACKAGE_VERSION = "1.1"
 PACKAGES = ['datastore','data','examples','functions','datastore.dss']
 
 setup(
@@ -18,7 +18,7 @@ setup(
     #long_description = get_description(),
     author="Eli Ateljevich, Qiang Shu", 
     author_email="eli@water.ca.gov",
-    license="PSF or ZPL",
+    license="MIT",
     install_requires = ['setuptools'],
     packages=find_packages(),
     namespace_packages=['vtools','vtools.datastore','vtools.examples','vtools.datastore.dss','vtools.datastore.excel'],
