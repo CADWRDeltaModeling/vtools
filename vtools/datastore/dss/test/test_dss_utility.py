@@ -163,7 +163,10 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(numd,938)
         startdatetime=datetime(1997,1,1)
         self.assertEqual(tss.times[0],startdatetime)
-
+        enddatetime=datetime(1999,7,27)
+        self.assertEqual(tss.times[-1],enddatetime)
+        self.assertAlmostEqual(tss.data[-1],114.0)
+         
         timewindow="(01/01/1997,07/28/1999)"
         tss=dss_retrieve_ts(dssfile_path,selector,timewindow)
         numd=len(tss)
