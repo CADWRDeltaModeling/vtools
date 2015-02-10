@@ -659,10 +659,9 @@ class DssService(Service):
             tradition, that is different from what user
             will see use HecdssVue
         """
-        #pdb.set_trace()
+      
         firstD=dparts[0]
         firstpath=cpath.replace('//','/'+firstD+'/')
-        #pdb.set_trace()
         (header_dic,data,cunits,ctype)=\
         self._retrieve_regular_header(dssf,firstpath)
                 
@@ -681,12 +680,20 @@ class DssService(Service):
         self._retrieve_regular_header(dssf,lastpath)       
         end=parse_time(lastD)
         valid_end=discover_valid_rts_end(data,end,interval)
-
-        ## time window is up to but not include right side of
-        ## extent
-        time_window=(valid_start,valid_end+interval)
+        
+        ## dss file stamping time at the the end of 
+        ## aggregating period, so valid data period
+        ## begins one interval, no such operation
+        ## for the end for it is already stamped at the
+        ## end of aggregating period
+        if ctype in RTS_DSS_PROPTY_TO_VT.keys():
+            valid_start=valid_start-interval
+        
+        
+        time_window=(valid_start,valid_end)
 
         return (time_window,header_dic,cunits,ctype)
+       
     
     def _retrieve_blank_header(self):
 
@@ -911,7 +918,7 @@ class DssService(Service):
         # "'02/11/1995 10:30:00'")).
         (dummy,extent)=data_ref.extents()[0]
         
-        
+      
         # Start time and end time in string.
         stime=extent[0]
         etime=extent[1]
@@ -958,12 +965,12 @@ class DssService(Service):
         cdate=cdate.strftime('%d%b%Y') 
         ctime=stime.time()
         ctime=ctime.strftime('%H%M')
-
+       
         right = 1
         left  =-1
-        if (align(stime,step,right)!= stime):
+        if ((align(stime,step,right)!= stime) and (align(ts_start,step,right) == ts_start)):
             stime = align(stime,step,right)
-        if (align(etime,step,left)!=etime):
+        if ((align(etime,step,left)!=etime) and (align(ts_end,step,left) == ts_end)):
             etime = align(etime,step,left)
 
         if (etime<stime): ## no data should be return in such a case
@@ -996,7 +1003,6 @@ class DssService(Service):
         dss_file_path=data_ref.source
         dssf=open_dss(dss_file_path)
         time_interval=strip(split(path,"/")[5])
- 
         window_iter = self._gen_rts_datetime_nval(data_ref,dssf)
         
         lflags=True
