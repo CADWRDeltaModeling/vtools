@@ -10,7 +10,7 @@ from vtools.datastore.catalog import CatalogEntry
 from vtools.data.constants import *
 from vtools.datastore.data_reference import DataReference
 from vtools.data.timeseries import TimeSeries,rts,its,minutes
-from vtools.data.vtime import ticks_to_time,parse_time
+from vtools.data.vtime import ticks_to_time,parse_time,parse_interval
 from dateutil.parser import parse
  
  
@@ -41,10 +41,10 @@ class TestDssService(unittest.TestCase):
     def test_get_catalog(self):
         dssfile_path=self.test_file_path
         dssc=self.dss_service.get_catalog(dssfile_path)
-        self.assert_(type(dssc)==DssCatalog)        
+        self.assertTrue(type(dssc)==DssCatalog)        
         entries=dssc.entries()        
         for entry in entries:
-            self.assert_(type(entry)==CatalogEntry)            
+            self.assertTrue(type(entry)==CatalogEntry)            
         self.assertEqual(len(entries),28)
         
     def test_get_data(self):
@@ -59,7 +59,7 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/1/1991 03:45,12/24/1991 01:30)"
         data_ref=DataReference(id,source,view,selector,extent)
         data=self.dss_service.get_data(data_ref)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         l=len(data.data)
         self.assertEqual(len(data.data),2200)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/1/1991 03:45'))
@@ -78,7 +78,7 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/11/1991 01:00,04/02/1992 21:50)"
         data_ref=DataReference(id,source,view,selector,extent)
         data=self.dss_service.get_data(data_ref)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),106)
         
         ## retrieve data of monthly interval
@@ -91,7 +91,7 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/1/1990,06/02/1991)"
         data_ref=DataReference(id,source,view,selector,extent)
         data=self.dss_service.get_data(data_ref)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),5)
         
 
@@ -108,28 +108,28 @@ class TestDssService(unittest.TestCase):
         ##  retrieve data within 
         overlap = (0,0)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),46)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:08'))
 
         ##  retrieve data within and preceding
         overlap = (1,0)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),47)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
 
         ##  retrieve data within  and following
         overlap = (0,1)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),47)
         self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
 
         ##  retrieve data within 
         overlap = (1,1)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),48)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
         self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
@@ -143,7 +143,7 @@ class TestDssService(unittest.TestCase):
         ##  retrieve data within 
         overlap = (0,0)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),47)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:08'))
         self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
@@ -151,7 +151,7 @@ class TestDssService(unittest.TestCase):
         ##  retrieve data within and preceding
         overlap = (1,0)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),48)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
         self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/24/1992 21:00'))
@@ -159,14 +159,14 @@ class TestDssService(unittest.TestCase):
         ##  retrieve data within  and following
         overlap = (0,1)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),48)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:08'))
         self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/26/1992 08:00'))
         ##  retrieve data within 
         overlap = (1,1)
         data=self.dss_service.get_data(data_ref,overlap)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         self.assertEqual(len(data.data),49)
         self.assertEqual(ticks_to_time(data.ticks[0]),parse('12/10/1991 00:04'))
         self.assertEqual(ticks_to_time(data.ticks[-1]),parse('1/26/1992 08:00'))
@@ -181,7 +181,7 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(1/2/1997,1/5/1997)"
         data_ref=DataReference(id,source,view,selector,extent)
         data=self.dss_service.get_data(data_ref)
-        self.assert_(type(data)==TimeSeries)
+        self.assertTrue(type(data)==TimeSeries)
         l=len(data.data)
         self.assertEqual(len(data.data),3)
         self.assertEqual(data.data[0],11.0)
@@ -205,8 +205,87 @@ class TestDssService(unittest.TestCase):
             #print data_ref.selector
             #print entry.dimension_scales()[0].get_range()
             ts=self.dss_service.get_data(data_ref)
-            self.assert_(type(ts)==TimeSeries)
+            self.assertTrue(type(ts)==TimeSeries)
 
+    def test_support_unaligned_ts(self):
+        ## create some unaligned ts with aggregated attributes, save to test file and read it back 
+        
+        ## daily averaged ts
+        ts_start = parse_time("01/02/2000 23:00")
+        ts_data  = [1.0,2.0,3.0,4.0,5.0]
+        interval = parse_interval("1day")
+        props={AGGREGATION:MEAN, TIMESTAMP:PERIOD_START}
+        ts =rts(ts_data,ts_start,interval,props)
+        selector="/THIS/TS/UNALIGNED//1DAY/TEST/"
+        id="vtools.datastore.dss.DssService"
+        source=self.test_file_path
+        data_ref=DataReference(id,source=source,selector=selector)
+        self.dss_service.add_data(data_ref,ts)
+        
+        dssc=self.dss_service.get_catalog(source)
+        data_refs=dssc.data_references(selector)
+        data_ref=data_refs.next()
+        ts_back=self.dss_service.get_data(data_ref)
+        self.assertTrue(ts_back.start==ts.start)
+        self.assertTrue(len(ts_back)==len(ts))
+        self.assertTrue((ts_back.data==ts.data).all())
+  
+         ## hourly averaged ts
+        ts_start = parse_time("01/02/2000 23:59")
+        ts_data  = [1.0,2.0,3.0,4.0,5.0]
+        interval = parse_interval("1hour")
+        props={AGGREGATION:MEAN,TIMESTAMP:PERIOD_START}
+        ts =rts(ts_data,ts_start,interval,props)
+        selector="/THIS/TS/UNALIGNED//1HOUR/TEST/"
+        data_ref=DataReference(id,source=source,selector=selector)
+        self.dss_service.add_data(data_ref,ts)
+        
+        dssc=self.dss_service.get_catalog(source)
+        data_refs=dssc.data_references(selector)
+        data_ref=data_refs.next()
+        ts_back=self.dss_service.get_data(data_ref)
+        self.assertTrue(ts_back.start==ts.start)
+        self.assertTrue(len(ts_back)==len(ts))
+        self.assertTrue((ts_back.data==ts.data).all())
+        
+         ## 15MIN averaged ts
+        ts_start = parse_time("01/02/2000 23:59")
+        ts_data  = [1.0,2.0,3.0,4.0,5.0]
+        interval = parse_interval("15MIN")
+        props={AGGREGATION:MEAN,TIMESTAMP:PERIOD_START}
+        ts =rts(ts_data,ts_start,interval,props)
+        selector="/THIS/TS/UNALIGNED//15MIN/TEST/"
+        data_ref=DataReference(id,source=source,selector=selector)
+        self.dss_service.add_data(data_ref,ts)
+        
+        dssc=self.dss_service.get_catalog(source)
+        data_refs=dssc.data_references(selector)
+        data_ref=data_refs.next()
+        ts_back=self.dss_service.get_data(data_ref)
+        self.assertTrue(ts_back.start==ts.start)
+        self.assertTrue(len(ts_back)==len(ts))
+        self.assertTrue((ts_back.data==ts.data).all())
+        
+        
+        ## YEAR averaged ts
+        ts_start = parse_time("02/02/2000 ")
+        ts_data  = [1.0,2.0,3.0,4.0,5.0]
+        interval = parse_interval("1year")
+        props={AGGREGATION:MEAN,TIMESTAMP:PERIOD_START}
+        ts =rts(ts_data,ts_start,interval,props)
+        selector="/THIS/TS/UNALIGNED//1YEAR/TEST/"
+        data_ref=DataReference(id,source=source,selector=selector)
+        self.dss_service.add_data(data_ref,ts)
+        
+        dssc=self.dss_service.get_catalog(source)
+        data_refs=dssc.data_references(selector)
+        data_ref=data_refs.next()
+        ts_back=self.dss_service.get_data(data_ref)
+        self.assertTrue(ts_back.start==ts.start)
+        self.assertTrue(len(ts_back)==len(ts))
+        self.assertTrue((ts_back.data==ts.data).all())
+        
+        
 
     def test_get_save_ts(self):
         ## test ts property unchanged after read and save ts into dss
@@ -233,7 +312,7 @@ class TestDssService(unittest.TestCase):
         data_refs=dssc.data_references(selector)
         data_ref=data_refs.next()
         nts=self.dss_service.get_data(data_ref)
-        self.assert_(len(ts)==len(nts))
+        self.assertTrue(len(ts)==len(nts))
         
         ##clean up this temp data
         cat=self.dss_service.get_catalog(source)
@@ -260,8 +339,8 @@ class TestDssService(unittest.TestCase):
         data_ref=data_refs.next()
         ts=self.dss_service.get_data(data_ref)
         
-        self.assert_(type(ts)==TimeSeries)
-        self.assert_(ts.props[AGGREGATION]==MEAN)
+        self.assertTrue(type(ts)==TimeSeries)
+        self.assertTrue(ts.props[AGGREGATION]==MEAN)
 
         ts.props.clear()
         ts.props[AGGREGATION]=MEAN
@@ -286,11 +365,11 @@ class TestDssService(unittest.TestCase):
         data_ref=data_refs.next()
         ts=self.dss_service.get_data(data_ref)
         
-        self.assert_(type(ts)==TimeSeries)
-        self.assert_(ts.props[AGGREGATION]==MEAN)
-        self.assert_(ts.props["VDATUM"]=="NGVD88")
-        self.assert_(ts.props["AUTHOR"]=="John Doe")
-        self.assert_(ts.props["MODEL"]=="hydro 7.5")
+        self.assertTrue(type(ts)==TimeSeries)
+        self.assertTrue(ts.props[AGGREGATION]==MEAN)
+        self.assertTrue(ts.props["VDATUM"]=="NGVD88")
+        self.assertTrue(ts.props["AUTHOR"]=="John Doe")
+        self.assertTrue(ts.props["MODEL"]=="hydro 7.5")
         
         
         ##clean up this temp data
@@ -325,11 +404,11 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 10:00,01/31/2001 18:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
-        self.assert_(len(rtt2)==992)
+        self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assertTrue(len(rtt2)==992)
         correct_data = range(8,len(rtt2)+8)
         for i in range(len(rtt2)):
-            self.assert_(rtt2.data[i]==float(correct_data[i]))
+            self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
         ## test return middle part of stored data
         ## it should get 12 numbers and value is (8,9,...,19)
@@ -338,12 +417,12 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 10:00,12/21/2000 22:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
-        self.assert_(rtt2.end==parse_time("12/21/2000 21:00"))
-        self.assert_(len(rtt2)==12)
+        self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assertTrue(rtt2.end==parse_time("12/21/2000 21:00"))
+        self.assertTrue(len(rtt2)==12)
         correct_data = range(8,len(rtt2)+8)
         for i in range(len(rtt2)):
-            self.assert_(rtt2.data[i]==float(correct_data[i]))
+            self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
         ## test return middle part of stored data
         ## it should get 12 numbers and value is (8,9,...,19)
@@ -353,60 +432,60 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 09:45,12/21/2000 22:15)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
-        self.assert_(rtt2.end==parse_time("12/21/2000 21:00"))
-        self.assert_(len(rtt2)==12)
+        self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assertTrue(rtt2.end==parse_time("12/21/2000 21:00"))
+        self.assertTrue(len(rtt2)==12)
         correct_data = range(8,len(rtt2)+8)
         for i in range(len(rtt2)):
-            self.assert_(rtt2.data[i]==float(correct_data[i]))
+            self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
         ## test valid timewindow overlap exaclty the last data of
         ## the record
         extent="time_window=(1/31/2001 17:00,1/31/2001 18:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==1)
-        self.assert_(rtt2.data[0]==float(999))
+        self.assertTrue(len(rtt2)==1)
+        self.assertTrue(rtt2.data[0]==float(999))
 
         ## test invalid time window with same start and end
         ## excatly at beginig time sequence
         extent="time_window=(12/21/2000 02:00,12/21/2000 02:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
 
         ## test invalid time window with same start and end in the
         ## middle of time sequence
         extent="time_window=(12/21/2000 05:00,12/21/2000 05:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
 
         ## test invalid time window with same start and end at the
         ## end of time sequence
         extent="time_window=(12/21/2000 17:00,12/21/2000 17:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
 
         ## test invalid time window with same start and end not aligined with interval
         extent="time_window=(12/21/2000 05:15,12/21/2000 05:15)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
 
         ## test invalid time window with different start and end within a hour interval
         extent="time_window=(12/21/2000 05:15,12/21/2000 05:55)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
 
         ## test invalid time window with different start and end across two hour intervals
         ## but intervals are incomplete, so it should return no value
         extent="time_window=(12/21/2000 05:15,12/21/2000 06:55)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
 
 
         ## test invalid time window with same start and end
@@ -414,7 +493,7 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 17:15,12/21/2000 17:15)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
 
 
         ## test valid time window overlap exactly the first data
@@ -422,23 +501,23 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 02:00,12/21/2000 03:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==1)
-        self.assert_(rtt2.data[0]==float(0))
+        self.assertTrue(len(rtt2)==1)
+        self.assertTrue(rtt2.data[0]==float(0))
 
 
         ## test valid time window overlap exactly a data in the middle
         extent="time_window=(12/21/2000 05:00,12/21/2000 06:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==1)
-        self.assert_(rtt2.data[0]==float(3))
+        self.assertTrue(len(rtt2)==1)
+        self.assertTrue(rtt2.data[0]==float(3))
 
         ## test valid time window overlap exactly a data at the end
         extent="time_window=(1/31/2001 17:00,1/31/2001 18:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==1)
-        self.assert_(rtt2.data[0]==float(999))
+        self.assertTrue(len(rtt2)==1)
+        self.assertTrue(rtt2.data[0]==float(999))
 
         ## test invalid timewindow before the data starting
         ## but still overlap data block window
@@ -483,11 +562,11 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 10:00,01/31/2001 18:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
-        self.assert_(len(rtt2)==992)
+        self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assertTrue(len(rtt2)==992)
         correct_data = range(8,len(rtt2)+8)
         for i in range(len(rtt2)):
-            self.assert_(rtt2.data[i]==float(correct_data[i]))
+            self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
         ## test returning middle part of stored data
         ## it should get 13 numbers and value is (8,9,...,19,20)
@@ -496,43 +575,43 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 10:00,12/21/2000 22:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(rtt2.start==parse_time("12/21/2000 10:00"))
-        self.assert_(rtt2.end==parse_time("12/21/2000 22:00"))
-        self.assert_(len(rtt2)==13)
+        self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
+        self.assertTrue(rtt2.end==parse_time("12/21/2000 22:00"))
+        self.assertTrue(len(rtt2)==13)
         correct_data = range(8,len(rtt2)+8)
         for i in range(len(rtt2)):
-            self.assert_(rtt2.data[i]==float(correct_data[i]))
+            self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
         ## test valid timewindow overlap exaclty the last data of
         ## the record
         extent="time_window=(1/31/2001 17:00,1/31/2001 17:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==1)
-        self.assert_(rtt2.data[0]==float(999))
+        self.assertTrue(len(rtt2)==1)
+        self.assertTrue(rtt2.data[0]==float(999))
 
         ## test valid time window with same start and end
         ## excatly at begining of the time sequence
         extent="time_window=(12/21/2000 02:00,12/21/2000 02:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==1)
-        self.assert_(rtt2.data[0]==float(0))
+        self.assertTrue(len(rtt2)==1)
+        self.assertTrue(rtt2.data[0]==float(0))
 
 
         ## test valid time window overlap exactly a data in the middle
         extent="time_window=(12/21/2000 05:00,12/21/2000 05:00)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==1)
-        self.assert_(rtt2.data[0]==float(3))
+        self.assertTrue(len(rtt2)==1)
+        self.assertTrue(rtt2.data[0]==float(3))
 
         ## test invalid time window with same end and start not aligned with
         ## interval
         extent="time_window=(12/21/2000 05:15,12/21/2000 05:15)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
         
 
         
@@ -541,7 +620,7 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(12/21/2000 05:15,12/21/2000 05:15)"
         data_ref=DataReference(id,source,None,path,extent)
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(len(rtt2)==0)
+        self.assertTrue(len(rtt2)==0)
        
 
         ## test invalid timewindow before the data starting
@@ -592,15 +671,15 @@ class TestDssService(unittest.TestCase):
         path="/TEST/DOWNSTREAM/EC//1HOUR/STAGE/"
         data_ref=dssc.data_references(path).next()       
         rtt=self.dss_service.get_data(data_ref)      
-        self.assert_(len(rtt)==len(data))
-        self.assert_(rtt.props[TIMESTAMP]==PERIOD_START)
-        self.assert_(rtt.props[AGGREGATION]==MEAN)      
-        self.assert_(rtt.times[0],dtm.datetime(2000,12,21,2))
+        self.assertTrue(len(rtt)==len(data))
+        self.assertTrue(rtt.props[TIMESTAMP]==PERIOD_START)
+        self.assertTrue(rtt.props[AGGREGATION]==MEAN)      
+        self.assertTrue(rtt.times[0],dtm.datetime(2000,12,21,2))
         extent="time_window=(12/21/2000 02:00,01/31/2001 18:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt2=self.dss_service.get_data(data_ref)
-        self.assert_(rtt.start==rtt2.start)
-        self.assert_(rtt.end==rtt2.end)
+        self.assertTrue(rtt.start==rtt2.start)
+        self.assertTrue(rtt.end==rtt2.end)
 
 
       
@@ -626,8 +705,8 @@ class TestDssService(unittest.TestCase):
         extent="time_window=(1/10/1997 02:00,09/30/1998 18:00)"
         data_ref=DataReference(id,source,None,path,extent)        
         rtt3=self.dss_service.get_data(data_ref)
-        self.assert_(parse_time("01/15/1997")==rtt3.start)
-        self.assert_(parse_time("08/24/1998")==rtt3.end)
+        self.assertTrue(parse_time("01/15/1997")==rtt3.start)
+        self.assertTrue(parse_time("08/24/1998")==rtt3.end)
         
     def test_retrievesave_longits(self):
         ## save some ts into dss file, ts may contain
@@ -684,7 +763,7 @@ class TestDssService(unittest.TestCase):
         data_ref=DataReference(id,source=source,selector=path)
         self.dss_service.add_data(data_ref,rt1)
 
-        self.assert_(os.path.exists(source))
+        self.assertTrue(os.path.exists(source))
         
         
     def test_get_two_catalog_same_time(self):
