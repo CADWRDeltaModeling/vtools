@@ -129,7 +129,7 @@ class DssService(Service):
             (time_window,header,unit,type)=\
             self._retrieve_its_prop(dssf,path,dparts)
         else:
-            raise ValueError("Unimplemented record type.")
+            raise ValueError("Unimplemented record type: %i path: %s"%(idtype,path))
         
         return (time_window,header,unit,type)
 
