@@ -120,9 +120,10 @@ class DssService(Service):
         firstD=dparts[0]
         firstpath=path.replace('//','/'+firstD+'/')
         ## find out type of record.
+
         (idtype,d1,d2)=self._retrieve_data_type(dssf,firstpath)
 
-        if idtype==REGULARTS:
+        if (idtype==REGULARTS) or (idtype==REGULARTS_DOUBLE):
             (time_window,header,unit,type)=\
             self._retrieve_rts_prop(dssf,path,dparts)
         elif idtype==IRREGULARTS:
