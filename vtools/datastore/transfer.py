@@ -18,11 +18,15 @@ import sys,types#,pdb
 import os.path
 from copy import deepcopy
 
+
 ## local import
 from data_service_manager import DataServiceManager
 from service import Service
 from translate import *
 from optionparse import parse
+
+
+
 
 ## vtools import
 #from vtools.debugtools.timeprofile import debug_timeprofiler
@@ -30,13 +34,14 @@ __all__=["transfer","batch_transfer"]
 
 
 
-try:
-    for plugin in  __import__('pkg_resources').iter_entry_points(group="vtools.datastore",name=None):
+
+for plugin in  __import__('pkg_resources').iter_entry_points(group="vtools.datastore",name=None):
+    try:
         pe=plugin.parse(str(plugin))
         pe.load(False)
         
-except Exception, e:
-    raise ImportError("fail to load required data source service plugin %s due to %s"%(str(plugin),str(e)))
+    except Exception, e:
+        raise ImportError("fail to load required data source service plugin %s due to %s"%(str(plugin),str(e)))
 
 
 ########################################################################### 
@@ -71,6 +76,7 @@ def batch_transfer(source,dest=None,selector=None,extent=None\
         output:
            None.
     """
+
     ds=DataServiceManager()
     s1=None
 
@@ -82,12 +88,15 @@ def batch_transfer(source,dest=None,selector=None,extent=None\
 
     if os.path.isfile(dest):
        dest=os.path.abspath(dest)
-                
+      
     s1=_service(source,ds)
     s2=_service(dest,ds)
 
-    if not s1 or not s2:
-      raise ValueError("Invalid input source or destination")
+    if not s1:
+      raise ValueError("Invalid input: source %s"%source)
+      
+    if not s2:
+      raise ValueError("Invalid input: destination %s"%dest)
     
     c1=s1.get_catalog(source)
     try:
