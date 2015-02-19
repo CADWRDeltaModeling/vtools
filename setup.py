@@ -7,7 +7,7 @@ from setuptools import setup,find_packages
 
 # Metadata
 PACKAGE_NAME = "vtools"
-PACKAGE_VERSION = "1.0"
+PACKAGE_VERSION = "1.0.0"
 PACKAGES = ['datastore','data','examples','functions','datastore.dss']
 
 setup(
