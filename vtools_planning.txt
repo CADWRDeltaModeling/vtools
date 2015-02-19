@@ -1,0 +1,217 @@
+
+Odds and ends:
+The modules "filter", "tidal_filter" and "godin" should be consolidated into a single module "filter". There should be no need for the tidal butterworth, as this should be easy for the user to do based on your new input, yes?
+
+Change INDIVIDUAL to INST
+
+We should also look at shift(). It seems to me that this could be a member method of TimeSeries ... it seems odd that centered would be in TimeSeries and shift would be in a different place given how different they are. 
+
+For interpolation, the public interface looks good, but the implementation is really tangled. There are two high level functions interpolate_ts and interpolate_ts_nan which parameterize the names of methods.  Then there are a bunch of specific methods such as linear() and spline(). What you would expect is that the parameterized one would take the name of the method and dispatch the job to the individual method.  Instead, what seems to happen in a number of cases (but not consistently)  is that specific method calls the general method with the method parameter (say 'linear') and then the general method calls a private implementation of the specific method. That isn't going to look very sensible if anyone looks under the hood, although the public API is fine.
+
+time_sequence is type "L" which causes weird division
+
+
+f2py
+************
+
+
+
+Deployment:
+simplify the distribution
+64 bit
+Reinstate excel
+
+pydss
+possibly move away from "home brew" heclib to the standard compilation from HEC
+simplify finding out about the ctype and cunit of time series
+document
+
+data:
+-- time series should wrap netcdf4py objects as well as numpy if feasible. maximize # functions that work for both.
+- improve the depiction of multivariate data, including names/indexes/values of other dimensions.
+-- figure out what to do with flags: time series should wrap masked arrays?
+
+datastore:
+Create a data service for text files (rdb,cdec csv) based on directories. retrieves ids, names, metadata
+Data service for netcdf? 
+re-institute excel and tidefile if not too hard.
+simpler interface for simple text file formats.
+netcdf service
+reduce complexity of api
+eliminate dependency on traits, particularly catalog and catalog ite
+CatalogItem needs a redesign, dimensions are hard to use
+
+functions:
+ts.centered()
+improve # of functions that work for multivariate data
+x make filters more user accessible
+make interpolation more user accessible
+--- fix and test rhistinterp
+add tidal analysis
+
+graph:
+recipes for bar charts (irreg and average
+line charts for averages
+
+documentation
+we never had enough. we should make some
+
+
+VTools:
+1. Catalog, data reference, dimensions
+2. Should any indexing be usable for adding/subtracting
+3. netcdf/hdf5: making things more standard
+   DSS
+   DSM2 Tidefile
+   NetCDF
+   GR file
+   TSF file
+4. Backward compabibility
+5. time_aggregation: coarsening/refinement...what is the word
+6. distribution (get this first!!!) put out 2.6 and 2.7
+7. Graphical tool?
+8. Tidal analysis?
+   Foreman stuff... maybe should do this on train
+9. How is our catalog implementation?
+10. VTools - Enthought separation
+11. Dimensions should match the CF convention in VTools
+   
+Catalog
+Vocabulary and implementation
+
+A Catalog is a list of Datasets in a DataSource
+DataSets have Dimensions
+
+A DataReference is a DataSource + Dataset + Selection
+
+
+Catalog mimics ArcGIS:
+You maintain of data sources that are recognized
+Data sources have catalogs
+Drag from catalog into a session:
+    session directly operates on these
+    creates new persistent objects on the backend (?) or a session file
+    editor works by:
+           i. Direct manipulation of points
+           ii. Drawn correctors (which can be snapped to a horizontal level or line)
+           ii. Linear/polynomial interpolation of gap (autointerpolate)
+           ii. Removal of spikes
+           ii. Application of correctors
+    where do you put data back? Obviously if you get it from some place sacred, need to put it somewhere else.
+    Original thought was that raw data would be 
+    
+    
+Editor:
+    Discover:
+        Gaps
+        Spikes
+        Time shifts (tidal/spectral...how?)
+        DST anomalies???
+        Hand edit
+    Fix:
+        Linear
+        Cubic
+        Autoregressive
+        Multi-channel autoregressive
+        Draw correctors (and assign values) 
+    Tabular:
+        List with other series
+        Type
+        Cut and paste from other apps
+        Insert linear segment
+        Edit attributes
+
+Import:
+    CSV (headers? treat as separate series)
+    DSS text format
+        
+Filter:
+    LSQ
+    butterworth
+    boxcar
+    godin
+    Transfer function
+
+Period/Resample:
+    Refine: 
+       Linear
+       Cubic
+       Cubic (monotonicity)
+    Disaggregate:
+       Flat-line
+       Cubic (volume-preserving tension)
+    Decimate:
+       Period Min
+       Period Max
+       Low-pass downsample
+       Downsample
+
+Operations:       
+    Algebra
+    Time derivative
+    Step function
+
+Units library: ???    
+       
+Fits:
+    ARMA
+    Multichannel
+    
+Merging:
+    Merge
+    Merge-with-mitre
+       
+Tide:
+    Define location
+    Fit tide 
+        Foreman -> fit file
+        Synthetic ->fit, residual
+    Detide
+    Shift detect
+
+Graphical:
+    Visualization and publishing: 
+       Viewer contains arbitrary number of figures
+       Series are dragged onto existing plots (shift means add, non means new figure).
+       vertical figures of time series have linked time.
+       plots can be dragged
+           dual y axes plots
+           formatting and relabeling 
+       specific things wanted:
+           condition-happening plot for top of figure
+           x-y plots
+           stacked plots
+           maybe play ball more with existing framework?
+           box-whisker plot
+           cruise data contour plots
+           
+        
+    Editor panel... (look up ArcGIS) "Edit -> series". Brings up editor panel. Other series can be on the panel? 
+        edit points?
+        flat corrector
+        linear corrector
+        cubic corrector
+        autodetect gaps
+        autodetect spikes
+        march through gaps 
+        merge (series)
+        regress (series)
+
+Work flow:
+Open session, bring in new data
+
+So, bring into session (history = import)
+Every op produces an intermediate or does not.
+Every edit is recorded:
+    edit is defined as an in place creation of gap and correctors
+Saving: state is pickled in a session
+And/Or: all data are saved to netCDF format file
+And: history can be imported and run as a macro. Macro library.
+Stack of undo (ie the outputs and side-effects are known for every operation, cache the things that could be changed). Support for undo from community?
+Stack of undo for edits? Original series plus stack of correctors?
+
+
+
+
+
+
