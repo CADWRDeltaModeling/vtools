@@ -103,6 +103,10 @@ class DssCatalog(Catalog):
     ###########################################################################
     ## public methods
     ###########################################################################
+    def uncondensed_D_parts(self,index):
+        if index>=(len(self._uncondensed_D_parts)):
+            raise ValueError("input index longer than catalog length")
+        return self._uncondensed_D_parts[index]
     def set_editable(self):
         self._editable=True
     def set_uneditable(self):
