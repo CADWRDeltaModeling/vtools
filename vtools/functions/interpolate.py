@@ -431,7 +431,7 @@ def _interpolate_ts2array(ts,times,method=LINEAR,filter_nan=True,**dic):
     indexes1=where(tticks>=valid_start)
     indexes2=where(tticks<=valid_end)
    
-    if (len(indexes1)==0) or (len(indexes2)==0):
+    if (len(indexes1[0])==0) or (len(indexes2[0])==0):
         raise ValueError("interpolation point is out of valid data range")
     
     s1=indexes1[0][0]

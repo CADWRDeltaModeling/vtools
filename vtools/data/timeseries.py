@@ -1003,7 +1003,7 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
 
     if method=="constant":
         data[0:head_extended]=val
-        data[head_extended+old_len:new_len-1]=val
+        data[head_extended+old_len:new_len]=val
     elif method=="taper":
         if np.isnan(val):
             raise ValueError("You must input a valid value for taper method")
