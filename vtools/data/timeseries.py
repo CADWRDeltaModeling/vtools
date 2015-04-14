@@ -72,14 +72,13 @@ def index_after(seq,tm):
     Returns
     -------
     The integer index in the sequence that fall on or after tm.
-    
+    When tm bigger than the last item of seq, it will return len(seq).
     """
     tm_ticks = ticks(tm)
     candidate = bisect.bisect_left(seq,tm_ticks)
-    if seq[candidate] >= tm_ticks:
-        return candidate
-    elif seq[candidate] < tm_ticks and candidate < (len(seq)-1): 
-        return candidate + 1
+    if seq[candidate] < tm_ticks:
+        candidate += 1
+    return candidate
 
 def indexes_after(seq,tm):
     """Return an array of indexes representing the index of seq that is on or after each
@@ -92,9 +91,11 @@ def indexes_after(seq,tm):
     
     tm : list of  :py:class:`datetime.datetime`
     List of times whose index is sought
+    When tm is bigger than the last item of seq, it will return len(seq).
+    When tm is smaller than the first time of seq, it will return 0.
     """
-
-    return scipy.searchsorted(seq,tm)
+    candidates = scipy.searchsorted(seq,tm)
+    return candidates
 
 
 def index_before(seq,tm):
@@ -115,10 +116,7 @@ def index_before(seq,tm):
     """
     tm_ticks = ticks(tm)
     candidate = bisect.bisect_right(seq,tm_ticks) - 1
-    if candidate < 0:
-        return 0
-    else:
-        return candidate
+    return candidate
 
 def prep_binary(ts1,ts2):
     """Create data for time-aligned op binary operation between two series
@@ -184,32 +182,24 @@ def _get_span(ts,start,end,left,right):
 
     if start>end:
         raise ValueError("Requested end of window is after time series end.")
-       
+    if start > ts.end or end < ts.start:
+        raise ValueError("Requested window is outside of time series.")
     start_index=ts.index_after(start)
-    start=ticks(start)
+    start_tick=ticks(start)
 
-    if (start_index==0) and (not(start==ts.ticks[start_index])) and left:
-        raise ValueError("Requested start of window is before time series start.")
-    
-    if (not(start_index==0)) and (not(start==ts.ticks[start_index])):
-        if left:
-          start_index-=1;
-    
-    end_index=ts.index_before(end)
-    end_ticks=ticks(end)
-    
-    tslast = len(ts)-1
-    if right:
-        if (end_index==(len(ts)-1)) and (not(end_ticks==ts.ticks[end_index])):
-            raise ValueError("Requested end of window is after time series end and user requested a right buffer.")   
-        if ts.ticks[end_index] < end_ticks and end_index < tslast:
+    if left is True:
+        if start_index > 0 and ts.ticks[start_index] > start_tick:
+            start_index-=1;
+
+    end_index = ts.index_before(end)
+    end_tick = ticks(end)
+
+    tslast = len(ts) - 1
+    if right is True:
+        if ts.ticks[end_index] < end_tick and end_index < tslast:
             end_index += 1
-   
-   
-    assert end_index < len(ts)          
-    assert (end_index<0) or (end_index>start_index) 
-    
-    return (start_index,end_index)
+
+    return (start_index, end_index)
 
 class TimeSeriesElement(object):
     def __init__(self,time_data):
@@ -588,7 +578,6 @@ class TimeSeries(object):
         new_props=self.props
         if copy_data:
             new_props = copy.deepcopy(self.props)   
- 
         if not is_interval(interval):
             interval=parse_interval(interval)
                
@@ -1003,7 +992,7 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
 
     if method=="constant":
         data[0:head_extended]=val
-        data[head_extended+old_len:new_len-1]=val
+        data[head_extended+old_len:new_len]=val
     elif method=="taper":
         if np.isnan(val):
             raise ValueError("You must input a valid value for taper method")

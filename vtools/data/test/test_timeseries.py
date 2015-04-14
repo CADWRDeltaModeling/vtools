@@ -1,6 +1,7 @@
 import unittest
 import numpy
 import datetime as _datetime
+import vtools.data.timeseries
 from vtools.data.timeseries import *
 from vtools.data.vtime import *
 from vtools.data.constants import *
@@ -209,7 +210,6 @@ class TestTimeSeries(unittest.TestCase):
         self.assert_(ts.is_regular())
         
     def test_index_after(self):
-        
         data=range(1000)
         start=self.stime1
         interval=time_interval(months=1)
@@ -222,7 +222,129 @@ class TestTimeSeries(unittest.TestCase):
         
         t2=ts.ticks[-1]
         i=ts.index_after(t2)
-        self.assertEqual(i,len(ts)-1)        
+        self.assertEqual(i,len(ts)-1)
+
+        # Before the first one
+        t1 = ts.ticks[0] - 1
+        i = ts.index_after(t1)
+        self.assertEqual(i, 0)
+
+        # After the last one
+        t1 = ts.ticks[-1] + 1
+        i = ts.index_after(t1)
+        self.assertEqual(i, len(ts))
+
+    def test_indexes_after(self):
+        n = 10
+        data = range(n)
+        start = self.stime1
+        interval = time_interval(days=1)
+        ts = rts(data, start, interval, {})
+
+        tm = [ts.start - minutes(1), ts.start, ts.start + minutes(1),
+              ts.end, ts.end + minutes(1)]
+        indexes = list(ts.index_after(tm))
+        self.assertEqual(indexes, [0, 0, 1, n - 1, n])
+
+    def test_get_span(self):
+        n = 10
+        data = range(n)
+        start = self.stime1
+        interval = time_interval(days=1)
+        ts = rts(data, start, interval, {})
+
+        # Inside
+        stime = ts.start
+        etime = ts.start + time_interval(days=2)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, False)
+        self.assertEqual(indexes, (0, 2))
+
+        stime = ts.start + minutes(1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, False)
+        self.assertEqual(indexes, (1, 2))
+
+        stime = ts.start
+        etime = ts.start + days(2) + minutes(1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, False)
+        self.assertEqual(indexes, (0, 2))
+
+        # Left outside
+        stime = ts.start - time_interval(days=1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, False)
+        self.assertEqual(indexes, (0, 2))
+
+        # Right outside
+        stime = ts.start + time_interval(days=1)
+        etime = ts.end + time_interval(days=1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, False)
+        self.assertEqual(indexes, (1, n - 1))
+
+        # Both outside
+        stime = ts.start - time_interval(days=1)
+        etime = ts.end + time_interval(days=1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, False)
+        self.assertEqual(indexes, (0, n - 1))
+
+        # Totally outside
+        stime = ts.start - time_interval(days=2)
+        etime = ts.start - time_interval(days=1)
+        self.assertRaises(ValueError, vtools.data.timeseries._get_span, ts,
+                                                   stime, etime, False, False)
+
+        stime = ts.end + time_interval(days=1)
+        etime = ts.end + time_interval(days=2)
+        self.assertRaises(ValueError, vtools.data.timeseries._get_span, ts,
+                                                   stime, etime, False, False)
+
+        # Inside with Left
+        stime = ts.start + minutes(1)
+        etime = ts.start + time_interval(days=2)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, True, False)
+        self.assertEqual(indexes, (0, 2))
+
+        stime = ts.start
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, True, False)
+        self.assertEqual(indexes, (0, 2))
+
+        # Left on the boundary
+        stime = ts.start - minutes(1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, True, False)
+        self.assertEqual(indexes, (0, 2))
+
+        # Inside with Right
+        stime = ts.start
+        etime = ts.start + days(2) + minutes(1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, True)
+        self.assertEqual(indexes, (0, 3))
+
+        stime = ts.start
+        etime = ts.end
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, True)
+        self.assertEqual(indexes, (0, n - 1))
+
+        stime = ts.start
+        etime = ts.end + minutes(1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, False, True)
+        self.assertEqual(indexes, (0, n - 1))
+
+        # Left and Right
+        stime = ts.start + minutes(1)
+        etime = ts.start + days(1) + minutes(1)
+        indexes = vtools.data.timeseries._get_span(ts,
+                                                   stime, etime, True, True)
+        self.assertEqual(indexes, (0, 2))
 
     def test_index_before(self):
         data=range(1000)
@@ -248,7 +370,7 @@ class TestTimeSeries(unittest.TestCase):
         # Before the first one
         t1=ts.times[0] - minutes(10)
         i=ts.index_before(t1)
-        self.assertEqual(i, 0)
+        self.assertEqual(i, -1)
 
         # After the last one
         t1=ts.times[-1] + minutes(1)
@@ -355,8 +477,14 @@ class TestTimeSeries(unittest.TestCase):
         self.its1.data[0]+=2.0
         self.assert_(newits.data[0]==self.its1.data[0])
         
-        
-                
+        stime=self.ts1.start - minutes(2)
+        etime=self.ts1.start - minutes(1)
+        self.assertRaises(ValueError, self.its1.window, start=stime, end=etime)
+
+        stime=self.ts1.end + minutes(1)
+        etime=self.ts1.end + minutes(2)
+        self.assertRaises(ValueError, self.its1.window, start=stime, end=etime)
+
 
     def test_ts_copy_left_right(self):
         ## test copy ts using left and right option
