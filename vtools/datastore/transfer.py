@@ -23,6 +23,7 @@ from copy import deepcopy
 from data_service_manager import DataServiceManager
 from service import Service
 from translate import *
+from group import *
 from optionparse import parse
 
 
@@ -165,14 +166,22 @@ def transfer(s1,reference1,s2,reference2,transform=None,**func_args):
         dt=s1.get_data(d1)
       except:
         raise StandardError("Failed to retrieve data pointed to by %s"%d1.selector)
-      try:
-        ts=_transform(dt,transform,**func_args)
-      except:
-        raise StandardError("Failed to transform input timeseries" )
-      try:
-        s2.add_data(d2,ts)
-      except:
-        raise StandardError("Failed to add new data into path %s in dest %s"%(d2.selector,d2.source))
+      ts_groups =[]
+      if "compress_size" in func_args.keys():
+          compress_size = func_args["compress_size"]
+          ts_groups = ts_group(dt,compress_size)
+      else:
+          ts_groups=[dt]
+
+      for a_dt in ts_groups:
+          try:
+              ts=_transform(a_dt,transform,**func_args)
+          except:
+              raise StandardError("Failed to transform input timeseries" )
+          try:
+              s2.add_data(d2,ts)
+          except:
+              raise StandardError("Failed to add new data into path %s in dest %s"%(d2.selector,d2.source))
     return
 
 ########################################################################### 
