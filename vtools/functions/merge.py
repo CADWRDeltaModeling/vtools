@@ -16,7 +16,7 @@ __all__=["merge",]
 ########################################################################### 
 ## Public interface.
 ###########################################################################
-def merge(ts0,ts1,*lts):
+def merge(ts0,ts1,*other_ts):
     """ merge a number of timeseries together and return a new ts.
     
     Parameters
