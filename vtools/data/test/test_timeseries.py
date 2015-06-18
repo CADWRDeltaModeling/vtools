@@ -61,7 +61,17 @@ class TestTimeSeries(unittest.TestCase):
         dt1=_datetime.datetime(1992,3,7,1,30)
         dt2=_datetime.datetime(1992,3,7,2,30)
         self.assertEqual(ts3[5].value,8.0)
-
+        
+        ts3=rts(self.arr,self.stime1+self.dt+self.dt,self.dt,{})
+        ts4=ts3+self.ts1
+        self.assertEqual(len(ts4),len(ts3)+2)
+        self.assertTrue(numpy.isnan(ts4.data[0]))
+        self.assertTrue(numpy.isnan(ts4.data[1])) 
+        self.assertEqual(ts4.data[2],ts3.data[0]+self.ts1.data[2])
+        self.assertTrue(numpy.isnan(ts4.data[-1])) 
+        self.assertTrue(numpy.isnan(ts4.data[-2])) 
+        
+    
     def testAverageTimeseries(self):
         # test average multiple ts together
         stime=_datetime.datetime(1992,2,10)
