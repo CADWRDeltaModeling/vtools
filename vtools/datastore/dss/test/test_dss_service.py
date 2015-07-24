@@ -712,9 +712,14 @@ class TestDssService(unittest.TestCase):
         ## save some ts into dss file, ts may contain
         ## header.
         
-        ## save rts first.
-        data=range(36009)
-        start="12/21/2000 2:00"
+        ## create rts first, and use it ticks and
+        ## data to create its
+        total_len = 700000
+        its_len   = 40000 ## 80000 will cause zsitx fail,for dss interal
+                          ## cache size is 10000. data size
+                          ## close to this number will cause dss lib abort
+        data=range(total_len)
+        start="12/21/1940 2:00"
         interval="1hour"
         prop={}
         prop[TIMESTAMP]=INST
@@ -725,7 +730,8 @@ class TestDssService(unittest.TestCase):
         prop["model"]="hydro 7.5"
 
         rt1=rts(data,start,interval,prop)
-        it1=its(data,rt1.ticks,prop)
+        
+       
 
         id="vtools.datastore.dss.DssService"
         path="/TEST/DOWNSTREAM/EC//1HOUR/SRT/"
@@ -734,9 +740,38 @@ class TestDssService(unittest.TestCase):
         data_ref=DataReference(id,source=source,selector=path)
         self.dss_service.add_data(data_ref,rt1)  
         
-        ##path="/TEST/DOWNSTREAM/EC//IR-MONTH/STAGE/"
-        ##data_ref=DataReference(id,source=source,selector=path)
-        ##self.dss_service.add_data(data_ref,it1)   
+         
+        path="/TEST/DOWNSTREAM/EC//IR-DAY/STAGE/"
+        data_ref=DataReference(id,source=source,selector=path)
+        i=0
+        start = i*its_len
+        end   = (i+1)*its_len
+        it1=its(data[start:end],rt1.ticks[start:end],prop)
+        self.dss_service.add_data(data_ref,it1) 
+        
+#        i=1
+#        start = i*its_len
+#        end   = (i+1)*its_len
+#        it1=its(data[start:end],rt1.ticks[start:end],prop)
+#        self.dss_service.add_data(data_ref,it1)  
+#        i=2
+#        start = i*its_len
+#        end   = (i+1)*its_len
+#        it1=its(data[start:end],rt1.ticks[start:end],prop)
+#        self.dss_service.add_data(data_ref,it1)  
+#        i=3
+#        start = i*its_len
+#        end   = (i+1)*its_len
+#        it1=its(data[start:end],rt1.ticks[start:end],prop)
+#        self.dss_service.add_data(data_ref,it1)  
+            
+        print "all done"  
+#        residual_len = total_len - round*its_len
+#        if (residual_len>0):
+#            start = rounds*its_len
+#            end   =start+residual_len
+#            it1=its(data[start:end],rt1.ticks[start:end],prop)
+#            self.dss_service.add_data(data_ref,it1)  
       
 
     def test_save2newf(self):
