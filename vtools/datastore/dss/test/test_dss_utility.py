@@ -223,6 +223,19 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(nts.data[0],ts.data[0])
         self.assertEqual(nts.data[-1],ts.data[-1])       
         
+    
+    def test_save_ts_invalid_path(self):
+        
+        dssfile_path=self.data_file_path
+        selector="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2/"
+        ts=dss_retrieve_ts(dssfile_path,selector)
+        
+        ## invalid path without trailing /
+        savepath="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2_C"
+        
+        self.assertRaises(ValueError,dss_store_ts,ts,dssfile_path,savepath)
+                          
+        
 if __name__=="__main__":
     
     unittest.main()  
