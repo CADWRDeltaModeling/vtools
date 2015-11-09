@@ -131,7 +131,8 @@ class DssService(Service):
             self._retrieve_its_prop(dssf,path,dparts)
         else:
             raise ValueError("Unimplemented record type: %i path: %s"%(idtype,path))
-        
+        dssf.close()
+        del dssf
         return (time_window,header,unit,type)
 
     def remove_dssfile_catalog(self,dss_file_path):
@@ -284,7 +285,7 @@ class DssService(Service):
             return self._retrieve_regularTS(data_ref)
         elif cdtype=="ITS":
             if (overlap==(0,0))or (overlap==(1,1)) \
-               or(overlap==(1,0)) or (overlap==(0,1))or(overlap==None):
+               or(overlap==(1,0)) or (overlap==(0,1))or(overlap is None):
                 return self._retrieve_irregularTS(data_ref,overlap)
             else:
                 raise ValueError("incorrect overlap format") 
@@ -382,7 +383,7 @@ class DssService(Service):
         ######################
         catalog = DssCatalog(dss_file_path,schema,self,dtt)
 
-        self._dss_catalogs[index] = catalog
+        self._dss_catalogs[dss_file_path] = catalog
     
         #add the amount of class instance using dababase by one
         self._add_use()
@@ -933,15 +934,43 @@ class DssService(Service):
         if (stime>etime) :
             raise ValueError("input time window start time is behind end time.")
        
-
-        ## find out the valid time extent of the ts 
-        (juls,istime,jule,ietime,cunits,ctype,lqual,ldouble,lfound) = dssf.ztsinfox(data_ref.selector)
-
-        if(not lfound):
-            raise DssAccessError("input path is invalid %s"%data_ref.selector)
         
+        ## find out the valid time extent of the ts 
+        (juls,istime,jule,ietime,cunits,ctype,lqual,ldouble,lfound)= dssf.ztsinfox(data_ref.selector)
+    
+        firstfound = False
+        lastfound  = False
+        
+        if juls:
+            firstfound = True
+            lfound     = True
+        
+        if jule:
+            lastfound  = True
+            lfound     = True
+            
+       
+        if(not lfound):
+            dssf.close()
+            raise DssAccessError("input path is invalid %s"%data_ref.selector)
+         
         ts_start = dss_julian2python(juls,istime)
         ts_end   = dss_julian2python(jule,ietime)
+        
+        if (not firstfound) or (not lastfound):
+           
+            dssf_catalog = self._dss_catalogs[data_ref.source]
+            ## filter out other paths
+            filtered_catalog = dssf_catalog.filter_catalog(data_ref.selector)
+            firstDpart=filtered_catalog.uncondensed_D_parts(0)[0]
+            lastDpart =filtered_catalog.uncondensed_D_parts(0)[-1]
+            if (not firstfound):
+                ts_start = parse_time(firstDpart)
+            if (not lastfound):
+                ts_end   = parse_time(lastDpart)
+        
+            
+            
 
         ## for aggregated ts move time stamp to begining of interval
         if (ctype in RTS_DSS_PROPTY_TO_VT.keys()):
@@ -1000,6 +1029,7 @@ class DssService(Service):
         """ Retrieve regular time sereis referenced by data_re.
             An instance of class TimeSereis is returned. 
         """        
+       
         path=data_ref.selector
         dss_file_path=data_ref.source
         dssf=open_dss(dss_file_path)
@@ -1122,7 +1152,7 @@ class DssService(Service):
         kval=DSS_MAX_ITS_POINTS
         lflags=True
         kheadu=DSS_MAX_HEADER_ITEMS
-        if (overlap==(0,0))or (overlap==None):
+        if (overlap==(0,0))or (overlap is None):
             inflag= int(0)
         elif (overlap==(1,1)):
             inflag= int(3)
