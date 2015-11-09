@@ -27,4 +27,7 @@ fix input argument name bug in merge
 1.0.3
 
 merge update from trunk of finding valid begining and ending undensed record under one condensed path. DSS serivce will fail when a condensed path has ending or 
-staring empty uncondensed path. replace "==None" with "is None"
+staring empty uncondensed path. 
+
+1.0.4
+replace "==None" with "is None"
