@@ -167,13 +167,13 @@ def _get_span(ts,start,end,left,right):
     if len(ts)==0:
         raise ValueError("invalid input time series")
 
-    if (start==None):
+    if (start is None):
         start=ts.start
     elif isinstance(start,int) or isinstance(start,str):
         start=parse_time(start)
     elif not isinstance(start,_datetime.datetime):
         raise TypeError("input start must be None,integer ticks,time string or datetime")
-    if (end==None):
+    if (end is None):
         end=ts.end
     elif isinstance(end,int) or isinstance(end,str):
         end=parse_time(end)
@@ -823,7 +823,7 @@ def rts(data,start,interval,props=None):
     timeseq=time_sequence(start,interval,len(data))
     if type(data)==list:
         data=scipy.array(data)
-    if props == None:
+    if (props is None):
         props = {}
     elif not(type(props)==type({})):
         raise TypeError("input props must be a dictionary")
@@ -853,7 +853,7 @@ def its(times,data,props=None):
     # convert times to a tick sequence
     if type(data)==list:
         data=scipy.array(data)
-    if props == None: props = {}        
+    if (props is None): props = {}        
     ts=TimeSeries(times,data,props)
 
     return ts
@@ -976,9 +976,9 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
         result :  :class:`~vtools.data.timeseries.TimeSeries`
            An new time series extended to the input start and end.
     """
-    if start==None:
+    if (start is None):
         start=ts.start
-    if end==None:
+    if (end is None):
         end=ts.end
         
     head_extended=number_intervals(start,ts.start,ts.interval)
@@ -1014,7 +1014,6 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
     new_ts=rts(data,start,ts.interval,{})
     return new_ts
         
-    
     
     
 
