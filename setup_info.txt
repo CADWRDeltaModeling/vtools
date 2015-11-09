@@ -1,0 +1,3 @@
+setup notes
+To install vtools pacakge in regular way, First user need to run py_installer.bat. If succeed, there should be a folder named "dist" generated and
+there should be vtools installment egg under this folder. Start a command  prompt from this folder , type command "easy_install vtools-1.0_svn_version-py2.7.egg" to install vtools
