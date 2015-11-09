@@ -40,7 +40,7 @@ def ticks(time,base=time_base):
         The long integer is a number of units since a
         time base. The actual value depends on resolution.
     """
-    if time==None:
+    if (time is None):
         raise TypeError("ticks not provided")
     if isinstance(time,_datetime.timedelta):
         return time.days*ticks_per_day + time.seconds*ticks_per_second
