@@ -91,15 +91,15 @@ def butterworth(ts,order=4,cutoff_period=None,cutoff_frequency=None):
     
     interval=ts.interval
     
-    if (not (interval in _butterworth_interval)) and (cutoff_period == None) and (cutoff_frequency==None):
+    if (not (interval in _butterworth_interval)) and (cutoff_period is None) and (cutoff_frequency is None):
         raise ValueError("time interval is not supported by butterworth if no cuttoff period/frequency given.")
 
-    if (cutoff_frequency!=None) and (cutoff_period!=None):
+    if (not (cutoff_frequency is None)) and (not(cutoff_period is None)):
         raise ValueError("cutoff_frequency and cutoff_period can't be specified simultaneously")
     
     cf=cutoff_frequency
-    if (cf==None):
-        if (cutoff_period !=None):
+    if (cf is None):
+        if  (not(cutoff_period is None)):
             ## convert it to ticks
             if not (is_interval(cutoff_period)):
                 cutoff_period=parse_interval(cutoff_period)
@@ -193,13 +193,13 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     
     interval=ts.interval
     m=filter_len
-    if (cutoff_frequency!=None) and (cutoff_period!=None):
+    if (not (cutoff_frequency is None)) and (not (cutoff_period is None)):
         raise ValueError("cutoff_frequency and cutoff_period can't\
         be specified simultaneously")
         
     cf=cutoff_frequency
-    if (cf==None):
-        if (cutoff_period !=None):
+    if (cf is None):
+        if (not (cutoff_period is None)):
             ## convert it to ticks
             if not (is_interval(cutoff_period)):
                 cutoff_period=parse_interval(cutoff_period)
@@ -212,7 +212,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     if is_interval(m):
         m=int(ticks(m)/ticks(ts.interval))
     ## if m is none set it to number of interval within filter_period*1.25
-    elif  m==None:
+    elif  (m is None):
         ## cf reverse is half of the interval within filtering period
         m=int(1.25*2.0/cf)
     elif type(1)==type(m):
@@ -240,11 +240,11 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     if m<1:
         raise ValueError("bad input cutoff period or frequency")
         
-    if not(padtype==None):
+    if not(padtype is None):
         if (not padtype in ["odd","even","constant"]):
             raise ValueError("unkown padtype :"+padtype)
     
-    if (padlen==None) and (not(padtype==None)):
+    if (padlen is None) and (not(padtype is None)):
         padlen=6*m
         
     if padlen>len(data):
@@ -260,7 +260,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
         d2[result_nan_idx]=nan
     
     ## replace edge points with nan if pading is not used
-    if (padtype==None) and (fill_edge_nan==True):
+    if (padtype is None) and (fill_edge_nan==True):
         d2[0:2*m]=nan
         d2[len(d2)-2*m:len(d2)]=nan
         
