@@ -19,7 +19,7 @@ def script_style(first, second, myinteger,ending = "!!!"):
         myint an integer less than 5
      """
      # Argument checking
-     if first == None:
+     if (first is None):
          raise TypeError("Raise this error for None")
      if type(myinteger) != int:
          print myinteger
