@@ -3,6 +3,8 @@ import sys
 from data_access_service import DataAccessService,DataAccessError
 from catalog_service import CatalogService
 
+
+
 class Register(type):
   """A tiny metaclass to help classes register themselves automagically"""
   
