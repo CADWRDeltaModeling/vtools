@@ -285,7 +285,7 @@ class DssService(Service):
             return self._retrieve_regularTS(data_ref)
         elif cdtype=="ITS":
             if (overlap==(0,0))or (overlap==(1,1)) \
-               or(overlap==(1,0)) or (overlap==(0,1))or(overlap==None):
+               or(overlap==(1,0)) or (overlap==(0,1))or(overlap is None):
                 return self._retrieve_irregularTS(data_ref,overlap)
             else:
                 raise ValueError("incorrect overlap format") 
@@ -1029,6 +1029,7 @@ class DssService(Service):
         """ Retrieve regular time sereis referenced by data_re.
             An instance of class TimeSereis is returned. 
         """        
+       
         path=data_ref.selector
         dss_file_path=data_ref.source
         dssf=open_dss(dss_file_path)
@@ -1151,7 +1152,7 @@ class DssService(Service):
         kval=DSS_MAX_ITS_POINTS
         lflags=True
         kheadu=DSS_MAX_HEADER_ITEMS
-        if (overlap==(0,0))or (overlap==None):
+        if (overlap==(0,0))or (overlap is None):
             inflag= int(0)
         elif (overlap==(1,1)):
             inflag= int(3)

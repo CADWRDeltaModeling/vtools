@@ -40,7 +40,7 @@ def ticks(time,base=time_base):
         The long integer is a number of units since a
         time base. The actual value depends on resolution.
     """
-    if time==None:
+    if (time is None):
         raise TypeError("ticks not provided")
     if isinstance(time,_datetime.timedelta):
         return time.days*ticks_per_day + time.seconds*ticks_per_second
@@ -188,7 +188,7 @@ def is_interval(intvl):
        This is the safe way to determine whether the input is a time
        interval class understood by Vtools.
     """
-    if not intvl:
+    if intvl is None:
         return False
     return isinstance(intvl,_datetime.timedelta) or \
            isinstance(intvl,relativedelta)
@@ -238,6 +238,8 @@ def infer_interval(time_sequence,fraction,standard = None):
     onemin = minutes(1)
     arr = np.array([round_time(x,onemin)[0] for x in time_sequence],copy=False)
     diff = arr[1:] - arr[:-1]
+    if len(diff) < 1:
+        return None
     md,count = scipy.stats.mode(diff)
     if len(md) != 1:
         return None
@@ -304,7 +306,6 @@ def parse_interval(interval_string):
     matches=time_pattern.findall(interval_string)
 
     if not(matches):
-        print interval_string
         raise ValueError("invalid time interval string %s" % interval_string )
 
     units={"s":"seconds","sec":"seconds","seconds":"seconds",

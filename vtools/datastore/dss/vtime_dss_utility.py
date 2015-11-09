@@ -479,7 +479,7 @@ _d2=int('11100',2)
 
 def _validate_dss_data_series(data,flags=None,OnlyStartLen=0):
     """ Validate the values of data, replace invalid data with NaN. """
-    if not(flags==None):
+    if not(flags is None):
         if len(flags)<len(data):
             err_str= "not enough data flags for data series"
             raise ValueError(err_str)
@@ -491,7 +491,7 @@ def _validate_dss_data_series(data,flags=None,OnlyStartLen=0):
     data=where((data==float(-901)) | (data==float(-902)),nan,data)
     ## set nan according to if 3,4,5 bits of flag set or not.
     ## operation is implemented by bit_wise or/and.
-    if not(flags==None):
+    if not(flags is None):
         ## filter out those invalid flags.
         flags=where((flags==int(-901)) | (flags==int(-902)),0,flags)
         data=where(((flags|_d1)&_d2),nan,data)

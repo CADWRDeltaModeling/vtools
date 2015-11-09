@@ -10,7 +10,7 @@ from vtools.data.vtime import parse_time,parse_interval
 from vtools.data.timeseries import rts,its
 from vtools.data.constants import *
 from vtools.datastore.data_reference import DataReferenceFactory
-
+import re
 from pydss.hecdss import zchkpn
 
 __all__=["dss_retrieve_ts","dss_store_ts","dss_catalog",\
@@ -117,8 +117,11 @@ def dss_store_ts(ts,dss_file,path):
          ts: a instance of timeseris class.
     ouput:
           None       
-
     """
+    
+    if not(check_dss_path(path)):
+        raise ValueError(" record path %s syntax is not correct"%path)
+    
     if(len(ts)==0):
         raise ValueError("timeseries to be written is empty")
     try:
@@ -135,6 +138,30 @@ def dss_store_ts(ts,dss_file,path):
     if dss_file in _catalog_buffer.keys():
         del _catalog_buffer[dss_file] 
 
+
+def check_dss_path(dss_path):
+    """"Check if hte dss path is a valid one.
+
+    Parameters
+    ----------
+    dss_path : :string
+        A dss path within a dss file. like "/A/B/C//E/F/"
+    Returns
+    -------    
+    result : : boolean
+        Ture if valid, or false
+    """
+    
+    path_type=re.compile("/.*?/.*?/.*?/.*?/.*?/.*?/")
+    
+    if (path_type.match(dss_path)):
+        return True
+    else:
+        return False
+    
+
+    
+    
    
     
 def dss_catalog(dss_source,selection=None):

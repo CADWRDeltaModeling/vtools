@@ -332,7 +332,7 @@ class DssCatalog(Catalog):
             
         ## Use rangedimension stored in map to built extent string
         ## all the data will be returned.
-        if parameter==None:
+        if (parameter is None):
             time_extent_selection=self.entry_dimension_map[entry.index]
             (stime,etime)=time_extent_selection.get_range()
             ## Adjust etime according to data block size(depends on time
@@ -367,9 +367,11 @@ class DssCatalog(Catalog):
         else:
             raise ValueError("invalid time window input")
 
-    
-        return DataReference(id,source,'',selector,extent)
-
+        
+        data_ref= DataReference(id,source,'',selector,extent)
+        data_ref.Dparts = self.uncondensed_D_parts(entry.index)
+        return data_ref
+        
     def _schema(self):
        
         return self._schemalst

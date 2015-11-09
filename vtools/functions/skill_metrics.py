@@ -22,27 +22,30 @@ def ts_data_arg(f):
     b.__doc__ = f.__doc__
     return b
 
-def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time_interval(minutes=1)):
-    """ Calculate lag of the second time series b, that maximizes the cross-correlation with a. 
- 
+def calculate_lag(a, b, time_window, max_shift, period=None, resolution=time_interval(minutes=1), interpolate_method=None):
+    """ Calculate lag of the second time series b, that maximizes the cross-correlation with a.
+
         Parameters
         ----------
-        a,b : vtools.data.timeseries.Timeseries
+        a,b: vtools.data.timeseries.Timeseries
             Two time series to compare. The time extent of b must be the same or a superset of that of a.
-        
-        time_window : time_window
+
+        time_window: time_window
             Tuple representing start and end time of cross-correlation analysis
-        
-        
-        max_shift : interval
+
+        max_shift: interval
             Maximum pos/negative time shift to consider in cross-correlation (ie, from -max_shift to +max_shift)
-        
-        period : interval, optional
+
+        period: interval, optional
             Period that will be used to further clip the time_window of analysis to fit a periodicity.
-        
+
+        interpolate_method: str, optional
+            Interpolate method to generate a time series with a lag-calculation
+            interpolation
+
         Returns
         -------
-        
+
         lag : datetime.timedelta
             lag
     """
@@ -82,25 +85,27 @@ def calculate_lag(a, b, time_window, max_shift, period = None, resolution = time
     new_n = np.ceil((end - start + 2 * max_shift).total_seconds() / resolution.total_seconds()) + 1
     max_shift_tick = int(max_shift.total_seconds() / resolution.total_seconds())
     length = 2 * max_shift_tick + 1
-    re = np.empty(length)
     n = len(a_part)
-    b_interpolated = monotonic_spline(b, time_sequence(a_part.start-max_shift, resolution, new_n))
+    if interpolate_method is None:
+        interpolate_method = LINEAR
+    b_interpolated = interpolate_ts(b, time_sequence(a_part.start-max_shift, resolution, new_n), method=interpolate_method)
 
     def unnorm_xcor(lag):
         b_part = b_interpolated.data[lag:lag+factor*n-1:factor]
         return -np.ma.inner(a_part_masked, b_part)
 
     index = np.arange(-max_shift_tick, max_shift_tick + 1)
-    brent=0
-    if brent:
+    brent = True
+    if brent is True:
         from scipy.optimize import minimize_scalar
-        res = minimize_scalar(unnorm_xcor,method='bounded',bounds=(0,length),tol=0.5)
+        res = minimize_scalar(unnorm_xcor, method='bounded',
+                              bounds=(0, length), options={'xatol': 0.5})
         v0 = index[np.floor(res.x)] * resolution.total_seconds()
     else:
+        re = np.empty(length)
         for i in range(length):
             re[i] = unnorm_xcor(i)
-        v0 = index[np.argmax(-re)]* resolution.total_seconds()
-    import matplotlib.pyplot as plt
+        v0 = index[np.argmax(-re)] * resolution.total_seconds()
     return time_interval(seconds=v0)
 
 @ts_data_arg

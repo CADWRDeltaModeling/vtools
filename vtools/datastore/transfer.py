@@ -211,7 +211,7 @@ def _transform(d1,transform=None,**func_args):
     ## or function given as a function object.
     elif callable(transform):
         nd=transform(d1,**func_args)
-    elif transform==None:
+    elif (transform is None):
         #nd=deepcopy(d1)
         return d1
     else:
