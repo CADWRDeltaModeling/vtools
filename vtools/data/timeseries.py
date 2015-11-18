@@ -976,14 +976,19 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
         result :  :class:`~vtools.data.timeseries.TimeSeries`
            An new time series extended to the input start and end.
     """
-    if (start is None):
+    if start is None:
         start=ts.start
-    if (end is None):
+    if end is None:
         end=ts.end
-        
-    head_extended=number_intervals(start,ts.start,ts.interval)
-    tail_extended=number_intervals(ts.end,end,ts.interval)
-    
+
+    if start < ts.start:
+        head_extended = number_intervals(start,ts.start,ts.interval)
+    else:
+        head_extended = 0
+    if ts.end < end:
+        tail_extended = number_intervals(ts.end,end,ts.interval)
+    else:
+        tail_extended = 0
     new_len=len(ts)+head_extended+tail_extended
     data=np.empty(new_len)
     old_len=len(ts)
