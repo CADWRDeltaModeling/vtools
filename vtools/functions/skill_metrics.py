@@ -22,16 +22,13 @@ def ts_data_arg(f):
     b.__doc__ = f.__doc__
     return b
 
-def calculate_lag(a, b, time_window, max_shift, period=None, resolution=time_interval(minutes=1), interpolate_method=None):
+def calculate_lag(a, b, max_shift, period=None, resolution=time_interval(minutes=1), interpolate_method=None):
     """ Calculate lag of the second time series b, that maximizes the cross-correlation with a.
 
         Parameters
         ----------
         a,b: vtools.data.timeseries.Timeseries
             Two time series to compare. The time extent of b must be the same or a superset of that of a.
-
-        time_window: time_window
-            Tuple representing start and end time of cross-correlation analysis
 
         max_shift: interval
             Maximum pos/negative time shift to consider in cross-correlation (ie, from -max_shift to +max_shift)
@@ -50,7 +47,7 @@ def calculate_lag(a, b, time_window, max_shift, period=None, resolution=time_int
             lag
     """
     # Get the available range from the first time series
-    time_window_b = (max(time_window[0], b.start), min(time_window[1], b.end))
+    time_window_b = (b.start, b.end)
     a_avail = a.window(time_window_b[0], time_window_b[1])
     time_window = (a_avail.start, a_avail.end)
     if (time_window[1] - time_window[0]).total_seconds() <= 0.:
@@ -81,7 +78,6 @@ def calculate_lag(a, b, time_window, max_shift, period=None, resolution=time_int
     else:
         factor = int(np.floor(factor))
 
-    old_n = len(a_avail)
     new_n = np.ceil((end - start + 2 * max_shift).total_seconds() / resolution.total_seconds()) + 1
     max_shift_tick = int(max_shift.total_seconds() / resolution.total_seconds())
     length = 2 * max_shift_tick + 1
@@ -91,6 +87,7 @@ def calculate_lag(a, b, time_window, max_shift, period=None, resolution=time_int
     b_interpolated = interpolate_ts(b, time_sequence(a_part.start-max_shift, resolution, new_n), method=interpolate_method)
 
     def unnorm_xcor(lag):
+        lag = int(lag)
         b_part = b_interpolated.data[lag:lag+factor*n-1:factor]
         return -np.ma.inner(a_part_masked, b_part)
 
