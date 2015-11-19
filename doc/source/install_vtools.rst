@@ -23,9 +23,7 @@ VTools is installed via a python "egg". The vtools egg available here:
 
 Use the command::
 
-  $ pip install vtools-1.1-py2.7.egg
-
-(easy_install will also work fine)
+  $ easy_install vtools-1.1-py2.7.egg
 
 Version 2.7 of Python is currently supported in 32 or 64 bit flavors. We will make the jump to 3.x when it is fully supported in ArcGIS.
 

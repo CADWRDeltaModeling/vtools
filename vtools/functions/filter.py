@@ -126,7 +126,7 @@ def butterworth(ts,order=4,cutoff_period=None,cutoff_frequency=None):
     return rts(d2,ts.start,ts.interval,prop)
     
 
-def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
+def cosine_lanczos(ts,cutoff_period=hours(40),cutoff_frequency=None,filter_len=None,
                    padtype=None,padlen=None,fill_edge_nan=True):
     """ squared low-pass cosine lanczos  filter on a regular time series.
       

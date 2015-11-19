@@ -70,16 +70,16 @@ def _merge(ts1,ts2):
     """
     
     if not (ts1.is_regular() and ts2.is_regular()):      
-        raise ValueError("two input timeseris for merge operation"
-            "must be regualr timeserise.")
+        raise ValueError("two input time series for merge operation"
+            "must be regular time series.")
         
         if not(ts1.interval==ts2.interval):
             
-            raise ValueError("Input timeseris for merge operation"
+            raise ValueError("Input timeseries for merge operation"
             "must have the same time interval.")
         
         if not(ts1.data.shape==ts2.data.shape):           
-            raise ValueError("Input timeseris for merge operation"
+            raise ValueError("Input timeseries for merge operation"
             "must have data of identical shape.")
                 
     (seq,start,slice0,slice1,slice2)=prep_binary(ts1,ts2)

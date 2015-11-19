@@ -18,10 +18,16 @@ import sys,types#,pdb
 import os.path
 from copy import deepcopy
 
+from vtools.datastore.dss.api import *
+from vtools.datastore.dss.dss_service import *
+from vtools.datastore.transfer import *
+
 
 ## local import
+from vtools.datastore.dss.dss_service import *
 from data_service_manager import DataServiceManager
 from service import Service
+
 from translate import *
 from group import *
 from optionparse import parse
@@ -94,11 +100,12 @@ def batch_transfer(source,dest=None,selector=None,extent=None\
     s2=_service(dest,ds)
 
     if not s1:
-      raise ValueError("Invalid input: source %s"%source)
-      
+      raise ValueError("Invalid source")
+
     if not s2:
-      raise ValueError("Invalid input: destination %s"%dest)
-    
+      raise ValueError("Invalid destination")
+
+      
     c1=s1.get_catalog(source)
     try:
       data_ref1=[rf for rf in c1.data_references(selector,extent)]
@@ -342,7 +349,10 @@ def main():
       ext=getattr(opt,"extent")
    else:
       ext=None      
-  
+   print source
+   print dest
+   print sel1
+   print ext
    batch_transfer(source,dest=dest,selector=sel1,extent=ext\
                    ,mapper=sel2,transform=transname,**varlst)
                    

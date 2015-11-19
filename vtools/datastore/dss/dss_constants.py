@@ -19,11 +19,11 @@ DSS_DATA_SOURCE="vtools.datastore.dss.DssService"
 ##DSS_IRREGULAR_TIME_SERIES="vtools.datastore.dss.irregulartimeseries"
 
 # The maximum number of points allowable to retrieve
-# from a irregualr time sereis path in one time
-#to do:investiage large number of points
-DSS_MAX_ITS_POINTS=5000
+# from a irregular time series path in one time
+# @todo:investigate large number of points
+DSS_MAX_ITS_POINTS=350000
 # The maximum number of points allowable to retrieve
-# from a regualr time sereis path in one time
+# from a regular time series path in one time
 DSS_MAX_RTS_POINTS=350000
 
 ## The maximum number of array size used in
