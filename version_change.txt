@@ -18,3 +18,16 @@ add a group module to split a time series into a number of smaller ts according 
 This group module is created to handle the dss path where there are huge gaps, which caused
 huge dss file when such a ts is saved to a file. With those gaps are deleted before storing 
 timeseres, the result dss file will be much smaller
+
+
+1.0.2
+
+fix input argument name bug in merge
+
+1.0.3
+
+merge update from trunk of finding valid begining and ending undensed record under one condensed path. DSS serivce will fail when a condensed path has ending or 
+staring empty uncondensed path. 
+
+1.0.4
+replace "==None" with "is None"
