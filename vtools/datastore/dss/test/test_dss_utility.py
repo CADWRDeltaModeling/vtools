@@ -26,7 +26,7 @@ class TestDssUtility(unittest.TestCase):
 
         self.data_file_path='testfile.dss'
         self.data_file_path=os.path.abspath(self.data_file_path)
-        self.backup_data_file=os.path.abspath('./backup_dssfile/testfile.dss')        
+        self.backup_data_file=os.path.join(os.path.dirname(__file__), 'backup_dssfile/testfile.dss')
         
     def setUp(self):
         if os.path.exists(self.test_file_path):
