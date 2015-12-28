@@ -62,7 +62,6 @@ def excel_store_ts(ts,excel_file,selection,header=None,write_times="all"):
         book.Save()
 
     book.Close()
-    print "successfully save"
     del app
 
 def excel_retrieve_ts(excel_file,selection,ts_type,time=None,**args):
