@@ -25,6 +25,7 @@ from vtools.datastore.transfer import *
 
 ## local import
 from vtools.datastore.dss.dss_service import *
+from vtools.datastore.excel.excel_service import *
 from data_service_manager import DataServiceManager
 from service import Service
 
