@@ -13,7 +13,7 @@ def ts_apply(ts,ufunc,other=None):
        
        So... ts_apply(ts, add, 5) will add 5 to every data member 
     """
-    if other:
+    if not (other is None):
         ndata=ufunc(ts.data,other)
     else:
         ndata=ufunc(ts.data)

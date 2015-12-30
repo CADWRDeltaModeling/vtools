@@ -126,7 +126,7 @@ def butterworth(ts,order=4,cutoff_period=None,cutoff_frequency=None):
     return rts(d2,ts.start,ts.interval,prop)
     
 
-def cosine_lanczos(ts,cutoff_period=hours(40),cutoff_frequency=None,filter_len=None,
+def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
                    padtype=None,padlen=None,fill_edge_nan=True):
     """ squared low-pass cosine lanczos  filter on a regular time series.
       
@@ -196,6 +196,10 @@ def cosine_lanczos(ts,cutoff_period=hours(40),cutoff_frequency=None,filter_len=N
     if (not (cutoff_frequency is None)) and (not (cutoff_period is None)):
         raise ValueError("cutoff_frequency and cutoff_period can't\
         be specified simultaneously")
+        
+    if ( (cutoff_frequency is None)) and ((cutoff_period is None)):
+         print "neither cutoff_frequency nor cutoff_period is given, 40 hours is used by defualt"
+         cutoff_period = hours(40)
         
     cf=cutoff_frequency
     if (cf is None):

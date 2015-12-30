@@ -42,7 +42,7 @@ class TestUFunc(unittest.TestCase):
         ts_intvl=days(1)            
         data=range(ts_len)
         ts0=rts(data,ts_start,ts_intvl)
-        tsmax=ts_maximum(ts0)
+        tsmax=ts_maximum(ts0,0)
         self.assertEqual(tsmax,data[-1])
 
         time_window=(ts0.times[5],ts0.times[30])
