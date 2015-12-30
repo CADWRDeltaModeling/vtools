@@ -19,10 +19,11 @@ class TestDssCatalog(unittest.TestCase):
     def __init__(self,methodName="runTest"):
 
         super(TestDssCatalog,self).__init__(methodName)     
-        #self.test_file_path=os.path.relpath("./testfile.dss")
-        #self.backup_dss_file=os.path.relpath("./backup_dssfile/testfile.dss")
-        self.test_file_path=os.path.join(os.path.split(__file__)[0],"testfile.dss")
-        self.backup_dss_file=os.path.join(os.path.split(__file__)[0],"backup_dssfile/testfile.dss")           
+        import vtools.datastore.dss
+        pkgfile = vtools.datastore.dss.__file__
+        self.test_file_path='testfile.dss'
+        self.test_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file_path)
+        self.backup_dss_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'test/backup_dssfile/testfile.dss')    
         
     def setUp(self):
         self.servic_emanager=DataServiceManager()

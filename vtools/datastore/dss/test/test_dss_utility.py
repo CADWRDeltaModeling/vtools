@@ -22,12 +22,20 @@ class TestDssUtility(unittest.TestCase):
         #fs=__import__("vtools").__file__
         #(fsp,fsn)=os.path.split(fs)
         #self.test_file_path=fsp+self.test_file_path
-        self.test_file_path=os.path.abspath('sin.dss')
 
+
+        import vtools.datastore.dss
+        pkgfile = vtools.datastore.dss.__file__
+        self.test_file_path='sin.dss'
+        self.test_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file_path)
         self.data_file_path='testfile.dss'
         self.data_file_path=os.path.abspath(self.data_file_path)
-        self.backup_data_file=os.path.join(os.path.dirname(__file__), 'backup_dssfile/testfile.dss')
+        self.backup_data_file=os.path.abspath('./backup_dssfile/testfile.dss')        
         
+        self.data_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.data_file_path)
+        ##self.backup_data_file=os.path.abspath('./backup_dssfile/testfile.dss')        
+        self.backup_data_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'test/backup_dssfile/testfile.dss')
+         
     def setUp(self):
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
