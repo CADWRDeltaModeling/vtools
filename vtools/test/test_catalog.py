@@ -21,10 +21,11 @@ class TestCatalog(unittest.TestCase):
     def __init__(self,methodName="runTest"):
 
         super(TestCatalog,self).__init__(methodName)
+        import vtools.test
+        pkgfile = vtools.test.__file__
         self.dss_file_path='testfile.dss'
-        self.backup_dss_file=os.path.abspath('./backup/testfile.dss')
-        self.dss_file_path=os.path.abspath(self.dss_file_path)
-        
+        self.dss_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.dss_file_path)
+        self.backup_dss_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'backup/testfile.dss')   
         
     def setUp(self):
            

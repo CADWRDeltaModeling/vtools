@@ -26,21 +26,24 @@ class TestTransfer(unittest.TestCase):
     def __init__(self,methodName="runTest"):
 
         super(TestTransfer,self).__init__(methodName)
+        import vtools.test
+        pkgfile = vtools.test.__file__
         self.test_file_path='testfile.dss'
-        self.test_file_path=os.path.abspath(self.test_file_path)
-        self.backup_dss_file=os.path.abspath('./backup/testfile.dss')
+        self.test_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file_path)
+        self.backup_dss_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'backup/testfile.dss') 
+        
         self.test_file2="dest.dss"
-        self.test_file2=os.path.abspath(self.test_file2)
+        self.test_file2=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file2)
         
         self.xls_file="test.xls"
-        self.xls_file=os.path.abspath(self.xls_file)
+        self.xls_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.xls_file)
 
         if os.path.exists(self.xls_file):
             os.remove(self.xls_file)
             
         self.path_file='paths.txt'
-        self.path_file=os.path.abspath(self.path_file)
-        self.backup_path_file=os.path.abspath('./backup/paths.txt')
+        self.path_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.path_file)
+        self.backup_path_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'backup/paths.txt')
             
     def setUp(self):
         

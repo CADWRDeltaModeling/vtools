@@ -22,11 +22,13 @@ class TestUtility(unittest.TestCase):
     def __init__(self,methodName="runTest"):
 
         super(TestUtility,self).__init__(methodName)
-        self.dss_file_path='.\\testfile.dss'
-        fs=__import__("vtools").__file__
-        (fsp,fsn)=os.path.split(fs)
-        self.dss_file_path=fsp+self.dss_file_path
-        self.backup_dss_file=fsp+'\\test\\backup\\testfile.dss'
+        import vtools.test
+        pkgfile = vtools.test.__file__
+        self.dss_file_path='testfile.dss'
+        self.dss_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.dss_file_path)
+        self.backup_dss_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'backup/testfile.dss') 
+        
+        
         
     def setUp(self):
         if os.path.exists(self.dss_file_path):
