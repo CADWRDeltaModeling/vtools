@@ -17,9 +17,9 @@ class TestExcelUtility(unittest.TestCase):
         super(TestExcelUtility,self).__init__(methodName)
         import vtools.datastore.excel
         pkgfile = vtools.datastore.excel.__file__
-        self.test_file_path='test.xls'
+        self.test_file_path='test\\test.xls'
         self.test_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file_path)
-        self.data_file_path='data.xls'
+        self.data_file_path='test/data.xls'
         self.data_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.data_file_path)
         self.backup_excel_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'test/backup_excelfile/test.xls')
          
