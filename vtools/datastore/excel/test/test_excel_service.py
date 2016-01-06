@@ -17,9 +17,11 @@ class TestExcelService(unittest.TestCase):
     def __init__(self,methodName="runTest"):
 
         super(TestExcelService,self).__init__(methodName)
+        import vtools.datastore.excel
+        pkgfile = vtools.datastore.excel.__file__
         self.test_file_path='test.xls'
-        self.test_file_path=os.path.join(os.path.split(os.path.abspath(__file__))[0],self.test_file_path)
-        self.backup_xls_file=os.path.join(os.path.split(os.path.abspath(__file__))[0],'./backup_excelfile/test.xls')  
+        self.test_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file_path)
+        self.backup_xls_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'test/backup_excelfile/test.xls') 
         if os.path.exists(self.test_file_path):
             os.remove(self.test_file_path)
         shutil.copy(self.backup_xls_file,self.test_file_path)  
