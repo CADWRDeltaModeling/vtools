@@ -96,7 +96,7 @@ class TestExcelService(unittest.TestCase):
 
       
         #
-        ref=DataReferenceFactory(EXCEL_DATA_SOURCE,self.test_file_path,\
+        ref=DataReferenceFactory(EXCEL_DATA_SOURCE,"store.xls",\
                                  selector="dss2excel$B5")
 
         self.excel_service.batch_add(ref,tss)

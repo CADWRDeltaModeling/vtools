@@ -25,8 +25,8 @@ class TestExcelUtility(unittest.TestCase):
          
     def setUp(self):
     
-        if os.path.exists(self.test_file_path):
-            os.remove(self.test_file_path)            
+        #if os.path.exists(self.test_file_path):
+        #    os.remove(self.test_file_path)            
         shutil.copy(self.backup_excel_file,self.test_file_path)                
 
         if os.path.exists(self.data_file_path):
