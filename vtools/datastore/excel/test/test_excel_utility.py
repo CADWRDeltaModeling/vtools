@@ -15,9 +15,8 @@ class TestExcelUtility(unittest.TestCase):
 
     def __init__(self,methodName="runTest"):
         super(TestExcelUtility,self).__init__(methodName)
-        #import vtools.datastore.excel
-        #pkgfile = vtools.datastore.excel.__file__
-        pkgfile ='.'
+        import vtools.datastore.excel
+        pkgfile = vtools.datastore.excel.__file__
         self.test_file_path='test\\test.xls'
         self.test_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file_path)
         self.data_file_path='test/data.xls'
