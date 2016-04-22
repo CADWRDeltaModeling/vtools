@@ -27,7 +27,7 @@ from pydss.hecdss import DssFile,zrdpat,open_dss,zset
 from pydss.hecdss import zopnca,zrdcat
 from pydss.hecdss import zustfh,zstfh
 from pydss.fortranfile import fortran_file,FortranFile
-from pydss.fortranfile import fortran_file,FortranFile
+
 
 #vtools import
 from vtools.data.constants import *
@@ -47,6 +47,7 @@ from vtime_dss_utility import validate_its_for_dss
 from vtime_dss_utility import discover_valid_rts_start,\
      discover_valid_rts_end
 from vtime_dss_utility import dss_julian2python,interval_to_D,valid_dss_interval_dic_in_delta
+
 
 __all__=["DssAccessError","DssCatalogServiceError","DssService"]
 
@@ -525,10 +526,6 @@ class DssService(Service):
         dsdpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsd"))
         dscpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsc"))
         
-        if os.path.exists(dsdpath):
-            os.remove(dsdpath)
-        if os.path.exists(dscpath):
-            os.remove(dscpath)            
             
         cf0=fortran_file()
         cd0=fortran_file()
@@ -538,7 +535,7 @@ class DssService(Service):
         #debug_timeprofiler.mark("opening catalog for dss file")
         ######################
   
-        [lopnca,lcatlg,lopncd,lcatcd,nrecs]=zopnca(fpath,cf0,True,cd0,True)
+        [lopnca,lcatlg,lopncd,lcatcd,nrecs]=zopnca(fpath,cf0,True,cd0,False)
         
         ## lopnca is ture if the catalog file is successfully opened. If 
         ## the file could not be opened, lopnca will be set to false
@@ -549,15 +546,17 @@ class DssService(Service):
         ## lcatlg logical variable returned as ture if file contains
         ## valid catalog, if lcatlg is false , zcat should be called to
         ## generated a new catalog of the dss file
-        if not(lcatlg):
-            dssfile=open_dss(fpath)
-            [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,True) 
-            ## if lcadcat is true, a condensed catalog is
-            ## produced.
-            if not(lcdcat):
-                print "Warning:condensed catalog is not created for %s"%fpath
-            dssfile.close()
-            del dssfile
+        #if not(lcatlg):
+      
+        dssfile=open_dss(fpath)
+        [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,True) 
+        ## if lcadcat is true, a condensed catalog is
+        ## produced.
+        if not(lcdcat):
+            print "Warning:condensed catalog is not created for %s"%fpath
+  
+        dssfile.close()
+        del dssfile
 
         ##### time profile ####
         #print 'time used in opening catalog',debug_timeprofiler.timegap()
