@@ -285,9 +285,30 @@ class TestPeriodOp(unittest.TestCase):
             
         nt=period_op(ts,interval,MAX)
         if not isnan(nt.data[2]):
-            print "period_op omits nan during period_min"                
+            print "period_op omits nan during period_min"     
             
+            
+    def test_period_time_stamp(self):
+        
+        st=datetime.datetime(year=1990,month=1,day=1)
+        num=31
+        delta=time_interval(days=1)
+        op_delta=time_interval(months=1)
+        aligned_start=datetime.datetime(year=1990,month=1,day=1)
+            
+        data=[random.uniform(self.min_val,self.max_val) \
+              for k in range(31)]
+        
+        ts_sum = sum(data)
 
+        ts=rts(data,st,delta,{TIMESTAMP:PERIOD_START,AGGREGATION:MEAN})
+        
+        ts_op = period_op(ts,op_delta,SUM)
+        
+        self.assertEqual(ts_op.start,aligned_start)
+        self.assertEqual(len(ts_op),1)
+        self.assertEqual(ts_op.data[0],ts_sum)
+        
 if __name__=="__main__":
     
     unittest.main()       
