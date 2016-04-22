@@ -110,6 +110,9 @@ def period_op(ts,interval,op,method=None):
     ## valid starting time point.
     ts_start=ts.start
     ts_end=ts.end
+    if (TIMESTAMP in ts.props.keys()) and (ts.props[TIMESTAMP]==PERIOD_START):
+        ts_end=ts_end+ts.interval
+        
     aligned_start=align(ts_start,interval,1)
 
     if not (aligned_start==ts_start):        
