@@ -535,7 +535,7 @@ class DssService(Service):
         #debug_timeprofiler.mark("opening catalog for dss file")
         ######################
   
-        [lopnca,lcatlg,lopncd,lcatcd,nrecs]=zopnca(fpath,cf0,True,cd0,False)
+        [lopnca,lcatlg,lopncd,lcatcd,nrecs]=zopnca(fpath,cf0,True,cd0,True)
         
         ## lopnca is ture if the catalog file is successfully opened. If 
         ## the file could not be opened, lopnca will be set to false
@@ -549,7 +549,7 @@ class DssService(Service):
         #if not(lcatlg):
       
         dssfile=open_dss(fpath)
-        [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,True) 
+        [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,False) 
         ## if lcadcat is true, a condensed catalog is
         ## produced.
         if not(lcdcat):
