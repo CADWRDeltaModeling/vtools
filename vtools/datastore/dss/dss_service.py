@@ -179,29 +179,11 @@ class DssService(Service):
             info=self._dss_file_opened[dss_file_path]
         except:
             info = ()    
-        
-    
+            
         if len(info) != 0: ## info is in form of (1,2222344),2222344 is time, 1 is f index
             last_modified_time=info[1]
-            #print last_modified_time,os.stat(dss_file_path)[8]
-            ##########################################
-            ##              comment and observation                                       ##
-            ## This decision is done by comparing the update time of a dss file           ##
-            ## stored within db to its updatetime returned by windows query on            ##
-            ## file property, if they are different, catalog will redone to               ##
-            ## refelect the change that might happen from last time. When they            ##
-            ## same, just used info stored in db to save time. But it may fail,           ##
-            ## sometimes when last modification on dss file is very close to              ##
-            ## current time, for instance doing a catalog modification right              ##
-            ## after some saving ts into dss, like in test_all_module(when                ##
-            ## test_modify right after test_save_data, sometimes two times are            ##
-            ## the same,even file is different already).No solution currrently            ##
-            #########################################
-            #if not(last_modified_time==os.stat(dss_file_path)[8]):
             self._remove_dssfile_catalog(dss_file_path)
             return self._cataloging_dss_file(strip(dss_file_path))
-            #else:
-            #    return self._dss_catalogs[info[0]]
         else:
             return self._cataloging_dss_file(strip(dss_file_path))
 
@@ -535,28 +517,33 @@ class DssService(Service):
         #debug_timeprofiler.mark("opening catalog for dss file")
         ######################
   
-        [lopnca,lcatlg,lopncd,lcatcd,nrecs]=zopnca(fpath,cf0,True,cd0,True)
+        create_cat = True       # as necessary
+        create_condensed = True
+        [lopnca,lcatlg,lopncd,lcatcd,nrecs]=zopnca(fpath,cf0,create_cat,cd0,create_condensed)
         
         ## lopnca is ture if the catalog file is successfully opened. If 
         ## the file could not be opened, lopnca will be set to false
         if not(lopnca):
             raise DssCatalogServiceError\
                   ("unable to open/create catalog file for dss file %s"%fname)
-
+                  
         ## lcatlg logical variable returned as ture if file contains
         ## valid catalog, if lcatlg is false , zcat should be called to
         ## generated a new catalog of the dss file
-        #if not(lcatlg):
-      
-        dssfile=open_dss(fpath)
-        [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',True,False) 
-        ## if lcadcat is true, a condensed catalog is
-        ## produced.
-        if not(lcdcat):
-            print "Warning:condensed catalog is not created for %s"%fpath
+
+
+        if not(lcatlg and lcatcd):
+            dssfile=open_dss(fpath)
+            labrev = True  # abbreviated catalog
+            lsort = True    # maintain sort order, required for generating condensed
+            [lcdcat,nrecs]=dssfile.zcat(cf0,cd0,cn0,' ',labrev,lsort) 
+            ## if lcadcat is true, a condensed catalog is
+            ## produced.
+            if not(lcdcat):
+                raise DssCatalogServiceError("Warning: condensed catalog not created for %s"%fpath)
   
-        dssfile.close()
-        del dssfile
+            dssfile.close()
+            del dssfile
 
         ##### time profile ####
         #print 'time used in opening catalog',debug_timeprofiler.timegap()
