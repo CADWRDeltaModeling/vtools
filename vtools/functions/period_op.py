@@ -356,7 +356,7 @@ def _allocate_data_array(first_dim_size,tsdata):
     if tsdata.ndim==1:
         data=zeros(first_dim_size)+nan
     elif tsdata.ndim==2:
-        data=zeros(first_dim_size,tsdata.shape[1])+nan
+        data=zeros((first_dim_size,tsdata.shape[1]),tsdata.dtype)+nan
     
     return data
 
