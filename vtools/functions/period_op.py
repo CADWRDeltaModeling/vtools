@@ -16,7 +16,7 @@ from scipy import equal as sciequal
 from scipy import subtract as scisubtract
 from scipy import int64 as sciint64
 from scipy import array as sciarray
-from scipy import nan, isnan,zeros
+from scipy import nan, isnan,zeros,ediff1d,divide
 from scipy import alltrue,isfinite,inf,sometrue,where
 
 ## Vtool vtime import.
@@ -91,8 +91,9 @@ def period_op(ts,interval,op,method=None):
     #                     " interval time series")
 
     ## Check ts interval is compatible with opertional interval.
-    if not (_check_interval_compatible(ts.interval,interval)):
-        raise ValueError("Period operation by %s on a regular"
+    if ts.is_regular():
+        if not (_check_interval_compatible(ts.interval,interval)):
+            raise ValueError("Period operation by %s on a regular"
                          " timeseries with interval of %s is" 
                          " undefined"%(interval,ts.interval))
 
@@ -138,6 +139,11 @@ def period_op(ts,interval,op,method=None):
     for key,val in ts.props.items():
         if (not (key==TIMESTAMP)) and (not (key==AGGREGATION)):
             prop[key]=val
+    
+    if not(ts.is_regular()):
+        ntt=_op_its(ts,op,interval,aligned_start,start_index,\
+                num,prop)
+        return ntt        
         
     ## Depending on the calendar dependence of interval,
     ## two methods are chosen to perform operation, first
@@ -310,6 +316,28 @@ def _calendar_independent_op(ts,op,interval,\
         data=operator.reduce(data,1)        
     return rts(data,aligned_start,interval,prop)    
 
+def _op_its(ts,op,interval,aligned_start,start_index,\
+                                 num,prop):
+    """ use this function to do operation for irregular timeseries.
+    """
+
+    if not (aligned_start == ts.times[0]):
+        aligned_start = aligned_start-interval
+        num=num+1
+    times=time_sequence(aligned_start,interval,num+1)
+    operation_index=(ts.index_after(times)).tolist()
+    tsdata=ts.data
+    data=[nan]*len(operation_index)
+    operator= operator_dic[op]
+    data =operator.reduceat(tsdata,operation_index)
+    if op==MEAN:
+        mean_window = (ediff1d(operation_index)).tolist()
+        last_index = operation_index[-1]
+        mean_window.append(len(tsdata)-last_index)
+        data = divide(data,mean_window)
+    return rts(data,aligned_start,interval,prop)
+    
+                                        
 def _calendar_dependent_op(ts,op,interval,\
                              aligned_start,start_index,\
                              num,prop,method):
