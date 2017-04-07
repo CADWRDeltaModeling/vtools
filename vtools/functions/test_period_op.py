@@ -7,10 +7,10 @@ import sys,os,unittest,shutil,random,pdb
 ## vtools import
 from vtools.data.timeseries import rts,its
 from vtools.data.vtime import ticks,number_intervals,\
-     is_calendar_dependent,parse_interval
+     is_calendar_dependent,parse_interval,ticks_per_minute
 #from vtools.debugtools.timeprofile import debug_timeprofiler
 from vtools.data.vtime import ticks_to_time,ticks\
-     ,number_intervals,time_sequence,time_interval
+     ,number_intervals,time_sequence,time_interval,parse_time
 from vtools.data.constants import *
 
 from period_op import *
@@ -18,6 +18,7 @@ from period_op import *
 ## Scipy import.
 from scipy import array as sciarray
 from scipy import add as sciadd
+from scipy import multiply as scimultiply
 from scipy import minimum as sciminimum
 from scipy import maximum as scimaximum
 from scipy import nan,isnan,allclose
@@ -215,13 +216,35 @@ class TestPeriodOp(unittest.TestCase):
 
     def test_period_op_irregular(self):
         """ Test behaviour of period operation on irregular TS."""
-
-        times=[random.randint(1,100) for i in range(self.num_ts)]
-        times=sciadd.accumulate(times)
-        data=sciarray([random.random() for i in range(self.num_ts)])
+        times=[12,15,32,38,43,52,84,138,161,172]
+        #times=sciadd.accumulate(times)
+        start_datetime = parse_time("1996-2-1")
+        start_ticks = ticks(start_datetime)
+        times=scimultiply(times,ticks_per_minute)
+        times=sciadd(times,start_ticks)
+        data=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
         ts=its(times,data,{})
-        for op in [MIN,MAX,MEAN,SUM]:
-            self.assertRaises( Exception,period_op,ts,"1 day",op)
+        op=MEAN
+        ts_op=period_op(ts,"1 hour",op)
+        self.assertEqual(len(ts_op),3)
+        self.assertEqual(ts_op.data[0],1.0)
+        self.assertEqual(ts_op.data[1],2.0)
+        self.assertEqual(ts_op.data[2],3.0)
+        
+        times=[0,15,32,38,43,52,60,120,138,161,180]
+        data=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0,4.0])
+        times=scimultiply(times,ticks_per_minute)
+        times=sciadd(times,start_ticks)
+        ts=its(times,data,{})
+        op=MEAN
+        ts_op=period_op(ts,"1 hour",op)
+        self.assertEqual(len(ts_op),4)
+        self.assertEqual(ts_op.data[0],1.0)
+        self.assertEqual(ts_op.data[1],2.0)
+        self.assertEqual(ts_op.data[2],3.0)
+        self.assertEqual(ts_op.data[3],4.0)
+        
+        
 
     def test_period_op_uncompatible_interval(self):
         """ Test behaviour of period operation on TS with interval uncompatible
