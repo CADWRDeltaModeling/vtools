@@ -364,7 +364,7 @@ class TestPeriodOp(unittest.TestCase):
         
         self.assertEqual(ts_op.start,aligned_start)
         self.assertEqual(len(ts_op),1)
-        self.assertEqual(ts_op.data[0],ts_sum,places=10)
+        self.assertEqual(ts_op.data[0],ts_sum)
         
 if __name__=="__main__":
     
