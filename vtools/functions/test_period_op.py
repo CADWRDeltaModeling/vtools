@@ -10,7 +10,8 @@ from vtools.data.vtime import ticks,number_intervals,\
      is_calendar_dependent,parse_interval,ticks_per_minute
 #from vtools.debugtools.timeprofile import debug_timeprofiler
 from vtools.data.vtime import ticks_to_time,ticks\
-     ,number_intervals,time_sequence,time_interval,parse_time
+     ,number_intervals,time_sequence,time_interval,parse_time,\
+     ticks_per_day
 from vtools.data.constants import *
 
 from period_op import *
@@ -244,8 +245,41 @@ class TestPeriodOp(unittest.TestCase):
         self.assertEqual(ts_op.data[2],3.0)
         self.assertEqual(ts_op.data[3],4.0)
         
+        data=sciarray([1.0,2.0,3.0,4.0,5.0,6.0,2.0,3.0,4.0,5.0,4.0])
+        ts=its(times,data,{})
+        op=MIN
+        ts_op=period_op(ts,"1 hour",op)
+        self.assertEqual(len(ts_op),4)
+        self.assertEqual(ts_op.data[0],1.0)
+        self.assertEqual(ts_op.data[1],2.0)
+        self.assertEqual(ts_op.data[2],3.0)
+        self.assertEqual(ts_op.data[3],4.0)
         
-
+        
+        op=MAX
+        ts_op=period_op(ts,"1 hour",op)
+        self.assertEqual(len(ts_op),4)
+        self.assertEqual(ts_op.data[0],6.0)
+        self.assertEqual(ts_op.data[1],2.0)
+        self.assertEqual(ts_op.data[2],5.0)
+        self.assertEqual(ts_op.data[3],4.0)
+        
+        times=[0,15,28,30,58,64,80,90,91]
+        start_datetime = parse_time("1996-1-1")
+        start_ticks = ticks(start_datetime)
+        times=scimultiply(times,ticks_per_day)
+        times=sciadd(times,start_ticks)
+        data=sciarray([1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0,4.0])
+        ts=its(times,data,{})
+        op=MEAN
+        ts_op=period_op(ts,"1 month",op)
+        self.assertEqual(len(ts_op),4)
+        self.assertEqual(ts_op.data[0],1.0)
+        self.assertEqual(ts_op.data[1],2.0)
+        self.assertEqual(ts_op.data[2],3.0)
+        self.assertEqual(ts_op.data[3],4.0)
+        
+        
     def test_period_op_uncompatible_interval(self):
         """ Test behaviour of period operation on TS with interval uncompatible
             with operation time interval
@@ -330,7 +364,7 @@ class TestPeriodOp(unittest.TestCase):
         
         self.assertEqual(ts_op.start,aligned_start)
         self.assertEqual(len(ts_op),1)
-        self.assertEqual(ts_op.data[0],ts_sum)
+        self.assertEqual(ts_op.data[0],ts_sum,places=10)
         
 if __name__=="__main__":
     
