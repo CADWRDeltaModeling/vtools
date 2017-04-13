@@ -21,7 +21,7 @@ class TestDssService(unittest.TestCase):
         super(TestDssService,self).__init__(methodName)
         import vtools.datastore.dss
         pkgfile = vtools.datastore.dss.__file__
-        self.test_file_path='testfile.dss'
+        self.test_file_path='test/testfile.dss'
         self.test_file_path=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],self.test_file_path)
         self.backup_dss_file=os.path.join(os.path.split(os.path.abspath(pkgfile))[0],'test/backup_dssfile/testfile.dss')
         
@@ -46,7 +46,8 @@ class TestDssService(unittest.TestCase):
         self.assertTrue(type(dssc)==DssCatalog)        
         entries=dssc.entries()        
         for entry in entries:
-            self.assertTrue(type(entry)==CatalogEntry)            
+            self.assertTrue(type(entry)==CatalogEntry)     
+       
         self.assertEqual(len(entries),28)
         
     def test_get_data(self):
@@ -767,7 +768,7 @@ class TestDssService(unittest.TestCase):
 #        it1=its(data[start:end],rt1.ticks[start:end],prop)
 #        self.dss_service.add_data(data_ref,it1)  
             
-        print "all done"  
+#        print "all done"  
 #        residual_len = total_len - round*its_len
 #        if (residual_len>0):
 #            start = rounds*its_len
