@@ -123,11 +123,11 @@ class DssService(Service):
         ## find out type of record.
 
         (idtype,d1,d2)=self._retrieve_data_type(dssf,firstpath)
-
+     
         if (idtype==REGULARTS) or (idtype==REGULARTS_DOUBLE):
             (time_window,header,unit,type)=\
             self._retrieve_rts_prop(dssf,path,dparts)
-        elif idtype==IRREGULARTS:
+        elif (idtype==IRREGULARTS):
             (time_window,header,unit,type)=\
             self._retrieve_its_prop(dssf,path,dparts)
         else:
@@ -609,10 +609,20 @@ class DssService(Service):
         """ Delete all catalog record about dss_file_path in db"""
 
         try:
-            findex = self._dss_file[dss_file_path][0]
+            findex = self._dss_file_opened[dss_file_path][0]
         except Exception,e:
             return
         self._remove_paths_record(findex)
+        dss_file_path=dss_file_path.lower()
+        fnames=os.path.split(dss_file_path)
+        
+        dsdpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsd"))
+        dscpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsc"))
+        
+        if os.path.exists(dsdpath):
+            os.remove(dsdpath)
+        if os.path.exists(dscpath):
+            os.remove(dscpath)
         
     def _create_column_index_map(self):
 
@@ -920,7 +930,7 @@ class DssService(Service):
         if (stime>etime) :
             raise ValueError("input time window start time is behind end time.")
        
-        
+        lfound = False
         ## find out the valid time extent of the ts 
         (juls,istime,jule,ietime,cunits,ctype,lqual,ldouble,lfound)= dssf.ztsinfox(data_ref.selector)
     
@@ -935,7 +945,7 @@ class DssService(Service):
             lastfound  = True
             lfound     = True
             
-       
+         
         if(not lfound):
             dssf.close()
             raise DssAccessError("input path is invalid %s"%data_ref.selector)
@@ -990,7 +1000,7 @@ class DssService(Service):
             etime = align(etime,step,left)
 
         if (etime<stime): ## no data should be return in such a case
-            return (cdate,ctime,0)
+            return iter([(cdate,ctime,0)])
 
         ## here is a fix
         ## giving a example in reading aggregated ts, timewindow (3/14/2000,3/15/2000)
