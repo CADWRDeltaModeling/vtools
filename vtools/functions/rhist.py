@@ -141,9 +141,10 @@ def rhist_coef(x,y,y0,yn,p,q):
     if len(q) != nintvl:
         raise ValueError("Argument q should have len equal to the number of intervals, one smaller than x")
     # calculate cumulative sum of values of y
-    xdiff=np.ediff1d(x,to_begin=[0.])
-    ycum = xdiff.copy()
-    ycum[1:]*=np.cumsum(y)
+    xdiff=np.ediff1d(x,to_begin=[0.])    
+    ycum= xdiff.copy()
+    ycum[1:] *= y
+    ycum = np.cumsum(ycum)
     
     a,b,c,d = _ratsp1(x,ycum,p,q,y0,yn)
     
