@@ -11,7 +11,7 @@ import copy
 import itertools
 import scipy
 import bisect
-all = ["TimeSeries","TimeSeriesElement","prep_binary","range_union","rts","its"]
+all = ["TimeSeries","TimeSeriesElement","prep_binary","range_union","rts","its","extrapolate_ts"]
 
 # python standard lib import.
 from operator import isNumberType,isSequenceType
@@ -247,6 +247,7 @@ class TimeSeries(object):
                 self._ticks = times
         else:
             self._ticks=[]
+        self._props = {} if props is None else props
         self._data = data
         self._props = props     
         self._len = len(times)
@@ -387,7 +388,7 @@ class TimeSeries(object):
         start : :py:class:`datetime.datetime`
             Start time of copy
         
-        end : :py:class:`datetime.datetime`
+        end : :py:class:`datetime.datetime`extr
             End time of copy
         
         left : boolean, optional
@@ -898,21 +899,26 @@ def its2rts(its,interval,original_dates=True):
    interval_seconds = ticks(interval)
    its_ticks = its.ticks   
    n = (end - start)/interval_seconds
-   tseq = time_sequence(stime, interval, n+1)   
-   data = np.ones_like(tseq,dtype='d')*np.nan
+   tseq = time_sequence(stime, interval, n+1)   # todo: Changed from n+1 to n+2 a bit casually
+   outsize = list(its.data.shape)
+   outsize[0] = n+1
+   
+   data = np.empty(tuple(outsize),dtype=its.data.dtype)
    vround = np.vectorize(round_ticks)
    tround = vround(its.ticks,interval)   
    ndx = np.searchsorted(tseq,tround)
-   if any(ndx[1:] == ndx[:-1]):
-        badndx = np.extract(ndx[1:] == ndx[:-1],ndx[1:])
+   conflicts = np.equal(ndx[1:],ndx[:-1])
+   if any(conflicts):
+        badndx = np.extract(conflicts,ndx[1:])
         badtime = tseq[badndx]
         # todo: use warnings.warn()
-        for t in badtime:
+        for t in badtime[0:10]:
             warnings.warn("Warning multiple time steps map to a single neat output step near: %s " % ticks_to_time(t))
-   data[ndx]=its.data
+   data[ndx,:]=its.data
    if original_dates:
        tseq[ndx]=its.ticks
-   ts = TimeSeries(tseq,data,its.props)
+   newprops = {} if its.props is None else its.props
+   ts = TimeSeries(tseq,data,newprops)
    ts.interval = interval
    return ts
 
@@ -990,17 +996,21 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
     else:
         tail_extended = 0
     new_len=len(ts)+head_extended+tail_extended
-    data=np.empty(new_len)
-    old_len=len(ts)
+    shp = list(ts.data.shape)
+    shp[0] = new_len
+    data=np.empty(tuple(shp))
+    old_len=len(ts.times)
     data[head_extended:head_extended+old_len]=ts.data[:]
     
 
     if method=="constant":
-        data[0:head_extended]=val
+        data[0:head_extended,]=val
         data[head_extended+old_len:new_len]=val
     elif method=="taper":
-        if np.isnan(val):
-            raise ValueError("You must input a valid value for taper method")
+        if np.any(np.isnan(val)):
+            raise ValueError("You must input a valid value for taper method")        
+        if data.ndim > 1:
+            raise ValueError("Extrapolate with taper not implemented for ndim > 1")
         ## find out first and last non val
         temp=ts.data[~np.isnan(ts.data)]
         begin_taper_to=temp[0]
@@ -1009,7 +1019,8 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
         head_taper_step=(begin_taper_to-val)/(head_extended)
         tail_taper_step=(val-end_taper_from)/(tail_extended)
         data[0:head_extended]=np.arange(start=val,\
-                                stop=begin_taper_to,step=head_taper_step)
+                                stop=begin_taper_to,
+                                step=head_taper_step)
         data[old_len+head_extended:new_len]=np.arange(start=end_taper_from+tail_taper_step,\
                                 stop=val+tail_taper_step,step=tail_taper_step)
         
