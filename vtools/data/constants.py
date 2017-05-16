@@ -32,3 +32,7 @@ TS_PROPERTIES=[AGGREGATION,TIMESTAMP]
 UNIT="unit"
 INTERVAL="interval"
 UND="und"
+VARIABLE="variable"
+
+
+
