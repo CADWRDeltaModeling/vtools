@@ -6,3 +6,4 @@ from interpolate import *
 from filter import *
 from diff import *
 from diffnorm import *
+from bind_split import *
