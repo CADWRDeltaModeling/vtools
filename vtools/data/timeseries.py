@@ -975,12 +975,17 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
             
         val : float
             Constant will be filled or the value that the last non-nan
-            gets tapered to.
+            gets tapered to. Only constant is supported for multivariate data
             
         Returns
         -------
         result :  :class:`~vtools.data.timeseries.TimeSeries`
            An new time series extended to the input start and end.
+           This function will only extend, not clip, so if you want to be
+           sure the returned function is the correct siae you need to apply
+           a window afterwards.
+           
+           
     """
     if start is None:
         start=ts.start
@@ -989,8 +994,10 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
 
     if start < ts.start:
         head_extended = number_intervals(start,ts.start,ts.interval)
+        eff_start = start
     else:
         head_extended = 0
+        eff_start = ts.start
     if ts.end < end:
         tail_extended = number_intervals(ts.end,end,ts.interval)
     else:
@@ -998,14 +1005,18 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
     new_len=len(ts)+head_extended+tail_extended
     shp = list(ts.data.shape)
     shp[0] = new_len
-    data=np.empty(tuple(shp))
+    data=np.zeros(tuple(shp))
+    data[:] = np.nan
     old_len=len(ts.times)
-    data[head_extended:head_extended+old_len]=ts.data[:]
-    
+    if len(shp) == 1:
+        data[head_extended:head_extended+old_len]=ts.data[:]
+    else:
+        data[head_extended:head_extended+old_len,]=ts.data
+        
 
     if method=="constant":
         data[0:head_extended,]=val
-        data[head_extended+old_len:new_len]=val
+        data[head_extended+old_len:new_len,]=val
     elif method=="taper":
         if np.any(np.isnan(val)):
             raise ValueError("You must input a valid value for taper method")        
@@ -1027,7 +1038,7 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
     else:
         raise ValueError("Unkonw filling method:"+method)
         
-    new_ts=rts(data,start,ts.interval,{})
+    new_ts=rts(data,eff_start,ts.interval,{})
     return new_ts
         
     
