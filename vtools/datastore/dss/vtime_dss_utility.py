@@ -32,23 +32,23 @@ __all__=["valid_dss_interval_seconds","valid_dss_interval_dic_in_mins",\
          "discover_valid_rts_start","discover_valid_rts_end","dss_julian2python",
          "uncondensed_Dparts","interval_to_D"]
 
-valid_dss_interval_seconds=[60,120,180,240,300,600,900,1200,1800,3600,7200,10800,14400,21600,\
+valid_dss_interval_seconds=[60,120,180,240,300,360,600,900,1200,1800,3600,7200,10800,14400,21600,\
                             28800,43200,86400,604800,2592000,31536000]
 
-valid_dss_interval_dic_in_mins={"1MIN":1,"2MIN":2,"3MIN":3,"4MIN":4,"5MIN":5,"10MIN":10,\
+valid_dss_interval_dic_in_mins={"1MIN":1,"2MIN":2,"3MIN":3,"4MIN":4,"5MIN":5,"6MIN":6,"10MIN":10,\
                                 "15MIN":15,"20MIN":20,"30MIN":30,"1HOUR":60,"2HOUR":120,\
                                 "3HOUR":180,"4HOUR":240,"6HOUR":360,"8HOUR":480,"12HOUR":720,\
                                 "1DAY":1440,"1WEEK":10080,"1MON":43200,"1YEAR":518400}
 
 valid_dss_interval_dic_in_delta=[time_interval(minutes=1),time_interval(minutes=2),time_interval(minutes=3),
-                                 time_interval(minutes=4),time_interval(minutes=5),time_interval(minutes=10),
+                                 time_interval(minutes=4),time_interval(minutes=5),time_interval(minutes=6),time_interval(minutes=10),
                                  time_interval(minutes=15),time_interval(minutes=20),time_interval(minutes=30),
                                  time_interval(hours=1),time_interval(hours=2),time_interval(hours=3),
                                  time_interval(hours=4),time_interval(hours=6),time_interval(hours=8),time_interval(hours=12),
                                  time_interval(days=1),time_interval(days=7),time_interval(months=1),time_interval(years=1)]
 
 ## convert a interval object into string repr for D part
-interval_to_D=["1MIN","2MIN","3MIN","4MIN","5MIN","10MIN","15MIN","20MIN","30MIN",\
+interval_to_D=["1MIN","2MIN","3MIN","4MIN","5MIN","6MIN","10MIN","15MIN","20MIN","30MIN",\
              "1HOUR","2HOUR","3HOUR","4HOUR","6HOUR","8HOUR","12HOUR",\
              "1DAY","1WEEK","1MON","1YEAR"]
 
@@ -59,7 +59,7 @@ _one_year=time_interval(years=1)
 _one_decade=time_interval(years=10)
 _one_century=time_interval(years=100)
 
-_dss_block_size={"1MIN":_one_day,"2MIN":_one_day,"3MIN":_one_day,"4MIN":_one_day,"5MIN":_one_day,"10MIN":_one_day,\
+_dss_block_size={"1MIN":_one_day,"2MIN":_one_day,"3MIN":_one_day,"4MIN":_one_day,"5MIN":_one_day,"6MIN":_one_day,"10MIN":_one_day,\
                 "15MIN":_one_month,"20MIN":_one_month,"30MIN":_one_month,"1HOUR":_one_month,"2HOUR":_one_month,\
                 "3HOUR":_one_month,"4HOUR":_one_month,"6HOUR":_one_month,"8HOUR":_one_month,"12HOUR":_one_month,\
                 "1DAY":_one_year,"1WEEK":_one_decade,"1MON":_one_decade,"1YEAR":_one_century,"IR-DAY":_one_day,\
