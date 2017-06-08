@@ -76,13 +76,28 @@ class TestDssUtility(unittest.TestCase):
         x=arange(n)
         data=sin(2*pi*x/24.)
         ts=rts(data,start,dt,{})
-        destination=self.test_file_path
-
-        #pdb.set_trace()
-        
-        path="invalid_path"
+        destination=self.test_file_path       
+        path="invalid path"
         self.assertRaises(ValueError,dss_store_ts,ts,destination,path)
         
+        
+    def test_save_retrieve_6min_rts(self):
+        start=datetime(1990,1,1,0,0)
+        dt = minutes(6)
+        n=1000
+        x=arange(n)
+        data=sin(2*pi*x/24.)
+        ts=rts(data,start,dt,{})
+        destination=self.test_file_path
+        path="/A/B/C//6MIN/F/"
+        dss_store_ts(ts,destination,path)
+        c=dss_catalog(destination)
+        del c
+        ts_back=dss_retrieve_ts(destination,path)
+        self.assertEqual(len(ts),len(ts_back))
+        self.assertEqual(ts.interval,ts_back.interval)
+        for d1,d2 in zip(ts.data,ts_back.data):
+            self.assertAlmostEqual(d1,d2)
 
     def test_retrieve_ts(self):
         
@@ -197,6 +212,14 @@ class TestDssUtility(unittest.TestCase):
         self.assertEqual(len(cat),28)
         cat=dss_catalog(dssfile_path,selector)
         self.assertEqual(len(cat),3)
+    
+    def test_dss_catalog_many_times(self):
+        dssfile_path=self.data_file_path
+        
+        for i in range(100):
+            cat=dss_catalog(dssfile_path)
+            self.assertEqual(len(cat),28)
+         
      
     def test_retrieve_save__inst_rts(self):
 
@@ -242,11 +265,12 @@ class TestDssUtility(unittest.TestCase):
         savepath="/RLTM+CHAN/SLBAR002/FLOW-EXPORT//1DAY/DWR-OM-JOC-DSM2_C"
         
         self.assertRaises(ValueError,dss_store_ts,ts,dssfile_path,savepath)
-                          
+        
         
 if __name__=="__main__":
     
     unittest.main()  
+        
         
         
 
