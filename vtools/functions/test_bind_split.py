@@ -29,7 +29,6 @@ from numpy.testing import assert_array_equal, assert_equal
 from numpy.testing import assert_almost_equal, assert_array_almost_equal
 import datetime
 
-
 class TestBindSplitOp(unittest.TestCase):
 
     """ test functionality of split/bind operations """
@@ -47,10 +46,11 @@ class TestBindSplitOp(unittest.TestCase):
         data=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
         ts1=its(times,data,{})
         ts2=its(times,data,{})
-      
+ 
         new_ts = ts_bind(ts1,ts2)
         self.assertEqual(len(new_ts),len(ts1))
         self.assertEqual(new_ts.start,ts1.start)
+       
         for (d1,d2),d  in zip(new_ts.data,data):
             self.assertEqual(d1,d)
             self.assertEqual(d2,d)
@@ -126,6 +126,29 @@ class TestBindSplitOp(unittest.TestCase):
         ts2_val = new_ts.data[ts2_id,1]
         for d1,d2 in zip(ts2_val,data):
             self.assertEqual(d1,d2)
+            
+    def test_bind_multivar(self):
+        """ test behaviour of bind on multvariate ts"""
+        start = parse_time("1996-2-1")
+        interval = parse_interval("1hour")
+        data1=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
+        data2t=sciarray([[1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0],
+                        [2.0,2.1,2.8,9.1,3.2,0.5,0.1,8.1,1.2,1.1]])
+        data2=data2t.transpose()
+        
+        data_temp= sciarray([data1[:],data2t[0,:],data2t[1,:]]).transpose()             
+                        
+        ts1=rts(data1,start,interval,{})
+        ts2=rts(data2,start,interval,{})
+       
+        new_ts = ts_bind(ts1,ts2)
+        self.assertEqual(len(new_ts),len(ts1))
+        self.assertEqual(new_ts.start,ts1.start)
+        self.assertEqual(new_ts.interval,interval)
+        for (d1,d2,d3),(dt1,dt2,dt3) in zip(new_ts.data,data_temp):
+            self.assertEqual(d1,dt1)
+            self.assertEqual(d2,dt2)
+            self.assertEqual(d3,dt3)
             
     def test_split_op_irregular(self):
         """ Test behaviour of split operation on irregular TS."""

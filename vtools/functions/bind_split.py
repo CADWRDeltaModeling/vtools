@@ -69,8 +69,8 @@ def _bind(ts1,ts2):
 
     """
     
-    if (not((ts1.data.ndim==1) and (ts2.data.ndim==1))):
-        raise ValueError("bind only support time series of univariate")
+#    if (not((ts1.data.ndim==1) and (ts2.data.ndim==1))):
+#        raise ValueError("bind only support time series of univariate")
     ts=None
     ts_is_regular = False
     new_ts_time_sequence = []
@@ -99,14 +99,28 @@ def _bind(ts1,ts2):
         
     
     new_ts_len = len(new_ts_time_sequence)
-    new_data = np.array([[np.nan]*new_ts_len,[np.nan]*new_ts_len])
+    ts1_var_dim = 1
+    ts2_var_dim = 1
+    ts2_data =  ts2.data
+    ts1_data =  ts1.data
+    if ts1.data.ndim>1:
+        ts1_var_dim = ts1.data.shape[1]
+    else:
+        ts1_data =ts1.data[:,None]
+    if ts2.data.ndim>1:
+        ts2_var_dim = ts2.data.shape[1]
+    else:
+        ts2_data =ts2.data[:,None]
+    
+    new_ts_var_dim = ts1_var_dim+ts2_var_dim
+    new_data = np.full((new_ts_len,new_ts_var_dim),np.nan)
     
     ts1_data_id = np.searchsorted(new_ts_time_sequence,ts1.ticks)
     ts2_data_id = np.searchsorted(new_ts_time_sequence,ts2.ticks)
-    new_data[0,ts1_data_id] = ts1.data
-    new_data[1,ts2_data_id] = ts2.data 
+    new_data[ts1_data_id,0:ts1_var_dim] = ts1_data
+    new_data[ts2_data_id,ts1_var_dim:new_ts_var_dim] = ts2_data
     
-    new_data = new_data.transpose()
+     
     
     if ts_is_regular:
         ts = rts(new_data,new_start,new_interval)
