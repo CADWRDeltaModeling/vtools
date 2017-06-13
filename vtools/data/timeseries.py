@@ -181,7 +181,7 @@ def _get_span(ts,start,end,left,right):
         raise TypeError("input end must be None,integer ticks,time string or datetime")
 
     if start>end:
-        raise ValueError("Requested end of window is after time series end.")
+        raise ValueError("Requested start of window is after time series end.")
     if start > ts.end or end < ts.start:
         raise ValueError("Requested window is outside of time series.")
     start_index=ts.index_after(start)
@@ -322,7 +322,7 @@ class TimeSeries(object):
 
     # slicing/subsetting API
     def __getitem__(self,key):
-        if type(key)==int:
+        if type(key)==int or type(key) == np.int64:
             # return element
             return TimeSeriesElement( (self._ticks[key],self.data[key]))
         elif isinstance(key,_datetime.datetime):
@@ -510,7 +510,10 @@ class TimeSeries(object):
             if not((tsEnd-tsStart)==(endIndex-startIndex)):
                 raise ValueError("replacing time series doesn't have enought length")
             new_data[startIndex:endIndex+1]=ts.data[tsStart:tsEnd+1]
-        return rts(new_data,self.start,self.interval,self.props)
+        if self.is_regular():
+            return rts(new_data,self.start,self.interval,self.props)
+        else:
+            return its(self.times,new_data,self.props)
     
     def centered(self,copy_data=False,neaten=True):
         """ Return a time series with times centered between the timestamps of the original series.
@@ -557,41 +560,83 @@ class TimeSeries(object):
             new_ticks = [t+dt for t,dt in zip(ticks1,half_interval)]
             return its(new_ticks,new_data,new_props)
             
-    def shift(self,interval,copy_data=False):
-        """ Return a time series with the timestamps shifted by a interval.
+    
+            
+    def shift(self,interval,start,end):
+        """ Inplace shift section of time series by a interval.
         
         Parameters
         ----------
         interval : :py:class:`dateutil.relativedelta`, :py:class:`datetime.timedelta`, string 
   
-        copy_data : boolean,optional
-            If True, the result is an entirely new series with deep copy of all data and properties. Otherwise, it will share data and properties.
-    
-        Returns
+        start : :py:class:`datetime.datetime`, string 
+        end : :py:class:`datetime.datetime`, string 
+        
+         Returns
         -------
-        result : :class:`~vtools.data.timeseries.TimeSeries`
-            New series with shared or copied data with  the  shfited timestamps of the original series by inpute interval.
+        result : boolean
+        
+             return true if succeeded.
+             
         """    
         
-        new_data=self.data
-        if copy_data:
-            new_data = numpy.copy(self.data)
-        new_props=self.props
-        if copy_data:
-            new_props = copy.deepcopy(self.props)   
+         
         if not is_interval(interval):
             interval=parse_interval(interval)
-               
+            
+        if is_calendar_dependent(interval):
+            raise ValueError("shfit by calendar dependent interval is not supported")
+            
+        shift_ticks = ticks(interval)
+        
         if self.is_regular():
-            return rts(new_data,increment(self.start,interval,1),self.interval,new_props) 
-        else:
-            new_times=[]
-            if is_calendar_dependent(interval):
-               new_times=self.times + interval
+            
+            ts_interval_ticks = ticks(self.interval)
+            if shift_ticks%ts_interval_ticks:
+                raise ValueError("you must shift by multiple of regular time series interval")
+            num_interval = shift_ticks/ts_interval_ticks
+            left=True
+            right=True
+            (start_index,end_index)=_get_span(self,start,end,left,right)
+             ##univariate
+            temp=0
+           
+                
+            if len(self.data.shape)==1:
+                temp = self.data[start_index:end_index]
+                self.data[start_index+num_interval:end_index+num_interval]=temp
+                if shift_ticks>0:
+                    self.data[start_index:start_index+num_interval]=np.nan
+                else:
+                    self.data[end_index+num_interval:end_index+1]=np.nan 
             else:
-               new_times=self.ticks + ticks(interval)
-      
-            return its(new_times,new_data,new_props)
+                temp = self.data[:,start_index:end_index]
+                self.data[:,start_index+num_interval:end_index+num_interval]=temp
+                if shift_ticks>0:
+                    self.data[:,start_index:start_index+num_interval]=np.nan
+                else:
+                    self.data[:,end_index+num_interval:end_index+1]=np.nan 
+                        
+            return True
+        else:
+            left=True
+            right=True
+            (start_index,end_index)=_get_span(self,start,end,left,right)
+
+            shifted_span_start = self.ticks[start_index]+shift_ticks
+            shifted_span_end   = self.ticks[end_index]+shift_ticks
+          
+            if (shift_ticks>0):
+                if (((end_index+1)<len(self.ticks)) and (shifted_span_end>self.ticks[end_index+1])):
+                    raise ValueError("shifted window end overlap existing data point")
+            elif  (shift_ticks<0):
+                if (((start_index-1)>-1) and (shifted_span_start<self.ticks[start_index-11])):
+                    raise ValueError("shifted window start overlap existing data point")
+            
+            temp = self.ticks[start_index:end_index+1]+shift_ticks
+            self.ticks[start_index:end_index+1]=temp
+            return True
+    
             
     def ts_inplace_binary(f):
         def b(self,other):
