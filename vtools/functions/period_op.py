@@ -7,7 +7,7 @@
 
 ## Python libary import.
 import datetime
-
+import numpy as np
 ## Scipy import.
 from scipy import maximum as scimaximum
 from scipy import minimum as sciminimum
@@ -101,7 +101,7 @@ def period_op(ts,interval,op,method=None):
     ## select mean method if doing mean.
     if op==MEAN:
         if not method:
-            if TIMESTAMP in ts.props.keys() and \
+            if (not ts.props is None) and TIMESTAMP in ts.props.keys() and \
                ts.props[TIMESTAMP]==INST:
                 method=TRAPEZOID
             else:
@@ -327,14 +327,20 @@ def _op_its(ts,op,interval,aligned_start,start_index,\
     times=time_sequence(aligned_start,interval,num+1)
     operation_index=(ts.index_after(times)).tolist()
     tsdata=ts.data
-    data=[nan]*len(operation_index)
+    outsize = list(tsdata.shape)
+    outsize[0] = len(operation_index)
+    
+    data=np.empty(tuple(outsize),dtype=ts.data.dtype)
     operator= operator_dic[op]
-    data =operator.reduceat(tsdata,operation_index)
+    data =operator.reduceat(tsdata,operation_index,axis=0)
+    
     if op==MEAN:
-        mean_window = (ediff1d(operation_index)).tolist()
+        mean_window = (ediff1d(operation_index,to_end=1)).astype('d')
         last_index = operation_index[-1]
-        mean_window.append(len(tsdata)-last_index)
-        data = divide(data,mean_window)
+        mean_window[-1] = float(len(tsdata)-last_index)
+        out = np.full_like(data.T,np.nan)
+        out = np.true_divide(data.T, mean_window, out=out, where=mean_window > 0)
+        data = out.T     #  /= np.array(mean_window)
     return rts(data,aligned_start,interval,prop)
     
                                         
