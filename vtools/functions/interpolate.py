@@ -109,7 +109,7 @@ def interpolate_ts_nan(ts,method=LINEAR,max_gap=0,**args):
     return tst
 
 
-def interpolate_ts(ts,times,method=SPLINE,filter_nan=True,**dic):
+def interpolate_ts(ts,times,method=LINEAR,filter_nan=True,**dic):
     """ Interpolate a time series to a new time sequence.
 
     Parameters
