@@ -35,7 +35,8 @@ def range_union(ts0,ts1):
     union_start=min(ts0.start,ts1.start)
     union_end=max(ts0.end,ts1.end)
     return (union_start,union_end)
-
+    
+    
 def range_intersect(ts0,ts1):
     """Intersection of time ranges of two series.
     
@@ -54,8 +55,16 @@ def range_intersect(ts0,ts1):
               A tuple representing the start and end of the intersect of time ranges of ts0 and ts1
             
     """
-    intersect_start=max(ts0.start,ts1.start)
-    intersect_end=min(ts0.end,ts1.end)
+    if type(ts1) == tuple:
+        comp_start = ts1[0]
+        comp_end = ts1[1]
+    else:
+        # assumes time series
+        comp_start = ts1.start
+        comp_end = ts1.end
+        
+    intersect_start=max(ts0.start,comp_start)
+    intersect_end=min(ts0.end,comp_end)
     return (intersect_start,intersect_end)
 
 def index_after(seq,tm):
@@ -493,14 +502,16 @@ class TimeSeries(object):
             elif not (ts.interval==self.interval):
                 raise ValueError("two operating time series must have same interval")
             replacingWithTs=True
-        elif not (type(ts)==type(1.0)):
-            raise TypeError("unsupported input type%s"%type(ts))
+        #elif not (type(ts)==type(self.data.dtype)):
+        #    raise TypeError("unsupported input type%s"%type(ts))
                   
         (startIndex,endIndex)=_get_span(self,start,end,left,right)
         
         new_data=self.data[:]        
         if not replacingWithTs:
-            new_data[startIndex:endIndex+1]=ts
+            out = self.copy()
+            out.data[startIndex:endIndex+1]=ts
+            return out
         else:
             try:
                 (tsStart,tsEnd)=_get_span(ts,start,end,left,right)
@@ -810,6 +821,12 @@ class TimeSeries(object):
     def _set_data(self,data):
         if type(data) == type(self._data):
             self._data = data
+        elif (type(data) == np.ndarray) and (type(self._data) == np.ma.MaskedArray):
+            self._data = data
+        elif (type(data) == np.ma.MaskedArray) and (type(self._data) == np.ndarray):
+            self._data = data
+        else:
+            raise TypeError("data must be np array or masked array")
 
     def _get_ticks(self):
         return self._ticks
@@ -959,7 +976,7 @@ def its2rts(its,interval,original_dates=True):
         # todo: use warnings.warn()
         for t in badtime[0:10]:
             warnings.warn("Warning multiple time steps map to a single neat output step near: %s " % ticks_to_time(t))
-   data[ndx,:]=its.data
+   data[ndx,]=its.data
    if original_dates:
        tseq[ndx]=its.ticks
    newprops = {} if its.props is None else its.props
