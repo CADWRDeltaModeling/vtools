@@ -69,8 +69,8 @@ def _bind(ts1,ts2):
 
     """
     
-#    if (not((ts1.data.ndim==1) and (ts2.data.ndim==1))):
-#        raise ValueError("bind only support time series of univariate")
+    if (not((ts1.data.ndim==1) and (ts2.data.ndim==1))):
+        raise ValueError("bind only support time series of univariate")
     ts=None
     ts_is_regular = False
     new_ts_time_sequence = []
@@ -99,28 +99,14 @@ def _bind(ts1,ts2):
         
     
     new_ts_len = len(new_ts_time_sequence)
-    ts1_var_dim = 1
-    ts2_var_dim = 1
-    ts2_data =  ts2.data
-    ts1_data =  ts1.data
-    if ts1.data.ndim>1:
-        ts1_var_dim = ts1.data.shape[1]
-    else:
-        ts1_data =ts1.data[:,None]
-    if ts2.data.ndim>1:
-        ts2_var_dim = ts2.data.shape[1]
-    else:
-        ts2_data =ts2.data[:,None]
-    
-    new_ts_var_dim = ts1_var_dim+ts2_var_dim
-    new_data = np.full((new_ts_len,new_ts_var_dim),np.nan)
+    new_data = np.array([[np.nan]*new_ts_len,[np.nan]*new_ts_len])
     
     ts1_data_id = np.searchsorted(new_ts_time_sequence,ts1.ticks)
     ts2_data_id = np.searchsorted(new_ts_time_sequence,ts2.ticks)
-    new_data[ts1_data_id,0:ts1_var_dim] = ts1_data
-    new_data[ts2_data_id,ts1_var_dim:new_ts_var_dim] = ts2_data
+    new_data[0,ts1_data_id] = ts1.data
+    new_data[1,ts2_data_id] = ts2.data 
     
-     
+    new_data = new_data.transpose()
     
     if ts_is_regular:
         ts = rts(new_data,new_start,new_interval)
@@ -130,7 +116,7 @@ def _bind(ts1,ts2):
     return ts
     
 def ts_split(ts, shared=True):
-    """ Splits a multivariate series into constituent univariate series.
+    """ Splits a 2D multivariate series into constituent univariate series.
 
     Parameters
     ----------
@@ -140,32 +126,23 @@ def ts_split(ts, shared=True):
     
     Returns
     -------    
-    out1,out2,out3,... : :class:`~vtools.data.timeseries.TimeSeries`
-        a series of comonent time series.     
+    out1,out2 : :class:`~vtools.data.timeseries.TimeSeries`
+        Two comonent time series.     
     
     """
-    ts_var_dim = 1
-    if ts.data.ndim>1:
-        ts_var_dim = ts.data.shape[1]
+    if ts.data.ndim > 2: raise ValueError("Only 2D arrays can be split")
+    if shared:
+        dsource = ts.data
+    else:
+        dsource = ts.data.copy()
     
-    var_data_lst =[]
-
-    for i in range(ts_var_dim):  
-        if ts.data.ndim>1:
-            data_temp = ts.data[:,i]
-        else:
-            data_temp = ts.data[:,None]
-            
-        if shared==False:
-            var_data_lst.append(np.copy(data_temp))
-        else:
-            var_data_lst.append(data_temp)
-    
-    ts_lst=[]  
-    for data in var_data_lst:
+    ncol = dsource.shape[1]
+    out = []
+    for jcol in range(ncol):
         if ts.is_regular():
-            ts_lst.append(rts(data,ts.start,ts.interval))
+            colts=rts(dsource[:,jcol],ts.start,ts.interval)
         else:
-            ts_lst.append(its(ts.ticks,data))
-        
-    return ts_lst
+            colts=its(ts.ticks,dsource[:,jcol])
+        out.append(colts)
+            
+    return tuple(out)
