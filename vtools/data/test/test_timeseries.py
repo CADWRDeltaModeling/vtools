@@ -5,6 +5,7 @@ import vtools.data.timeseries
 from vtools.data.timeseries import *
 from vtools.data.vtime import *
 from vtools.data.constants import *
+
 class TestTimeSeries(unittest.TestCase):
 
     def setUp(self):
@@ -599,19 +600,14 @@ class TestTimeSeries(unittest.TestCase):
        # Test operations on ts of varied values.
        # ts_start, ts_len, ts_interval, shift_interval_str, shift_interval
         test_input=[(_datetime.datetime(1990,2,3,11,15),
-                     3005,minutes(5),"1hour",),
+                     3005,minutes(5),"1hour",_datetime.datetime(1990,2,5,11,30),_datetime.datetime(1990,2,8,11,30)),
                     (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
-                     3301,days(1),"1month"),
+                     3407,hours(1),"1day",_datetime.datetime(1990,2,5,11,30),_datetime.datetime(1990,2,8,11,30)),
                     (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
-                     3407,hours(1),"3days"),
-                    (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=45),
-                     6093,days(1),"1year"),
-                    (_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
-                     3005,time_interval(minutes=5),"-1hour")                 
+                     3005,time_interval(minutes=5),"-1hour",_datetime.datetime(1990,2,5,11,30),_datetime.datetime(1990,2,8,11,30))                 
                     ]
 
-        for (ts_start,ts_len,ts_intvl,shift_interval) in test_input:
-            
+        for (ts_start,ts_len,ts_intvl,shift_interval,shift_start,shift_end) in test_input:
             data=numpy.repeat(10.,ts_len)
             diff=parse_interval(shift_interval)
             
@@ -619,36 +615,35 @@ class TestTimeSeries(unittest.TestCase):
             ts0=rts(data,ts_start,ts_intvl)
             
             # First move forward.
-            ts=ts0.shift(shift_interval,copy_data=True)
-            
-            # Now ts ticks should has a forward
-            # difference from ts0.
-            self.assertEqual(ts0.start+diff,ts.start)
-            
-            # This line maynot work for calendar 
-            # dependent shift interval.
-            self.assertEqual(ts0.end+diff,ts.end)
+            ts=ts0.shift(shift_interval,shift_start,shift_end)
+           
             
            
     def test_ts_shift_its(self):  
     
-        ts_len=1000
+        ts_len=10
         data=numpy.repeat(10.0,ts_len)
         ts_start=_datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
         times=[ts_start]*ts_len
         
+        intervals=[minutes(x) for x in [0,18,34,18,15,34,23,17,19,20]]
+       
         for i in range(1,ts_len):
-            times[i]=times[i-1]+time_interval(hours=i%5)
+            times[i]=times[i-1]+intervals[i]
             
         ts0=its(times,data,{})        
-        test_input=[hours(1),months(1),days(3),years(1)]
+        shift_interval=minutes(15)
         
-        for shift_interval in test_input:           
-            ts=ts0.shift(shift_interval,copy_data=True)
-            t=ts0.times+shift_interval
-            for a1,b1 in zip(t,ts.times):
-                self.assertEqual(a1,b1)
-
+        re=ts0.shift(shift_interval,start=ts0.times[3],end=ts0.times[7])
+            
+        correct_times = times
+        
+        for i in range(3,8):
+            correct_times[i]=correct_times[i]+shift_interval
+            
+        for a,b in zip(correct_times,ts0.times):
+            self.assertEqual(a,b)
+        
     def test_rts_const(self):
         
         val =1.0
