@@ -130,7 +130,7 @@ def _bind(ts1,ts2):
     return ts
     
 def ts_split(ts, shared=True):
-    """ Splits a 2D multivariate series into constituent univariate series.
+    """ Splits a multivariate series into constituent univariate series.
 
     Parameters
     ----------
@@ -140,24 +140,32 @@ def ts_split(ts, shared=True):
     
     Returns
     -------    
-    out1,out2 : :class:`~vtools.data.timeseries.TimeSeries`
-        Two comonent time series.     
+    out1,out2,out3,... : :class:`~vtools.data.timeseries.TimeSeries`
+        a series of comonent time series.     
     
     """
+    ts_var_dim = 1
+    if ts.data.ndim>1:
+        ts_var_dim = ts.data.shape[1]
     
+    var_data_lst =[]
+
+    for i in range(ts_var_dim):  
+        if ts.data.ndim>1:
+            data_temp = ts.data[:,i]
+        else:
+            data_temp = ts.data[:,None]
+            
+        if shared==False:
+            var_data_lst.append(np.copy(data_temp))
+        else:
+            var_data_lst.append(data_temp)
     
-    data1 = ts.data[:,0]
-    if shared==False:
-        data1 = np.copy(ts.data[:,0])
-    data2 = ts.data[:,1]
-    if shared==False:
-        data2 = np.copy(ts.data[:,1])
+    ts_lst=[]  
+    for data in var_data_lst:
+        if ts.is_regular():
+            ts_lst.append(rts(data,ts.start,ts.interval))
+        else:
+            ts_lst.append(its(ts.ticks,data))
         
-    if ts.is_regular():
-        ts1=rts(data1,ts.start,ts.interval)
-        ts2=rts(data2,ts.start,ts.interval)
-    else:
-        ts1=its(ts.ticks,data1)
-        ts2=its(ts.ticks,data2)
-        
-    return ts1,ts2
+    return ts_lst

@@ -242,6 +242,71 @@ class TestBindSplitOp(unittest.TestCase):
         self.assertEqual(ts2.interval,ts.interval)
         self.assertEqual(len(ts2),len(ts))
         
+    def test_split_op_regular_3(self):
+        """ Test behaviour of split operation on regular TS with more than 3 variable"""
+        
+        #times=sciadd.accumulate(times)
+        start = parse_time("1996-2-1")
+        interval = parse_interval("1hour")
+        data1=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
+        data2=sciarray([7.0,1.2,10.5,3.0,1.0,1.0,9.0,3.0,0.0,0.2])
+        data3=sciarray([0.03,1.02,70.5,0.0,1.0,1.0,9.6,13.0,0.0,2.2])
+        
+        ts = rts(sciarray([data1,data2,data3]).transpose(),start,interval)
+        
+        ts1,ts2,ts3 =ts_split(ts,False)
+        
+        for d1,d2 in zip(ts.data[:,0],ts1.data):
+            self.assertEqual(d1,d2)
+        for d1,d2 in zip(ts.data[:,1],ts2.data):
+            self.assertEqual(d1,d2)
+        for d1,d2 in zip(ts.data[:,2],ts3.data):
+            self.assertEqual(d1,d2)
+            
+        ts1.data[5] = -9999.0
+        ts2.data[2] = -9999.0    
+        self.assertNotEqual(ts1.data[5],ts.data[5,0])
+        self.assertNotEqual(ts2.data[2],ts.data[2,1])
+         
+        self.assertEqual(ts1.start,ts.start)
+        self.assertEqual(ts1.interval,ts.interval)
+        self.assertEqual(len(ts1),len(ts))
+        self.assertEqual(ts2.start,ts.start)
+        self.assertEqual(ts2.interval,ts.interval)
+        self.assertEqual(len(ts2),len(ts))
+        
+        ts1,ts2,ts3 =ts_split(ts,True)
+
+        ts1.data[5] = -9999.0
+        ts2.data[2] = -9999.0
+    
+        
+        for d1,d2 in zip(ts.data[:,0],ts1.data):
+            self.assertEqual(d1,d2)
+        for d1,d2 in zip(ts.data[:,1],ts2.data):
+            self.assertEqual(d1,d2)
+         
+        self.assertEqual(ts1.start,ts.start)
+        self.assertEqual(ts1.interval,ts.interval)
+        self.assertEqual(len(ts1),len(ts))
+        self.assertEqual(ts2.start,ts.start)
+        self.assertEqual(ts2.interval,ts.interval)
+        self.assertEqual(len(ts2),len(ts))
+        
+        ts = rts(sciarray(data1),start,interval)
+        [ts1] =ts_split(ts,True)
+
+        ts1.data[5] = -9999.0
+       
+        
+        for d1,d2 in zip(ts.data,ts1.data):
+            self.assertEqual(d1,d2)
+      
+         
+        self.assertEqual(ts1.start,ts.start)
+        self.assertEqual(ts1.interval,ts.interval)
+        self.assertEqual(len(ts1),len(ts))
+      
 if __name__=="__main__":
     
     unittest.main()       
