@@ -965,7 +965,7 @@ def its2rts(its,interval,original_dates=True):
    outsize = list(its.data.shape)
    outsize[0] = n+1
    
-   data = np.empty(tuple(outsize),dtype=its.data.dtype)
+   data = np.full(tuple(outsize),fill_value=np.nan,dtype=its.data.dtype)
    vround = np.vectorize(round_ticks)
    tround = vround(its.ticks,interval)   
    ndx = np.searchsorted(tseq,tround)
