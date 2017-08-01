@@ -67,24 +67,29 @@ def dss_retrieve_ts(dss_file,selector,time_window=None,unique=False,overlap=None
     ##      debug_timeprofiler.timegap()
     ######################
     
-    lt=os.stat(dss_file)
-   
-    if dss_file in _catalog_buffer.keys():
-        if not(lt[9]==lt[8]) and (lt[7]>lt[8]): ## to do, is it a enough conditon to
-            c=_catalog_buffer[dss_file]         ## decide the source dss has not been changed?
-        else:
-            c=dss_service.get_catalog(dss_file)
-            _catalog_buffer[dss_file]=c                        
-    else:
-        c=dss_service.get_catalog(dss_file)
-        _catalog_buffer[dss_file]=c
+#    lt=os.stat(dss_file)
+#   
+#    if dss_file in _catalog_buffer.keys():
+#        if not(lt[9]==lt[8]) and (lt[7]>lt[8]): ## to do, is it a enough conditon to
+#            c=_catalog_buffer[dss_file]         ## decide the source dss has not been changed?
+#        else:
+#            c=dss_service.get_catalog(dss_file)
+#            _catalog_buffer[dss_file]=c                        
+#    else:
+#        c=dss_service.get_catalog(dss_file)
+#        _catalog_buffer[dss_file]=c
+
+    c=dss_service.get_catalog(dss_file)
+    
+    if selector:
+        c=c.filter_catalog(selector)
 
     ##### time profile ####
     ##print 'time at done with catalog',\
     ##      debug_timeprofiler.timegap()
     ######################      
 
-    data_ref=[df for df in c.data_references(selector,time_window)]
+    data_ref=[df for df in c.data_references(extent=time_window)]
     
     if len(data_ref)==0:
        raise Warning("Warning:selection criteria "

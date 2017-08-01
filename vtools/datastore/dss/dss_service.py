@@ -49,7 +49,10 @@ from vtime_dss_utility import discover_valid_rts_start,\
 from vtime_dss_utility import dss_julian2python,interval_to_D,valid_dss_interval_dic_in_delta
 
 
+
 __all__=["DssAccessError","DssCatalogServiceError","DssService"]
+
+
 
 class DssAccessError(Exception):
 
@@ -101,11 +104,12 @@ class DssService(Service):
     ############################################################################
     # Private member
     ############################################################################
+
+    _num_db_clean=0
     # map dss file pathes to fileid and modify time
     _dss_file_opened = {}
-    # map dss files id to their catalog
-    _dss_catalogs    = {}
-    _num_db_clean=0
+     # map dss files id to their catalog
+    _dss_catalogs    = {} # we have decide to move catalog buffer into service 7/27/17
     
     def load_record_property(self,path,dparts,source):
         """ This public sub should be only be called by
@@ -164,6 +168,9 @@ class DssService(Service):
         if DssService.first_initialization:
             DssService.first_initialization=False
             
+
+       
+            
         ## following line must be excuted for the
         ## sake of making ts-header unstuff func
         ## to work correctly.
@@ -180,12 +187,34 @@ class DssService(Service):
         except:
             info = ()    
             
-        if len(info) != 0: ## info is in form of (1,2222344),2222344 is time, 1 is f index
-            last_modified_time=info[1]
+        fpath=dss_file_path.lower()
+        fnames=os.path.split(fpath)
+        
+        dsd_path=os.path.join(fnames[0],fnames[1].replace(".dss",".dsd"))
+        
+        dss_time_info=os.stat(dss_file_path)
+              
+        if len(info)==0:
+            return self._cataloging_dss_file(strip(dss_file_path))
+        elif not(os.path.exists(dsd_path)):
+            #last_modified_time=info[1]
             self._remove_dssfile_catalog(dss_file_path)
             return self._cataloging_dss_file(strip(dss_file_path))
         else:
-            return self._cataloging_dss_file(strip(dss_file_path))
+            dsd_time_info=os.stat(dsd_path)
+            if dss_time_info.st_mtime>=dsd_time_info.st_mtime:
+                self._remove_dssfile_catalog(dss_file_path)
+                return self._cataloging_dss_file(strip(dss_file_path))
+            else:
+                return DssService._dss_catalogs[dss_file_path]
+                
+         
+#        if len(info) != 0: ## info is in form of (1,2222344),2222344 is time, 1 is f index
+#            last_modified_time=info[1]
+#            self._remove_dssfile_catalog(dss_file_path)
+#            return self._cataloging_dss_file(strip(dss_file_path))
+#        else:
+#            return self._cataloging_dss_file(strip(dss_file_path))
 
 
     def _generate_schema(self,table_column_index_map):
@@ -366,7 +395,7 @@ class DssService(Service):
         ######################
         catalog = DssCatalog(dss_file_path,schema,self,dtt)
 
-        self._dss_catalogs[dss_file_path] = catalog
+        DssService._dss_catalogs[dss_file_path] = catalog
     
         #add the amount of class instance using dababase by one
         self._add_use()
@@ -380,7 +409,7 @@ class DssService(Service):
             if its info found in db.
         """
         try:
-            info=self._dss_file_opened[dss_file_path]
+            info= DssService._dss_file_opened[dss_file_path]
         except:
             info = ""       
         
@@ -582,34 +611,24 @@ class DssService(Service):
         
     def _add_dss_file_record(self,fpath,index):
         """" Insert dssfile path into  DssFile dic."""
-        self._dss_file_opened[fpath] = (index,os.stat(fpath)[8])
+        DssService._dss_file_opened[fpath] = (index,os.stat(fpath).st_mtime)
 
-    def _remove_dss_file_record(self,index):
-        """ Remove dssfile path from table DssFile."""
-        
-        temp_dic = dict((k,v) for k, v in self._dss_file.iteritems() if v[0]==index)
-        self._dss_file = temp_dic
+   
 
 
     def _remove_paths_record(self,index):
         """ Remove all the paths record of a dssfile specified  by index."""
-        temp_dic = dict((k,v) for k, v in self._dss_catalogs.iteritems() if k ==index)
-        self._dss_catalogs = temp_dic   
+        temp_dic = dict((k,v) for k, v in self._dss_catalogs.iteritems() if k !=index)
+        DssService._dss_catalogs = temp_dic   
         
     
-    def _remove_dss_file(self,index):
-        """ Remove all the db record related to a dss file 
-            indexed by input index.
-        """
-        self._remove_dss_file_record(index)
-        self._remove_paths_record(index)
 
 
     def _remove_dssfile_catalog(self,dss_file_path):
         """ Delete all catalog record about dss_file_path in db"""
 
         try:
-            findex = self._dss_file_opened[dss_file_path][0]
+            findex =  DssService._dss_file_opened[dss_file_path][0]
         except Exception,e:
             return
         self._remove_paths_record(findex)
