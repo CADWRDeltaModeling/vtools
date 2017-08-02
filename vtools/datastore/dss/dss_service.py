@@ -357,8 +357,9 @@ class DssService(Service):
                                               nheadu)
 
             ## update catalog if applicable.
-            dss_file_path=data_reference.source
-            self._update_dss_file_catalog(dss_file_path)   
+            ##8/2/17 we decide to not update for speed issue
+            #dss_file_path=data_reference.source
+            #self._update_dss_file_catalog(dss_file_path)   
 
 
     ########################################################################### 
@@ -404,6 +405,7 @@ class DssService(Service):
         #print 'total time in loading catalog info to db',debug_timeprofiler.timegap()
         ######################    
         return catalog
+    
     def _update_dss_file_catalog(self,dss_file_path):
         """ Update the catalog database for file at dss_file_path
             if its info found in db.
@@ -537,6 +539,10 @@ class DssService(Service):
         dsdpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsd"))
         dscpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsc"))
         
+        if os.path.exists(dsdpath):
+            os.remove(dsdpath)
+        if os.path.exists(dscpath):
+            os.remove(dscpath)
             
         cf0=fortran_file()
         cd0=fortran_file()
@@ -635,13 +641,13 @@ class DssService(Service):
         dss_file_path=dss_file_path.lower()
         fnames=os.path.split(dss_file_path)
         
-        dsdpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsd"))
-        dscpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsc"))
-        
-        if os.path.exists(dsdpath):
-            os.remove(dsdpath)
-        if os.path.exists(dscpath):
-            os.remove(dscpath)
+#        dsdpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsd"))
+#        dscpath=os.path.join(fnames[0],fnames[1].replace(".dss",".dsc"))
+
+#        if os.path.exists(dsdpath):
+#            os.remove(dsdpath)
+#        if os.path.exists(dscpath):
+#            os.remove(dscpath)
         
     def _create_column_index_map(self):
 

@@ -206,7 +206,7 @@ class TestDssUtility(unittest.TestCase):
         
     def test_dss_catalog_update_time_order(self):
    
-        dssfile_path=self.data_file_path
+        dssfile_path=self.data_file_path 
         fnames=os.path.split(dssfile_path)
         dsd_path=os.path.join(fnames[0],fnames[1].replace(".dss",".dsd"))
 
@@ -220,19 +220,13 @@ class TestDssUtility(unittest.TestCase):
         selector="/HIST*/SLTR*/*//15MIN/*/"
         dss_delete_ts(dssfile_path,selector)
         dss_mtime=os.stat(dssfile_path).st_mtime
+        dsd_mtime=os.stat(dsd_path).st_mtime
+        dsd_ctime=os.stat(dsd_path).st_ctime
+        self.assertTrue(dss_mtime>dsd_mtime)
         c = dss_catalog(dssfile_path)
         self.assertRaises(DssCatalogError,dss_retrieve_ts,dssfile_path,selector)
-        dsd_mtime=os.stat(dsd_path).st_mtime
-        dsd_ctime=os.stat(dsd_path).st_ctime
-        #print dss_mtime,dsd_mtime,dsd_ctime
-#        self.assertTrue(dss_mtime>dsd_mtime,msg="dss modification time is not after dsd modification\
-#                        dss:%s,dsd:%s"%(dss_mtime,dsd_mtime))
- 
-        c = dss_catalog(dssfile_path)
-        dss_mtime=os.stat(dssfile_path).st_mtime
-        dsd_mtime=os.stat(dsd_path).st_mtime
-        dsd_ctime=os.stat(dsd_path).st_ctime
-        #print dss_mtime,dsd_mtime,dsd_ctime
+
+
 
     def test_dss_catalog(self):
         dssfile_path=self.data_file_path

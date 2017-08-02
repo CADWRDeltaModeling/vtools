@@ -18,7 +18,7 @@ __all__=["dss_retrieve_ts","dss_store_ts","dss_catalog",\
 
 
 dsm=DataServiceManager()
-_catalog_buffer={}
+ 
 
 ##############################################           
 ## Public function.
@@ -140,9 +140,7 @@ def dss_store_ts(ts,dss_file,path):
     dss_service.add_data(ref,ts)
     
     ## update catalog buffer
-    if dss_file in _catalog_buffer.keys():
-        del _catalog_buffer[dss_file] 
-
+   
 
 def check_dss_path(dss_path):
     """"Check if hte dss path is a valid one.
@@ -203,8 +201,9 @@ def dss_delete_ts(dssfile='',selection=''):
    lcat=len(cat)
    
    for i in range(lcat):
-       cat.remove(cat.entries()[0])
-
+       cat.remove(cat.entries()[0]) ## this will also remove data
+   
+   return
 
 def visual_dss_format(selection,write_times="all"):
     """ return a formatting string in dss style. """
