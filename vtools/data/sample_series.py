@@ -54,12 +54,12 @@ def _synthetic_tide(t):
     return tide
     
 
-def synthetic_tide_series():
+def synthetic_tide_series(days=7):
     """ Return a week long synthetic tide
 	
     """
     
-    a_week_seconds=24*7*3600
+    a_week_seconds=24*days*3600
     step=15*60
     times = arange(0,a_week_seconds,step)
     data=map(_synthetic_tide,times)
