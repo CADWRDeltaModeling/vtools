@@ -510,7 +510,10 @@ class TimeSeries(object):
         new_data=self.data[:]        
         if not replacingWithTs:
             out = self.copy()
-            out.data[startIndex:endIndex+1]=ts
+            try:
+                out.data[startIndex:endIndex+1]=ts
+            except :
+                raise TypeError("input is not a numerical value")
             return out
         else:
             try:
@@ -573,7 +576,7 @@ class TimeSeries(object):
             
     
             
-    def shift(self,interval,start,end):
+    def shift(self,interval,start=None,end=None):
         """ Inplace shift section of time series by a interval.
         
         Parameters
@@ -597,6 +600,11 @@ class TimeSeries(object):
             
         if is_calendar_dependent(interval):
             raise ValueError("shfit by calendar dependent interval is not supported")
+            
+        if not(start):
+            start=self.start 
+        if not(end):
+            end=self.end 
             
         shift_ticks = ticks(interval)
         
