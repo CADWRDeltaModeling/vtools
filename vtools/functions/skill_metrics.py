@@ -97,7 +97,7 @@ def calculate_lag(a, b, max_shift, period=None, resolution=time_interval(minutes
         from scipy.optimize import minimize_scalar
         res = minimize_scalar(unnorm_xcor, method='bounded',
                               bounds=(0, length), options={'xatol': 0.5})
-        v0 = index[np.floor(res.x)] * resolution.total_seconds()
+        v0 = index[int(np.floor(res.x))] * resolution.total_seconds()
     else:
         re = np.empty(length)
         for i in range(length):
@@ -119,9 +119,7 @@ def mse(predictions, targets):
        mse : vtools.data.timeseries.TimeSeries
            Mean squared error between predictions and targets
     """
-       
-    import scipy
-    return scipy.stats.nanmean((predictions - targets) ** 2.)
+    return np.nanmean((predictions - targets) ** 2.)
 
 @ts_data_arg
 def rmse(predictions, targets):
@@ -137,8 +135,7 @@ def rmse(predictions, targets):
        mse : float
            Mean squared error
     """
-    import scipy
-    return np.sqrt(scipy.stats.nanmean((predictions - targets) ** 2.))
+    return np.sqrt(np.nanmean((predictions - targets) ** 2.))
 
 @ts_data_arg    
 def median_error(predictions, targets):
@@ -155,8 +152,7 @@ def median_error(predictions, targets):
         med : float
             Median error
     """
-    import scipy
-    return scipy.stats.nanmedian(predictions - targets)    
+    return np.nanmedian(predictions - targets)
 
 @ts_data_arg  
 def skill_score(predictions,targets,ref=None):
@@ -175,9 +171,8 @@ def skill_score(predictions,targets,ref=None):
        rmse : float
            Root mean squared error
     """
-    import scipy
     if not ref:
-        ref = scipy.stats.nanmean(targets)
+        ref = np.nanmean(targets)
     else:
         if isinstance(ref,vtools.data.timeseries.TimeSeries):
             ref = ref.data
