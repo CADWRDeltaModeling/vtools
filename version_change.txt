@@ -31,3 +31,9 @@ staring empty uncondensed path.
 
 1.0.4
 replace "==None" with "is None"
+
+1.0.5
+improved method to decide dss catalog modifying time in dss service, remove catalog updating after every data adding.
+
+1.1
+evolve 1.0.5 to 1.1,9/5/2017
