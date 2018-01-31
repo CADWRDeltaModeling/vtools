@@ -1196,7 +1196,14 @@ class DssService(Service):
             raise DssAccessError("error in access data of %s"%path)
         if istat==4: ##no data found,return a 0 len its
             return its([],[],prop)
-       
+        
+
+        if (nval==kval):
+            message ="Input time window contains more data than equals or exceeds the size of the cache used to retrieve "\
+            "irregular time series at path %s. You may try to increase the size of irregular time series "\
+            "cache by changing the value of DSS_MAX_ITS_POINTS defined in the file dss_constants.py under vtools\dastastore\dss." % path
+            raise ValueError(message)
+            
 
         if nheadu>0:
             hdic=self._unstuff_header(headu,nheadu,2)
