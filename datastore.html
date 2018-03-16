@@ -1,0 +1,197 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Getting data in and out of vtools &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Timeseries operations and function" href="vtools_functions.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vtools_functions.html" title="Timeseries operations and function"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting data in and out of vtools</a><ul>
+<li><a class="reference internal" href="#data-stores-in-vtools">Data stores in vtools</a><ul>
+<li><a class="reference internal" href="#timestamps-and-attributes">Timestamps and Attributes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#loading-and-storing-data-using-simple-utility-functions">Loading and storing data using simple utility functions</a></li>
+<li><a class="reference internal" href="#catalogs">Catalogs</a><ul>
+<li><a class="reference internal" href="#catalogs-and-catalog-items">Catalogs and Catalog Items</a></li>
+<li><a class="reference internal" href="#data-references">Data References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vtools_functions.html"
+                        title="previous chapter">Timeseries operations and function</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/datastore.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-data-in-and-out-of-vtools">
+<h1>Getting data in and out of vtools<a class="headerlink" href="#getting-data-in-and-out-of-vtools" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="data-stores-in-vtools">
+<h2>Data stores in vtools<a class="headerlink" href="#data-stores-in-vtools" title="Permalink to this headline">¶</a></h2>
+<p>The datastore package defines a uniform API for listing entries to a data source and retrieving data. A data source is usually a file, but as we expand it could be a URL or database name.</p>
+<p>VTools was designed to avoid having a singe native database or storage system, although
+its implementation continues to be the HEC-DSS storage system, a somewhat older univariate time series data storage library from the Hydraulic Engineering Center of the Army Corps of Engineers. A companion product, PyDSS, is a complete set of bindings for DSS that has been tested for Python 2.7 in Windows 32 and 64 bit flavors and is expected to come out for Linux in the next year.</p>
+<p>In the past we offered Excel and DSM2 HDF5 tidefiles as add-on modules. We have not included them in the base release, but if we find there is demand we can restore them.</p>
+<p>NetCDF has become more clearly pre-emininent and for storing
+array data and it places greater emphasis on the need for differentiating
+multivariate data from multiple instances (stations) of univariate time series.</p>
+<p>Text file support such as CDEC, NOAA and USGS <a href="#id1"><span class="problematic" id="id2">*</span></a>.rdb format was developed as part of the Bay-Delta SELFE project. It uses VTools time series and will be moved to vtools once
+unit test coverage and handling of metadata is more complete.</p>
+<div class="section" id="timestamps-and-attributes">
+<h3>Timestamps and Attributes<a class="headerlink" href="#timestamps-and-attributes" title="Permalink to this headline">¶</a></h3>
+<p>Different data sources have different conventions with regard to how they annotate
+things like units and time stamps. These metadata are converted to a common standard on import and
+converted back on export.</p>
+<p>A good example is period averaged data, which has to be marked as a period average and
+also is associated with a timestamp convention, usually  at the beginning or end of period. Usage and convention is pretty fixed. For instance, HEC-DSS period averaged data is almost always “post-stamped”. To the best of our knowledge HEC-DSS has no metadata to confirm this stamping convention or allow you to specify you have changed it, so convention is the best we can do and changing practice would exacerbate
+confusion.</p>
+<p>VTools has its own conventions. For instance, period averaged data is a assumed to be stamped at the beginning of the period which allows for intuitive labeling
+and avoids some of the overhead defining what February 28 plus one month means. VTools re-stamps HEC-DSS data to the beginning of the period on import and restores it to the end of the period on export.</p>
+</div>
+</div>
+<div class="section" id="loading-and-storing-data-using-simple-utility-functions">
+<h2>Loading and storing data using simple utility functions<a class="headerlink" href="#loading-and-storing-data-using-simple-utility-functions" title="Permalink to this headline">¶</a></h2>
+<p>Data sources are supposed to also provide xxx_retrieve_ts and xxx_store_ts functions as
+simple utilities for fetching data. The retrieval function takes the name of the
+data source, the path/view of the data and a time window as its argument. The store
+function takes just the data plus a source and path.</p>
+<p>Here is an example of how to get data from a HECDSS file:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">vtools.datastore.dss.api</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.functions.api</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.api</span> <span class="k">import</span> <span class="o">*</span>
+<span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;hist19902014_droughtstudy.dss&quot;</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">dss_retrieve_ts</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="n">selector</span><span class="o">=</span><span class="s2">&quot;B=RSAC054 C=EC F=DWR-DMS-201402_CU5&quot;</span><span class="p">,</span><span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and for storing:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ts2</span><span class="o">=</span><span class="n">period_ave</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">days</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;out.dss&quot;</span>
+<span class="n">dss_store_ts</span><span class="p">(</span><span class="n">ts2</span><span class="p">,</span><span class="n">out</span><span class="p">,</span><span class="s2">&quot;/SAMPLE/DATA/EC//$</span><span class="si">{INTERVAL}</span><span class="s2">/FPART/&quot;</span><span class="p">)</span> <span class="c1"># interval will be filled in</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="catalogs">
+<h2>Catalogs<a class="headerlink" href="#catalogs" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="catalogs-and-catalog-items">
+<h3>Catalogs and Catalog Items<a class="headerlink" href="#catalogs-and-catalog-items" title="Permalink to this headline">¶</a></h3>
+<p>A <a class="reference internal" href="api/vtools.datastore.html#vtools.datastore.catalog.Catalog" title="vtools.datastore.catalog.Catalog"><code class="xref py py-class docutils literal"><span class="pre">Catalog</span></code></a>  is essentially a container of <a class="reference internal" href="api/vtools.datastore.html#vtools.datastore.catalog.CatalogEntry" title="vtools.datastore.catalog.CatalogEntry"><code class="xref py py-class docutils literal"><span class="pre">CatalogEntry</span></code></a>. It
+provides for the retrieval, alteration or removal of catalog entries, inasmuch as those actions make sense on the service.</p>
+<p>One usually gets a catalog using a catalog service which will track
+open files and guard against conflicting or redundant actions. The
+actions are threadsafe inasmuch as the underlying system is threadsafe.</p>
+<p>A catalog item combines a unique identifier with metadata and scale information. It is acceptable for that data to be retrieved lazily if
+this speeds the implementation. For instance, some HEC-DSS metadata is
+not really stored in the DSS Catalog, but rather with the series.</p>
+</div>
+<div class="section" id="data-references">
+<h3>Data References<a class="headerlink" href="#data-references" title="Permalink to this headline">¶</a></h3>
+<p>A data reference is a reference to both the data source, identifier of the data within
+that source (path) and any slicing (e.g., time window).</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vtools_functions.html" title="Timeseries operations and function"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

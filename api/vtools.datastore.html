@@ -1,0 +1,813 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>vtools.datastore package &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vtools.datastore package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.catalog">vtools.datastore.catalog module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.catalog_schema">vtools.datastore.catalog_schema module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.catalog_service">vtools.datastore.catalog_service module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.data_access_service">vtools.datastore.data_access_service module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.data_reference">vtools.datastore.data_reference module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.data_service_manager">vtools.datastore.data_service_manager module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dimension">vtools.datastore.dimension module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.group">vtools.datastore.group module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.optionparse">vtools.datastore.optionparse module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.service">vtools.datastore.service module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.test_group">vtools.datastore.test_group module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.transfer">vtools.datastore.transfer module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.translate">vtools.datastore.translate module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/vtools.datastore.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="vtools-datastore-package">
+<h1>vtools.datastore package<a class="headerlink" href="#vtools-datastore-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="vtools.datastore.dss.html">vtools.datastore.dss package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#module-vtools.datastore.dss.api">vtools.datastore.dss.api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#module-vtools.datastore.dss.dss_catalog">vtools.datastore.dss.dss_catalog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#module-vtools.datastore.dss.dss_constants">vtools.datastore.dss.dss_constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#module-vtools.datastore.dss.dss_service">vtools.datastore.dss.dss_service module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#module-vtools.datastore.dss.utility">vtools.datastore.dss.utility module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#module-vtools.datastore.dss.vtime_dss_utility">vtools.datastore.dss.vtime_dss_utility module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.dss.html#module-vtools.datastore.dss">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vtools.datastore.excel.html">vtools.datastore.excel package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vtools.datastore.excel.test.html">vtools.datastore.excel.test package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="vtools.datastore.excel.test.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vtools.datastore.excel.test.html#module-vtools.datastore.excel.test.prev_excel_all">vtools.datastore.excel.test.prev_excel_all module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vtools.datastore.excel.test.html#module-vtools.datastore.excel.test.test_excel_service">vtools.datastore.excel.test.test_excel_service module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vtools.datastore.excel.test.html#module-vtools.datastore.excel.test.test_excel_utility">vtools.datastore.excel.test.test_excel_utility module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vtools.datastore.excel.test.html#module-vtools.datastore.excel.test">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#module-vtools.datastore.excel.api">vtools.datastore.excel.api module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#module-vtools.datastore.excel.excel_catalog">vtools.datastore.excel.excel_catalog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#module-vtools.datastore.excel.excel_constants">vtools.datastore.excel.excel_constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#module-vtools.datastore.excel.excel_format_entry">vtools.datastore.excel.excel_format_entry module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#module-vtools.datastore.excel.excel_service">vtools.datastore.excel.excel_service module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#module-vtools.datastore.excel.utility">vtools.datastore.excel.utility module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vtools.datastore.excel.html#module-vtools.datastore.excel">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vtools.datastore.catalog">
+<span id="vtools-datastore-catalog-module"></span><h2>vtools.datastore.catalog module<a class="headerlink" href="#module-vtools.datastore.catalog" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.catalog.Catalog">
+<em class="property">class </em><code class="descname">Catalog</code><a class="headerlink" href="#vtools.datastore.catalog.Catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class contain a list of CatalogEntry, also provide a number of operations
+on those entries.</p>
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>entry</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy data associated with entry1 into entry2.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.data_references">
+<code class="descname">data_references</code><span class="sig-paren">(</span><em>selector=None</em>, <em>extent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.data_references" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a itertor of the datareferences         to paths based on selector.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.entries">
+<code class="descname">entries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.entries" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a iterator over the inside list of CatalogEntries.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.filter_catalog">
+<code class="descname">filter_catalog</code><span class="sig-paren">(</span><em>selector</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.filter_catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter the current catalog based on given selector, return
+a list of data references conforms to selector. Usually selector
+is a line of regular expression string, such as for a xxx data
+source, it may be “A=RLTM;B=RSAC*;”.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.get_data_reference">
+<code class="descname">get_data_reference</code><span class="sig-paren">(</span><em>entry</em>, <em>extent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.get_data_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>return data record reference on a given catalog entry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.load_entry_full">
+<code class="descname">load_entry_full</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.load_entry_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the catalog entry by index in full, this sub used in
+lazy loading mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.modify">
+<code class="descname">modify</code><span class="sig-paren">(</span><em>old_entry</em>, <em>new_entry</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify a entry within Catalog.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.reload">
+<code class="descname">reload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.reload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lazily reload catalog info when entry has changed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>entry</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a entry from Catalog.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.Catalog.schema">
+<code class="descname">schema</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.Catalog.schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the schema which defined this catalog</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.catalog.CatalogEntry">
+<em class="property">class </em><code class="descname">CatalogEntry</code><span class="sig-paren">(</span><em>schema</em>, <em>catalog=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Single entry of a catalog of a datasource</p>
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.add_dimension_scale">
+<code class="descname">add_dimension_scale</code><span class="sig-paren">(</span><em>dimension</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.add_dimension_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to add a dimension instance
+to dimension list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.add_item">
+<code class="descname">add_item</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.add_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to set the value of metadata within a CatalogEntry instance
+with the name specified.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.dimension_scales">
+<code class="descname">dimension_scales</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.dimension_scales" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to retrieve all the dimension
+defined within this CatalogEntry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.get_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.has_item">
+<code class="descname">has_item</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.has_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if a item exist within a catalog entry.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.catalog.CatalogEntry.index">
+<code class="descname">index</code><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>index of entry within a catalog</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.item">
+<code class="descname">item</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to return the value of metadata item within a CatalogEntry
+instance with the name specified</p>
+<p>If the item specified actually doesn’t exist, error will be raised</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.item_names">
+<code class="descname">item_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.item_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return names of all meta data item
+stored in this entry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.load_full">
+<code class="descname">load_full</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.load_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load full record about a entry if applicable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.set_index">
+<code class="descname">set_index</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.set_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set inner index value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog.CatalogEntry.set_item">
+<code class="descname">set_item</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.CatalogEntry.set_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function set a item value.
+It actually call add_item.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.catalog.catalog_string">
+<code class="descname">catalog_string</code><span class="sig-paren">(</span><em>c</em>, <em>header=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog.catalog_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a string representation of a catalog</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.catalog_schema">
+<span id="vtools-datastore-catalog-schema-module"></span><h2>vtools.datastore.catalog_schema module<a class="headerlink" href="#module-vtools.datastore.catalog_schema" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.catalog_schema.CatalogSchemaItem">
+<em class="property">class </em><code class="descname">CatalogSchemaItem</code><span class="sig-paren">(</span><em>attr_dict=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog_schema.CatalogSchemaItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class stores the definition for catalog entry item.</p>
+<dl class="method">
+<dt id="vtools.datastore.catalog_schema.CatalogSchemaItem.append_element">
+<code class="descname">append_element</code><span class="sig-paren">(</span><em>element_name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog_schema.CatalogSchemaItem.append_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function append a definition element to exist list.</p>
+<p>element_name is the string name of definition, value is the
+context of the definition, this function preclude user to reset
+any existing element values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog_schema.CatalogSchemaItem.get_element">
+<code class="descname">get_element</code><span class="sig-paren">(</span><em>element_name</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog_schema.CatalogSchemaItem.get_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function return a definition element based on name given.</p>
+<p>element_name is the string name of definition.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.catalog_schema.CatalogSchemaItem.has_element">
+<code class="descname">has_element</code><span class="sig-paren">(</span><em>element_name</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog_schema.CatalogSchemaItem.has_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to check if element_name exist in this schema item</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.catalog_service">
+<span id="vtools-datastore-catalog-service-module"></span><h2>vtools.datastore.catalog_service module<a class="headerlink" href="#module-vtools.datastore.catalog_service" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.catalog_service.CatalogService">
+<em class="property">class </em><code class="descname">CatalogService</code><a class="headerlink" href="#vtools.datastore.catalog_service.CatalogService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>abstract class defined interface of retrieving catalog
+from data source.</p>
+<dl class="method">
+<dt id="vtools.datastore.catalog_service.CatalogService.get_catalog">
+<code class="descname">get_catalog</code><span class="sig-paren">(</span><em>source</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.catalog_service.CatalogService.get_catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve Catalog from data source specified by argument source.  
+Single catalog object or list of catalog will be returned.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.catalog_service.CatalogService.identification">
+<code class="descname">identification</code><em class="property"> = ''</em><a class="headerlink" href="#vtools.datastore.catalog_service.CatalogService.identification" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.data_access_service">
+<span id="vtools-datastore-data-access-service-module"></span><h2>vtools.datastore.data_access_service module<a class="headerlink" href="#module-vtools.datastore.data_access_service" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="vtools.datastore.data_access_service.DataAccessError">
+<em class="property">exception </em><code class="descname">DataAccessError</code><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.data_access_service.DataAccessService">
+<em class="property">class </em><code class="descname">DataAccessService</code><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>abstract class defined interface of retrieveing data 
+from data source.</p>
+<dl class="method">
+<dt id="vtools.datastore.data_access_service.DataAccessService.add_data">
+<code class="descname">add_data</code><span class="sig-paren">(</span><em>dataref</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessService.add_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the time series data to place specified by dataref.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.data_access_service.DataAccessService.assemble">
+<code class="descname">assemble</code><span class="sig-paren">(</span><em>translation</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessService.assemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a data ref based on the mapper and input
+used in transfer majorly.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.data_access_service.DataAccessService.dissect">
+<code class="descname">dissect</code><span class="sig-paren">(</span><em>dataref</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessService.dissect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze the elements contained within a dataref and return
+result as dict, acutall result depends on data service.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.data_access_service.DataAccessService.get_data">
+<code class="descname">get_data</code><span class="sig-paren">(</span><em>dataref</em>, <em>overlap=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessService.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the time series specified by argument dataref.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.data_access_service.DataAccessService.modify_data">
+<code class="descname">modify_data</code><span class="sig-paren">(</span><em>dataref</em>, <em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessService.modify_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Modify the time series specified by argument dataref.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.data_access_service.DataAccessService.remove_data">
+<code class="descname">remove_data</code><span class="sig-paren">(</span><em>dataref</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_access_service.DataAccessService.remove_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the time series specified by argument dataref.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.data_reference">
+<span id="vtools-datastore-data-reference-module"></span><h2>vtools.datastore.data_reference module<a class="headerlink" href="#module-vtools.datastore.data_reference" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.data_reference.DataReference">
+<em class="property">class </em><code class="descname">DataReference</code><span class="sig-paren">(</span><em>id</em>, <em>source=None</em>, <em>view=None</em>, <em>selector=None</em>, <em>extent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_reference.DataReference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class maintain a reference a time series in plain language.</p>
+<dl class="method">
+<dt id="vtools.datastore.data_reference.DataReference.extents">
+<code class="descname">extents</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_reference.DataReference.extents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse extent string and return a list of tuples contain each exent
+element’s name and value in strings</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.data_reference.DataReferenceFactory">
+<code class="descname">DataReferenceFactory</code><span class="sig-paren">(</span><em>id</em>, <em>source=None</em>, <em>view=None</em>, <em>selector=None</em>, <em>extent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_reference.DataReferenceFactory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.data_service_manager">
+<span id="vtools-datastore-data-service-manager-module"></span><h2>vtools.datastore.data_service_manager module<a class="headerlink" href="#module-vtools.datastore.data_service_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.data_service_manager.DataServiceManager">
+<em class="property">class </em><code class="descname">DataServiceManager</code><a class="headerlink" href="#vtools.datastore.data_service_manager.DataServiceManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vtools.datastore.data_service_manager.Singleton" title="vtools.datastore.data_service_manager.Singleton"><code class="xref py py-class docutils literal"><span class="pre">vtools.datastore.data_service_manager.Singleton</span></code></a></p>
+<dl class="method">
+<dt id="vtools.datastore.data_service_manager.DataServiceManager.get_service">
+<code class="descname">get_service</code><span class="sig-paren">(</span><em>idd</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.data_service_manager.DataServiceManager.get_service" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.data_service_manager.Singleton">
+<em class="property">class </em><code class="descname">Singleton</code><a class="headerlink" href="#vtools.datastore.data_service_manager.Singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.dimension">
+<span id="vtools-datastore-dimension-module"></span><h2>vtools.datastore.dimension module<a class="headerlink" href="#module-vtools.datastore.dimension" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.dimension.ChannelDimension">
+<em class="property">class </em><code class="descname">ChannelDimension</code><span class="sig-paren">(</span><em>channel_list=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.ChannelDimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vtools.datastore.dimension.Dimension" title="vtools.datastore.dimension.Dimension"><code class="xref py py-class docutils literal"><span class="pre">vtools.datastore.dimension.Dimension</span></code></a></p>
+<p>Sub Class store meaningful index information of a dataset
+dimension as a list.</p>
+<dl class="method">
+<dt id="vtools.datastore.dimension.ChannelDimension.get_channel">
+<code class="descname">get_channel</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.ChannelDimension.get_channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return data channel at index</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dimension.ChannelDimension.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><em>channel</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.ChannelDimension.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the index of a channel in the
+inner list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dimension.ChannelDimension.set_channels">
+<code class="descname">set_channels</code><span class="sig-paren">(</span><em>channel_list</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.ChannelDimension.set_channels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set internal data channel list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.dimension.Dimension">
+<em class="property">class </em><code class="descname">Dimension</code><a class="headerlink" href="#vtools.datastore.dimension.Dimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Parent Class store meaningful index information of a dataset
+dimension.</p>
+<p>For instance, within a multi-dimensional array dataset, first
+dimension is indexing of location, second dimension is indexing
+of time, and so on.</p>
+<dl class="attribute">
+<dt id="vtools.datastore.dimension.Dimension.label">
+<code class="descname">label</code><em class="property"> = 'unkown_scale'</em><a class="headerlink" href="#vtools.datastore.dimension.Dimension.label" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dimension.Dimension.name">
+<code class="descname">name</code><em class="property"> = ''</em><a class="headerlink" href="#vtools.datastore.dimension.Dimension.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.dimension.RangeDimension">
+<em class="property">class </em><code class="descname">RangeDimension</code><span class="sig-paren">(</span><em>range=None</em>, <em>label='time_window'</em>, <em>name='time_window'</em>, <em>index=0</em>, <em>interval=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.RangeDimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vtools.datastore.dimension.Dimension" title="vtools.datastore.dimension.Dimension"><code class="xref py py-class docutils literal"><span class="pre">vtools.datastore.dimension.Dimension</span></code></a></p>
+<p>Sub Class store meaningful index information of a dataset
+dimension as a pair of start and end of some kind of value.</p>
+<dl class="method">
+<dt id="vtools.datastore.dimension.RangeDimension.get_range">
+<code class="descname">get_range</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.RangeDimension.get_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return range setted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dimension.RangeDimension.isregular">
+<code class="descname">isregular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.RangeDimension.isregular" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dimension.RangeDimension.set_range">
+<code class="descname">set_range</code><span class="sig-paren">(</span><em>range</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dimension.RangeDimension.set_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup inner range of range dimension</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.group">
+<span id="vtools-datastore-group-module"></span><h2>vtools.datastore.group module<a class="headerlink" href="#module-vtools.datastore.group" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="vtools.datastore.group.group_by_nan">
+<code class="descname">group_by_nan</code><span class="sig-paren">(</span><em>data</em>, <em>compress_size</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.group.group_by_nan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.group.ts_group">
+<code class="descname">ts_group</code><span class="sig-paren">(</span><em>ts</em>, <em>gap_size=1000</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.group.ts_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a time sereies with gaps to a group time series with
+gap large then nan_size remvoed.</p>
+<dl class="docutils">
+<dt>input:</dt>
+<dd>ts:        instance of timeseries, regular or irregular.
+gap_size:  integer specify the size of gap to be splitted</dd>
+<dt>output:</dt>
+<dd>A number of time series</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.optionparse">
+<span id="vtools-datastore-optionparse-module"></span><h2>vtools.datastore.optionparse module<a class="headerlink" href="#module-vtools.datastore.optionparse" title="Permalink to this headline">¶</a></h2>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body"><ol class="first upperalpha simple" start="13">
+<li>Simionato</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body"><p class="first">April 2004</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Title:</th><td class="field-body"><p class="first last">A much simplified interface to optparse.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>You should use optionparse in your scripts as follows.
+First, write a module level docstring containing something like this
+(this is just an example):</p>
+<dl class="docutils">
+<dt>‘’‘usage: %prog files [options]</dt>
+<dd>-d, –delete: delete all files
+-e, –erase = ERASE: erase the given file’‘’</dd>
+</dl>
+<p>Then write a main program of this kind:</p>
+<p># sketch of a script to delete files
+if __name__==’__main__’:</p>
+<blockquote>
+<div>import optionparse
+option,args=optionparse.parse(__doc__)
+if not args and not option: optionparse.exit()
+elif option.delete: print “Delete all files”
+elif option.erase: print “Delete the given file”</div></blockquote>
+<p>Notice that <code class="docutils literal"><span class="pre">optionparse</span></code> parses the docstring by looking at the
+characters “,”, “:”, “=”, “n”, so be careful in using them. If
+the docstring is not correctly formatted you will get a SyntaxError
+or worse, the script will not work as expected.</p>
+<dl class="exception">
+<dt id="vtools.datastore.optionparse.ParsingError">
+<em class="property">exception </em><code class="descname">ParsingError</code><a class="headerlink" href="#vtools.datastore.optionparse.ParsingError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.optionparse.exit">
+<code class="descname">exit</code><span class="sig-paren">(</span><em>msg=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.optionparse.exit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.optionparse.nonzero">
+<code class="descname">nonzero</code><span class="sig-paren">(</span><em>self</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.optionparse.nonzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if options were given</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.optionparse.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>docstring</em>, <em>arglist=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.optionparse.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.service">
+<span id="vtools-datastore-service-module"></span><h2>vtools.datastore.service module<a class="headerlink" href="#module-vtools.datastore.service" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.service.Register">
+<em class="property">class </em><code class="descname">Register</code><span class="sig-paren">(</span><em>name</em>, <em>bases</em>, <em>dict</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.service.Register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">type</span></code></p>
+<p>A tiny metaclass to help classes register themselves automagically</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.service.Service">
+<em class="property">class </em><code class="descname">Service</code><a class="headerlink" href="#vtools.datastore.service.Service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vtools.datastore.data_access_service.DataAccessService" title="vtools.datastore.data_access_service.DataAccessService"><code class="xref py py-class docutils literal"><span class="pre">vtools.datastore.data_access_service.DataAccessService</span></code></a>, <a class="reference internal" href="#vtools.datastore.catalog_service.CatalogService" title="vtools.datastore.catalog_service.CatalogService"><code class="xref py py-class docutils literal"><span class="pre">vtools.datastore.catalog_service.CatalogService</span></code></a></p>
+<dl class="attribute">
+<dt id="vtools.datastore.service.Service.all_service">
+<code class="descname">all_service</code><em class="property"> = {}</em><a class="headerlink" href="#vtools.datastore.service.Service.all_service" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="vtools.datastore.service.Service.factory">
+<em class="property">static </em><code class="descname">factory</code><span class="sig-paren">(</span><em>identification</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.service.Service.factory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.service.Service.identification">
+<code class="descname">identification</code><em class="property"> = 'vtools.datastore.ui.service'</em><a class="headerlink" href="#vtools.datastore.service.Service.identification" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="vtools.datastore.service.Service.register">
+<em class="property">static </em><code class="descname">register</code><span class="sig-paren">(</span><em>name</em>, <em>cls</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.service.Service.register" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.service.get_data">
+<code class="descname">get_data</code><span class="sig-paren">(</span><em>catalog_entry</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.service.get_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.test_group">
+<span id="vtools-datastore-test-group-module"></span><h2>vtools.datastore.test_group module<a class="headerlink" href="#module-vtools.datastore.test_group" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.datastore.test_group.TestGroup">
+<em class="property">class </em><code class="descname">TestGroup</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.test_group.TestGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>test functionality of shift operations</p>
+<dl class="method">
+<dt id="vtools.datastore.test_group.TestGroup.test_group_by_nan">
+<code class="descname">test_group_by_nan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.test_group.TestGroup.test_group_by_nan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.test_group.TestGroup.test_ts_group">
+<code class="descname">test_ts_group</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.test_group.TestGroup.test_ts_group" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.transfer">
+<span id="vtools-datastore-transfer-module"></span><h2>vtools.datastore.transfer module<a class="headerlink" href="#module-vtools.datastore.transfer" title="Permalink to this headline">¶</a></h2>
+<p>Transfer and transform data from one source to another
+This module provides functionality for opening one data
+source,grabbing data that matches selecting criteria,
+transforming it or clipping it in time and then exporting
+it to another data source.</p>
+<dl class="docutils">
+<dt>usage: transfer [options]</dt>
+<dd>-i, –in=input: data store of orginal data records.
+-s, –selector=select: selection criteria of input data.
+-o, –out=output: data store where data will be written.
+-d, –dest=dest: optional,map from selector to the output location in the output data store.
+-t, –trans=transformer:  optional,path to the tranformation func to be applied.
+-e, –extent=extent: optional, extent within a selected time series.
+-u, –usage: help info.</dd>
+</dl>
+<dl class="function">
+<dt id="vtools.datastore.transfer.transfer">
+<code class="descname">transfer</code><span class="sig-paren">(</span><em>s1</em>, <em>reference1</em>, <em>s2</em>, <em>reference2</em>, <em>transform=None</em>, <em>**func_args</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.transfer.transfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transfer time series data pointed by reference1 to location
+refered by reference2, with optional transformation operation
+on orginal data series.</p>
+<dl class="docutils">
+<dt>input:</dt>
+<dd><blockquote class="first">
+<div><p>reference1: instance/list of data reference class of orginal data.
+reference2: instance/list of data reference class of new data.
+transformfunc: transforming operation function,can be as full path</p>
+<blockquote>
+<div>string of existing function provided by vtools package,
+,etc. “vtools.functions.data_interpolate.interpolate_its
+_rts” or a function object defined by user.</div></blockquote>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>func_args: arguments dic for transform function.</p>
+</div></blockquote>
+<dl class="last docutils">
+<dt>output:</dt>
+<dd>None.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.transfer.batch_transfer">
+<code class="descname">batch_transfer</code><span class="sig-paren">(</span><em>source</em>, <em>dest=None</em>, <em>selector=None</em>, <em>extent=None</em>, <em>mapper=None</em>, <em>transform=None</em>, <em>**func_args</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.transfer.batch_transfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Batch transfer selected time series from data source1 to source2, 
+with optional transformation operation
+on orginal data series.</p>
+<p>usage: batch_transfer(source1,selector1,source2,selector2,transform,**func_args):       
+input:</p>
+<blockquote>
+<div><blockquote>
+<div><p>source: path to source  (full path or relative path).
+dest: path to destination of transfer (full path or relative path). 
+selector: selection criteria for source1, given as string.
+extent: data extent selection for source1.
+mapper: selection seting for source2, given as string, it</p>
+<blockquote>
+<div>is translation for the moment(thus no support for transfer
+to exsiting paths in exisiting data source available yet).</div></blockquote>
+<p>optional input:</p>
+<dl class="docutils">
+<dt>transform: transforming operation function,can be as full path</dt>
+<dd>string of existing function provided by vtools package,
+,etc. “vtools.functions.data_interpolate.interpolate_its
+_rts” or a function object defined by user.</dd>
+</dl>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>func_args: arguments dic for transform function.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>output:</dt>
+<dd>None.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.translate">
+<span id="vtools-datastore-translate-module"></span><h2>vtools.datastore.translate module<a class="headerlink" href="#module-vtools.datastore.translate" title="Permalink to this headline">¶</a></h2>
+<p>Functions to translate between different data references.</p>
+<dl class="function">
+<dt id="vtools.datastore.translate.translate_references">
+<code class="descname">translate_references</code><span class="sig-paren">(</span><em>s1</em>, <em>references</em>, <em>s2</em>, <em>destination</em>, <em>translation=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.translate.translate_references" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate a number of datareferences (which usually point
+to the location of a different data source, for the moment
+same type of data source assumed) to the references points
+to the locations within the current data source (one to one).</p>
+<dl class="docutils">
+<dt>input:</dt>
+<dd>s1: service for input references.
+references: list of data references.
+s2: service for input destination.
+destination: full path to detination data source,string.
+scenario of translation:</dd>
+<dt>output:</dt>
+<dd>a list of new references.</dd>
+<dt>To do:</dt>
+<dd>Implement translation between different data source.</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-vtools.datastore" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

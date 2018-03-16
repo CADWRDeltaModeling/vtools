@@ -1,0 +1,46 @@
+vtools\.data package
+====================
+
+Submodules
+----------
+
+vtools\.data\.constants module
+------------------------------
+
+.. automodule:: vtools.data.constants
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.data\.sample\_series module
+-----------------------------------
+
+.. automodule:: vtools.data.sample_series
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.data\.timeseries module
+-------------------------------
+
+.. automodule:: vtools.data.timeseries
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.data\.vtime module
+--------------------------
+
+.. automodule:: vtools.data.vtime
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: vtools.data
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,126 @@
+vtools\.functions package
+=========================
+
+Submodules
+----------
+
+vtools\.functions\.api module
+-----------------------------
+
+.. automodule:: vtools.functions.api
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.bind\_split module
+-------------------------------------
+
+.. automodule:: vtools.functions.bind_split
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.diff module
+------------------------------
+
+.. automodule:: vtools.functions.diff
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.diffnorm module
+----------------------------------
+
+.. automodule:: vtools.functions.diffnorm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.filter module
+--------------------------------
+
+.. automodule:: vtools.functions.filter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.interpolate module
+-------------------------------------
+
+.. automodule:: vtools.functions.interpolate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.merge module
+-------------------------------
+
+.. automodule:: vtools.functions.merge
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.period\_op module
+------------------------------------
+
+.. automodule:: vtools.functions.period_op
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.resample module
+----------------------------------
+
+.. automodule:: vtools.functions.resample
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.rhist module
+-------------------------------
+
+.. automodule:: vtools.functions.rhist
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.shift module
+-------------------------------
+
+.. automodule:: vtools.functions.shift
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.skill\_metrics module
+----------------------------------------
+
+.. automodule:: vtools.functions.skill_metrics
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.test\_bind\_split module
+-------------------------------------------
+
+.. automodule:: vtools.functions.test_bind_split
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.functions\.ts\_ufunc module
+-----------------------------------
+
+.. automodule:: vtools.functions.ts_ufunc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: vtools.functions
+    :members:
+    :undoc-members:
+    :show-inheritance:

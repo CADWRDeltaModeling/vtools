@@ -1,0 +1,1838 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>vtools.functions package &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vtools.functions package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.api">vtools.functions.api module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.bind_split">vtools.functions.bind_split module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.diff">vtools.functions.diff module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.diffnorm">vtools.functions.diffnorm module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.filter">vtools.functions.filter module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.interpolate">vtools.functions.interpolate module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.merge">vtools.functions.merge module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.period_op">vtools.functions.period_op module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.resample">vtools.functions.resample module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.rhist">vtools.functions.rhist module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.shift">vtools.functions.shift module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.skill_metrics">vtools.functions.skill_metrics module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.test_bind_split">vtools.functions.test_bind_split module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions.ts_ufunc">vtools.functions.ts_ufunc module</a></li>
+<li><a class="reference internal" href="#module-vtools.functions">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/vtools.functions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="vtools-functions-package">
+<h1>vtools.functions package<a class="headerlink" href="#vtools-functions-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vtools.functions.api">
+<span id="vtools-functions-api-module"></span><h2>vtools.functions.api module<a class="headerlink" href="#module-vtools.functions.api" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vtools.functions.bind_split">
+<span id="vtools-functions-bind-split-module"></span><h2>vtools.functions.bind_split module<a class="headerlink" href="#module-vtools.functions.bind_split" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Apr 19 09:17:56 2017</p>
+<p>&#64;author: qshu</p>
+<dl class="function">
+<dt id="vtools.functions.bind_split.ts_bind">
+<code class="descname">ts_bind</code><span class="sig-paren">(</span><em>ts0</em>, <em>ts1</em>, <em>*other_ts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.bind_split.ts_bind" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>bind a number of timeseries of univarate together along time diemension and return a new ts</dt>
+<dd>of multivariabe.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts0</strong> :  <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Regular or Irregular time series.</p>
+</div></blockquote>
+<p><strong>ts1</strong> :  <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Regular or Irregular time series.</p>
+</div></blockquote>
+<p><strong>*other_ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Additional time series arguments (number of args is variable)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>binded</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new time series with time extent the union of the inputs.
+If the series are all regular, the output will be regular 
+with an interval of the smallest constituent intervals.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.bind_split.ts_split">
+<code class="descname">ts_split</code><span class="sig-paren">(</span><em>ts</em>, <em>shared=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.bind_split.ts_split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Splits a 2D multivariate series into constituent univariate series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<p><strong>shared :: Boolean</strong></p>
+<blockquote>
+<div><p>Return time sereis share or copy data array of input one</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>out1,out2</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>Two comonent time series.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.diff">
+<span id="vtools-functions-diff-module"></span><h2>vtools.functions.diff module<a class="headerlink" href="#module-vtools.functions.diff" title="Permalink to this headline">¶</a></h2>
+<p>Calculates left side derative of time series
+of input order.</p>
+<dl class="function">
+<dt id="vtools.functions.diff.time_diff">
+<code class="descname">time_diff</code><span class="sig-paren">(</span><em>ts</em>, <em>order=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.diff.time_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate left side derative of a ts of input orders.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to interpolate. Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>order</strong> : int</p>
+<blockquote>
+<div><p>Order of derative.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : vtools.data.time_series.TimeSeries</p>
+<blockquote class="last">
+<div><p>A regular series with derative.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.diffnorm">
+<span id="vtools-functions-diffnorm-module"></span><h2>vtools.functions.diffnorm module<a class="headerlink" href="#module-vtools.functions.diffnorm" title="Permalink to this headline">¶</a></h2>
+<p>uility to compute ts norm (L_1,L_2,L_inf).</p>
+<dl class="function">
+<dt id="vtools.functions.diffnorm.norm_diff_l1">
+<code class="descname">norm_diff_l1</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em>, <em>time_window=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.diffnorm.norm_diff_l1" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute L1 difference of two input time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts1,ts2</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>time_window</strong> : <a class="reference internal" href="../time_concepts.html#time-window"><span class="std std-ref">time_window</span></a> ,optional</p>
+<blockquote>
+<div><p>The default implies comparing the full length of two time series.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : float</p>
+<blockquote class="last">
+<div><p>a total L1-difference between two input series .</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.diffnorm.norm_diff_l2">
+<code class="descname">norm_diff_l2</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em>, <em>time_window=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.diffnorm.norm_diff_l2" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute L2 difference of two input time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts1,ts2</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>time_window</strong> : <a class="reference internal" href="../time_concepts.html#time-window"><span class="std std-ref">time_window</span></a>,optional</p>
+<blockquote>
+<div><p>The default implies comparing the full length of two time series.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : float</p>
+<blockquote class="last">
+<div><p>A total L2-difference between two input series .</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.diffnorm.norm_diff_linf">
+<code class="descname">norm_diff_linf</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em>, <em>time_window=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.diffnorm.norm_diff_linf" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute L_inf difference of two input time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts1,ts2: :class:`~vtools.data.timeseries.TimeSeries`</strong></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>time_window</strong> : <a class="reference internal" href="../time_concepts.html#time-window"><span class="std std-ref">time_window</span></a>,optional</p>
+<blockquote>
+<div><p>The default implies comparing the full length of two time series.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : float</p>
+<blockquote class="last">
+<div><p>A total L_infinite difference between two input series .</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.diffnorm.ts_equal">
+<code class="descname">ts_equal</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em>, <em>time_window=None</em>, <em>tol=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.diffnorm.ts_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>compare two ts by absolute difference.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts1.ts2</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>time_window</strong> : <a class="reference internal" href="../time_concepts.html#time-window"><span class="std std-ref">time_window</span></a>,optional</p>
+<blockquote>
+<div><p>The default implies comparing the full length of two time series.</p>
+</div></blockquote>
+<p><strong>tol    :float,optional</strong></p>
+<blockquote>
+<div><p>Tolerance allowed for two equal time sereies.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : bool</p>
+<blockquote class="last">
+<div><p>if equal within allowed tolerance, return True .</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.diffnorm.ts_almost_equal">
+<code class="descname">ts_almost_equal</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em>, <em>time_window=None</em>, <em>tol=1e-08</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.diffnorm.ts_almost_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>compare two ts by absolute difference.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts1,ts2</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>time_window</strong> : <a class="reference internal" href="../time_concepts.html#time-window"><span class="std std-ref">time_window</span></a>,optional</p>
+<blockquote>
+<div><p>The default implies comparing the full length of two time series.</p>
+</div></blockquote>
+<p><strong>tol    :float,optional</strong></p>
+<blockquote>
+<div><p>Tolerance allowed for two almost equal time sereies.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : bool</p>
+<blockquote class="last">
+<div><p>If equal within allowed tolerance, return True .</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.filter">
+<span id="vtools-functions-filter-module"></span><h2>vtools.functions.filter module<a class="headerlink" href="#module-vtools.functions.filter" title="Permalink to this headline">¶</a></h2>
+<p>Module contains filter used in tidal time series analysis.</p>
+<dl class="function">
+<dt id="vtools.functions.filter.boxcar">
+<code class="descname">boxcar</code><span class="sig-paren">(</span><em>ts</em>, <em>before</em>, <em>after</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.filter.boxcar" title="Permalink to this definition">¶</a></dt>
+<dd><p>low-pass butterworth filter using moving average.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts1</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>before</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>, int</p>
+<blockquote>
+<div><p>Length of averging interval before the sampling points or number of points.</p>
+</div></blockquote>
+<p><strong>after</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>, int</p>
+<blockquote>
+<div><p>Length of averging interval after the sampling points or number of points..</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new regular time series with the same interval of ts.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.filter.butterworth">
+<code class="descname">butterworth</code><span class="sig-paren">(</span><em>ts</em>, <em>order=4</em>, <em>cutoff_period=None</em>, <em>cutoff_frequency=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.filter.butterworth" title="Permalink to this definition">¶</a></dt>
+<dd><p>low-pass butterworth-squared filter on a regular time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>order: int ,optional</strong></p>
+<blockquote>
+<div><p>The default is 4.</p>
+</div></blockquote>
+<p><strong>cutoff_frequency: float,optional</strong></p>
+<blockquote>
+<div><p>Cutoff frequency expressed as a ratio of a Nyquist frequency,
+should within the range (0,1). For example, if the sampling frequency
+is 1 hour, the Nyquist frequency is 1 sample/2 hours. If we want a
+36 hour cutoff period, the frequency is 1/36 or 0.0278 cycles per hour. 
+Hence the cutoff frequency argument used here would be
+0.0278/0.5 = 0.056.</p>
+</div></blockquote>
+<p><strong>cutoff_period</strong> : string  or  <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Period of cutting off frequency. If input as a string, it must 
+be  convertible to <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">Time interval</span></a>.
+cutoff_frequency and cutoff_period can’t be specified at the same time.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new regular time series with the same interval of ts.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.filter.daily_average">
+<code class="descname">daily_average</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.filter.daily_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Classic moving average over 24 hours.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new regular time series with the same interval of ts.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.filter.godin">
+<code class="descname">godin</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.filter.godin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Godin filtering method on a regular time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new regular time series with the same interval of ts.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.filter.cosine_lanczos">
+<code class="descname">cosine_lanczos</code><span class="sig-paren">(</span><em>ts</em>, <em>cutoff_period=None</em>, <em>cutoff_frequency=None</em>, <em>filter_len=None</em>, <em>padtype=None</em>, <em>padlen=None</em>, <em>fill_edge_nan=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.filter.cosine_lanczos" title="Permalink to this definition">¶</a></dt>
+<dd><p>squared low-pass cosine lanczos  filter on a regular time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>filter_len</strong> : int, time_interval</p>
+<blockquote>
+<div><p>Size of lanczos window, default is to number of interval within filter_period*1.25.</p>
+</div></blockquote>
+<p><strong>cutoff_frequency: float,optional</strong></p>
+<blockquote>
+<div><p>Cutoff frequency expressed as a ratio of a Nyquist frequency,
+should within the range (0,1). For example, if the sampling frequency
+is 1 hour, the Nyquist frequency is 1 sample/2 hours. If we want a
+36 hour cutoff period, the frequency is 1/36 or 0.0278 cycles per hour. 
+Hence the cutoff frequency argument used here would be
+0.0278/0.5 = 0.056.</p>
+</div></blockquote>
+<p><strong>cutoff_period</strong> : string  or  <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><blockquote>
+<div><p>Period of cutting off frequency. If input as a string, it must 
+be  convertible to <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">Time interval</span></a>.
+cutoff_frequency and cutoff_period can’t be specified at the same time.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>padtype <span class="classifier-delimiter">:</span> <span class="classifier">str or None, optional</span></dt>
+<dd><p class="first last">Must be ‘odd’, ‘even’, ‘constant’, or None. This determines the type
+of extension to use for the padded signal to which the filter is applied. 
+If padtype is None, no padding is used. The default is None.</p>
+</dd>
+<dt>padlen <span class="classifier-delimiter">:</span> <span class="classifier">int or None, optional</span></dt>
+<dd><p class="first last">The number of elements by which to extend x at both ends of axis 
+before applying the filter. This value must be less than x.shape[axis]-1. 
+padlen=0 implies no padding. If padtye is not None and padlen is not
+given, padlen is be set to 6*m.</p>
+</dd>
+<dt>fill_edge_nan: bool,optional</dt>
+<dd><p class="first last">If pading is not used and fill_edge_nan is true, resulting data on 
+the both ends are filled with nan to account for edge effect. This is
+2*m on the either end of the result. Default is true.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new regular time series with the same interval of ts. If no pading 
+is used the beigning and ending 4*m resulting data will be set to nan
+to remove edge effect.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.filter.lowpass_cosine_lanczos_filter_coef">
+<code class="descname">lowpass_cosine_lanczos_filter_coef</code><span class="sig-paren">(</span><em>cf</em>, <em>m</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.filter.lowpass_cosine_lanczos_filter_coef" title="Permalink to this definition">¶</a></dt>
+<dd><p>For test purpose only</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.filter.ts_gaussian_filter">
+<code class="descname">ts_gaussian_filter</code><span class="sig-paren">(</span><em>ts</em>, <em>sigma</em>, <em>order=0</em>, <em>mode='reflect'</em>, <em>cval=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.filter.ts_gaussian_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>wrapper of scipy gaussian_filter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts: :class:`~vtools.data.timeseries.TimeSeries`</strong></p>
+<blockquote>
+<div><p>Must has data of one dimension, and regular.</p>
+</div></blockquote>
+<p><strong>sigma: int or :ref:`time_interval&lt;time_intervals&gt;`</strong></p>
+<blockquote>
+<div><p>Standard deviation for Gaussian kernel presented as number of
+samples, or time interval.</p>
+</div></blockquote>
+<p><strong>order: int,optional</strong></p>
+<blockquote>
+<div><p>Order of the gaussian filter. Must be one of 0,1,2,3. Default 0.</p>
+</div></blockquote>
+<p><strong>mode</strong> : {‘reflect’, ‘constant’, ‘nearest’, ‘mirror’, ‘wrap’}, optional</p>
+<blockquote>
+<div><p>This input determines how the array borders are handled, 
+where cval is the value when mode is ‘constant’. 
+Default is ‘reflect’</p>
+</div></blockquote>
+<p><strong>cval</strong> : scalar, optional</p>
+<blockquote>
+<div><p>Value to fill past edges of input if mode is ‘constant’.
+Default is 0.0</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new regular time series with the same interval of ts.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.interpolate">
+<span id="vtools-functions-interpolate-module"></span><h2>vtools.functions.interpolate module<a class="headerlink" href="#module-vtools.functions.interpolate" title="Permalink to this headline">¶</a></h2>
+<p>Some data interpolating over gaps within a time series.</p>
+<dl class="function">
+<dt id="vtools.functions.interpolate.linear">
+<code class="descname">linear</code><span class="sig-paren">(</span><em>ts</em>, <em>times</em>, <em>filter_nan=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate a time series by linear interpolation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to be interpolated</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>  or <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.</p>
+</div></blockquote>
+<p><strong>filter_nan</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Should nan points should be omitted or not.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series if <cite>times</cite> is a <cite>time_interval</cite>, or irregular time series if <cite>times</cite> is a <cite>time_sequence</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.spline">
+<code class="descname">spline</code><span class="sig-paren">(</span><em>ts</em>, <em>times</em>, <em>filter_nan=True</em>, <em>**dic</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.spline" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Interpolating gaps using cubic spline.</dt>
+<dd>The spline does not need to pass data point. The closeness
+can be controlled by parameter s.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to be interpolated</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>  or <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.</p>
+</div></blockquote>
+<p><strong>filter_nan</strong> : boolean,optional</p>
+<blockquote>
+<div><p>True if nan points should be omitted or not.</p>
+</div></blockquote>
+<p><strong>s</strong> : float, optional</p>
+<blockquote>
+<div><p>Smoothing parameter. s=1.0e-3 by default. The lower s is, the closer the fitted curve will be to the data points, and the less smoother the filter will be. This is different from monotonic spline, currently a bit slower and perhaps more robust.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series if second input is time interval, or irregular time series otherwise.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.monotonic_spline">
+<code class="descname">monotonic_spline</code><span class="sig-paren">(</span><em>ts</em>, <em>times</em>, <em>filter_nan=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.monotonic_spline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolation by monotonicity (shape) preserving spline.
+The spline will fit the data points exactly, derivatives are
+subject to slope limiters. The name ‘monotonicity-preserving’
+can be a little deceptive – this is an excellent all around 
+choice for interpolating continuous data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to be interpolated</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>  or <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.</p>
+</div></blockquote>
+<p><strong>filter_nan: if nan points should be omitted or not.</strong></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series if second input is time interval, or irregular time series otherwise.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.nearest_neighbor">
+<code class="descname">nearest_neighbor</code><span class="sig-paren">(</span><em>ts</em>, <em>times</em>, <em>filter_nan=True</em>, <em>**dic</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.nearest_neighbor" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Interpolating series using nearest valid neighbor.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to be interpolated</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>  or <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.</p>
+</div></blockquote>
+<p><strong>filter_nan</strong> : boolean, optional</p>
+<blockquote>
+<div><p>True if NaN point should be ommitted or not.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<p>A regular time series if second input is time interval,</p>
+<blockquote class="last">
+<div><p>or irregular time series otherwise.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.gap_size">
+<code class="descname">gap_size</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.gap_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.previous_neighbor">
+<code class="descname">previous_neighbor</code><span class="sig-paren">(</span><em>ts</em>, <em>times</em>, <em>filter_nan=True</em>, <em>**dic</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.previous_neighbor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate at time series using value at the previous valid neighbor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to be interpolated</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>  or <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.</p>
+</div></blockquote>
+<p><strong>filter_nan</strong> : boolean,optional</p>
+<blockquote>
+<div><p>True if nan points should be omitted or not.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<p>A regular time series if second input is time interval,</p>
+<blockquote class="last">
+<div><p>or irregular time series otherwise.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.next_neighbor">
+<code class="descname">next_neighbor</code><span class="sig-paren">(</span><em>ts</em>, <em>times</em>, <em>filter_nan=True</em>, <em>**dic</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.next_neighbor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate by next (forward in time) valid neighbors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to be interpolated</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>  or <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.</p>
+</div></blockquote>
+<p><strong>filter_nan</strong> : boolean,optional</p>
+<blockquote>
+<div><p>True if nan points should be omitted or not.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series if <cite>times</cite> is time interval or irregular time series otherwise.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.interpolate_ts_nan">
+<code class="descname">interpolate_ts_nan</code><span class="sig-paren">(</span><em>ts</em>, <em>method='linear'</em>, <em>max_gap=0</em>, <em>**args</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.interpolate_ts_nan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate missing values within a time series by interpolation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>The time series to be interpolated. Must be univariate.</p>
+</div></blockquote>
+<p><strong>method</strong> : {LINEAR,NEAREST,PREVIOUS,NEXT,SPLINE,MSPLINE,RHIST}</p>
+<blockquote>
+<div><p>You can use our constants or the equivalent string as indicated below.</p>
+<dl class="docutils">
+<dt>LINEAR or ‘linear’ </dt>
+<dd><p class="first last">Linear interpolation</p>
+</dd>
+<dt>NEAREST or ‘nearest’</dt>
+<dd><p class="first last">Nearest value in time</p>
+</dd>
+<dt>PREVIOUS or ‘previous’</dt>
+<dd><p class="first last">Previous step with data</p>
+</dd>
+<dt>NEXT or ‘next’</dt>
+<dd><p class="first last">Next step with data</p>
+</dd>
+<dt>SPLINE or ‘spline’</dt>
+<dd><p class="first last">numpy 1D spline</p>
+</dd>
+<dt>MSPLINE or ‘mspline’ </dt>
+<dd><p class="first last">Monotonicity (shape) preserving spline</p>
+</dd>
+<dt>RHIST or ‘rhist’</dt>
+<dd><p class="first last">Rational histospline that conserves area under the curve.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>max_gap: int,optional</strong></p>
+<blockquote>
+<div><p>The maximum number of continous nan data to allow interpolation. By default
+0, which means doing interpolation no matter how big is the continous nan block.</p>
+</div></blockquote>
+<p><strong>**args</strong> : dictonary</p>
+<blockquote>
+<div><p>Extra keyword parameters required by the <cite>method</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>filled</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>New series with missing values filled using <cite>method</cite></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.interpolate_ts">
+<code class="descname">interpolate_ts</code><span class="sig-paren">(</span><em>ts</em>, <em>times</em>, <em>method='linear'</em>, <em>filter_nan=True</em>, <em>**dic</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.interpolate_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate a time series to a new time sequence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to interpolate. Must has data of one dimension, regular or irregular.</p>
+</div></blockquote>
+<p><strong>times</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a>  or <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>The new times to which the series will be interpolated. Can also be a string that can be parsed into a time interval.</p>
+</div></blockquote>
+<p><strong>method</strong> : string, optional</p>
+<blockquote>
+<div><p>See <a class="reference internal" href="#vtools.functions.interpolate.interpolate_ts_nan" title="vtools.functions.interpolate.interpolate_ts_nan"><code class="xref py py-func docutils literal"><span class="pre">interpolate_ts_nan()</span></code></a> for a list of methods</p>
+</div></blockquote>
+<p><strong>filter_nan</strong> : boolean, optional</p>
+<blockquote>
+<div><p>True if nan should be omitted or not. If retained, 
+nan values in the source series will be used in interpolation algorithm, which may cause new nan points in resulting ts.</p>
+</div></blockquote>
+<p><strong>**dic</strong> : dictonary</p>
+<blockquote>
+<div><p>Extra parameters.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular or irregular series with times based on times and values interpolated from ts.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#vtools.functions.interpolate.interpolate_ts_nan" title="vtools.functions.interpolate.interpolate_ts_nan"><code class="xref py py-obj docutils literal"><span class="pre">interpolate_ts_nan</span></code></a></dt>
+<dd>Fill internal nan values using interpolation</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.interpolate.rhistinterp">
+<code class="descname">rhistinterp</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em>, <em>**dic</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.interpolate.rhistinterp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolating a regular time series (rts) to a finer rts by rational histospline.</p>
+<p>The rational histospline preserves area under the curve. This is a good choice of spline for period averaged data where an interpolant is desired
+that is ‘conservative’. Note that it is the underlying continuous interpolant
+that will be ‘conservative though, not the returned discrete time series which
+merely samples the underlying interpolant.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Series to be interpolated, typically period averaged</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<p><strong>p</strong> : float, optional</p>
+<blockquote>
+<div><p>Spline tension, usually between 0 and 20. Must &gt;-1. For a ‘sufficiently large’ value of p, the interpolant will be monotonicity-preserving and will maintain strict positivity (always being strictly &gt; <cite>lowbound</cite>.</p>
+</div></blockquote>
+<p><strong>lowbound</strong> : float, optional</p>
+<blockquote>
+<div><p>Lower bound of interpolated values.</p>
+</div></blockquote>
+<p><strong>tolbound</strong> : float, optional</p>
+<blockquote>
+<div><p>Tolerance for determining if an input is on the bound.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series with instantaneous values</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.merge">
+<span id="vtools-functions-merge-module"></span><h2>vtools.functions.merge module<a class="headerlink" href="#module-vtools.functions.merge" title="Permalink to this headline">¶</a></h2>
+<p>Merge multiple time series ts1,ts2 …, a new time series with combination of 
+ts1,ts2 data will be returned.</p>
+<dl class="function">
+<dt id="vtools.functions.merge.merge">
+<code class="descname">merge</code><span class="sig-paren">(</span><em>ts0</em>, <em>ts1</em>, <em>*other_ts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.merge.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>merge a number of timeseries together and return a new ts.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts0</strong> :  <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Highest priority time series.</p>
+</div></blockquote>
+<p><strong>ts1</strong> :  <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Next highest priority time series, used to replace nans in ts0.</p>
+</div></blockquote>
+<p><strong>*other_ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Additional regular time series arguments (number of args is variable)
+to merge with ts0 to cover nan data. Each must have
+with the same interval and should be listed in decreasing priority</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>merged</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new time series with time interval same as the inputs, time extent
+the union of the inputs, and filled first with ts1, then with remaining
+gaps filled with ts2, then ts3….</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.period_op">
+<span id="vtools-functions-period-op-module"></span><h2>vtools.functions.period_op module<a class="headerlink" href="#module-vtools.functions.period_op" title="Permalink to this headline">¶</a></h2>
+<p>Period operation over a regular time series, the returned new time
+series are aligned with operation interval( e.g. monthly data
+will start on the first day of the month).</p>
+<dl class="function">
+<dt id="vtools.functions.period_op.period_op">
+<code class="descname">period_op</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em>, <em>op</em>, <em>method=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.period_op.period_op" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a period operation on a time series.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only valid data of input ‘ts’ will be considered.
+The ‘method’ input is only meaningful for averaging operation, if not
+given, function will select one method based
+on the timestamp property of time seris.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><blockquote>
+<div><p>A regular timeseries to be operated.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>interval <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a> </span></dt>
+<dd><p class="first last">Interval of operation.</p>
+</dd>
+<dt>op: string</dt>
+<dd><p class="first last">three optiona are avaible, MAX,MIN and MEAN (in <a class="reference internal" href="vtools.data.html#module-vtools.data.constants" title="vtools.data.constants"><code class="xref py py-mod docutils literal"><span class="pre">vtools.data.constants</span></code></a> )</p>
+</dd>
+<dt>method <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
+<dd><p class="first last">the averaging method going to be used, Two option avaiable, TRAPEZOID and RECT</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>a new time series with period interval that is the result
+of applying op consecutively over calendar periods</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>error</strong> : <code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></p>
+<blockquote class="last">
+<div><p>If input time series is not regular, or regular interval is calendar
+dependent, or input downsampling interval is narrower than original
+one.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.period_op.period_min">
+<code class="descname">period_min</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.period_op.period_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a period minimum values on a time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A regular timeseries to be operated.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Interval of operation.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>a new time series with period interval that is the result
+of applying min operation consecutively over calendar periods</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>error</strong> : <code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></p>
+<blockquote class="last">
+<div><p>If input time series is not regular, or regular interval is calendar
+dependent, or input downsampling interval is narrower than original
+one.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.period_op.period_max">
+<code class="descname">period_max</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.period_op.period_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a period maximum on a time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A regular timeseries to be operated.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Interval of operation.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>a new time series with period interval that is the result
+of applying min operation consecutively over calendar periods</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>error</strong> : <code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></p>
+<blockquote class="last">
+<div><p>If input time series is not regular, or regular interval is calendar
+dependent, or input downsampling interval is narrower than original
+one.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.period_op.period_ave">
+<code class="descname">period_ave</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em>, <em>method=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.period_op.period_ave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a period mean on a time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A regular timeseries to be operated.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Interval of operation.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>a new time series with period interval that is the result
+of applying average operation consecutively over calendar periods</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>error</strong> : <code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></p>
+<blockquote class="last">
+<div><p>If input time series is not regular, or regular interval is calendar
+dependent, or input downsampling interval is narrower than original
+one.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.period_op.period_sum">
+<code class="descname">period_sum</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.period_op.period_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a period sum on a time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A regular timeseries to be operated.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Interval of operation.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Result</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>a new time series with period interval that is the result
+of applying sum operation consecutively over calendar periods</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>error</strong> : <code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></p>
+<blockquote class="last">
+<div><p>If input time series is not regular, or regular interval is calendar
+dependent, or input downsampling interval is narrower than original
+one.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.resample">
+<span id="vtools-functions-resample-module"></span><h2>vtools.functions.resample module<a class="headerlink" href="#module-vtools.functions.resample" title="Permalink to this headline">¶</a></h2>
+<p>Resample operation over a time series, a new time series with the desired interval
+and corresponding ticks will be returned.</p>
+<dl class="function">
+<dt id="vtools.functions.resample.resample">
+<code class="descname">resample</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em>, <em>aligned=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.resample.resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do a resampling operation on a time series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A regular timeseries to be resampled.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Interval of resampled time series.</p>
+</div></blockquote>
+<p><strong>aligned: boolean</strong></p>
+<blockquote>
+<div><p>Default is true which means aligning result’ time with input ‘interval’.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Resampled</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A new resampled time series if success.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><strong>error</strong> : <code class="xref py py-class docutils literal"><span class="pre">ValueError</span></code></p>
+<blockquote class="last">
+<div><blockquote>
+<div><p>If input time series is not regular, or regular interval is calendar
+dependent.</p>
+</div></blockquote>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.resample.decimate">
+<code class="descname">decimate</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em>, <em>**dic</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.resample.decimate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Downsample timeseries by decimating.</dt>
+<dd>A wrapper of GNU Octave function decimate.m function.
+This will remove the influence of aliasing on downsampled
+ts.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A regular timeseries to be resampled.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Interval of resampled time series.</p>
+</div></blockquote>
+<p><strong>**dic</strong> : Dictionary</p>
+<blockquote>
+<div><p>Dictonary of extra parameters to be passed in. For instance , input
+‘align_calendar’  as boolean to align resampled timeseries with the
+downsampling interval.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>Resampled</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new resampled time series if success.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.rhist">
+<span id="vtools-functions-rhist-module"></span><h2>vtools.functions.rhist module<a class="headerlink" href="#module-vtools.functions.rhist" title="Permalink to this headline">¶</a></h2>
+<p>Module for data interpolation using rational histosplines.
+The main algorithm is a numpy re-implementation of rhist2 in</p>
+<blockquote>
+<div>One Dimensional Spline Interpolation Algorithms
+by Helmuth Spath (1995).</div></blockquote>
+<p>The benefit of histosplines is that they are designed to
+conserve the integral under the curve, and so they are good
+for period averaged data when you want the
+interpolator to conserve mass.</p>
+<dl class="function">
+<dt id="vtools.functions.rhist.rhist">
+<code class="descname">rhist</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>xnew</em>, <em>y0</em>, <em>yn</em>, <em>p</em>, <em>q</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.rhist.rhist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Histopline for arrays with tension.
+Based by an algorithm rhist2 in 
+One Dimensional Spline Interpolation Algorithms
+by Helmuth Spath (1995).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : array-like</p>
+<blockquote>
+<div><p>Abscissa array of original data,
+of length n</p>
+</div></blockquote>
+<p><strong>y</strong> : array-like, dimension (n-1)</p>
+<blockquote>
+<div><p>Values (mantissa) of original data giving the rectangle (average) values between x[i] and x[i+1]</p>
+</div></blockquote>
+<p><strong>xnew</strong> : array-like</p>
+<blockquote>
+<div><p>Array of new locations at which to interpolate.</p>
+</div></blockquote>
+<p><strong>y0,yn</strong> : float</p>
+<blockquote>
+<div><p>Initial and terminal values</p>
+</div></blockquote>
+<p><strong>p,q: array-like, dimension (n-1)</strong></p>
+<blockquote>
+<div><p>Tension parameter, p and q are almost always the same. The higher p and q are for a particular x interval, the more rectangular the interpolant will look and the more 
+positivity and shape preserving it is at the expense
+of accuracy. For this routine any number p,q &gt; -1 is allowed, although the bound routine doesn’t use vals less
+than zero.</p>
+</div></blockquote>
+<p><strong>Returns</strong></p>
+<p><strong>——-</strong></p>
+<p><strong>ynew</strong> : array-like</p>
+<blockquote class="last">
+<div><p>Array that interpolates the original data.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.rhist.rhist_bound">
+<code class="descname">rhist_bound</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>xnew</em>, <em>y0</em>, <em>yn</em>, <em>p</em>, <em>lbound=None</em>, <em>maxiter=5</em>, <em>pfactor=2</em>, <em>floor_eps=0.001</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.rhist.rhist_bound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Histopline for arrays with lower bound enforcement.
+This routine drives rhist() but tests that the output
+array observes the lower bound and adapts the tension parameters as needed.</p>
+<p>This will not work exactly if the input
+array has values right on the lower bound. In this case,
+the parameter floor_eps allows you to specify a tolerance
+of bound violation to shoot for … and if it isn’t met in maxiter iterations the value is simply floored.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : array-like</p>
+<blockquote>
+<div><p>Abscissa array of original data to be interpolated,
+of length n</p>
+</div></blockquote>
+<p><strong>y</strong> : array-like, dimension (n-1)</p>
+<blockquote>
+<div><p>Values (mantissa) of original data giving the rectangle (average) values between x[i] and x[i+1]</p>
+</div></blockquote>
+<p><strong>xnew</strong> : array-like</p>
+<blockquote>
+<div><p>Array of new locations at which to interpolate.</p>
+</div></blockquote>
+<p><strong>y0,yn</strong> : float</p>
+<blockquote>
+<div><p>Initial and terminal values</p>
+</div></blockquote>
+<p><strong>p: float</strong></p>
+<blockquote>
+<div><p>Tension parameter. This starts out as a global scalar, but will be converted to an array and adapted locally. 
+The higher this goes for a particular x interval, the more rectangular the interpolant will look and the more 
+positivity and shape preserving it is at the expense
+of accuracy. A good number is 1, and for this routine,
+p &gt; 0 is required because the adaptive process multiplies it by pfactor each iteration on the expectation that it will get bigger.</p>
+</div></blockquote>
+<p><strong>lbound: float</strong></p>
+<blockquote>
+<div><p>Lower bound to be enforced. If the original y’s are strictly above this value, the output has the potential to also be strictly above. If the original y’s lie on the lower bound, then the lower bound can only be enforced within a tolerance using the Spath algorithm …
+and once the values reach that tolerance they are floored. If lbound = None, this function behaves like rhist()</p>
+</div></blockquote>
+<p><strong>maxiter</strong> : integer</p>
+<blockquote>
+<div><p>Number of times to increase p by multiplying it by pfactor before giving up on satisfying floor_eps.</p>
+</div></blockquote>
+<p><strong>pfactor</strong> : float</p>
+<blockquote>
+<div><p>Factor by which to multiply individual time step p</p>
+</div></blockquote>
+<p><strong>floor_eps</strong> : float</p>
+<blockquote>
+<div><p>Tolerance for lower bound violation at which the algorithm will be terminated and the bounds will be enforced by flooring.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ynew</strong> : array-like</p>
+<blockquote class="last">
+<div><p>Array that interpolates the original data, on a curve that conserves mass and strictly observes the lower bound.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.rhist.rhist_coef">
+<code class="descname">rhist_coef</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>y0</em>, <em>yn</em>, <em>p</em>, <em>q</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.rhist.rhist_coef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine that produces coefficients for the histospline</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.rhist.rhist_val">
+<code class="descname">rhist_val</code><span class="sig-paren">(</span><em>xnew</em>, <em>x</em>, <em>p</em>, <em>q</em>, <em>a</em>, <em>b</em>, <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.rhist.rhist_val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a histospline at new x points</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.rhist.tridiagonal">
+<code class="descname">tridiagonal</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.rhist.tridiagonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>a is the lower band (with leading zero)
+b is the center diagonal (length == nrow)
+c is upper band (trailing zero)
+d is right hand side</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.shift">
+<span id="vtools-functions-shift-module"></span><h2>vtools.functions.shift module<a class="headerlink" href="#module-vtools.functions.shift" title="Permalink to this headline">¶</a></h2>
+<p>Shift operations over a time series, original time series with shifted
+start_time,end_time and times is return.</p>
+<dl class="function">
+<dt id="vtools.functions.shift.shift">
+<code class="descname">shift</code><span class="sig-paren">(</span><em>ts</em>, <em>interval</em>, <em>copy_data=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.shift.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shift entire time series by a given interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>A regular timeseries to be shifted.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Interval of the shifting.</p>
+</div></blockquote>
+<p><strong>copy_data</strong> : boolean,optional</p>
+<blockquote>
+<div><p>If True, the result is an entirely new series with deep copy of all data and properties. Otherwise, it will share data and properties.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>shifted</strong> : <a class="reference internal" href="vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new time series with shifted times.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.skill_metrics">
+<span id="vtools-functions-skill-metrics-module"></span><h2>vtools.functions.skill_metrics module<a class="headerlink" href="#module-vtools.functions.skill_metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.calculate_lag">
+<code class="descname">calculate_lag</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>max_shift</em>, <em>period=None</em>, <em>resolution=datetime.timedelta(0</em>, <em>60)</em>, <em>interpolate_method=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.calculate_lag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate lag of the second time series b, that maximizes the cross-correlation with a.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>a,b: vtools.data.timeseries.Timeseries</strong></p>
+<blockquote>
+<div><p>Two time series to compare. The time extent of b must be the same or a superset of that of a.</p>
+</div></blockquote>
+<p><strong>max_shift: interval</strong></p>
+<blockquote>
+<div><p>Maximum pos/negative time shift to consider in cross-correlation (ie, from -max_shift to +max_shift)</p>
+</div></blockquote>
+<p><strong>period: interval, optional</strong></p>
+<blockquote>
+<div><p>Period that will be used to further clip the time_window of analysis to fit a periodicity.</p>
+</div></blockquote>
+<p><strong>interpolate_method: str, optional</strong></p>
+<blockquote>
+<div><p>Interpolate method to generate a time series with a lag-calculation
+interpolation</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lag</strong> : datetime.timedelta</p>
+<blockquote class="last">
+<div><p>lag</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.corr_coefficient">
+<code class="descname">corr_coefficient</code><span class="sig-paren">(</span><em>predictions</em>, <em>targets</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.corr_coefficient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the correlation coefficient (the ‘r’ in ‘-squared’ between two series.</p>
+<p>For time series where the targets are serially correlated and may span only a fraction
+of the natural variability, this statistic may not be appropriate and Murphy (1988) explains
+why caution should be exercised in using this statistic.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictions, targets</strong> : array_like</p>
+<blockquote>
+<div><p>Time series to analyze</p>
+</div></blockquote>
+<p><strong>bias</strong> : boolean</p>
+<blockquote>
+<div><p>Whether to use the biased (N) or unbiased (N-1) sample size for normalization</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>r</strong> : float</p>
+<blockquote class="last">
+<div><p>Correlation coefficient</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.median_error">
+<code class="descname">median_error</code><span class="sig-paren">(</span><em>predictions</em>, <em>targets</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.median_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the median error, discounting nan values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictions, targets</strong> : array_like</p>
+<blockquote>
+<div><p>Time series or arrays to be analyzed</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>med</strong> : float</p>
+<blockquote class="last">
+<div><p>Median error</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.mse">
+<code class="descname">mse</code><span class="sig-paren">(</span><em>predictions</em>, <em>targets</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.mse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mean squared error</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictions, targets</strong> : array_like</p>
+<blockquote>
+<div><p>Time series or arrays to analyze</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mse</strong> : vtools.data.timeseries.TimeSeries</p>
+<blockquote class="last">
+<div><p>Mean squared error between predictions and targets</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.rmse">
+<code class="descname">rmse</code><span class="sig-paren">(</span><em>predictions</em>, <em>targets</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.rmse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Root mean squared error</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictions, targets</strong> : array_like</p>
+<blockquote>
+<div><p>Time series or arrays to analyze</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mse</strong> : float</p>
+<blockquote class="last">
+<div><p>Mean squared error</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.skill_score">
+<code class="descname">skill_score</code><span class="sig-paren">(</span><em>predictions</em>, <em>targets</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.skill_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate a Nash-Sutcliffe-like skill score based on mean squared error</p>
+<p>As per the discussion in Murphy (1988) other reference forecasts (climatology, 
+harmonic tide, etc.) are possible.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictions, targets</strong> : array_like</p>
+<blockquote>
+<div><p>Time series or arrays to be analyzed</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>rmse</strong> : float</p>
+<blockquote class="last">
+<div><p>Root mean squared error</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.tmean_error">
+<code class="descname">tmean_error</code><span class="sig-paren">(</span><em>predictions</em>, <em>targets</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.tmean_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the (possibly trimmed) mean error, discounting nan values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>predictions, targets</strong> : array_like</p>
+<blockquote>
+<div><p>Time series or arrays to be analyzed</p>
+</div></blockquote>
+<p><strong>limits</strong> : tuple(float)</p>
+<blockquote>
+<div><p>Low and high limits for trimming</p>
+</div></blockquote>
+<p><strong>inclusive</strong> : [boolean, boolean]</p>
+<blockquote>
+<div><p>True if clipping is inclusive on the low/high end</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>mean</strong> : float</p>
+<blockquote class="last">
+<div><p>Trimmed mean error</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.skill_metrics.ts_data_arg">
+<code class="descname">ts_data_arg</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.skill_metrics.ts_data_arg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator used to ensure that functions can be used on time series or arrays</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.test_bind_split">
+<span id="vtools-functions-test-bind-split-module"></span><h2>vtools.functions.test_bind_split module<a class="headerlink" href="#module-vtools.functions.test_bind_split" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vtools.functions.test_bind_split.TestBindSplitOp">
+<em class="property">class </em><code class="descname">TestBindSplitOp</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.test_bind_split.TestBindSplitOp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<p>test functionality of split/bind operations</p>
+<dl class="method">
+<dt id="vtools.functions.test_bind_split.TestBindSplitOp.test_bind_multivar">
+<code class="descname">test_bind_multivar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.test_bind_split.TestBindSplitOp.test_bind_multivar" title="Permalink to this definition">¶</a></dt>
+<dd><p>test behaviour of bind on multvariate ts</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.functions.test_bind_split.TestBindSplitOp.test_bind_op_irregular">
+<code class="descname">test_bind_op_irregular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.test_bind_split.TestBindSplitOp.test_bind_op_irregular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test behaviour of bind operation on irregular TS.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.functions.test_bind_split.TestBindSplitOp.test_bind_op_regular">
+<code class="descname">test_bind_op_regular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.test_bind_split.TestBindSplitOp.test_bind_op_regular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test behaviour of bind operation on regular TS.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.functions.test_bind_split.TestBindSplitOp.test_split_op_irregular">
+<code class="descname">test_split_op_irregular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.test_bind_split.TestBindSplitOp.test_split_op_irregular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test behaviour of split operation on irregular TS.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.functions.test_bind_split.TestBindSplitOp.test_split_op_regular">
+<code class="descname">test_split_op_regular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.test_bind_split.TestBindSplitOp.test_split_op_regular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test behaviour of split operation on regular TS.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.functions.test_bind_split.TestBindSplitOp.test_split_op_regular_3">
+<code class="descname">test_split_op_regular_3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.test_bind_split.TestBindSplitOp.test_split_op_regular_3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test behaviour of split operation on regular TS with more than 3 variable</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions.ts_ufunc">
+<span id="vtools-functions-ts-ufunc-module"></span><h2>vtools.functions.ts_ufunc module<a class="headerlink" href="#module-vtools.functions.ts_ufunc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_accumulate">
+<code class="descname">ts_accumulate</code><span class="sig-paren">(</span><em>ts</em>, <em>ufunc</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_accumulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply ufunc.accumulate to the data and produce a neatened time series
+The function will be applied cumulatively to the data.
+So… ts_apply(ts, add) will produce a time series, where each entry 
+is the cumulative sum up to that index.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_apply">
+<code class="descname">ts_apply</code><span class="sig-paren">(</span><em>ts</em>, <em>ufunc</em>, <em>other=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a numpy ufunc to the data and produce a neatened time series
+The function will be applied pointwise to the data.
+The argument other must be a scalar and serves as the
+second argument to a binary operator or function.</p>
+<p>So… ts_apply(ts, add, 5) will add 5 to every data member</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_max">
+<code class="descname">ts_max</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the global (scalar) maximum value of ts</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_maximum">
+<code class="descname">ts_maximum</code><span class="sig-paren">(</span><em>ts</em>, <em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_maximum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the pointwise maximum of the ts and a scalar or
+another time series</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_mean">
+<code class="descname">ts_mean</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>todo: figure out time weight</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_min">
+<code class="descname">ts_min</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the global (scalar) minimum value of ts</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_minimum">
+<code class="descname">ts_minimum</code><span class="sig-paren">(</span><em>ts</em>, <em>other</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_minimum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the pointwise minimum of the ts and a scalar</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_reduce">
+<code class="descname">ts_reduce</code><span class="sig-paren">(</span><em>ts</em>, <em>ufunc</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce the data by applying ufunc.reduce and produce a neatened time series
+The function will be applied cumulatively to the data, producing
+a “total”. The output of ts_reduce is the same as the size of one 
+element in the time series.
+So… ts_reduce(ts, add) will produce the sum of a time series. Some
+convenience functions such as ts_sum, ts_mean, ts_max, ts_min are 
+provided that rely on this function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.functions.ts_ufunc.ts_sum">
+<code class="descname">ts_sum</code><span class="sig-paren">(</span><em>ts</em>, <em>time_weight=False</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.functions.ts_ufunc.ts_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sum of the time series from start to end
+todo: figure out time weights, figure out trapezoidal part</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.functions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-vtools.functions" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

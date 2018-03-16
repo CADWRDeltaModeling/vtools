@@ -1,0 +1,62 @@
+vtools\.datastore\.dss package
+==============================
+
+Submodules
+----------
+
+vtools\.datastore\.dss\.api module
+----------------------------------
+
+.. automodule:: vtools.datastore.dss.api
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.dss\.dss\_catalog module
+-------------------------------------------
+
+.. automodule:: vtools.datastore.dss.dss_catalog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.dss\.dss\_constants module
+---------------------------------------------
+
+.. automodule:: vtools.datastore.dss.dss_constants
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.dss\.dss\_service module
+-------------------------------------------
+
+.. automodule:: vtools.datastore.dss.dss_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.dss\.utility module
+--------------------------------------
+
+.. automodule:: vtools.datastore.dss.utility
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.dss\.vtime\_dss\_utility module
+--------------------------------------------------
+
+.. automodule:: vtools.datastore.dss.vtime_dss_utility
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: vtools.datastore.dss
+    :members:
+    :undoc-members:
+    :show-inheritance:

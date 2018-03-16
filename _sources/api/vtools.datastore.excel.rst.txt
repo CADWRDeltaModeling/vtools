@@ -1,0 +1,69 @@
+vtools\.datastore\.excel package
+================================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    vtools.datastore.excel.test
+
+Submodules
+----------
+
+vtools\.datastore\.excel\.api module
+------------------------------------
+
+.. automodule:: vtools.datastore.excel.api
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.excel\.excel\_catalog module
+-----------------------------------------------
+
+.. automodule:: vtools.datastore.excel.excel_catalog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.excel\.excel\_constants module
+-------------------------------------------------
+
+.. automodule:: vtools.datastore.excel.excel_constants
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.excel\.excel\_format\_entry module
+-----------------------------------------------------
+
+.. automodule:: vtools.datastore.excel.excel_format_entry
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.excel\.excel\_service module
+-----------------------------------------------
+
+.. automodule:: vtools.datastore.excel.excel_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.excel\.utility module
+----------------------------------------
+
+.. automodule:: vtools.datastore.excel.utility
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: vtools.datastore.excel
+    :members:
+    :undoc-members:
+    :show-inheritance:

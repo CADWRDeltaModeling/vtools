@@ -1,0 +1,126 @@
+vtools\.datastore package
+=========================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    vtools.datastore.dss
+    vtools.datastore.excel
+
+Submodules
+----------
+
+vtools\.datastore\.catalog module
+---------------------------------
+
+.. automodule:: vtools.datastore.catalog
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.catalog\_schema module
+-----------------------------------------
+
+.. automodule:: vtools.datastore.catalog_schema
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.catalog\_service module
+------------------------------------------
+
+.. automodule:: vtools.datastore.catalog_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.data\_access\_service module
+-----------------------------------------------
+
+.. automodule:: vtools.datastore.data_access_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.data\_reference module
+-----------------------------------------
+
+.. automodule:: vtools.datastore.data_reference
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.data\_service\_manager module
+------------------------------------------------
+
+.. automodule:: vtools.datastore.data_service_manager
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.dimension module
+-----------------------------------
+
+.. automodule:: vtools.datastore.dimension
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.group module
+-------------------------------
+
+.. automodule:: vtools.datastore.group
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.optionparse module
+-------------------------------------
+
+.. automodule:: vtools.datastore.optionparse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.service module
+---------------------------------
+
+.. automodule:: vtools.datastore.service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.test\_group module
+-------------------------------------
+
+.. automodule:: vtools.datastore.test_group
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.transfer module
+----------------------------------
+
+.. automodule:: vtools.datastore.transfer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.translate module
+-----------------------------------
+
+.. automodule:: vtools.datastore.translate
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: vtools.datastore
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,171 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Getting and Installing VTools &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Timeseries concepts and manipulation" href="time_concepts.html" />
+    <link rel="prev" title="Introduction" href="index.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="time_concepts.html" title="Timeseries concepts and manipulation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting and Installing VTools</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#vtools-install">VTools Install</a></li>
+<li><a class="reference internal" href="#pydss">PyDSS</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="time_concepts.html"
+                        title="next chapter">Timeseries concepts and manipulation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/install_vtools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-and-installing-vtools">
+<h1>Getting and Installing VTools<a class="headerlink" href="#getting-and-installing-vtools" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>If you want HEC-DSS functionality, you will need pydss, our Python bindings for the HEC-DSS storage format. The package
+is currently only available for Windows and in binaries, linked to the binary library with permission from the Hydrologic Engineering Center. Our portion of the code is offered using an MIT license. Linux will be supported.</p>
+<p><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_amd64.exe">pydss installer (Python 2.7, Windows 64 bit)</a></p>
+<p>VTools makes extensive use of numpy, scipy as well as interfaces to data sources. There is a trend now with python towards fully featured scientific distrubtions, and we don’t particularly recommend trying to build up a full featured tool a la carte. To that end, we recommend the <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Anaconda</a> distribution. One of the main developers on our time has also used Python(x,y).</p>
+</div>
+<div class="section" id="vtools-install">
+<h2>VTools Install<a class="headerlink" href="#vtools-install" title="Permalink to this headline">¶</a></h2>
+<p>VTools is installed via a python “egg”. The vtools egg available here:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/vtools-1.1-py2.7.egg">vtools-1.1-py2.7.egg (Python 2.7, Windows 64 bit)</a></li>
+<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/vtools-1.0-py2.7_win32.egg">vtools-1.0-py2.7_win32.egg (Python 2.7, Windows 32 bit)</a></li>
+</ul>
+</div></blockquote>
+<p>Use the command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ easy_install vtools-1.1-py2.7.egg
+</pre></div>
+</div>
+<p>Version 2.7 of Python is currently supported in 32 or 64 bit flavors. We will make the jump to 3.x when it is fully supported in ArcGIS.</p>
+<p>VTools is offered under the MIT license. You should receive a copy of the license with the package.</p>
+</div>
+<div class="section" id="pydss">
+<h2>PyDSS<a class="headerlink" href="#pydss" title="Permalink to this headline">¶</a></h2>
+<p>If you want to use VTools with HEC-DSS data, you will need PyDSS. PyDSS is also licensed under the MIT license.
+We are redistributing the HEC-DSS library with permission from the Hydrologic Engineering Center and don’t have explicit permission to distribute their source code. Currently we only have a Windows Build.</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_win32.exe">pydss_0.8_py2.7_win32.exe</a></li>
+<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_amd64.exe">pydss_0.8_py2.7_amd64.exe</a></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="time_concepts.html" title="Timeseries concepts and manipulation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

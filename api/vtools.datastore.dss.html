@@ -1,0 +1,441 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>vtools.datastore.dss package &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vtools.datastore.dss package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dss.api">vtools.datastore.dss.api module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dss.dss_catalog">vtools.datastore.dss.dss_catalog module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dss.dss_constants">vtools.datastore.dss.dss_constants module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dss.dss_service">vtools.datastore.dss.dss_service module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dss.utility">vtools.datastore.dss.utility module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dss.vtime_dss_utility">vtools.datastore.dss.vtime_dss_utility module</a></li>
+<li><a class="reference internal" href="#module-vtools.datastore.dss">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/vtools.datastore.dss.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="vtools-datastore-dss-package">
+<h1>vtools.datastore.dss package<a class="headerlink" href="#vtools-datastore-dss-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vtools.datastore.dss.api">
+<span id="vtools-datastore-dss-api-module"></span><h2>vtools.datastore.dss.api module<a class="headerlink" href="#module-vtools.datastore.dss.api" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vtools.datastore.dss.dss_catalog">
+<span id="vtools-datastore-dss-dss-catalog-module"></span><h2>vtools.datastore.dss.dss_catalog module<a class="headerlink" href="#module-vtools.datastore.dss.dss_catalog" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="vtools.datastore.dss.dss_catalog.DssCatalogError">
+<em class="property">exception </em><code class="descname">DssCatalogError</code><span class="sig-paren">(</span><em>st='Error in cataloging dss file'</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_catalog.DssCatalogError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<p>Exception tracking error happend in dss catalog operations</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.dss.dss_catalog.DssCatalog">
+<em class="property">class </em><code class="descname">DssCatalog</code><span class="sig-paren">(</span><em>dss_file_path</em>, <em>schema</em>, <em>service</em>, <em>records_iterator=None</em>, <em>editable=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_catalog.DssCatalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="vtools.datastore.html#vtools.datastore.catalog.Catalog" title="vtools.datastore.catalog.Catalog"><code class="xref py py-class docutils literal"><span class="pre">vtools.datastore.catalog.Catalog</span></code></a></p>
+<p>Contains a number of DSS metadata entries</p>
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_catalog.DssCatalog.changes">
+<code class="descname">changes</code><em class="property"> = 0</em><a class="headerlink" href="#vtools.datastore.dss.dss_catalog.DssCatalog.changes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_catalog.DssCatalog.need_update">
+<code class="descname">need_update</code><em class="property"> = False</em><a class="headerlink" href="#vtools.datastore.dss.dss_catalog.DssCatalog.need_update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dss.dss_catalog.DssCatalog.set_editable">
+<code class="descname">set_editable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_catalog.DssCatalog.set_editable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dss.dss_catalog.DssCatalog.set_uneditable">
+<code class="descname">set_uneditable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_catalog.DssCatalog.set_uneditable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dss.dss_catalog.DssCatalog.uncondensed_D_parts">
+<code class="descname">uncondensed_D_parts</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_catalog.DssCatalog.uncondensed_D_parts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.dss.dss_constants">
+<span id="vtools-datastore-dss-dss-constants-module"></span><h2>vtools.datastore.dss.dss_constants module<a class="headerlink" href="#module-vtools.datastore.dss.dss_constants" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vtools.datastore.dss.dss_service">
+<span id="vtools-datastore-dss-dss-service-module"></span><h2>vtools.datastore.dss.dss_service module<a class="headerlink" href="#module-vtools.datastore.dss.dss_service" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="vtools.datastore.dss.dss_service.DssAccessError">
+<em class="property">exception </em><code class="descname">DssAccessError</code><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssAccessError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="vtools.datastore.dss.dss_service.DssCatalogServiceError">
+<em class="property">exception </em><code class="descname">DssCatalogServiceError</code><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssCatalogServiceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.datastore.dss.dss_service.DssService">
+<em class="property">class </em><code class="descname">DssService</code><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="vtools.datastore.html#vtools.datastore.service.Service" title="vtools.datastore.service.Service"><code class="xref py py-class docutils literal"><span class="pre">vtools.datastore.service.Service</span></code></a></p>
+<p>” Service to cataloging dss file, access and edit dss data</p>
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_service.DssService.database_file_dir">
+<code class="descname">database_file_dir</code><em class="property"> = ''</em><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.database_file_dir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_service.DssService.db_file_use_number">
+<code class="descname">db_file_use_number</code><em class="property"> = 0</em><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.db_file_use_number" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_service.DssService.dss_file_index_last">
+<code class="descname">dss_file_index_last</code><em class="property"> = 0</em><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.dss_file_index_last" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_service.DssService.dss_file_index_used">
+<code class="descname">dss_file_index_used</code><em class="property"> = []</em><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.dss_file_index_used" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_service.DssService.first_initialization">
+<code class="descname">first_initialization</code><em class="property"> = True</em><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.first_initialization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_service.DssService.has_dss_catalog_table">
+<code class="descname">has_dss_catalog_table</code><em class="property"> = False</em><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.has_dss_catalog_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.datastore.dss.dss_service.DssService.identification">
+<code class="descname">identification</code><em class="property"> = 'vtools.datastore.dss.DssService'</em><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.identification" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dss.dss_service.DssService.load_record_property">
+<code class="descname">load_record_property</code><span class="sig-paren">(</span><em>path</em>, <em>dparts</em>, <em>source</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.load_record_property" title="Permalink to this definition">¶</a></dt>
+<dd><p>This public sub should be only be called by
+dss catalog only, to load complete properties
+of a record.</p>
+<p>path is in condenseded form and dparts is
+a tuple contain all the d parts of the record.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dss.dss_service.DssService.remove_dssfile_catalog">
+<code class="descname">remove_dssfile_catalog</code><span class="sig-paren">(</span><em>dss_file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.remove_dssfile_catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove all the catalog information about a dss file,
+this function can be used to reload catalog when it 
+placed before a get_catalog function</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="vtools.datastore.dss.dss_service.DssService.serve">
+<em class="property">static </em><code class="descname">serve</code><span class="sig-paren">(</span><em>source</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.serve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.datastore.dss.dss_service.DssService.update_db">
+<code class="descname">update_db</code><span class="sig-paren">(</span><em>dss_file_path</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.dss_service.DssService.update_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>update db record about dss file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.dss.utility">
+<span id="vtools-datastore-dss-utility-module"></span><h2>vtools.datastore.dss.utility module<a class="headerlink" href="#module-vtools.datastore.dss.utility" title="Permalink to this headline">¶</a></h2>
+<p>Handy utility functions to read data from or save data to dss source.</p>
+<dl class="function">
+<dt id="vtools.datastore.dss.utility.dss_retrieve_ts">
+<code class="descname">dss_retrieve_ts</code><span class="sig-paren">(</span><em>dss_file</em>, <em>selector</em>, <em>time_window=None</em>, <em>unique=False</em>, <em>overlap=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.utility.dss_retrieve_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve timeseries from a dss file 
+based on the specified paths within a given time_window.
+usage: rt=retrieve_dss_data(dss_file,selector)</p>
+<dl class="docutils">
+<dt>input:    </dt>
+<dd><blockquote class="first">
+<div><p>dss_file: path of dss file (relative or abs).
+selector: data record paths within dss file, might</p>
+<blockquote>
+<div>be a single path, or a wildcard path.</div></blockquote>
+<dl class="docutils">
+<dt>time_window: time window of selection, can be string</dt>
+<dd>like “(10/1/1997 12:00, 2/14/2001 11:45)”, or
+tuple of datetime (start,end) or tuple of time
+string like (“10/1/1997 12:00”,”2/14/2001 11:45”).
+if not given, all data will be retrieved.</dd>
+</dl>
+</div></blockquote>
+<dl class="last docutils">
+<dt>overlap: a tuple, like (0,0),(0,1),(1,0),(1,1) or None</dt>
+<dd>This tuple set the option of retrieving a data just preceding or
+following time window early and late side for irregular timeseries
+(0,0): only retrieve data within time window
+(1,0): retrieve a data preceding time window early side in addition to data within
+(0,1): retrieve a data following time window late side in addition to data within
+(1,1): retrieve a data preceding and following in addition to data within
+If early or late sides exactly coincide with data point, the data preceding or
+following the earyl or late side will still be returned when the corresponding overlap
+is set. This behaviour is caused by HecDss interal API.
+dss service will raise ValueError if overlap is not None in reading regular timeseries.</dd>
+</dl>
+</dd>
+<dt>ouput:</dt>
+<dd>one or more time series if succeed.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.utility.dss_store_ts">
+<code class="descname">dss_store_ts</code><span class="sig-paren">(</span><em>ts</em>, <em>dss_file</em>, <em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.utility.dss_store_ts" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>“</dt>
+<dd>Save a timeseris object into specficed path
+within a dss file.</dd>
+<dt>input:    </dt>
+<dd>dss_file: path of dss file (relative or abs).
+path: a data record path within dss file.
+ts: a instance of timeseris class.</dd>
+<dt>ouput:</dt>
+<dd>None</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.utility.dss_catalog">
+<code class="descname">dss_catalog</code><span class="sig-paren">(</span><em>dss_source</em>, <em>selection=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.utility.dss_catalog" title="Permalink to this definition">¶</a></dt>
+<dd><p>return catalog of a dss file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.utility.visual_dss_format">
+<code class="descname">visual_dss_format</code><span class="sig-paren">(</span><em>selection</em>, <em>write_times='all'</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.utility.visual_dss_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a formatting string in dss style.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.utility.dss_delete_ts">
+<code class="descname">dss_delete_ts</code><span class="sig-paren">(</span><em>dssfile=''</em>, <em>selection=''</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.utility.dss_delete_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete selected time series from dss file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.utility.is_valid_dss">
+<code class="descname">is_valid_dss</code><span class="sig-paren">(</span><em>dss_file</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.utility.is_valid_dss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decide if the string dss_file point to a valid dss file.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.dss.vtime_dss_utility">
+<span id="vtools-datastore-dss-vtime-dss-utility-module"></span><h2>vtools.datastore.dss.vtime_dss_utility module<a class="headerlink" href="#module-vtools.datastore.dss.vtime_dss_utility" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.validate_rts_for_dss">
+<code class="descname">validate_rts_for_dss</code><span class="sig-paren">(</span><em>rt</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.validate_rts_for_dss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate the time and property of
+regualr time series for storage in dss.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.string_to_dss_julian_date">
+<code class="descname">string_to_dss_julian_date</code><span class="sig-paren">(</span><em>sdate</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.string_to_dss_julian_date" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.dss_julian_date_to_string">
+<code class="descname">dss_julian_date_to_string</code><span class="sig-paren">(</span><em>jdate</em>, <em>time_unit</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.dss_julian_date_to_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Jdate must be in minutes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.datetime_to_dss_julian_date">
+<code class="descname">datetime_to_dss_julian_date</code><span class="sig-paren">(</span><em>dtime</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.datetime_to_dss_julian_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a  datetime to dss julian dates (start from 12/31/1899).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.dss_rts_to_ts">
+<code class="descname">dss_rts_to_ts</code><span class="sig-paren">(</span><em>data</em>, <em>startdate</em>, <em>starttime</em>, <em>time_interval</em>, <em>iofset</em>, <em>prop=None</em>, <em>flags=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.dss_rts_to_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert dss file time seris into TimeSeries class.
+data: array of values
+startdate: start date of time windows desired as string conformed to dss style
+starttime: start time of time windows desired as string conformed to dss style
+time_interval: time interval of time windows desired as mintues conformed to dss style
+prop: dict save info get from dss func
+flags:list of data quality flag returned by zrrtx or zrrtsx</p>
+<p>adjustment of  startdatetime of regular time series with
+averaging aggreation setting:
+read from dss: starttime need to be move backward a interval
+store into dss: startime need to be move forward a interval</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.dss_its_to_ts">
+<code class="descname">dss_its_to_ts</code><span class="sig-paren">(</span><em>data</em>, <em>jbdate</em>, <em>itimes</em>, <em>prop</em>, <em>flags</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.dss_its_to_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert dss irregular time series into TimeSeries class.
+data:   list of raw data returned by zrits or zritsx
+jbadte: integer dss base date returned by zrits or zritsx
+itimes: offset list in minutes from base date for each time point</p>
+<blockquote>
+<div>it is also generated by zritx or zritsx</div></blockquote>
+<p>prop:   dict save info get from dss func
+flags:  list of data quality flag returned by zritx or zritsx</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.validate_its_for_dss">
+<code class="descname">validate_its_for_dss</code><span class="sig-paren">(</span><em>irrts</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.validate_its_for_dss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate parameters and create input
+necessary for a its to store in dss.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.discover_valid_rts_start">
+<code class="descname">discover_valid_rts_start</code><span class="sig-paren">(</span><em>data</em>, <em>start</em>, <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.discover_valid_rts_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>given the rts data seq., which may contain empty data markers (e.g. -902)
+at begin or end, find out the datetime of first valid number
+and return.
+start, and interval must be datetime and timedelta respectively.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.discover_valid_rts_end">
+<code class="descname">discover_valid_rts_end</code><span class="sig-paren">(</span><em>data</em>, <em>start</em>, <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.discover_valid_rts_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>given the rts data seq., which may contain continous invalid dss number
+at begin or end of sequence, find out the datetime of last valid number
+and return.
+start, and interval must be datetime and timedelta respectively.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.dss_julian2python">
+<code class="descname">dss_julian2python</code><span class="sig-paren">(</span><em>jbdate</em>, <em>itime</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.dss_julian2python" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.datastore.dss.vtime_dss_utility.uncondensed_Dparts">
+<code class="descname">uncondensed_Dparts</code><span class="sig-paren">(</span><em>interval_str</em>, <em>start_str</em>, <em>end_str</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.datastore.dss.vtime_dss_utility.uncondensed_Dparts" title="Permalink to this definition">¶</a></dt>
+<dd><p>” Generates list of uncondensed D parts according to star,
+end of block and interval</p>
+<blockquote>
+<div>interval_str is Epart,start_str is a Dpart</div></blockquote>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.datastore.dss">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-vtools.datastore.dss" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

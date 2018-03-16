@@ -1,0 +1,325 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Time series concepts and manipulation &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Timeseries operations and function" href="vtools_functions.html" />
+    <link rel="prev" title="Timeseries concepts and manipulation" href="time_concepts.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vtools_functions.html" title="Timeseries operations and function"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="time_concepts.html" title="Timeseries concepts and manipulation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Time series concepts and manipulation</a><ul>
+<li><a class="reference internal" href="#time-series-class">Time series class</a></li>
+<li><a class="reference internal" href="#regular-vs-irregular">Regular vs irregular</a></li>
+<li><a class="reference internal" href="#creating-time-series">Creating time series</a></li>
+<li><a class="reference internal" href="#properties-metadata-about-the-series">Properties: metadata about the series</a></li>
+<li><a class="reference internal" href="#timestamp-conventions-for-period-aggregated-e-g-ave-data">Timestamp conventions for period aggregated (e.g. ave) data</a></li>
+<li><a class="reference internal" href="#indexing-slicing">Indexing, slicing</a></li>
+<li><a class="reference internal" href="#shifting-series-and-centering-period-averaged-data">Shifting series and centering period averaged data</a></li>
+<li><a class="reference internal" href="#iterating-through-time">Iterating through time</a></li>
+<li><a class="reference internal" href="#time-series-arithmetic">Time series arithmetic</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="time_concepts.html"
+                        title="previous chapter">Timeseries concepts and manipulation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vtools_functions.html"
+                        title="next chapter">Timeseries operations and function</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/timeseries.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="time-series-concepts-and-manipulation">
+<h1>Time series concepts and manipulation<a class="headerlink" href="#time-series-concepts-and-manipulation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="time-series-class">
+<h2>Time series class<a class="headerlink" href="#time-series-class" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">vtools.data.timeseries.TimeSeries</span></code></a> class it the fundamental data structure for both regular and irregular time series. The class supports a number of slicing and querying methods, as well as simple index-aligned arithmetic.</p>
+</div>
+<div class="section" id="regular-vs-irregular">
+<span id="reg-irreg"></span><h2>Regular vs irregular<a class="headerlink" href="#regular-vs-irregular" title="Permalink to this headline">¶</a></h2>
+<p>We use the term <em>regular</em> when the times correspond to an organized sampling interval. In the implementation, a regular time series is simply one that has a non-None value for the <code class="xref py py-attr docutils literal"><span class="pre">interval</span></code> attribute. Rather than relying on this implementation, the preferred way to test this is the <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.is_regular" title="vtools.data.timeseries.TimeSeries.is_regular"><code class="xref py py-meth docutils literal"><span class="pre">is_regular()</span></code></a> method.</p>
+</div>
+<div class="section" id="creating-time-series">
+<h2>Creating time series<a class="headerlink" href="#creating-time-series" title="Permalink to this headline">¶</a></h2>
+<p>The time series class has a constructor, but the preferred “guaranteeed backward compatible” way to create a time series is with the factory functions <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.rts" title="vtools.data.timeseries.rts"><code class="xref py py-func docutils literal"><span class="pre">rts()</span></code></a> for regular time series or <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.its" title="vtools.data.timeseries.its"><code class="xref py py-func docutils literal"><span class="pre">its()</span></code></a> for irregular.
+These terms are clarified in section <a class="reference internal" href="#reg-irreg"><span class="std std-ref">Regular vs irregular</span></a>.</p>
+<p>The function <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.rts" title="vtools.data.timeseries.rts"><code class="xref py py-func docutils literal"><span class="pre">rts()</span></code></a> creates a time series from a a start date, interval and array:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Import VTools and numpy array creation function</span>
+<span class="kn">from</span> <span class="nn">vtools.data.api</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dtm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">DATUM</span><span class="o">=</span><span class="s2">&quot;datum&quot;</span>  
+
+<span class="c1"># Create the start time and interval</span>
+<span class="n">start</span><span class="o">=</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># 01JAN1990 00:00</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">2400</span>
+
+<span class="c1"># Create the data (see create_numpy_array.py for more examples)</span>
+<span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="mf">24.</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="mf">12.5</span><span class="p">)</span>
+
+<span class="c1"># Create the attribute dictionary, optional</span>
+<span class="n">props</span><span class="o">=</span><span class="p">{</span><span class="n">DATUM</span><span class="p">:</span><span class="s2">&quot;NGVD88&quot;</span><span class="p">}</span>
+
+<span class="c1"># Create the series</span>
+<span class="n">ts</span><span class="o">=</span><span class="n">rts</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">start</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span><span class="n">props</span><span class="p">)</span>
+
+
+</pre></div>
+</div>
+<p>The function <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.its" title="vtools.data.timeseries.its"><code class="xref py py-func docutils literal"><span class="pre">its()</span></code></a> creates a time series from a regular time series is from a start date, interval and array:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Import VTools and numpy array creation function</span>
+<span class="kn">from</span> <span class="nn">vtools.data.api</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dtm</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="k">import</span> <span class="n">arange</span><span class="p">,</span><span class="n">sin</span><span class="p">,</span><span class="n">pi</span>
+<span class="n">DATUM</span><span class="o">=</span><span class="s2">&quot;datum&quot;</span>
+
+<span class="c1"># Create the times and data. The its function accepts</span>
+<span class="c1"># lists or arrays. Here lists and &quot;append&quot; are used,</span>
+<span class="c1"># because in the typical situation you</span>
+<span class="c1"># can&#39;t predict the number of times.</span>
+<span class="c1"># Where performance is an issue (say &gt;10000 entries),</span>
+<span class="c1"># consider using numpy arrays instead of lists</span>
+<span class="n">times</span><span class="o">=</span><span class="p">[]</span>
+<span class="n">data</span><span class="o">=</span><span class="p">[]</span>
+
+<span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+<span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span><span class="mi">30</span><span class="p">))</span>
+<span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">10.</span><span class="p">)</span>
+<span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
+<span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">7.</span><span class="p">)</span>
+<span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+
+<span class="c1"># create the attribute dictionary, optional</span>
+<span class="n">props</span><span class="o">=</span><span class="p">{</span><span class="n">DATUM</span><span class="p">:</span><span class="s2">&quot;NGVD88&quot;</span><span class="p">}</span>
+
+<span class="c1"># create the series</span>
+<span class="n">ts</span><span class="o">=</span><span class="n">its</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">props</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="n">ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                          <span class="c1"># todo: time series elements don&#39;t print</span>
+<span class="nb">print</span> <span class="n">ts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If what you have is a start and end time, there are two options. One is to use <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.rts_constant" title="vtools.data.timeseries.rts_constant"><code class="xref py py-func docutils literal"><span class="pre">rts_constant()</span></code></a>, which creates a time series initialized to a constant. You can then access the <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.data" title="vtools.data.timeseries.TimeSeries.data"><code class="xref py py-attr docutils literal"><span class="pre">data</span></code></a> attribute if you want to alter it.</p>
+</div>
+<div class="section" id="properties-metadata-about-the-series">
+<h2>Properties: metadata about the series<a class="headerlink" href="#properties-metadata-about-the-series" title="Permalink to this headline">¶</a></h2>
+<p>Every time series has an attribute called <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.props" title="vtools.data.timeseries.TimeSeries.props"><code class="xref py py-attr docutils literal"><span class="pre">props</span></code></a> that stores some basic metadata about the series. These include some fairly universal quantities (e.g units or type of period averaging) as well as some attributes that are data source specific. The exact names used for properties does matter if you are going to be interacting with data sources.</p>
+</div>
+<div class="section" id="timestamp-conventions-for-period-aggregated-e-g-ave-data">
+<h2>Timestamp conventions for period aggregated (e.g. ave) data<a class="headerlink" href="#timestamp-conventions-for-period-aggregated-e-g-ave-data" title="Permalink to this headline">¶</a></h2>
+<p>HEC-DSS and some real time storage programs have a convention of storing period-averaged data at the end of each period. This hard to work with in terms of labels and quality control. Vtools interacts with data sources using their own conventions, but converts it on import/export so that in the vtools environment the timestamp is at the beginning of the period. So, for instance, if you import DSS period averaged data the data will be translated from period-end to period-start on import and the reverse on export.</p>
+<p>For plotting or cell-centered numerical work, it can also be convenient to have times and ticks that are period centered. The <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.centered" title="vtools.data.timeseries.TimeSeries.centered"><code class="xref py py-meth docutils literal"><span class="pre">TimeSeries.centered(copy_data=[True,False])</span></code></a> method will created a shared or copied-data version of the parent time series.</p>
+</div>
+<div class="section" id="indexing-slicing">
+<h2>Indexing, slicing<a class="headerlink" href="#indexing-slicing" title="Permalink to this headline">¶</a></h2>
+<p>You can index or slice a series using integers or datetime objects. Indexing with a single index will return a single <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeriesElement" title="vtools.data.timeseries.TimeSeriesElement"><code class="xref py py-class docutils literal"><span class="pre">TimeSeriesElement</span></code></a>.
+If the index is a slice  using a start and stop index separated
+by a colon, the operation will return
+a <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a> with shared data.
+A slice in VTools follows the Python convention for the stop index – it is not
+included in the resulting slice. The behavior is demonstrated by this example:</p>
+<p>This can be inconvenient, in which case you
+may want to consider using the <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.window" title="vtools.data.timeseries.TimeSeries.window"><code class="xref py py-meth docutils literal"><span class="pre">TimeSeries.window()</span></code></a>
+for a shared memory copy or the <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.copy" title="vtools.data.timeseries.TimeSeries.copy"><code class="xref py py-meth docutils literal"><span class="pre">TimeSeries.copy()</span></code></a> method for a deep copy. If what you will be doing is replacing the contents of the series with another series of the same interval, use the <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.replace" title="vtools.data.timeseries.TimeSeries.replace"><code class="xref py py-meth docutils literal"><span class="pre">replace()</span></code></a> method.</p>
+</div>
+<div class="section" id="shifting-series-and-centering-period-averaged-data">
+<h2>Shifting series and centering period averaged data<a class="headerlink" href="#shifting-series-and-centering-period-averaged-data" title="Permalink to this headline">¶</a></h2>
+<p>A series can be shifted forward and back in time using the member function
+<a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.shift" title="vtools.data.timeseries.TimeSeries.shift"><code class="xref py py-meth docutils literal"><span class="pre">shift()</span></code></a>, which also lets you decide whether
+you want to use copied data or a copy.
+The <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.centered" title="vtools.data.timeseries.TimeSeries.centered"><code class="xref py py-meth docutils literal"><span class="pre">centered()</span></code></a> method is a special case that
+returns interval-centered data for period averaged time series. For instance, daily
+average data in vtools will be stamped at the beginning of the period by convention
+(see time stamping conventions). The appropriate centering for analysis is noon. This
+is the shifting that is returned by <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.centered" title="vtools.data.timeseries.TimeSeries.centered"><code class="xref py py-meth docutils literal"><span class="pre">centered()</span></code></a></p>
+</div>
+<div class="section" id="iterating-through-time">
+<h2>Iterating through time<a class="headerlink" href="#iterating-through-time" title="Permalink to this headline">¶</a></h2>
+<p>Occasionally it is necessary to march through the elements of a time series.</p>
+<p>Not often. You should avoid stepwise iteration as much as possible. Vtools, numpy and python in general recommend “functional programming” on entire arrays or time series, and
+besides not being “pythonic” the speed penalty of iterating is big at least in relative terms. When necessary, though, time series do provide their own iterator so this will work to traverse through a series by time steps:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">ts</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="n">elem</span>
+</pre></div>
+</div>
+<p>The element in this case is an object of type TimeSeriesElement, which has just three attributes:</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descname">TimeSeriesElement</code><span class="sig-paren">(</span><em>time_data</em><span class="sig-paren">)</span></dt>
+<dd><dl class="attribute">
+<dt>
+<code class="descname">ticks</code></dt>
+<dd><p>Time point in long integer ticks of element</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">time</code></dt>
+<dd><p>Time at element</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">value</code></dt>
+<dd><p>Value at element</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>There is no connection back to the parent series, so mostly you can just use this for read-only access to data at one time step. A TimeSeriesElement can also be used to set data in the time series:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ts</span><span class="p">[</span><span class="n">element</span><span class="p">]</span> <span class="o">=</span> <span class="mf">7.0</span>
+</pre></div>
+</div>
+<p>although the use cases for this are few and if you are using one series to replace another
+you should consider using :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>~vtools.data.timeseries.TimeSeries.replace’.</p>
+<p>One example where iteration is very useful is when coordinating the traversal of a coarse
+and fine time series using itertools. The following comes from an
+example that coordinates the traversal of a two minute regular time series (gate_rts) and two daily series (gate_daily,qts) based on date:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">groupby</span>
+<span class="k">def</span> <span class="nf">elday</span><span class="p">(</span><span class="n">el</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">min</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+
+<span class="o">...</span>
+
+<span class="c1"># on entry, gate_rts is an indicator (1,0) of whether gate is open</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,(</span><span class="n">k</span><span class="p">,</span><span class="n">g</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span> <span class="n">groupby</span><span class="p">(</span><span class="n">gate_rts</span><span class="p">,</span><span class="n">elday</span><span class="p">)):</span>
+    <span class="n">gtot</span> <span class="o">=</span> <span class="n">gate_daily</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">daily_pump_ave</span> <span class="o">=</span> <span class="n">qts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
+    <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">el</span><span class="o">.</span><span class="n">value</span><span class="p">):</span>
+            <span class="c1"># on exit, a daily pumping value has been distributed</span>
+            <span class="c1"># over the times when the gate is open, and the (1,0) indicator</span>
+            <span class="c1"># is replaced with the value</span>
+            <span class="n">gate_rts</span><span class="p">[</span><span class="n">el</span><span class="o">.</span><span class="n">time</span><span class="p">]</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">daily_pump_ave</span><span class="o">/</span><span class="n">gtot</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="time-series-arithmetic">
+<h2>Time series arithmetic<a class="headerlink" href="#time-series-arithmetic" title="Permalink to this headline">¶</a></h2>
+<p>Most unary and binary operators that works in numpy work in vtools, only in an index aligned way:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>ts3 = ts1 + ts2    # ts3[ some_time ] = ts1[ some_time ] + ts2[ some_time ]</dd>
+</dl>
+<p>The time range of the output (ts3 in the above example) will be the union of the input time series.</p>
+<p>Unary operators and binary operators with scalars work the same way, except there is no need for time alignment:</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd>is_pos = ts &gt;= 0.    # produces a time series of boolean (True/False) values.
+ts23 = ts**(2./3.)   # each element raised to the two thirds power</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vtools_functions.html" title="Timeseries operations and function"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="time_concepts.html" title="Timeseries concepts and manipulation"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

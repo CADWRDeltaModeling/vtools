@@ -1,0 +1,198 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Datetime and interval example code &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vtime_examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="datetime-and-interval-example-code">
+<span id="vtime-examples"></span><h1>Datetime and interval example code<a class="headerlink" href="#datetime-and-interval-example-code" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Sample script for creating and using datetimes and time intervals</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Imports</span>
+<span class="c1">#from vtools.data import *</span>
+<span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dtm</span>
+
+<span class="c1"># Creating a datetime</span>
+<span class="n">t0</span><span class="o">=</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># 01JAN1994 14:00</span>
+
+<span class="c1"># Parsing a datetime</span>
+<span class="n">t1</span><span class="o">=</span><span class="n">parse_time</span><span class="p">(</span><span class="s2">&quot;01Jan1990 00:00&quot;</span><span class="p">)</span>
+<span class="n">t1</span><span class="o">=</span><span class="n">parse_time</span><span class="p">(</span><span class="s2">&quot;01Jan1990&quot;</span><span class="p">)</span>
+<span class="n">t1</span><span class="o">=</span><span class="n">parse_time</span><span class="p">(</span><span class="s2">&quot;01-01-1990 14:30&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Formatting a datetime</span>
+<span class="n">t0</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;Time=</span><span class="si">%d</span><span class="s2">%b%Y %H:%M&quot;</span><span class="p">)</span> <span class="c1"># &#39;Time=01Jan1994 14:00&#39;</span>
+<span class="n">t0</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%c</span><span class="s2">&quot;</span><span class="p">)</span>                <span class="c1"># &#39;01/01/94 14:00:00&#39; %c=full representation&#39;</span>
+<span class="n">t0</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;Time=</span><span class="si">%d</span><span class="s2">%b%Y %H:%M&quot;</span><span class="p">)</span> <span class="c1"># &#39;Time=01Jan1994 14:00&#39;</span>
+<span class="n">t0</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%y&quot;</span><span class="p">)</span>          <span class="c1"># &#39;01/01/94&#39;</span>
+
+
+<span class="c1"># Some useful calendar ops</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="n">t0</span><span class="o">=</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">14</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">calendar</span><span class="o">.</span><span class="n">isleap</span><span class="p">(</span><span class="n">t0</span><span class="o">.</span><span class="n">year</span><span class="p">)</span>     <span class="c1"># test is 1994 a leap year (True/False)</span>
+<span class="n">calendar</span><span class="o">.</span><span class="n">leapdays</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">2008</span><span class="p">)</span> <span class="c1"># number of leapdays in range</span>
+                             <span class="c1"># (be careful of range convention)</span>
+<span class="n">calendar</span><span class="o">.</span><span class="n">mdays</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>            <span class="c1"># days per month: a list not a function </span>
+
+
+<span class="c1"># Creating a time interval using helper functions</span>
+<span class="c1"># This is easiest when you know what you have to create</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">seconds</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">minutes</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">hours</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">days</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">months</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">years</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Creating a time interval using the time_interval function</span>
+<span class="c1"># time_interval(years=0,months=0,days=0,hours=0,minutes=0,seconds=0)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">time_interval</span><span class="p">(</span><span class="n">months</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">time_interval</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>      <span class="c1"># 1 day</span>
+
+<span class="c1"># Creating a time interval using a string</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1sec&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1SEC&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1min&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1hour&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1day&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1mon&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1year&quot;</span><span class="p">)</span>
+
+<span class="c1"># Time interval arithmetic</span>
+<span class="n">t</span><span class="o">=</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="o">+</span><span class="n">days</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># or equivalently t+=days(1)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">months</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#t=t+2*intvl  # this case is a known bug - causes exception</span>
+
+<span class="c1"># Test if an object is an interval</span>
+<span class="c1"># Returns true if the object is of the correct class</span>
+<span class="c1"># for VTools (which you shouldn&#39;t test directly).</span>
+<span class="n">obj</span><span class="o">=</span><span class="n">minutes</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">isintvl</span><span class="o">=</span><span class="n">is_interval</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+<span class="c1"># Test if an interval is calendar dependent</span>
+<span class="n">cd</span> <span class="o">=</span> <span class="n">is_calendar_dependent</span><span class="p">(</span><span class="n">intvl</span><span class="p">)</span>
+
+<span class="c1"># Convert between datetime and a numerical value used, say,</span>
+<span class="c1"># in a time series. You won&#39;t use this much.</span>
+<span class="n">t</span><span class="o">=</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tk</span><span class="o">=</span><span class="n">ticks</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Aligning an interval to make it &quot;neat&quot;</span>
+<span class="n">t</span><span class="o">=</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">17</span><span class="p">)</span> <span class="c1"># 01JAN1994 01:17</span>
+<span class="n">t</span><span class="o">=</span><span class="n">align</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">minutes</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 01JAN1994 01:15</span>
+<span class="n">t</span><span class="o">=</span><span class="n">align</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">minutes</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># 01JAN1994 01:30</span>
+<span class="n">t</span><span class="o">=</span><span class="n">align</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">days</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>     <span class="c1"># 01JAN1994 00:00</span>
+
+
+
+
+
+
+
+
+
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

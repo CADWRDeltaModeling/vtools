@@ -1,0 +1,323 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Timeseries concepts and manipulation &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Time series concepts and manipulation" href="timeseries.html" />
+    <link rel="prev" title="Getting and Installing VTools" href="install_vtools.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="timeseries.html" title="Time series concepts and manipulation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install_vtools.html" title="Getting and Installing VTools"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Timeseries concepts and manipulation</a><ul>
+<li><a class="reference internal" href="#datetime-and-ticks">Datetime and ticks</a><ul>
+<li><a class="reference internal" href="#creating-and-parsing-times">Creating and parsing times</a></li>
+<li><a class="reference internal" href="#rounding-times">Rounding times</a></li>
+<li><a class="reference internal" href="#ticks">Ticks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#time-intervals">Time intervals</a><ul>
+<li><a class="reference internal" href="#creating-and-parsing-intervals">Creating and parsing intervals</a></li>
+<li><a class="reference internal" href="#verifying-an-interval">Verifying an interval</a></li>
+<li><a class="reference internal" href="#calendar-dependence">Calendar-dependence</a></li>
+<li><a class="reference internal" href="#id2">Ticks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#datetime-and-time-interval-arithmetic">Datetime and time interval arithmetic</a></li>
+<li><a class="reference internal" href="#time-sequence">Time sequence</a></li>
+<li><a class="reference internal" href="#time-windows">Time windows</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install_vtools.html"
+                        title="previous chapter">Getting and Installing VTools</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="timeseries.html"
+                        title="next chapter">Time series concepts and manipulation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/time_concepts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="timeseries-concepts-and-manipulation">
+<h1>Timeseries concepts and manipulation<a class="headerlink" href="#timeseries-concepts-and-manipulation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="datetime-and-ticks">
+<h2>Datetime and ticks<a class="headerlink" href="#datetime-and-ticks" title="Permalink to this headline">¶</a></h2>
+<p>Vtools uses the Python standard library class <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code> to represent time. The term “ticks” refers to the numerical representation of time in an application-dependent unit (seconds) from a starting time datum.
+Ticks are currently long integers, but you shouldn’t count on this because
+it may change to floats.</p>
+<div class="section" id="creating-and-parsing-times">
+<h3>Creating and parsing times<a class="headerlink" href="#creating-and-parsing-times" title="Permalink to this headline">¶</a></h3>
+<p>Creating datetimes is done with the datetime constructor, which takes arguments in decreasing order of length (year, month, day, hour, etc.). Seldom do you go out to microseconds … you can simplify by using as many or as few arguments as you want:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dtm</span>
+<span class="n">dt1</span> <span class="o">=</span> <span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>       <span class="c1"># April 1, 2012, 00:00</span>
+<span class="n">dt2</span> <span class="o">=</span> <span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span> <span class="c1"># April 10, 2012, 4:00PM</span>
+</pre></div>
+</div>
+<p>Python date and time classes have methods (<code class="xref py py-meth docutils literal"><span class="pre">datetime.datetime.strptime()</span></code>) for parsing dates from strings and <code class="xref py py-meth docutils literal"><span class="pre">datetime.datetime.isoformat()</span></code>. Note the “T” between the date and time in the ISO standard, which is convenient when parsing data in columns because you don’t have to deal with recombining date and time.</p>
+<p>Here are some examples using strftime, isotime and strptime. Note that these functions are both part of the datetime class, which is inside the datetime module:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dtm</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+<span class="go">&#39;1990-01-21T00:30:00&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M&quot;</span><span class="p">)</span>
+<span class="go">&#39;1990-01-21 00:30&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="s1">&#39;2/21/02 00:30&#39;</span><span class="p">,</span><span class="s2">&quot;%m/</span><span class="si">%d</span><span class="s2">/%y %H:%M&quot;</span><span class="p">)</span>
+<span class="go">datetime.datetime(2002, 2, 21, 0, 30)</span>
+</pre></div>
+</div>
+<p>The function <cite>dateutil.parse</cite> in the <cite>dateutil</cite> module can guess at a lot of formats. Vtools provides <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.parse_time" title="vtools.data.vtime.parse_time"><code class="xref py py-func docutils literal"><span class="pre">parse_time()</span></code></a> if you have the format ‘12MAR2005 23:00’ or just ‘12MAR2005’:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parse_time</span><span class="p">(</span><span class="s2">&quot;21JAN1990 00:30&quot;</span><span class="p">)</span>
+<span class="go">datetime.datetime(1990, 1, 21, 0, 30)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rounding-times">
+<h3>Rounding times<a class="headerlink" href="#rounding-times" title="Permalink to this headline">¶</a></h3>
+<p>There are routines to do the equivalent of round (nearest neat value), floor and ceiling to produce neat times. See <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.round_time" title="vtools.data.vtime.round_time"><code class="xref py py-func docutils literal"><span class="pre">round_time()</span></code></a>, <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.align" title="vtools.data.vtime.align"><code class="xref py py-func docutils literal"><span class="pre">align()</span></code></a> and <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.round_ticks" title="vtools.data.vtime.round_ticks"><code class="xref py py-func docutils literal"><span class="pre">round_ticks()</span></code></a></p>
+<p>Here are some examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Aligning an interval to make it &quot;neat&quot;</span>
+<span class="n">t</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">17</span><span class="p">)</span>       <span class="c1"># 01JAN1994 01:17</span>
+<span class="n">floor</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>                    <span class="c1"># align takes -1 to indicate floor, +1 to indicate ceiling</span>
+<span class="n">ceiling</span> <span class="o">=</span>  <span class="mi">1</span>                    <span class="c1">#</span>
+<span class="n">t</span><span class="o">=</span><span class="n">align</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">minutes</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span><span class="n">floor</span><span class="p">)</span>    <span class="c1"># 01JAN1994 01:15</span>
+<span class="n">t</span><span class="o">=</span><span class="n">align</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">minutes</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span><span class="n">ceiling</span><span class="p">)</span>  <span class="c1"># 01JAN1994 01:30,</span>
+<span class="n">t</span><span class="o">=</span><span class="n">align</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">days</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">floor</span><span class="p">)</span>        <span class="c1"># 01JAN1994 00:00</span>
+<span class="n">t</span><span class="o">=</span><span class="n">round_time</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">days</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>         <span class="c1"># 01JAN1994 00:00 rounding goes down in this case</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ticks">
+<span id="time-interval"></span><h3>Ticks<a class="headerlink" href="#ticks" title="Permalink to this headline">¶</a></h3>
+<p>Ticks are the minimum representation of time, and are used in some interpolation and plotting routines. Routines for parsing and manipulating times are in in <a class="reference internal" href="api/vtools.data.html#module-vtools.data.vtime" title="vtools.data.vtime"><code class="xref py py-mod docutils literal"><span class="pre">vtools.data.vtime</span></code></a>. Vtools uses a long integer representing ticks since a basetime, which harks back to DSS and IBM Informix conventions. The time resolution in ticks per second (currently 1 per second, which seems kind of underresolved) is obtainable using the function <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.resolution" title="vtools.data.vtime.resolution"><code class="xref py py-func docutils literal"><span class="pre">resolution()</span></code></a>.</p>
+<p>You can convert ticks to time using <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.ticks" title="vtools.data.vtime.ticks"><code class="xref py py-func docutils literal"><span class="pre">ticks()</span></code></a></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># Convert between datetime and a numerical value used, say,</span>
+<span class="c1"># in a time series.</span>
+<span class="n">t</span><span class="o">=</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1994</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tk</span><span class="o">=</span><span class="n">ticks</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that you don’t usually have to work with ticks for basic analyses and you should not ever work with the base time. The reverse conversion <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.ticks_to_time" title="vtools.data.vtime.ticks_to_time"><code class="xref py py-func docutils literal"><span class="pre">ticks_to_time()</span></code></a> is also available:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2005</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ticks</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+<span class="go">63246182400L</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ticks_to_time</span><span class="p">(</span><span class="mi">63246183600</span><span class="n">L</span><span class="p">)</span>  <span class="c1"># incremented by 1200s</span>
+<span class="go">datetime.datetime(2005, 3, 12, 0, 20)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="time-intervals">
+<span id="id1"></span><h2>Time intervals<a class="headerlink" href="#time-intervals" title="Permalink to this headline">¶</a></h2>
+<p>A time_interval in vtools refers to either a length of time or the sampling period (dt) of a time series. Under the hood, we actually have a different representation for truly regular fixed intervals (datetime.timedelta) and for calendar dependent longer than a month (dateutils). Both have a similar interface for many chores, and we have ensured that you can pass either of these around as a ‘time_interval’ in vtools interchangeably.</p>
+<div class="section" id="creating-and-parsing-intervals">
+<h3>Creating and parsing intervals<a class="headerlink" href="#creating-and-parsing-intervals" title="Permalink to this headline">¶</a></h3>
+<p>We provide utilities for creating and parsing time_intervals.
+There are several ways to create time intervals. When you know in advance the unit of the interval you want, the simplest functions are named after the interval</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">intvl</span> <span class="o">=</span> <span class="n">minutes</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">intvl_hr</span> <span class="o">=</span> <span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># etc</span>
+</pre></div>
+</div>
+<p>but there is also a parameterized version that can create an interval of any length (<a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.time_interval" title="vtools.data.vtime.time_interval"><code class="xref py py-func docutils literal"><span class="pre">time_interval()</span></code></a>)</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Creating a time interval using the time_interval function</span>
+<span class="c1"># time_interval(years=0,months=0,days=0,hours=0,minutes=0,seconds=0)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">time_interval</span><span class="p">(</span><span class="n">months</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">time_interval</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>      <span class="c1"># 1 day</span>
+</pre></div>
+</div>
+<p>There is also a parsing function for string representations (<a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.parse_interval" title="vtools.data.vtime.parse_interval"><code class="xref py py-func docutils literal"><span class="pre">parse_interval()</span></code></a>) that can be used as follows</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Creating a time interval using a strings</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1sec&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1SEC&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1min&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1hour&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1day&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1mon&quot;</span><span class="p">)</span>
+<span class="n">intvl</span><span class="o">=</span><span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1year&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Vtools function usually accepts string representation of time interval, such as “1hour”, “15min” and so on.</p>
+</div>
+<div class="section" id="verifying-an-interval">
+<h3>Verifying an interval<a class="headerlink" href="#verifying-an-interval" title="Permalink to this headline">¶</a></h3>
+<p>Because time_intervals are a concept represented by several classes, there is a need sometimes to verify that an object meets the requirements of a vtools time interval. This is done safely by passing it to the <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.is_interval" title="vtools.data.vtime.is_interval"><code class="xref py py-func docutils literal"><span class="pre">is_interval()</span></code></a> function:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="go">intvl = &quot;a string&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_interval</span><span class="p">(</span><span class="n">intvl</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="go">&gt;&gt;&gt;intvl2 = months(6)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_interval</span><span class="p">(</span><span class="n">intvl2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="calendar-dependence">
+<h3>Calendar-dependence<a class="headerlink" href="#calendar-dependence" title="Permalink to this headline">¶</a></h3>
+<p>Units up to a day always have the same length. Months (28-31 days) and years (365-366 days) have slightly different lengths depending on the calendar month or year. If you want to query whether an interval is calendar dependent or not, the safest and shortest way to do it is with the utility <cite>is_calendar_dependent</cite></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_calendar_dependent</span><span class="p">(</span><span class="n">months</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">is_calendar_dependent</span><span class="p">(</span><span class="n">hours</span><span class="p">(</span><span class="mi">13</span><span class="p">))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Ticks<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>You can also pass a (calendar-independent) interval into <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.ticks" title="vtools.data.vtime.ticks"><code class="xref py py-func docutils literal"><span class="pre">ticks()</span></code></a>, and it will return the (constant) number of ticks represented by that interval. The function <a class="reference internal" href="api/vtools.data.html#vtools.data.vtime.ticks_to_interval" title="vtools.data.vtime.ticks_to_interval"><code class="xref py py-func docutils literal"><span class="pre">ticks_to_interval()</span></code></a> inverts that conversion.</p>
+</div>
+</div>
+<div class="section" id="datetime-and-time-interval-arithmetic">
+<h2>Datetime and time interval arithmetic<a class="headerlink" href="#datetime-and-time-interval-arithmetic" title="Permalink to this headline">¶</a></h2>
+<p>Datetimes can be incremented or decremented by intervals as you would expect:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tm</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2009</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tm</span>
+<span class="go">datetime.datetime(2009, 3, 10, 4, 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tm</span> <span class="o">+</span> <span class="n">days</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">datetime.datetime(2009, 3, 11, 4, 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tm</span> <span class="o">-</span> <span class="n">time_interval</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="go">datetime.datetime(2009, 3, 10, 1, 0)</span>
+</pre></div>
+</div>
+<p>See also the examples in <a class="reference internal" href="vtime_examples.html#vtime-examples"><span class="std std-ref">Datetime and interval example code</span></a></p>
+</div>
+<div class="section" id="time-sequence">
+<span id="id3"></span><h2>Time sequence<a class="headerlink" href="#time-sequence" title="Permalink to this headline">¶</a></h2>
+<p>A time sequence is the variable that orders a time series. You may also see contexts like interpolation that specifically ask for a time_sequence. In vtools, this is a concept rather than a class … a time sequence is a numpy array or python list of unique datetimes in ascending order. You can create a time sequence manually.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dts</span> <span class="o">=</span> <span class="p">[</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dts</span> <span class="c1"># dts is an &#39;array-like&#39; list of times ... which makes it a time_sequence</span>
+<span class="go">[datetime.datetime(2013, 1, 1, 0, 0), datetime.datetime(2013, 1, 1, 12, 0), datetime.datetime(2013, 1, 2, 2, 0)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tseq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dts</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tseq</span>
+<span class="go">array([datetime.datetime(2013, 1, 1, 0, 0),</span>
+<span class="go">       datetime.datetime(2013, 1, 1, 12, 0),</span>
+<span class="go">       datetime.datetime(2013, 1, 2, 2, 0)], dtype=object)</span>
+</pre></div>
+</div>
+<p>It is not common to create time_sequences from scratch. More often, you will get them by querying a time series using the <a class="reference internal" href="api/vtools.data.html#vtools.data.timeseries.TimeSeries.times" title="vtools.data.timeseries.TimeSeries.times"><code class="xref py py-attr docutils literal"><span class="pre">vtools.data.timeseries.TimeSeries.times</span></code></a> property of a <cite>TimeSeries</cite>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">seq</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">times</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="time-windows">
+<span id="time-window"></span><h2>Time windows<a class="headerlink" href="#time-windows" title="Permalink to this headline">¶</a></h2>
+<p>Vtools does not have any special object to represent a time window. Where a time_window is requested it is delineated with a simple tuple showing its start and end time:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">tw</span> <span class="o">=</span> <span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1990</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2011</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="timeseries.html" title="Time series concepts and manipulation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install_vtools.html" title="Getting and Installing VTools"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

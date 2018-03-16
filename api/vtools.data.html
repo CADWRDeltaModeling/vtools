@@ -1,0 +1,1147 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>vtools.data package &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="../index.html"><img src="../_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vtools.data package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vtools.data.constants">vtools.data.constants module</a></li>
+<li><a class="reference internal" href="#module-vtools.data.sample_series">vtools.data.sample_series module</a></li>
+<li><a class="reference internal" href="#module-vtools.data.timeseries">vtools.data.timeseries module</a></li>
+<li><a class="reference internal" href="#module-vtools.data.vtime">vtools.data.vtime module</a></li>
+<li><a class="reference internal" href="#module-vtools.data">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/api/vtools.data.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="vtools-data-package">
+<h1>vtools.data package<a class="headerlink" href="#vtools-data-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vtools.data.constants">
+<span id="vtools-data-constants-module"></span><h2>vtools.data.constants module<a class="headerlink" href="#module-vtools.data.constants" title="Permalink to this headline">¶</a></h2>
+<p>This module contains string constants used in timeseries properties.</p>
+<dl class="data">
+<dt id="vtools.data.constants.AGGREGATION">
+<code class="descname">AGGREGATION</code><em class="property"> = 'aggregation'</em><a class="headerlink" href="#vtools.data.constants.AGGREGATION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute name for sample aggregation over steps</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.MAX">
+<code class="descname">MAX</code><em class="property"> = 'MAX'</em><a class="headerlink" href="#vtools.data.constants.MAX" title="Permalink to this definition">¶</a></dt>
+<dd><p>AGGREGATION value: Period max</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.MIN">
+<code class="descname">MIN</code><em class="property"> = 'MIN'</em><a class="headerlink" href="#vtools.data.constants.MIN" title="Permalink to this definition">¶</a></dt>
+<dd><p>AGGREGATION value: Period min</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.MEAN">
+<code class="descname">MEAN</code><em class="property"> = 'MEAN'</em><a class="headerlink" href="#vtools.data.constants.MEAN" title="Permalink to this definition">¶</a></dt>
+<dd><p>AGGREGATION value: Period mean</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.SUM">
+<code class="descname">SUM</code><em class="property"> = 'ACCUM'</em><a class="headerlink" href="#vtools.data.constants.SUM" title="Permalink to this definition">¶</a></dt>
+<dd><p>AGGREGATION value: Accumulation</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.INDIVIDUAL">
+<code class="descname">INDIVIDUAL</code><em class="property"> = 'INST-VAL'</em><a class="headerlink" href="#vtools.data.constants.INDIVIDUAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>AGGREGATION value: Instantaneous values</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.TIMESTAMP">
+<code class="descname">TIMESTAMP</code><em class="property"> = 'timestamp'</em><a class="headerlink" href="#vtools.data.constants.TIMESTAMP" title="Permalink to this definition">¶</a></dt>
+<dd><p>TIMESTAMP value: Attribute name for time stamping convention</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.PERIOD_START">
+<code class="descname">PERIOD_START</code><em class="property"> = 'PERIOD_START'</em><a class="headerlink" href="#vtools.data.constants.PERIOD_START" title="Permalink to this definition">¶</a></dt>
+<dd><p>TIMESTAMP value: Stamped at beginning of period</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="vtools.data.constants.PERIOD_END">
+<code class="descname">PERIOD_END</code><em class="property"> = 'PERIOD_END'</em><a class="headerlink" href="#vtools.data.constants.PERIOD_END" title="Permalink to this definition">¶</a></dt>
+<dd><p>TIMESTAMP value: Stamped at end of period</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.data.sample_series">
+<span id="vtools-data-sample-series-module"></span><h2>vtools.data.sample_series module<a class="headerlink" href="#module-vtools.data.sample_series" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="vtools.data.sample_series.arma">
+<code class="descname">arma</code><span class="sig-paren">(</span><em>phi</em>, <em>theta</em>, <em>sigma</em>, <em>n</em>, <em>discard=0</em>, <em>verbose=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.arma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a Gaussian ARMA(p,q) series. 
+This was obtained from stack exchange and is not written in terms of 
+a time series … however it can be used as an ingredient in a time series
+providing correlated random noise</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>phi</strong> : array</p>
+<p><strong>An array of length p with the AR coefficients (the AR part of the ARMA model).</strong></p>
+<p><strong>theta</strong> : array</p>
+<p><strong>An array of length q with the MA coefficients (the MA part of the ARMA model).</strong></p>
+<p><strong>sigma</strong> : float</p>
+<p><strong>Standard deviation of the Gaussian noise.</strong></p>
+<p><strong>n</strong> :        Length of the returned series.</p>
+<p><strong>discard:   Number of data points that are going to be discarded (the higher</strong></p>
+<blockquote>
+<div><p>the better) to avoid dependence of the ARMA time-series on the initial values.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Numpy array from an ARMA(p,q) process</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.sample_series.create_sample_series">
+<code class="descname">create_sample_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.create_sample_series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.sample_series.example_data">
+<code class="descname">example_data</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.example_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.sample_series.old_river_head_flow">
+<code class="descname">old_river_head_flow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.old_river_head_flow" title="Permalink to this definition">¶</a></dt>
+<dd><p>flow rate of old river at head with 15 minutes interval</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.sample_series.pt_reyes_tidal_1hour_interval">
+<code class="descname">pt_reyes_tidal_1hour_interval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.pt_reyes_tidal_1hour_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sea surface level at Point Reyes from NOAA downsampled to 1hour interval from 11/01/2013-11/08/2013</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.sample_series.pt_reyes_tidal_6min_interval">
+<code class="descname">pt_reyes_tidal_6min_interval</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.pt_reyes_tidal_6min_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sea surface level at Point Reyes from NOAA with 6 min interval from 11/24/2013-11/25/2013</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.sample_series.pt_reyes_tidal_with_gaps">
+<code class="descname">pt_reyes_tidal_with_gaps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.pt_reyes_tidal_with_gaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sea surface level at Point Reys with gaps of different length”</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.sample_series.synthetic_tide_series">
+<code class="descname">synthetic_tide_series</code><span class="sig-paren">(</span><em>days=7</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.sample_series.synthetic_tide_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a week long synthetic tide</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.data.timeseries">
+<span id="vtools-data-timeseries-module"></span><h2>vtools.data.timeseries module<a class="headerlink" href="#module-vtools.data.timeseries" title="Permalink to this headline">¶</a></h2>
+<p>Time series module
+Module contains the TimeSeries class and the factory functions
+for creating regular and irregular time series, as well as
+some helper functions.</p>
+<dl class="class">
+<dt id="vtools.data.timeseries.TimeSeries">
+<em class="property">class </em><code class="descname">TimeSeries</code><span class="sig-paren">(</span><em>times</em>, <em>data</em>, <em>props</em>, <em>header=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Fundamental class for both regular and irregular time series. 
+The preferred way to create a time series is with the rts or its factory functions,
+not with the constructor. The member attributes include the times and data in the series (which
+are paired) as well as methods of querying the time series properties (start, end, interval) of the time series.</p>
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.centered">
+<code class="descname">centered</code><span class="sig-paren">(</span><em>copy_data=False</em>, <em>neaten=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.centered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a time series with times centered between the timestamps of the original series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>copy_data</strong> : boolean,optional</p>
+<blockquote>
+<div><p>If True, the result is an entirely new series with deep copy of all data and properties. Otherwise, it will share data and properties … more like a window than a new series.</p>
+</div></blockquote>
+<p><strong>neaten</strong> : boolean, optional</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>New series with shared or copied data with time centered between the timestamps of the original series. Note the new series has length one shorter than the original.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>start=None</em>, <em>end=None</em>, <em>left=False</em>, <em>right=False</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a copy of this series, optionally with clipped start and end</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>start</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>Start time of copy</p>
+</div></blockquote>
+<p><strong>end</strong> : :py:class:<a href="#id1"><span class="problematic" id="id2">`</span></a>datetime.datetime`extr</p>
+<blockquote>
+<div><p>End time of copy</p>
+</div></blockquote>
+<p><strong>left</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Overlap so that the copy catches the value previous to the given start time (useful for irregular)</p>
+</div></blockquote>
+<p><strong>right</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Overlap so that the copy catches the next value after the given end time (useful for irregular)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>Copy of the series. No shared data with the original, so you can manipulate it without fear of overwriting the original series.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#vtools.data.timeseries.TimeSeries.window" title="vtools.data.timeseries.TimeSeries.window"><code class="xref py py-obj docutils literal"><span class="pre">window</span></code></a></dt>
+<dd>Same concept but with shared data.</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeries.data">
+<code class="descname">data</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data component of series (for all time)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeries.end">
+<code class="descname">end</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time at last element of series</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.has_gap">
+<code class="descname">has_gap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.has_gap" title="Permalink to this definition">¶</a></dt>
+<dd><p>find out if timeseries has nan data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.index_after">
+<code class="descname">index_after</code><span class="sig-paren">(</span><em>tm</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.index_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the indexes of the time series at/after points
+given by tm.</p>
+<p>Input tm maybe a single datetime or list/array datetime, or
+single ticks or list/array of ticks.
+Accordingly, return will be a single index or array of indexes</p>
+<p>If points are found, corresponding indexes will be return,
+if not, indexes whose time are directly after points will 
+be returned.</p>
+<p>Performance of this method is better if tm is given by ticks
+if this is convenient; otherwise, if given a sequence of times,
+the method will convert the sequence to ticks automatically.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.index_before">
+<code class="descname">index_before</code><span class="sig-paren">(</span><em>tm</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.index_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the index of the time series at point tm</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.is_regular">
+<code class="descname">is_regular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.is_regular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if the time series is regular
+A regular series is considered regular if it has a sampling interval. This interval may
+or may not be calendar dependent.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeries.props">
+<code class="descname">props</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.props" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing attributes, metadata and user properties</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.replace">
+<code class="descname">replace</code><span class="sig-paren">(</span><em>ts</em>, <em>start</em>, <em>end</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a time series with data replaced by input ts or constant</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a> or constant</p>
+<blockquote>
+<div><p>Data or constant to be used for replacing</p>
+</div></blockquote>
+<p><strong>start</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>Start time of window</p>
+</div></blockquote>
+<p><strong>end</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>End time of window</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A new time series.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.shift">
+<code class="descname">shift</code><span class="sig-paren">(</span><em>interval</em>, <em>start=None</em>, <em>end=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.shift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inplace shift section of time series by a interval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>interval</strong> : <code class="xref py py-class docutils literal"><span class="pre">dateutil.relativedelta</span></code>, <code class="xref py py-class docutils literal"><span class="pre">datetime.timedelta</span></code>, string</p>
+<p><strong>start</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code>, string</p>
+<p><strong>end</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code>, string</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : boolean</p>
+<blockquote class="last">
+<div><p>return true if succeeded.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeries.start">
+<code class="descname">start</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time at first element of series</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeries.ticks">
+<code class="descname">ticks</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of long integer ticks representing the time index of the series</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeries.times">
+<code class="descname">times</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.times" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of datetimes represented by series</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.ts_binary">
+<code class="descname">ts_binary</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.ts_binary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.ts_inplace_binary">
+<code class="descname">ts_inplace_binary</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.ts_inplace_binary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.ts_unary">
+<code class="descname">ts_unary</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.ts_unary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vtools.data.timeseries.TimeSeries.window">
+<code class="descname">window</code><span class="sig-paren">(</span><em>start=None</em>, <em>end=None</em>, <em>left=False</em>, <em>right=False</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeries.window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide a shared-memory ts (shared data and props) with a reduced time window</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">if left=True, the first time point will be at or before the given start time
+otherwise, the first time will be at or after the given start. same for right.</p>
+</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>start</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>Start time of window</p>
+</div></blockquote>
+<p><strong>end</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>End time of window</p>
+</div></blockquote>
+<p><strong>left</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Overlap so that the copy catches the value previous to the given start time (useful for irregular)</p>
+</div></blockquote>
+<p><strong>right</strong> : boolean, optional</p>
+<blockquote>
+<div><p>Overlap so that the copy catches the next value after the given end time (useful for irregular)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>Copy of the series,shared data with the original.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#vtools.data.timeseries.TimeSeries.copy" title="vtools.data.timeseries.TimeSeries.copy"><code class="xref py py-obj docutils literal"><span class="pre">copy</span></code></a></dt>
+<dd>Same concept but with copied data.</dd>
+</dl>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vtools.data.timeseries.TimeSeriesElement">
+<em class="property">class </em><code class="descname">TimeSeriesElement</code><span class="sig-paren">(</span><em>time_data</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.TimeSeriesElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeriesElement.ticks">
+<code class="descname">ticks</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeriesElement.ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time point in long integer ticks of element</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeriesElement.time">
+<code class="descname">time</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeriesElement.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time at element</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vtools.data.timeseries.TimeSeriesElement.value">
+<code class="descname">value</code><a class="headerlink" href="#vtools.data.timeseries.TimeSeriesElement.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Value at element</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.extrapolate_ts">
+<code class="descname">extrapolate_ts</code><span class="sig-paren">(</span><em>ts</em>, <em>start=None</em>, <em>end=None</em>, <em>method='constant'</em>, <em>val=nan</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.extrapolate_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend a regular time series with newer start/end</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>start</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>The starting time to be extended to.Optional, default no extension.</p>
+</div></blockquote>
+<p><strong>end</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>The ending time to be extended to.Optional,default no extension.</p>
+</div></blockquote>
+<p><strong>method</strong> : :string</p>
+<blockquote>
+<div><p>Method to fill the extended part of resulting series. either
+“taper” or”constant”. default constant.</p>
+</div></blockquote>
+<p><strong>val</strong> : float</p>
+<blockquote>
+<div><p>Constant will be filled or the value that the last non-nan
+gets tapered to. Only constant is supported for multivariate data</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> :  <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>An new time series extended to the input start and end.
+This function will only extend, not clip, so if you want to be
+sure the returned function is the correct siae you need to apply
+a window afterwards.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.index_after">
+<code class="descname">index_after</code><span class="sig-paren">(</span><em>seq</em>, <em>tm</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.index_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the integer index of a time sequence that is on or after tm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>seq</strong> : <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<p><strong>The sequence whose index will be searched</strong></p>
+<p><strong>tm</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<p><strong>Time whose index is sought</strong></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The integer index in the sequence that fall on or after tm.</p>
+<p class="last">When tm bigger than the last item of seq, it will return len(seq).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.index_before">
+<code class="descname">index_before</code><span class="sig-paren">(</span><em>seq</em>, <em>tm</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.index_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the integer index of a time sequence that is on or before tm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>seq</strong> : <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<p><strong>The sequence whose index will be searched</strong></p>
+<p><strong>tm</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<p><strong>Time whose index is sought</strong></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The integer index in the sequence that fall on or before tm.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.indexes_after">
+<code class="descname">indexes_after</code><span class="sig-paren">(</span><em>seq</em>, <em>tm</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.indexes_after" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Return an array of indexes representing the index of seq that is on or after each</dt>
+<dd>member of tm.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>seq</strong> : <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<p><strong>The sequence whose index will be searched</strong></p>
+<p><strong>tm</strong> : list of  <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<p><strong>List of times whose index is sought</strong></p>
+<p><strong>When tm is bigger than the last item of seq, it will return len(seq).</strong></p>
+<p class="last"><strong>When tm is smaller than the first time of seq, it will return 0.</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.its">
+<code class="descname">its</code><span class="sig-paren">(</span><em>times</em>, <em>data</em>, <em>props=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.its" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an irregular time series from time and data sequences</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>times</strong> : <span class="xref std std-ref">time_sequence</span></p>
+<blockquote>
+<div><p>An array or list of datetimes or ticks</p>
+</div></blockquote>
+<p><strong>data</strong> : array or list of values</p>
+<blockquote>
+<div><p>An array/list of values. No restriction on data type,
+but not all functionality will work on every data type.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> :  <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>An irregular TimeSeries instance</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.its2rts">
+<code class="descname">its2rts</code><span class="sig-paren">(</span><em>its</em>, <em>interval</em>, <em>original_dates=True</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.its2rts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an irregular time series to a regular.</p>
+<p>This function assumes observations were taken at “almost regular” intervals with some 
+variation due to clocks/recording. It nudges the time to “neat” time points to obtain the
+corresponding regular index, allowing gaps. There is no correctness checking, 
+The dates are stored at the original “imperfect” time points if original_dates == True,
+otherwise at the “nudged” regular times.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>its</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><blockquote>
+<div><p>A irregular time series.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>interval <span class="classifier-delimiter">:</span> <span class="classifier"><a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></span></dt>
+<dd><p class="first last">Interval of resulting regular timeseries,Can also be a string 
+representing an interval that is understood by <code class="xref py py-func docutils literal"><span class="pre">vools.vtime.parse_interval()</span></code>.</p>
+</dd>
+<dt>original_dates:boolean,optional</dt>
+<dd><p class="first last">Use original datetime or nudged regular times.</p>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> :  <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.prep_binary">
+<code class="descname">prep_binary</code><span class="sig-paren">(</span><em>ts1</em>, <em>ts2</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.prep_binary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create data for time-aligned op binary operation between two series
+Returns data holders and selections required to carry out
+index-aligned binary operations on two series. Mostly of interest to programmers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts1,ts2</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>Two regular time series with similar time intervals</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>seq</strong> : <a class="reference internal" href="../time_concepts.html#time-sequence"><span class="std std-ref">time_sequence</span></a></p>
+<blockquote>
+<div><p>Representing the union of times from the series</p>
+</div></blockquote>
+<p><strong>start</strong> : py:class:<cite>datetime.datetime</cite></p>
+<blockquote>
+<div><p>The start of the sequence as a datetime</p>
+</div></blockquote>
+<p><strong>slice0</strong> : slice</p>
+<blockquote>
+<div><p>Indexing slice within seq covered by ranges of both ts1 and ts2</p>
+</div></blockquote>
+<p><strong>slice1</strong> : slice</p>
+<blockquote>
+<div><p>Indexing slice within ts1 representing the region intersecting ts2</p>
+</div></blockquote>
+<p><strong>slice2</strong> : slice</p>
+<blockquote class="last">
+<div><p>Indexing slice within ts2 representing the region intersecting ts1</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.range_intersect">
+<code class="descname">range_intersect</code><span class="sig-paren">(</span><em>ts0</em>, <em>ts1</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.range_intersect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intersection of time ranges of two series.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">may return result with union_start &gt; union_end,
+in which case there is no intersection.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts0,ts1</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>The series whose union is to be found</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>range</strong> : (<code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code>, <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code>)</p>
+<blockquote class="last">
+<div><p>A tuple representing the start and end of the intersect of time ranges of ts0 and ts1</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.range_union">
+<code class="descname">range_union</code><span class="sig-paren">(</span><em>ts0</em>, <em>ts1</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.range_union" title="Permalink to this definition">¶</a></dt>
+<dd><p>Union of time ranges of two series.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ts0,ts1</strong> : <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote>
+<div><p>The series whose union is to be found</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>range</strong> : (<code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code>, <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code>)</p>
+<blockquote class="last">
+<div><p>A tuple representing the start and end of the union of time
+ranges of ts0 and ts1, as determined by the earliest start and the latest end.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.rts">
+<code class="descname">rts</code><span class="sig-paren">(</span><em>data</em>, <em>start</em>, <em>interval</em>, <em>props=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.rts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a regular or calendar time series from data and time parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>data</strong> : array_like</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Should be a array/list of values. There is no restriction on data </dt>
+<dd><p class="first last">type, but not all functionality like addition or interpolation will work on all data.</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><strong>start</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>Can also be a string representing a datetime.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Can also be a string representing an interval that is
+understood by <code class="xref py py-func docutils literal"><span class="pre">vools.vtime.parse_interval()</span></code>.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> :  <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.timeseries.rts_constant">
+<code class="descname">rts_constant</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>interval</em>, <em>val=nan</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.timeseries.rts_constant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a regular or calendar time series filled with constant value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>start</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>Starting time, can also be a string representing a datetime.</p>
+</div></blockquote>
+<p><strong>end</strong> : <code class="xref py py-class docutils literal"><span class="pre">datetime.datetime</span></code></p>
+<blockquote>
+<div><p>Ending time,can also be a string representing a datetime.</p>
+</div></blockquote>
+<p><strong>interval</strong> : <a class="reference internal" href="../time_concepts.html#time-intervals"><span class="std std-ref">time_interval</span></a></p>
+<blockquote>
+<div><p>Can also be a string representing an interval that is 
+understood by <code class="xref py py-func docutils literal"><span class="pre">vools.vtime.parse_interval()</span></code>.</p>
+</div></blockquote>
+<p><strong>val</strong> : float,int</p>
+<blockquote>
+<div><p>Constant will be filled into the time series.
+Optional, default is nan.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>result</strong> :  <a class="reference internal" href="#vtools.data.timeseries.TimeSeries" title="vtools.data.timeseries.TimeSeries"><code class="xref py py-class docutils literal"><span class="pre">TimeSeries</span></code></a></p>
+<blockquote class="last">
+<div><p>A regular time series wiht constant values</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.data.vtime">
+<span id="vtools-data-vtime-module"></span><h2>vtools.data.vtime module<a class="headerlink" href="#module-vtools.data.vtime" title="Permalink to this headline">¶</a></h2>
+<p>Basic ops for creating, testing and manipulating times and time intervals.
+This module contains factory and helper functions for working with
+times and time intervals.</p>
+<p>The module will import the name datetime and is
+designed to work exclusively with python datetimes. In addition, datetimes
+are convertible to long integer timestamps called ticks. The resolution
+of 1 tick in ticks per second may be obtained using the resolution()
+function or certain utility constants such as ticks_per_day. Never
+code with hard wired numbers.</p>
+<p>For time intervals (or deltas), VTools requires a time and time
+interval system that is consistent (e.g. time+n*interval makes sense)
+and that can be applied to both calendar dependent
+and calendar-independent intervals. Because this requirement
+is not met by any one implementation it is recommended that
+you always use the factory functions in this module
+for creating intervals or testing whether an interval is valid.</p>
+<dl class="function">
+<dt id="vtools.data.vtime.align">
+<code class="descname">align</code><span class="sig-paren">(</span><em>timepoint</em>, <em>interval</em>, <em>side</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.align" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds a neat time point that is calendar aligned with the given
+interval either to the right (+1) or the left (-1) of the arg
+timepoint. E.g., align(01Jan1992 00:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.days">
+<code class="descname">days</code><span class="sig-paren">(</span><em>d</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.days" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a time interval representing d days</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.hours">
+<code class="descname">hours</code><span class="sig-paren">(</span><em>h</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.hours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a time interval representing h hours</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.increment">
+<code class="descname">increment</code><span class="sig-paren">(</span><em>time</em>, <em>interval</em>, <em>nintvl=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.increment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Increment a time by an interval.
+Safely increment time by interval ninterval times. This function
+helps resolve a bug in dateutil.
+Arguments:</p>
+<blockquote>
+<div>time: time to be incremented
+interval: the interval to use
+nintvl: number of times to increment it</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.infer_interval">
+<code class="descname">infer_interval</code><span class="sig-paren">(</span><em>time_sequence</em>, <em>fraction</em>, <em>standard=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.infer_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer a time interval from a time sequence using differences</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>time_sequence</strong> : time_sequence</p>
+<p><strong>sequence to be analyzed</strong></p>
+<p><strong>fraction</strong> : float</p>
+<p><strong>fraction of intervals in the sample that must conform once times are</strong></p>
+<p><strong>rounded to one minute. For instance, if four times are input,</strong></p>
+<p><strong>this will create three differences, so a fraction=0.67 would require that two out</strong></p>
+<p><strong>of three agree.</strong></p>
+<p><strong>standard</strong> : list of standard intervals. If None, any non-calendar interval is accepted</p>
+<p><strong>as is an interval of one month. Otherwise, this argument should be a list and</strong></p>
+<p><strong>a ValueError is generated if the interval isn’t on the list.</strong></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>interval</strong> : time_interval</p>
+<blockquote class="last">
+<div><p>time interval of appropriate class inferred from data</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.is_calendar_dependent">
+<code class="descname">is_calendar_dependent</code><span class="sig-paren">(</span><em>intvl</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.is_calendar_dependent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the input is a calendar dependent time interval.
+Returns true if the length of the interval does not depend on
+the calendar, currently implemented by determining whether the interval
+includes months or years.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.is_interval">
+<code class="descname">is_interval</code><span class="sig-paren">(</span><em>intvl</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.is_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the argument is a time interval.
+This is the safe way to determine whether the input is a time
+interval class understood by Vtools.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.minutes">
+<code class="descname">minutes</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.minutes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a time interval representing m minutes</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.months">
+<code class="descname">months</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.months" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a time interval representing m months</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.number_intervals">
+<code class="descname">number_intervals</code><span class="sig-paren">(</span><em>start</em>, <em>end</em>, <em>dt</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.number_intervals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the number of intervals dt between start and end time.
+The result is the max number_intervals such that</p>
+<blockquote>
+<div>start + number_intervals*dt &lt;= end.</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.parse_interval">
+<code class="descname">parse_interval</code><span class="sig-paren">(</span><em>interval_string</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.parse_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse interval expressed as string and return a valid time interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>interval_string</strong> : string</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>A string representing the interval to be parsed. May contain spaces, numbers, and abbreviations:</dt>
+<dd><ul class="first last simple">
+<li>s,sec,second</li>
+<li>m,min,minute</li>
+<li>h,hr,hour</li>
+<li>d,day</li>
+<li>mon,month</li>
+<li>y,yr,year</li>
+</ul>
+</dd>
+</dl>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>interval</strong> : time_interval</p>
+<blockquote class="last">
+<div><p>time interval of appropriate class for vtools depending on calendar dependence</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.parse_time">
+<code class="descname">parse_time</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.parse_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a input as ticks or string
+try to return its datetime equivalent.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.resolution">
+<code class="descname">resolution</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.resolution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.round_ticks">
+<code class="descname">round_ticks</code><span class="sig-paren">(</span><em>inticks</em>, <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.round_ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tick-based version of round_time in seconds, for use with vectors 
+ticks : ticks representing seconds
+interval: interval to round to (non-calendar dependent)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.round_time">
+<code class="descname">round_time</code><span class="sig-paren">(</span><em>dtime</em>, <em>interval</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.round_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round a datetime object to an interval 
+dtime : datetime.datetime object, default now.
+interval: interval to round to (non-calendar dependent)
+returns rounded time and offset in seconds between input time and rounded time</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.seconds">
+<code class="descname">seconds</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.seconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a time interval representing s seconds</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.ticks">
+<code class="descname">ticks</code><span class="sig-paren">(</span><em>time</em>, <em>base=datetime.datetime(1</em>, <em>1</em>, <em>1</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.ticks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a datetime to a long integer.
+The long integer is a number of units since a
+time base. The actual value depends on resolution.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.ticks_to_interval">
+<code class="descname">ticks_to_interval</code><span class="sig-paren">(</span><em>ticks</em>, <em>base=datetime.datetime(1</em>, <em>1</em>, <em>1</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.ticks_to_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a number of ticks to a time interval.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.ticks_to_time">
+<code class="descname">ticks_to_time</code><span class="sig-paren">(</span><em>ticks</em>, <em>base=datetime.datetime(1</em>, <em>1</em>, <em>1</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.ticks_to_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a number of ticks to a datetime</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.time_interval">
+<code class="descname">time_interval</code><span class="sig-paren">(</span><em>years=0</em>, <em>months=0</em>, <em>days=0</em>, <em>hours=0</em>, <em>minutes=0</em>, <em>seconds=0</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.time_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a time interval.
+Create a time interval representing the inputs that is appropriate for VTools.
+This function is the ‘hard way’ to create a time interval. However, it is useful
+when the interval is not known in advanced and must be created programatically.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.time_sequence">
+<code class="descname">time_sequence</code><span class="sig-paren">(</span><em>start</em>, <em>dt</em>, <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.time_sequence" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create ticks sequence based on provided start datetime, and timedelta/relativedelta dt
+start must be instance of datetime.
+input:</p>
+<blockquote>
+<div>start: must be a instance of datetime,
+dt: maybe timedelta or relativedelta.
+n: number of time points, not number of intervals.</div></blockquote>
+<dl class="docutils">
+<dt>return:</dt>
+<dd>A time sequence array in ticks.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="vtools.data.vtime.years">
+<code class="descname">years</code><span class="sig-paren">(</span><em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#vtools.data.vtime.years" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a time interval representing y years</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-vtools.data">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-vtools.data" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">home</a>|&nbsp;</li>
+        <li><a href="../search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

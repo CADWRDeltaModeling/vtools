@@ -1,0 +1,483 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Timeseries operations and function &#8212; vtools 0.1.1 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting data in and out of vtools" href="datastore.html" />
+    <link rel="prev" title="Time series concepts and manipulation" href="timeseries.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: left; padding: 10px 10px 15px 15px">
+<a href="index.html"><img src="_static/logo.png" border="0" alt="py4sci"/></a>
+</div>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="datastore.html" title="Getting data in and out of vtools"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="timeseries.html" title="Time series concepts and manipulation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/dwrsmall.gif" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Timeseries operations and function</a><ul>
+<li><a class="reference internal" href="#python-imports">Python Imports</a></li>
+<li><a class="reference internal" href="#interpolation">Interpolation</a></li>
+<li><a class="reference internal" href="#low-pass-filtering-noise-tidal-spring-neap">Low Pass Filtering (noise, tidal, spring-neap)</a><ul>
+<li><a class="reference internal" href="#noise-filter">Noise filter</a></li>
+<li><a class="reference internal" href="#tidal-filter">Tidal filter</a></li>
+<li><a class="reference internal" href="#spring-neap-filter">Spring-neap filter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#resampling-and-decimation">Resampling and decimation</a></li>
+<li><a class="reference internal" href="#ufuncs-on-time-series">Ufuncs on time series</a></li>
+<li><a class="reference internal" href="#period-ops">Period ops</a></li>
+<li><a class="reference internal" href="#shifting">Shifting</a></li>
+<li><a class="reference internal" href="#merging">Merging</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="timeseries.html"
+                        title="previous chapter">Time series concepts and manipulation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="datastore.html"
+                        title="next chapter">Getting data in and out of vtools</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vtools_functions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="timeseries-operations-and-function">
+<h1>Timeseries operations and function<a class="headerlink" href="#timeseries-operations-and-function" title="Permalink to this headline">¶</a></h1>
+<p>VTools provides a number of time series operations and functions.</p>
+<div class="section" id="python-imports">
+<h2>Python Imports<a class="headerlink" href="#python-imports" title="Permalink to this headline">¶</a></h2>
+<p>A lot of the functions are split off in their own files. If
+you are writing a module for reuse, you may want to use the
+modules and do a minimal import for name hiding. However,
+for analysis everything in the functions API can be accessed using this import:</p>
+<p>from vtools.functions.api import *</p>
+</div>
+<div class="section" id="interpolation">
+<h2>Interpolation<a class="headerlink" href="#interpolation" title="Permalink to this headline">¶</a></h2>
+<p>There are several vtools functions for interpolation. Your choice
+of function and interpolation method should hinge on:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">whether you are interpolating to a new set of times or filling gaps</p>
+<blockquote>
+<div><ul class="simple">
+<li>to interpolate to new times (perhaps using another time series as a
+prototype): <a class="reference internal" href="api/vtools.functions.html#vtools.functions.interpolate.interpolate_ts" title="vtools.functions.interpolate.interpolate_ts"><code class="xref py py-func docutils literal"><span class="pre">interpolate_ts()</span></code></a></li>
+<li>to fill gaps: <a class="reference internal" href="api/vtools.functions.html#vtools.functions.interpolate.interpolate_ts_nan" title="vtools.functions.interpolate.interpolate_ts_nan"><code class="xref py py-func docutils literal"><span class="pre">interpolate_ts_nan()</span></code></a></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">whether your time series is instantaneous or period averaged:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Most methods assume instantaneous. Use the function <a class="reference internal" href="api/vtools.functions.html#vtools.functions.interpolate.rhistinterp" title="vtools.functions.interpolate.rhistinterp"><code class="xref py py-func docutils literal"><span class="pre">rhistinterp()</span></code></a> for period averaged data or the RHIST method option from the abovementioned functions. The</li>
+</ul>
+<p>tension parameter can also be used to enforce a lower bound (e.g. positivity of salinity).</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p>The interpolation method will depend on:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">how smooth the series is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>LINEAR is robust in noisy data</li>
+<li>MSPLINE is a monotonicity preserving spline that combines great accuracy with good robustness.</li>
+<li>SPLINE is the spline technique from Scipy which is a smoothing spline, not an exact interpolant. The spline is slower than the others.</li>
+<li>RHIST is the best choice for period averaged data</li>
+<li>PREVIOUS means the previous value will be repeated. Good for discrete valued data such as gate opening and closing.</li>
+<li>NEXT means the forward value will be copied backward.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">whether you need an “exact” interpolant that goes through all values exactly.</p>
+</li>
+<li><p class="first">whether you need to enforce monotonicity or positivity. If these are important, MSPLINE and RHIST are preferred.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>Here is an example of how <code class="xref py py-func docutils literal"><span class="pre">inteprolate_ts_nan()</span></code> fills
+nan values on an existing series. : and <code class="xref py py-func docutils literal"><span class="pre">inteprolate_ts()</span></code>
+which interpolates one time series to a new interval or to times
+from a sample series or time sequence.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Examples of performing interplation over time</span>
+<span class="sd">   series.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">## load necessary libs.</span>
+<span class="kn">from</span> <span class="nn">vtools.functions.interpolate</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.sample_series</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+
+<span class="n">ts_with_nan</span><span class="o">=</span><span class="n">example_data</span><span class="p">(</span><span class="s2">&quot;pt_reyes_tidal_with_gaps&quot;</span><span class="p">)</span>
+<span class="c1">## fill the invalid (nan) data points within a time</span>
+<span class="c1">## series by linear interpolation.</span>
+<span class="n">ts_new</span><span class="o">=</span><span class="n">interpolate_ts_nan</span><span class="p">(</span><span class="n">ts_with_nan</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="n">LINEAR</span><span class="p">,</span><span class="n">max_gap</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;surface (feet)&quot;</span><span class="p">)</span>
+<span class="n">p0</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_with_nan</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_with_nan</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.</span><span class="p">,)</span>
+<span class="n">p1</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_new</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_new</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;original&quot;</span><span class="p">,</span><span class="s2">&quot;gap_filled&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.9&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./../../vtools/examples/functions/interpolation.py">Source code</a>, <a class="reference external" href="./../../vtools/examples/functions/interpolation.png">png</a>, <a class="reference external" href="./../../vtools/examples/functions/interpolation.hires.png">hires.png</a>, <a class="reference external" href="./../../vtools/examples/functions/interpolation.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/interpolation.png" src="_images/interpolation.png" />
+</div>
+</div>
+<div class="section" id="low-pass-filtering-noise-tidal-spring-neap">
+<h2>Low Pass Filtering (noise, tidal, spring-neap)<a class="headerlink" href="#low-pass-filtering-noise-tidal-spring-neap" title="Permalink to this headline">¶</a></h2>
+<p>The cases below are all just special cases of low pass filtering, but motivated by
+different goals (noise removal, tidal filtering and spring-neap filtering). All of the
+filters are phase-neutral, meaning they do not cause an apparent shift in the time series
+as a single pass of a Cosine-Lanczos or Butterworth filter might do.</p>
+<p>For tidal filtering, we recommend the cosine-Lanczos (really CL squared) filter with a cutoff of 40 hours which is fairly standard in the tidal literature. The Godin filter is
+commonly used for its simplicity and minimal support which means less amplification of gaps. However, its performance on signals with a period of 2-3 days is abysmal.</p>
+<div class="section" id="noise-filter">
+<h3>Noise filter<a class="headerlink" href="#noise-filter" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">vtools.functions.filter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.sample_series</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+<span class="c1">## 1 day of tide at point reyes</span>
+<span class="n">ts_1day</span><span class="o">=</span><span class="n">example_data</span><span class="p">(</span><span class="s2">&quot;pt_reyes_tidal_6min&quot;</span><span class="p">)</span>
+<span class="n">ts_butt</span><span class="o">=</span><span class="n">butterworth</span><span class="p">(</span><span class="n">ts_1day</span><span class="p">,</span><span class="n">cutoff_period</span><span class="o">=</span><span class="s2">&quot;1hour&quot;</span><span class="p">)</span>
+<span class="n">boxcar_aver_interval</span> <span class="o">=</span> <span class="n">parse_interval</span><span class="p">(</span><span class="s2">&quot;1hour&quot;</span><span class="p">)</span>
+<span class="n">ts_box</span><span class="o">=</span><span class="n">boxcar</span><span class="p">(</span><span class="n">ts_1day</span><span class="p">,</span><span class="n">boxcar_aver_interval</span><span class="p">,</span><span class="n">boxcar_aver_interval</span><span class="p">)</span>
+<span class="n">ts_cos</span><span class="o">=</span><span class="n">cosine_lanczos</span><span class="p">(</span><span class="n">ts_1day</span><span class="p">,</span><span class="n">cutoff_period</span><span class="o">=</span><span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="n">filter_len</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Elev (feet)&quot;</span><span class="p">)</span>
+<span class="n">lwidth</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="n">p0</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_1day</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_1day</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>\
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Water level&quot;</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_butt</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_butt</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>\
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Butterworth&quot;</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_box</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_box</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>\
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boxcar&quot;</span><span class="p">)</span>
+<span class="n">p3</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_cos</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_cos</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;brown&#39;</span><span class="p">,</span>\
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Cosine&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower center&quot;</span><span class="p">,</span><span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">12</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.9&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./../../vtools/examples/functions/filter.py">Source code</a>, <a class="reference external" href="./../../vtools/examples/functions/filter.png">png</a>, <a class="reference external" href="./../../vtools/examples/functions/filter.hires.png">hires.png</a>, <a class="reference external" href="./../../vtools/examples/functions/filter.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/filter.png" src="_images/filter.png" />
+</div>
+</div>
+<div class="section" id="tidal-filter">
+<h3>Tidal filter<a class="headerlink" href="#tidal-filter" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+
+<span class="kn">from</span> <span class="nn">vtools.functions.filter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.sample_series</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+
+<span class="n">ts</span><span class="o">=</span><span class="n">example_data</span><span class="p">(</span><span class="s2">&quot;pt_reyes_tidal_1hour&quot;</span><span class="p">)</span>
+<span class="c1">## only plot part of result</span>
+<span class="n">window_start</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">window_end</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2013</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ts_cosine</span><span class="o">=</span><span class="n">cosine_lanczos</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">cutoff_period</span><span class="o">=</span><span class="n">hours</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span><span class="n">filter_len</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span><span class="n">padtype</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
+<span class="c1">#ts_cosine=temp.window(window_start,window_end)</span>
+<span class="n">ts_butt</span><span class="o">=</span><span class="n">butterworth</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">cutoff_period</span><span class="o">=</span><span class="n">hours</span><span class="p">(</span><span class="mi">60</span><span class="p">),</span><span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="c1">#ts_butt=temp.window(window_start,window_end)</span>
+<span class="n">boxcar_aver_interval</span> <span class="o">=</span> <span class="n">hours</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="n">ts_box</span><span class="o">=</span><span class="n">boxcar</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">boxcar_aver_interval</span><span class="p">,</span><span class="n">boxcar_aver_interval</span><span class="p">)</span>
+<span class="c1">#ts_box=temp.window(window_start,window_end)</span>
+<span class="n">ts_god</span><span class="o">=</span><span class="n">godin</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="c1">#ts_god=temp.window(window_start,window_end)</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;surface (feet)&quot;</span><span class="p">)</span>
+<span class="c1">#ts=ts.window(window_start,window_end)</span>
+<span class="n">lwidth</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="n">p0</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>\
+           <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Pt Reyes Water Level&quot;</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_butt</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_butt</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>\
+           <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Butterworth&quot;</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_box</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_box</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>\
+           <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boxcar&quot;</span><span class="p">)</span>
+<span class="n">p3</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_god</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_god</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>\
+           <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Godin&quot;</span><span class="p">)</span>
+<span class="n">p4</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_cosine</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_cosine</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;brown&#39;</span><span class="p">,</span>\
+           <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Cosine-Lanczos&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.9&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./../../vtools/examples/functions/tidal.py">Source code</a>, <a class="reference external" href="./../../vtools/examples/functions/tidal.png">png</a>, <a class="reference external" href="./../../vtools/examples/functions/tidal.hires.png">hires.png</a>, <a class="reference external" href="./../../vtools/examples/functions/tidal.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/tidal.png" src="_images/tidal.png" />
+</div>
+</div>
+<div class="section" id="spring-neap-filter">
+<h3>Spring-neap filter<a class="headerlink" href="#spring-neap-filter" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">vtools.functions.filter</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.sample_series</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dtm</span>
+
+<span class="n">window</span><span class="o">=</span><span class="p">(</span><span class="n">dtm</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">27</span><span class="p">),</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">=</span><span class="n">example_data</span><span class="p">(</span><span class="s2">&quot;oldriver_flow&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="o">*</span><span class="n">window</span><span class="p">)</span>
+<span class="n">ts_lowpass</span><span class="o">=</span><span class="n">cosine_lanczos</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">cutoff_period</span><span class="o">=</span><span class="n">days</span><span class="p">(</span><span class="mi">18</span><span class="p">),</span><span class="n">filter_len</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
+<span class="n">boxcar_aver_interval</span> <span class="o">=</span> <span class="n">days</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">ts_box</span><span class="o">=</span><span class="n">boxcar</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">boxcar_aver_interval</span><span class="p">,</span><span class="n">boxcar_aver_interval</span><span class="p">)</span>
+<span class="n">ts_box_god</span><span class="o">=</span><span class="n">godin</span><span class="p">(</span><span class="n">ts_box</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;flow (cfs)&quot;</span><span class="p">)</span>
+<span class="n">lwidth</span><span class="o">=</span><span class="mf">0.8</span>
+<span class="n">p0</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Flow&quot;</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_box</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_box</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>\
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boxcar&quot;</span><span class="p">)</span>
+<span class="n">p3</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_box_god</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_box_god</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>\
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Boxcar+Godin&quot;</span><span class="p">)</span>
+<span class="n">p4</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_lowpass</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_lowpass</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span>\
+            <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Cosine-Lanczos&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.9&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">lwidth</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./../../vtools/examples/functions/spring_neap_tide.py">Source code</a>, <a class="reference external" href="./../../vtools/examples/functions/spring_neap_tide.png">png</a>, <a class="reference external" href="./../../vtools/examples/functions/spring_neap_tide.hires.png">hires.png</a>, <a class="reference external" href="./../../vtools/examples/functions/spring_neap_tide.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/spring_neap_tide.png" src="_images/spring_neap_tide.png" />
+</div>
+</div>
+</div>
+<div class="section" id="resampling-and-decimation">
+<h2>Resampling and decimation<a class="headerlink" href="#resampling-and-decimation" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="api/vtools.functions.html#module-vtools.functions.resample" title="vtools.functions.resample"><code class="xref py py-func docutils literal"><span class="pre">vtools.functions.resample()</span></code></a> takes a finer time series and downsamples it to a coarser time step. <code class="xref py py-func docutils literal"><span class="pre">vtools.functions.decimate()</span></code> is a refimenment of this strategy which first passes the data through a low pass filter then resamples. Our version comes from
+a GNU Octave .m function. Decimation is also something you can do yourself. Just low pass
+to a period twice that of the time step you want to resample at. So if you are going to
+resample at a one hour frequency, eliminate everything with a period short of two hours.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">vtools.functions.resample</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.sample_series</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+
+<span class="n">ts</span><span class="o">=</span><span class="n">synthetic_tide_series</span><span class="p">()</span>
+<span class="n">ts_decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">ts_resample</span><span class="o">=</span><span class="n">resample</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;surface (feet)&quot;</span><span class="p">)</span>
+<span class="n">p0</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_decimate</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_decimate</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>\
+<span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_resample</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_resample</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>\
+<span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;*&quot;</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;Surface&quot;</span><span class="p">,</span><span class="s2">&quot;Decimated&quot;</span><span class="p">,</span><span class="s2">&quot;Resampled&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.9&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./../../vtools/examples/functions/resampling.py">Source code</a>, <a class="reference external" href="./../../vtools/examples/functions/resampling.png">png</a>, <a class="reference external" href="./../../vtools/examples/functions/resampling.hires.png">hires.png</a>, <a class="reference external" href="./../../vtools/examples/functions/resampling.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/resampling.png" src="_images/resampling.png" />
+</div>
+</div>
+<div class="section" id="ufuncs-on-time-series">
+<h2>Ufuncs on time series<a class="headerlink" href="#ufuncs-on-time-series" title="Permalink to this headline">¶</a></h2>
+<p>OK, not a very informative name but ufuncs (universal functions) are a standard numpy method for applying the same function to every item in one or two time series. Furthermore,
+the operation can be done cumulatively or pointwise. See the .. _numpy ufunc docs: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/ufuncs.html">http://docs.scipy.org/doc/numpy/reference/ufuncs.html</a>. These documents give a good
+descripation of what the apply, reduce and accumulate methods do.</p>
+<p>In vtools, ufuncs are supported in the <code class="xref py py-func docutils literal"><span class="pre">vtools.functions.ts_ufunc</span> <span class="pre">module()</span></code>. The
+ufunc is pretty much passed right over to the data member of the time series,
+so this is just a convenience. The generic implementations for time series are <a class="reference internal" href="api/vtools.functions.html#vtools.functions.ts_ufunc.ts_apply" title="vtools.functions.ts_ufunc.ts_apply"><code class="xref py py-func docutils literal"><span class="pre">ts_apply()</span></code></a> <a class="reference internal" href="api/vtools.functions.html#vtools.functions.ts_ufunc.ts_accumulate" title="vtools.functions.ts_ufunc.ts_accumulate"><code class="xref py py-func docutils literal"><span class="pre">ts_accumulate()</span></code></a> and <a class="reference internal" href="api/vtools.functions.html#vtools.functions.ts_ufunc.ts_reduce" title="vtools.functions.ts_ufunc.ts_reduce"><code class="xref py py-func docutils literal"><span class="pre">ts_reduce()</span></code></a>. There are also some specific ufunc implementations for time series such as <a class="reference internal" href="api/vtools.functions.html#vtools.functions.ts_ufunc.ts_maximum" title="vtools.functions.ts_ufunc.ts_maximum"><code class="xref py py-func docutils literal"><span class="pre">ts_maximum()</span></code></a> that are potentially useful.</p>
+</div>
+<div class="section" id="period-ops">
+<h2>Period ops<a class="headerlink" href="#period-ops" title="Permalink to this headline">¶</a></h2>
+<p>VTools provides for creating period statistics such as daily/monthly averages, max or min.
+The output of these operations is a new time series at a coarser time step.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">vtools.functions.period_op</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="kn">import</span> <span class="n">days</span>
+<span class="kn">from</span> <span class="nn">vtools.data.sample_series</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+
+<span class="n">ts_week</span><span class="o">=</span><span class="n">synthetic_tide_series</span><span class="p">()</span>
+<span class="c1">## get 2 days of data</span>
+<span class="n">ts</span><span class="o">=</span><span class="n">ts_week</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="n">ts_week</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">ts_week</span><span class="o">.</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">days</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">ts_max</span><span class="o">=</span><span class="n">period_max</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="n">hours</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;surface (feet)&quot;</span><span class="p">)</span>
+<span class="n">p0</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">ts_max</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_max</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">where</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="p">)</span>
+<span class="n">p2</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_max</span><span class="o">.</span><span class="n">centered</span><span class="p">()</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_max</span><span class="o">.</span><span class="n">centered</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>\
+<span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;Surface&quot;</span><span class="p">,</span><span class="s2">&quot;Max_step&quot;</span><span class="p">,</span><span class="s2">&quot;Max_centered&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.9&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./../../vtools/examples/functions/period_op.py">Source code</a>, <a class="reference external" href="./../../vtools/examples/functions/period_op.png">png</a>, <a class="reference external" href="./../../vtools/examples/functions/period_op.hires.png">hires.png</a>, <a class="reference external" href="./../../vtools/examples/functions/period_op.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/period_op.png" src="_images/period_op.png" />
+</div>
+</div>
+<div class="section" id="shifting">
+<h2>Shifting<a class="headerlink" href="#shifting" title="Permalink to this headline">¶</a></h2>
+<p>Time series can be shifted forward or back in time with <a class="reference internal" href="api/vtools.functions.html#module-vtools.functions.shift" title="vtools.functions.shift"><code class="xref py py-func docutils literal"><span class="pre">vtools.functions.shift()</span></code></a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">vtools.functions.shift</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.sample_series</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">vtools.data.vtime</span> <span class="kn">import</span> <span class="n">hours</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+
+
+<span class="n">ts</span><span class="o">=</span><span class="n">synthetic_tide_series</span><span class="p">()</span>
+<span class="n">ts_shifted</span><span class="o">=</span><span class="n">shift</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">hours</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">ax0</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">ax0</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;surface (feet)&quot;</span><span class="p">)</span>
+<span class="n">p0</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">=</span><span class="n">ax0</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ts_shifted</span><span class="o">.</span><span class="n">times</span><span class="p">,</span><span class="n">ts_shifted</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s2">&quot;Surface&quot;</span><span class="p">,</span><span class="s2">&quot;Shifted&quot;</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;0.9&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">autofmt_xdate</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>(<a class="reference external" href="./../../vtools/examples/functions/shifting.py">Source code</a>, <a class="reference external" href="./../../vtools/examples/functions/shifting.png">png</a>, <a class="reference external" href="./../../vtools/examples/functions/shifting.hires.png">hires.png</a>, <a class="reference external" href="./../../vtools/examples/functions/shifting.pdf">pdf</a>)</p>
+<div class="figure">
+<img alt="_images/shifting.png" src="_images/shifting.png" />
+</div>
+</div>
+<div class="section" id="merging">
+<h2>Merging<a class="headerlink" href="#merging" title="Permalink to this headline">¶</a></h2>
+<p>VTools will facilitate a prioritized merging
+using <a class="reference internal" href="api/vtools.functions.html#module-vtools.functions.merge" title="vtools.functions.merge"><code class="xref py py-func docutils literal"><span class="pre">vtools.functions.merge()</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">vtools.functions.api</span> <span class="k">import</span> <span class="n">merge</span>
+<span class="n">ts_merged</span> <span class="o">=</span> <span class="n">merge</span><span class="p">(</span><span class="n">ts_high_priority</span><span class="p">,</span><span class="n">ts_medium</span><span class="p">,</span><span class="n">ts_low</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="datastore.html" title="Getting data in and out of vtools"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="timeseries.html" title="Time series concepts and manipulation"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+ 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013, California Department of Water Resources.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+vtools\.datastore\.excel\.test package
+======================================
+
+Submodules
+----------
+
+vtools\.datastore\.excel\.test\.prev\_excel\_all module
+-------------------------------------------------------
+
+.. automodule:: vtools.datastore.excel.test.prev_excel_all
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.excel\.test\.test\_excel\_service module
+-----------------------------------------------------------
+
+.. automodule:: vtools.datastore.excel.test.test_excel_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vtools\.datastore\.excel\.test\.test\_excel\_utility module
+-----------------------------------------------------------
+
+.. automodule:: vtools.datastore.excel.test.test_excel_utility
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: vtools.datastore.excel.test
+    :members:
+    :undoc-members:
+    :show-inheritance:
