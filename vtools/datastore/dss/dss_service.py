@@ -50,9 +50,10 @@ from vtime_dss_utility import dss_julian2python,interval_to_D,valid_dss_interval
 
 
 
+
 __all__=["DssAccessError","DssCatalogServiceError","DssService"]
 
-
+EMPTY_PART="(null)"
 
 class DssAccessError(Exception):
 
@@ -510,6 +511,8 @@ class DssService(Service):
                         part=part.replace(" - ",",")
                     
                     parts[pn-1]=part.strip()
+                    if(parts[pn-1]==EMPTY_PART):
+                        parts[pn-1]=""
 
                 if nrec==0:
                     for pn in range(6):
@@ -682,9 +685,14 @@ class DssService(Service):
             tradition, that is different from what user
             will see use HecdssVue
         """
-      
+
         firstD=dparts[0]
-        firstpath=cpath.replace('//','/'+firstD+'/')
+        cpath_groups=cpath.split("/")
+        
+        #firstpath=cpath.replace('//','/'+firstD+'/')
+        #firstpath=re.sub("(/.*?/.*?/.*?/)(.*?/)(.*?/.*?/)", r"\1"+firstD+r"/\3",cpath)
+        
+        firstpath="/"+cpath_groups[1]+"/"+cpath_groups[2]+"/"+cpath_groups[3]+"/"+firstD+"/"+cpath_groups[5]+"/"+cpath_groups[6]+"/"
         (header_dic,data,cunits,ctype)=\
         self._retrieve_regular_header(dssf,firstpath)
                 
@@ -698,7 +706,8 @@ class DssService(Service):
 
         ## find out start datetime of ending data block.
         lastD=dparts[-1]
-        lastpath=cpath.replace('//','/'+lastD+'/')
+        #lastpath=cpath.replace('//','/'+lastD+'/')
+        lastpath="/"+cpath_groups[1]+"/"+cpath_groups[2]+"/"+cpath_groups[3]+"/"+lastD+"/"+cpath_groups[5]+"/"+cpath_groups[6]+"/"
         (header_dic,data,cunits,ctype)=\
         self._retrieve_regular_header(dssf,lastpath)       
         end=parse_time(lastD)

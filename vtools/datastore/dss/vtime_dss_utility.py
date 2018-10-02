@@ -65,6 +65,7 @@ _dss_block_size={"1MIN":_one_day,"2MIN":_one_day,"3MIN":_one_day,"4MIN":_one_day
                 "1DAY":_one_year,"1WEEK":_one_decade,"1MON":_one_decade,"1YEAR":_one_century,"IR-DAY":_one_day,\
                  "IR-MONTH":_one_month,"IR-YEAR":_one_year,"IR-DECADE":_one_decade}
 
+        
 def validate_rts_for_dss(rt):
     """ Validate the time and property of
         regualr time series for storage in dss.
