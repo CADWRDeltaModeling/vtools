@@ -1,11 +1,11 @@
 """
     Utility function to store time series into or retrieve time
-    series from excel file. 
+    series from excel file.
 """
 
 ## python lib import
 import re,pdb
-from operator import isNumberType
+import numbers
 from datetime import datetime
 import os.path
 
@@ -26,17 +26,17 @@ __all__=["excel_store_ts","excel_retrieve_ts"]
 
 def excel_store_ts(ts,excel_file,selection,header=None,write_times="all"):
     """ store single series or list of series into excel"""
-    
+
     if not ts:
         raise TypeError("Input time series can not be None")
     if not selection:
         raise TypeError("Selection is None")
-    
+
     app=win32com.client.Dispatch(r'Excel.Application')
     newfile=False
-    
+
     abspath=os.path.abspath(excel_file)
-    
+
     if os.path.exists(abspath):
         try:
             book = app.Workbooks.Open(abspath)
@@ -48,12 +48,12 @@ def excel_store_ts(ts,excel_file,selection,header=None,write_times="all"):
         book=app.Workbooks.Add()
 
     try:
-        _excel_store_ts(ts,book,selection,header,write_times)        
-    except Exception, e:
+        _excel_store_ts(ts,book,selection,header,write_times)
+    except Exception as e:
         book.Close()
         del app
         raise e
-    
+
     if newfile:
         if os.path.exists(abspath):
             os.remove(abspath)
@@ -77,24 +77,24 @@ def excel_retrieve_ts(excel_file,selection,ts_type,time=None,**args):
 ##            pass
 ##    else:
 ##        raise ValueError("Excel file does not exist")
-    
-        
+
+
     unique=False
-    if "unique" in args.keys():
+    if "unique" in list(args.keys()):
         unique=args["unique"]
         del args["unique"]
-    
+
     try:
         if ts_type=="rts":
             ts_lst=_retrieve_rts(book,selection,time,**args)
         else:
             ts_lst=_retrieve_ts(book,selection,time,**args)
-    except Exception,e:
+    except Exception as e:
         #app.Workbooks(1).Close(SaveChanges=0)
         app.Application.Quit()
         del app
         raise e
-        
+
     #app.Workbooks(1).Close(SaveChanges=0)
     app.Application.Quit()
     del app
@@ -102,18 +102,18 @@ def excel_retrieve_ts(excel_file,selection,ts_type,time=None,**args):
     if unique and type(ts_lst)==list and len(ts_lst)>1:
         raise Warning("your selection criteria"
               "matches more than one timeseries,"
-              "please check it.") 
+              "please check it.")
 
     return ts_lst
 
- 
+
 ### private helper funcs #####
 
 def _excel_store_ts(ts,book,selection,header,write_times):
     """ helper function to store single/list of ts."""
-    
+
     rvar=_parse_range(selection)
-    
+
     try:
         sheet=book.Worksheets(rvar[0])
     except:
@@ -123,12 +123,12 @@ def _excel_store_ts(ts,book,selection,header,write_times):
 
     if not type(ts)==list:
         ts=[ts]
-        
+
     col_offset=0
     i=0
     write_time=True
-    
-    for tts in ts:        
+
+    for tts in ts:
         header_dic=None
         num_header=0
         if write_times=="none":
@@ -142,7 +142,7 @@ def _excel_store_ts(ts,book,selection,header,write_times):
         if header:
             if type(header)==dict: ## header is a dict itself
                 header_dic=header
-            else:    
+            else:
                 if type(header[0])==dict: ## decision is based on first item
                     header_dic=header[i] ## this means var header contain a dic of header
                                          ## for each ts, not recommended for regular
@@ -152,9 +152,9 @@ def _excel_store_ts(ts,book,selection,header,write_times):
                     ## ${*?} with ts attribute.
                     header_dic=_fill_dic(header_dic,tts)
                 else:
-                    header_dic=_check_in_header(tts,header)                    
+                    header_dic=_check_in_header(tts,header)
             num_header=len(header_dic)
-            
+
         _check_store_selection(tts,num_header,rvar,write_time)
         ## header here is passed to in to force header item stored in original order
         _write_to_sheet(tts,sheet,rvar,header_dic,header,write_time,col_offset)
@@ -168,13 +168,13 @@ def _write_to_sheet(ts,sheet,rvar,header_dic,header,write_times,col_off_set):
 
     st_col=rvar[1]
     st_row=rvar[2]
-    #pdb.set_trace()     
+    #pdb.set_trace()
     st_col=sheet.Range(st_col+str(st_row)).Columns[0].Column
     st_col=st_col+col_off_set
-    
-    num_header=0   
+
+    num_header=0
     if header_dic:
-        num_header=len(header_dic)    
+        num_header=len(header_dic)
 
     ## if there are limitation of how many rows
     ## can be written.
@@ -185,17 +185,17 @@ def _write_to_sheet(ts,sheet,rvar,header_dic,header,write_times,col_off_set):
             len_ts=len(ts)
     else:
         len_ts=len(ts)
-        
+
     ## moving postion indication
     r=st_row
     c=st_col
-    
-    if write_times:        
+
+    if write_times:
         base=ticks(datetime(1899,12,31))
         LEAP_CORRECT = 1. # Need to improve on this!!
         tlst = (ts.ticks-base)/float(ticks_per_day) + LEAP_CORRECT
         tarr = reshape(tlst, (len(tlst),1))
-        
+
         if num_header: #need to write header labels
             #write header labels
             st_cell=sheet.Cells(r,c)
@@ -203,12 +203,12 @@ def _write_to_sheet(ts,sheet,rvar,header_dic,header,write_times,col_off_set):
             if type(header)==type([]):
                 val=array(header)
             else:
-                val=array(header_dic.keys())
+                val=array(list(header_dic.keys()))
             val=reshape(val,(len(val),1))
             sheet.Range(st_cell,end_cell).Value=val
             r=r+num_header
-            
-        time_start=sheet.Cells(r,c)    
+
+        time_start=sheet.Cells(r,c)
         time_end=sheet.Cells(r+len_ts-1,c)
         sheet.Range(time_start,time_end).Value=tarr
         sheet.Range(time_start,time_end).Columns(1).NumberFormat="m/d/yyyy h:mm"
@@ -224,24 +224,24 @@ def _write_to_sheet(ts,sheet,rvar,header_dic,header,write_times,col_off_set):
                   val.append(header_dic[header[i]])
               val=array(val)
         else:
-            val=array(header_dic.values())
+            val=array(list(header_dic.values()))
         val=reshape(val,(len(val),1))
         sheet.Range(st_cell,end_cell).Value=val
         r=r+num_header
-        
-    data_start=sheet.Cells(r,c)           
+
+    data_start=sheet.Cells(r,c)
     data_end=sheet.Cells(r+len_ts-1,c)
     varr = reshape(ts.data, (len(ts),1))
     sheet.Range(data_start,data_end).Value=varr
     sheet.Range(data_start,data_end).NumberFormat="#0.###"
-                
+
 def _check_in_header(ts,header):
     """ check header input, if correct return a dict"""
-    
-    hdic={}    
+
+    hdic={}
     if not ((type(header)==list) or (type(header)==tuple)):
         raise Value("invalid header input")
-    
+
     for h in header:
         if type(h)==tuple:
             hdic[h[0]]=h[1]
@@ -249,7 +249,7 @@ def _check_in_header(ts,header):
             try:
                 hdic[h]=ts.props[h]
             except:
-                raise  StandardError("header items %s can't" 
+                raise  Exception("header items %s can't"
                  "be found within input timeseris"%h)
     return hdic
 
@@ -262,36 +262,36 @@ def _fill_dic(hdic,ts):
     """
     val_re=re.compile("\$\{(.+)\}")
 
-    for (key,val) in hdic.items():
+    for (key,val) in list(hdic.items()):
         vg=val_re.match(val)
         if vg:
             attr_name=vg.group(1)
             if hasattr(ts,attr_name):
                 hdic[key]=getattr(ts,attr_name)
-            elif attr_name in ts.props.keys():
+            elif attr_name in list(ts.props.keys()):
                 hdic[key]=ts.props[attr_name]
     return hdic
-        
-       
-        
+
+
+
 def _check_store_selection(ts,num_header,rvar,write_times):
     """check the validity of range selection. """
     if len(rvar)==5:
         st=rvar[2]
         et=rvar[4]
         if et-st+1<(len(ts)+num_header):
-            print """"     Warning: your range selection
-                   contain less cells than input time 
+            print(""""     Warning: your range selection
+                   contain less cells than input time
                    series length, part of data will not
-                   be stored."""
+                   be stored.""")
         if write_times:
             sc=rvar[1]
             ec=rvar[3]
             if sc==ec:
                 raise ValueError("You choose to store times, but your"
                 " range selection contain only one column")
-         
-    
+
+
 def _retrieve_rts(book,selection,time,**args):
     """ private helper funcs to retrieve rts from excel """
 
@@ -321,7 +321,7 @@ def _retrieve_rts_no_time(book,selection,**args):
                     .            .
 
         or:
-        
+
         _retrieve_rts_no_time(file,selection,headerlabels=["name","start","interval"])
         ## comment, so in this case ts can have diffrent time stamps and varied length
             name	martinez	rsac
@@ -336,15 +336,15 @@ def _retrieve_rts_no_time(book,selection,**args):
         comment on headerlabels: headerlabels can be a valid range contain labels, or
               list/tuple of labels. If not given in input, all the data within selection
               is treated as time series data only, so don't include any invalid data rows in
-              your input selection in such a case. If header labels is given as 
+              your input selection in such a case. If header labels is given as
     """
-    
+
     rvar=_parse_range(selection)
     sheet=book.Worksheets(rvar[0])
     mix_re=_retrieve_start_intl(sheet,rvar,**args)
 
     if type(mix_re)==tuple:
-       start_data_row=rvar[2]                 
+       start_data_row=rvar[2]
     elif type(mix_re)==list:
        start_data_row=rvar[2]+len(mix_re[0][2])
 
@@ -353,19 +353,19 @@ def _retrieve_rts_no_time(book,selection,**args):
 
     test_val=sheet.Range(test_data_col1+str(start_data_row)+":"\
                       +test_data_col2+str(start_data_row)).Value
-    
+
     if type(test_val)==tuple:
         for val in test_val:
             for v in val: ##for excel return re like ((1,2,3),)
-                if not isNumberType(v):
+                if not isinstance(v,numbers.Number):
                     raise ValueError("invalid selection for ts data")
     else:
-        if not isNumberType(test_val):
+        if not isinstance(test_val,numbers.Number):
             raise ValueError("invalid selection for ts data")
 
-    data_range=rvar[1]+str(start_data_row)+":"+rvar[3]+str(rvar[4])    
+    data_range=rvar[1]+str(start_data_row)+":"+rvar[3]+str(rvar[4])
     ts_data=sheet.Range(data_range).Value
-    ts_data=array(ts_data,float)    
+    ts_data=array(ts_data,float)
     num_ts=ts_data.shape[1]
     tss=[]
 
@@ -375,9 +375,9 @@ def _retrieve_rts_no_time(book,selection,**args):
            start,intl=mix_re
         else:
             header_dic=mix_re[i][2]
-            if "start" in header_dic.keys():
+            if "start" in list(header_dic.keys()):
                 del header_dic["start"]
-            if "interval" in header_dic.keys():
+            if "interval" in list(header_dic.keys()):
                 del header_dic["interval"]
             start=mix_re[i][0]
             intl=mix_re[i][1]
@@ -387,7 +387,7 @@ def _retrieve_rts_no_time(book,selection,**args):
         return tss[0]
     else:
         return tss
-            
+
 def _retrieve_start_intl(sheet,rvar,**args):
     """ get start and intl from input or from sheet."""
 
@@ -396,42 +396,42 @@ def _retrieve_start_intl(sheet,rvar,**args):
 
     start=None
     interval=None
-    if "start" in args.keys():
+    if "start" in list(args.keys()):
         start=args["start"]
         del args["start"]
         if type(start)==type(" "):
             try:
                 start=parse_time(start)
             except:
-                raise ValueError("%s is not a valid time reprentation"%start) 
+                raise ValueError("%s is not a valid time reprentation"%start)
         start_same=True
-        
-    if "interval" in args.keys():
+
+    if "interval" in list(args.keys()):
         interval=args["interval"]
         del args["interval"]
         if type(interval)==type(" "):
             try:
                 interval=parse_interval(" ")
             except:
-                raise ValueError("%s is not a valid interval reprentation"%interval) 
+                raise ValueError("%s is not a valid interval reprentation"%interval)
         intl_same=True
 
     header_dic_lst=None
-    
-    if "header_labels" in args.keys():
+
+    if "header_labels" in list(args.keys()):
         header_labels=args["header_labels"]
         if header_labels:
             header_dic_lst=_retrieve_headers\
-            (sheet,rvar,header_labels)    
-    
+            (sheet,rvar,header_labels)
+
     error_str="""  If you don't specify time range for
-                 rts within spreadsheet, input arguments 
+                 rts within spreadsheet, input arguments
                  must contain start and interval, or list
                  of header_labels in case start and interval
                  info are presented within spreadsheet for
-                 each rts."""    
+                 each rts."""
     result=[]
-    
+
     if header_dic_lst:
         for header_dic in header_dic_lst:
             if not start_same: ## if not give a uniform start, find
@@ -457,13 +457,13 @@ def _retrieve_start_intl(sheet,rvar,**args):
                     raise ValueError("invalid or no interval \
                     specified for a rts")
             result.append((start,interval,header_dic))
-        return result        
+        return result
     else:
         if (not start_same) or (not intl_same):
             raise ValueError(error_str)
         else:
             return (start,interval)
-    
+
 def _retrieve_headers(sheet,selection,header_labels):
     """ retrieve header values from range selection,
        return a dic use key defined in header_labels.
@@ -477,31 +477,31 @@ def _retrieve_headers(sheet,selection,header_labels):
             header_labels=[]
             for t in ts:
                 header_labels.append(str(t[0]))
-                
+
         except:
             header_labels=None
-                
+
     if not (type(header_labels)==type([])) and \
        not (type(header_labels)==type((2,3))):
         raise ValueError("header_labels must be given as list or tuple"
         " of labels or valid range within excel spreadsheet.")
-    
+
     num_header_rows=len(header_labels)
     header_start_col=selection[1]
     header_start_row=selection[2]
     end_col=selection[3]
     header_end_col=end_col
     start_row=selection[2]
-    header_end_row=start_row+num_header_rows -1   
+    header_end_row=start_row+num_header_rows -1
     hr=header_start_col+str(header_start_row)+":"\
         +header_end_col+str(header_end_row)
-    header_range=sheet.Range(hr)    
+    header_range=sheet.Range(hr)
 
-    val_lst=header_range.Value            
+    val_lst=header_range.Value
     val_lst=array(val_lst).transpose()
-    hdiclst=[]        
+    hdiclst=[]
     for hval in val_lst:
-        header_dic=dict(zip(header_labels,map(str,hval)))
+        header_dic=dict(list(zip(header_labels,list(map(str,hval)))))
         hdiclst.append(header_dic)
     return hdiclst
 
@@ -515,7 +515,7 @@ def _retrieve_headers_by_tryerror(sheet,rvar,header_labels=None):
         labels.  rvar is parsed whole data selection.
     """
 
-    test_start_row=rvar[2]                 
+    test_start_row=rvar[2]
     test_data_col=rvar[1]
 
     if header_labels:
@@ -524,15 +524,15 @@ def _retrieve_headers_by_tryerror(sheet,rvar,header_labels=None):
                 header_labels=sheet.Range(hr).value
             except:
                 header_labels=None
-                
+
     find_header=False
-    
+
     if (not(type(header_labels)==type([]))) and \
        (not(type(header_labels)==type((2,3)))):
         find_header=True
-         
+
     if find_header: ## need to find header labels automatically
-        end_row=test_start_row+_try_error_rows    
+        end_row=test_start_row+_try_error_rows
         guessed_header_range=sheet.Range(test_data_col+str(test_start_row)\
                             +":"+test_data_col+str(end_row))
         vals=guessed_header_range.Value
@@ -544,39 +544,39 @@ def _retrieve_headers_by_tryerror(sheet,rvar,header_labels=None):
                 header_labels.append(str(val))
             else:
                 break
-            
+
         if header_labels==[None]:
             header_labels=["name"]
-            
+
     if header_labels==[]:
         return(None,test_start_row)
-            
+
     r1=sheet.Range(test_data_col+str(test_start_row))
     header1=r1
     #header1=r1.Offset(-1,0)
     header_end_col=rvar[3]
     header_end_row=test_start_row+len(header_labels)-1
     header2=sheet.Range(header_end_col+str(header_end_row))
-    header_vals_lst=sheet.Range(header1,header2).Value    
+    header_vals_lst=sheet.Range(header1,header2).Value
     temp=[]
     for header_vals in header_vals_lst:
         header_vals=list(header_vals)
         header_vals.pop(0)
-        header_vals=map(str,header_vals)
-        header_vals=filter(lambda x: not(x=="None"),header_vals)
+        header_vals=list(map(str,header_vals))
+        header_vals=[x for x in header_vals if not(x=="None")]
         temp.append(header_vals)
-        
+
     tdic=[]
     temp=array(temp).transpose()
     for header_vals in temp:
-        tdic.append(dict(zip(header_labels,header_vals)))
-        
+        tdic.append(dict(list(zip(header_labels,header_vals))))
+
     return (tdic,test_start_row+len(header_labels)) ##first output is list of header dic, second
                                                    ##is start row of ts data block.
 
 def _format_single_col_vals(val_lst):
     """ flatten structure of returned string values list from excel
-        
+
     """
     t=[]
     for val in val_lst:
@@ -586,7 +586,7 @@ def _format_single_col_vals(val_lst):
            tt=val
         t.append(str(tt))
     return t
-    
+
 def _parse_range(selection):
     """based on selection string,return sheet name,start col,start row
        end col and end row as a tuple.
@@ -607,23 +607,23 @@ def _parse_range(selection):
             #raise ValueError("%s is not a valid excel range"%selection)
         return (gg.group(1),gg.group(2),int(gg.group(3)))
 
-    
+
 def _retrieve_rts_all_time(book,selection,**args):
     """ return ts when all times are given to the left of each data col"""
-    
+
     rvar=_parse_range(selection)
     sheet=book.Worksheets(rvar[0])
 
-    if "header_labels" in args.keys():
+    if "header_labels" in list(args.keys()):
         header_labels=args["header_labels"]
     else:
         header_labels=None
 
     (header_lst,data_start_row)=_retrieve_headers_by_tryerror\
                                  (sheet,rvar,header_labels)
-    
+
     data_range=sheet.Range(rvar[1]+str(data_start_row)+":"+rvar[3]+str(data_start_row))
-    ts_time_data=data_range.Value   
+    ts_time_data=data_range.Value
     num_ts=len(ts_time_data[0])/2
 
     tsl=[]
@@ -633,8 +633,8 @@ def _retrieve_rts_all_time(book,selection,**args):
     t2=sheet.Cells(data_start_row+3,col)
     d1=sheet.Cells(data_start_row,col+1)
     d2=sheet.Cells(rvar[4],col+1)
-    
-    for i in range(0,num_ts):  
+
+    for i in range(0,num_ts):
         ts_time=sheet.Range(t1,t2).Value
         tt0=ts_time[0][0]
         tt1=ts_time[1][0]
@@ -642,52 +642,52 @@ def _retrieve_rts_all_time(book,selection,**args):
         tt1=datetime(tt1.year,tt1.month,tt1.day,tt1.hour,tt1.minute)
         data=sheet.Range(d1,d2).Value
         data=array(data)
-        
+
         if data.shape[1]==1:
             data=data.flatten()
-            
+
         if header_lst:
             ts=rts(data,tt0,tt1-tt0,header_lst[i])
         else:
             ts=rts(data,tt0,tt1-tt0)
-            
+
         tsl.append(ts)
         col=col+2
         t1=sheet.Cells(data_start_row,col)
         t2=sheet.Cells(data_start_row+3,col)
         d1=sheet.Cells(data_start_row,col+1)
-        d2=sheet.Cells(rvar[4],col+1)        
-        
+        d2=sheet.Cells(rvar[4],col+1)
+
     if len(tsl)==1:
         return tsl[0]
     else:
         return tsl
-    
+
 def _retrieve_rts_col_time(book,selection,time_range,**args):
     """ return ts when all ts share a common time col """
 
     rvar=_parse_range(selection)
     sheet=book.Worksheets(rvar[0])
 
-    if "header_labels" in args.keys():
+    if "header_labels" in list(args.keys()):
         header_labels=args["header_labels"]
     else:
         header_labels=None
 
     (header_lst,data_start_row)=_retrieve_headers_by_tryerror\
                                  (sheet,rvar,header_labels)
-    
+
 
     time_range=sheet.Range(rvar[1]+str(data_start_row)+":"+rvar[1]+str(rvar[4]))
     col=time_range.Columns[0].Column+1
     data_range_start=sheet.Cells(data_start_row,col)
     data_range_end=sheet.Range(rvar[3]+str(rvar[4]))
     data_range=sheet.Range(data_range_start,data_range_end)
-    
-    ts_time=time_range.Value  ## block contain all time and data  
+
+    ts_time=time_range.Value  ## block contain all time and data
     ts_data=data_range.Value
     ts_data=array(ts_data,float)
-        
+
     num_ts=ts_data.shape[1]
 
     tsl=[]
@@ -696,19 +696,19 @@ def _retrieve_rts_col_time(book,selection,time_range,**args):
     t0=datetime(t0.year,t0.month,t0.day,t0.hour,t0.minute)
     t1=datetime(t1.year,t1.month,t1.day,t1.hour,t1.minute)
     intl=t1-t0
-    
+
     for i in range(1,num_ts+1):
         data=ts_data[:,i-1]
         #data=array(data)
         ts=rts(data,t0,intl,header_lst[i-1])
         tsl.append(ts)
-        
+
     if len(tsl)==1:
         return tsl[0]
     else:
         return tsl
-    
-    
+
+
 def _pytime2datetime(p):
     return datetime(p.year,p.month,p.day,p.hour,p.minute)
 
@@ -720,26 +720,26 @@ def _strip_ending_none(data):
     i=len(data)-1
     while not data[i]:
         i=i-1
-        
+
     return data[0:i+1]
 
 def _retrieve_ts(book,selection,time_column,**args):
-    """ private helper funcs to retrieve mixed its 
+    """ private helper funcs to retrieve mixed its
     from excel.
     """
     rvar=_parse_range(selection)
     sheet=book.Worksheets(rvar[0])
 
-    if "header_labels" in args.keys():
+    if "header_labels" in list(args.keys()):
         header_labels=args["header_labels"]
     else:
         header_labels=None
 
     (header_lst,data_start_row)=_retrieve_headers_by_tryerror\
                                  (sheet,rvar,header_labels)
-    
+
     data_range=sheet.Range(rvar[1]+str(data_start_row)+":"+rvar[3]+str(data_start_row))
-    ts_time_data=data_range.Value   
+    ts_time_data=data_range.Value
     num_ts=len(ts_time_data[0])/2
     tsl=[]
 
@@ -747,20 +747,20 @@ def _retrieve_ts(book,selection,time_column,**args):
     col=t1.Columns[0].Column
     t2=sheet.Cells(rvar[4],col)
     d1=sheet.Cells(data_start_row,col+1)
-    d2=sheet.Cells(rvar[4],col+1)    
-    
+    d2=sheet.Cells(rvar[4],col+1)
+
     for i in range(0,num_ts):
         ts_time=sheet.Range(t1,t2).Value
         ts_data=sheet.Range(d1,d2).Value
         ts_time=array(ts_time).flatten()
         ts_data=array(ts_data).flatten()
-        
+
         ## removing possilbe trailing none
         ts_time=_strip_ending_none(ts_time)
         ts_data=ts_data[0:len(ts_time)]
-        
-        ts_time=map(_pytime2datetime,ts_time)
-        
+
+        ts_time=list(map(_pytime2datetime,ts_time))
+
         if header_lst:
             ts=its(ts_time,ts_data,header_lst[i])
         else:
@@ -770,18 +770,9 @@ def _retrieve_ts(book,selection,time_column,**args):
         t1=sheet.Cells(data_start_row,col)
         t2=sheet.Cells(rvar[4],col)
         d1=sheet.Cells(data_start_row,col+1)
-        d2=sheet.Cells(rvar[4],col+1)         
-        
+        d2=sheet.Cells(rvar[4],col+1)
+
     if len(tsl)==1:
         return tsl[0]
     else:
         return tsl
-
-
-    
-
-
-
-     
-    
-    

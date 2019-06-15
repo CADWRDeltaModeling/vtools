@@ -35,13 +35,13 @@ class TestPeriodOp(unittest.TestCase):
     """ test functionality of period operations """
     def __init__(self,methodName="runTest"):
         super(TestPeriodOp,self).__init__(methodName)
-                         
+
         # Number of data in a time series.
         self.num_ts=1000
         self.max_val=1000
         self.min_val=0.01
         self.large_data_size=100000
-        
+
     def test_period_op(self):
 
         ## Test operations on ts of varied values.
@@ -66,18 +66,17 @@ class TestPeriodOp(unittest.TestCase):
                     ]
 
         for (st,num,delta,interval,op_delta,aligned_start) in test_input:
-            
+
             data=[random.uniform(self.min_val,self.max_val) \
-                  for k in range(num)]           
-            ts=rts(data,st,delta,{})            
+                  for k in range(num)]
+            ts=rts(data,st,delta,{})
             ## The length of new generated time series.
             nt_len=number_intervals(aligned_start,ts.end,op_delta)
-
             for op in [MIN,MAX,SUM]:
                 nt=period_op(ts,interval,op)
                 self.assertEqual(nt.start,aligned_start)
                 self.assertEqual(len(nt.data),nt_len)
-                
+
             for op in [MEAN]:
                 for method in [RECT,TRAPEZOID]:
                     nt=period_op(ts,interval,op,method=method)
@@ -85,8 +84,8 @@ class TestPeriodOp(unittest.TestCase):
                     self.assertEqual(nt.props[TIMESTAMP],PERIOD_START)
                     self.assertEqual(nt.props[AGGREGATION],op)
                     self.assertEqual(len(nt.data),nt_len)
-                    
-            ## Test operations on ts of constant values.        
+
+            ## Test operations on ts of constant values.
             data=[1 for k in range(num)]
             ts=rts(data,st,delta,{})
             ## This is the data values that new ts should be
@@ -110,7 +109,7 @@ class TestPeriodOp(unittest.TestCase):
         interval='1 hour'
         op_delta=time_interval(hours=1)
         aligned_start=datetime.datetime(year=1990,month=2,day=3,hour=12, minute=0)
-            
+
         data=[random.uniform(self.min_val,self.max_val) \
               for k in range(num)]
 
@@ -135,8 +134,8 @@ class TestPeriodOp(unittest.TestCase):
         nt_min=sciminimum.reduce(nt_data,1)
         nt_max=scimaximum.reduce(nt_data,1)
         ts=rts(data,st,delta,{})
-        
-        for (op,op_data) in [(MIN,nt_min),(MAX,nt_max),(SUM,nt_sum)]:                
+
+        for (op,op_data) in [(MIN,nt_min),(MAX,nt_max),(SUM,nt_sum)]:
             nt=period_op(ts,interval,op)
             assert_array_equal(nt.data,op_data,\
             err_msg="two array not equal in average" \
@@ -145,7 +144,7 @@ class TestPeriodOp(unittest.TestCase):
     def test_period_op3(self):
 
         """ Test period operation on time series with 2-dimensional data."""
-        
+
         st=datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
         num=3005
         dimension2=3
@@ -153,12 +152,12 @@ class TestPeriodOp(unittest.TestCase):
         interval='1 hour'
         op_delta=time_interval(hours=1)
         aligned_start=datetime.datetime(year=1990,month=2,day=3,hour=12, minute=0)
-            
+
         data=[[random.uniform(self.min_val,self.max_val) for i in range(dimension2)] \
               for k in range(num)]
 
         data=sciarray(data)
-        
+
         # Reformalize raw data, insert known mini_val and max_val
         # and calcuate hourly mean to use later.
         i0=9 # this is the first index with aligned calendar
@@ -180,8 +179,8 @@ class TestPeriodOp(unittest.TestCase):
         nt_max=scimaximum.reduce(nt_data,1,)
 
         ts=rts(data,st,delta,{})
-        
-        for (op,op_data) in [(MIN,nt_min),(MAX,nt_max),(MEAN,nt_mean),(SUM,nt_sum)]:                
+
+        for (op,op_data) in [(MIN,nt_min),(MAX,nt_max),(MEAN,nt_mean),(SUM,nt_sum)]:
             nt=period_op(ts,interval,op)
             assert_array_equal(nt.data,op_data,\
             err_msg="two array not equal in average" \
@@ -231,7 +230,7 @@ class TestPeriodOp(unittest.TestCase):
         self.assertEqual(ts_op.data[0],1.0)
         self.assertEqual(ts_op.data[1],2.0)
         self.assertEqual(ts_op.data[2],3.0)
-        
+
         times=[0,15,32,38,43,52,60,120,138,161,180]
         data=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0,4.0])
         times=scimultiply(times,ticks_per_minute)
@@ -244,7 +243,7 @@ class TestPeriodOp(unittest.TestCase):
         self.assertEqual(ts_op.data[1],2.0)
         self.assertEqual(ts_op.data[2],3.0)
         self.assertEqual(ts_op.data[3],4.0)
-        
+
         data=sciarray([1.0,2.0,3.0,4.0,5.0,6.0,2.0,3.0,4.0,5.0,4.0])
         ts=its(times,data,{})
         op=MIN
@@ -254,8 +253,8 @@ class TestPeriodOp(unittest.TestCase):
         self.assertEqual(ts_op.data[1],2.0)
         self.assertEqual(ts_op.data[2],3.0)
         self.assertEqual(ts_op.data[3],4.0)
-        
-        
+
+
         op=MAX
         ts_op=period_op(ts,"1 hour",op)
         self.assertEqual(len(ts_op),4)
@@ -263,7 +262,7 @@ class TestPeriodOp(unittest.TestCase):
         self.assertEqual(ts_op.data[1],2.0)
         self.assertEqual(ts_op.data[2],5.0)
         self.assertEqual(ts_op.data[3],4.0)
-        
+
         times=[0,15,28,30,58,64,80,90,91]
         start_datetime = parse_time("1996-1-1")
         start_ticks = ticks(start_datetime)
@@ -278,16 +277,16 @@ class TestPeriodOp(unittest.TestCase):
         self.assertEqual(ts_op.data[1],2.0)
         self.assertEqual(ts_op.data[2],3.0)
         self.assertEqual(ts_op.data[3],4.0)
-        
-        
+
+
     def test_period_op_uncompatible_interval(self):
         """ Test behaviour of period operation on TS with interval uncompatible
             with operation time interval
         """
         test_input=[(datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
-                     3005,time_interval(minutes=45),"1hour",time_interval(hours=1)),                    
+                     3005,time_interval(minutes=45),"1hour",time_interval(hours=1)),
                     (datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15),
-                     3301,time_interval(days=1),"1hour",time_interval(hours=1)),                    
+                     3301,time_interval(days=1),"1hour",time_interval(hours=1)),
                     (datetime.datetime(year=1990,month=1,day=1,hour=00, minute=00),
                      10957,time_interval(days=2),"1 month",time_interval(months=1)),
                     (datetime.datetime(year=1990,month=1,day=1,hour=00, minute=00),
@@ -296,7 +295,7 @@ class TestPeriodOp(unittest.TestCase):
                      59,time_interval(months=5),"3 years",time_interval(years=3)),
                    ]
 
-        for (st,num,delta,interval,op_delta) in test_input:            
+        for (st,num,delta,interval,op_delta) in test_input:
             data=[random.uniform(self.min_val,self.max_val) \
                   for k in range(num)]
             ts=rts(data,st,delta,{})
@@ -306,19 +305,19 @@ class TestPeriodOp(unittest.TestCase):
     def test_period_op_nan(self):
 
         """ Test the behaviour of period operation on data with NaN."""
-        
+
         st=datetime.datetime(year=1990,month=2,day=3,hour=11, minute=15)
         num=3005
         delta=time_interval(minutes=5)
         interval='1 hour'
         op_delta=time_interval(hours=1)
         aligned_start=datetime.datetime(year=1990,month=2,day=3,hour=12, minute=0)
-            
+
         data=[random.uniform(self.min_val,self.max_val) \
               for k in range(num)]
 
 
-        
+
         # Reformalize raw data, insert known mini_val and max_val
         # and calcuate hourly mean to use later.
         i0=9 # this is the first index with aligned calendar
@@ -329,99 +328,43 @@ class TestPeriodOp(unittest.TestCase):
 
         times=time_sequence(st,delta,num)
         ts=rts(data,st,delta,{})
-                       
+
         nt=period_op(ts,interval,MEAN)
-        self.assert_(isnan(nt.data[2]))
+        self.assertTrue(isnan(nt.data[2]))
 
         nt=period_op(ts,interval,SUM)
-        self.assert_(isnan(nt.data[2]))
+        self.assertTrue(isnan(nt.data[2]))
 
         nt=period_op(ts,interval,MIN)
         if not isnan(nt.data[2]):
-            print "period_op omits nan during period_min"
-            
+            print("period_op omits nan during period_min")
+
         nt=period_op(ts,interval,MAX)
         if not isnan(nt.data[2]):
-            print "period_op omits nan during period_min"     
-            
-            
+            print("period_op omits nan during period_min")
+
+
     def test_period_time_stamp(self):
-        
+
         st=datetime.datetime(year=1990,month=1,day=1)
         num=31
         delta=time_interval(days=1)
         op_delta=time_interval(months=1)
         aligned_start=datetime.datetime(year=1990,month=1,day=1)
-            
+
         data=[random.uniform(self.min_val,self.max_val) \
               for k in range(31)]
-        
+
         ts_sum = sum(data)
 
         ts=rts(data,st,delta,{TIMESTAMP:PERIOD_START,AGGREGATION:MEAN})
-        
+
         ts_op = period_op(ts,op_delta,SUM)
-        
+
         self.assertEqual(ts_op.start,aligned_start)
         self.assertEqual(len(ts_op),1)
         self.assertEqual(ts_op.data[0],ts_sum)
-        
+
 if __name__=="__main__":
-    
-    unittest.main()       
 
-
-
-    
-
-            
-
-        
-        
-
-        
-            
-
-
-        
-        
-
-        
-        
-
-        
-
-        
-
-
-        
-
-             
-
-
-
-            
-        
-    
-        
-        
-
- 
-
-        
-
-        
-        
-
-    
-                    
-
-
-
-
-        
-
-                 
-
-    
-    
+    unittest.main()

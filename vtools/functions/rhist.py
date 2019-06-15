@@ -73,8 +73,8 @@ def rhist_bound(x,y,xnew,y0,yn,p,lbound=None,
         bound_viol = lbound - ynew.min()
         while(bound_viol > floor_eps and iter < maxiter):
             iter += 1
-            print "Iteration %s" % iter
-            print ynew.min() - lbound
+            print("Iteration %s" % iter)
+            print(ynew.min() - lbound)
             xbad = xnew[ynew < lbound]
             bad_ndx_left = np.minimum(np.searchsorted(x,xbad,side="right"),len(x)-1) -1 
             p[bad_ndx_left] *= pfactor
@@ -187,7 +187,7 @@ def _ratsp1(x,y,p,q,y0,yn):
     if (np.any(p < -1) or np.any(q < -1)):
         raise ValueError("p and q arguments must be >= -1")
     
-    print "n=%s len(a)=%s len(xdiff)=%s" % (n,len(a),len(xdiff)) 
+    print("n=%s len(a)=%s len(xdiff)=%s" % (n,len(a),len(xdiff))) 
     a = 1./(p22*q22-1.)
     g2=h*a
     r2=h*g2*ydiff
@@ -230,14 +230,14 @@ def tridiagonal(a, b, c, d):
     d is right hand side
     '''
     nf = len(a)     # number of equations
-    ac, bc, cc, dc = map(np.array, (a, b, c, d))     # copy the array
-    for it in xrange(1, nf):
+    ac, bc, cc, dc = list(map(np.array, (a, b, c, d)))     # copy the array
+    for it in range(1, nf):
         mc = ac[it]/bc[it-1]
         bc[it] = bc[it] - mc*cc[it-1] 
         dc[it] = dc[it] - mc*dc[it-1]
     xc = ac
     xc[-1] = dc[-1]/bc[-1]
-    for il in xrange(nf-2, -1, -1):
+    for il in range(nf-2, -1, -1):
         xc[il] = (dc[il]-cc[il]*xc[il+1])/bc[il]
     del bc, cc, dc  # delete variables from memory
     return xc

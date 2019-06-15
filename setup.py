@@ -36,4 +36,4 @@ setup(
         
 )
 
-print find_packages()
+print(find_packages())

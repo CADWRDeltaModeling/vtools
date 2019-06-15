@@ -21,9 +21,9 @@ from vtools.data.timeseries import rts,its
 from vtools.data.constants import *
 from vtools.datastore.data_reference import *
 ## local import.
-from excel_catalog import ExcelCatalog
-from excel_constants import *
-from utility import *
+from .excel_catalog import ExcelCatalog
+from .excel_constants import *
+from .utility import *
 
 __all__=["ExcelService"]
 
@@ -74,23 +74,23 @@ class ExcelService(Service):
         selection=ref.selector
 
         ts_type="rts"
-        if "ts_type" in dataref.decoration.keys():
+        if "ts_type" in list(dataref.decoration.keys()):
             ts_type=dataref["ts_type"]
 
         time=None
-        if "time" in dataref.decoration.keys():
+        if "time" in list(dataref.decoration.keys()):
             time=dataref["time"]
 
         start=None
-        if "start" in dataref.decoration.keys():
+        if "start" in list(dataref.decoration.keys()):
             start=dataref["start"]
 
         interval=None
-        if "interval" in dataref.decoration.keys():
+        if "interval" in list(dataref.decoration.keys()):
             time=dataref["interval"]
 
         header_labels=None
-        if "header_labels" in dataref.decoration.keys():
+        if "header_labels" in list(dataref.decoration.keys()):
             time=dataref["header_labels"]
 
         excel_retrieve_ts(excel_file,selection,ts_type,time=time,\
@@ -125,10 +125,10 @@ class ExcelService(Service):
         selection=ref.selector
 
         header=None
-        if ref.decoration and "header" in ref.decoration.keys():
+        if ref.decoration and "header" in list(ref.decoration.keys()):
             header=ref.decoration["header"]        
         write_times=None
-        if ref.decoration and "write_times" in ref.decoration.keys():
+        if ref.decoration and "write_times" in list(ref.decoration.keys()):
             write_times=ref.decoration["write_times"]
     
         excel_store_ts(ts,excel_file,selection,\
@@ -159,7 +159,7 @@ class ExcelService(Service):
         else:
             sel=_generate_col_label(pre_sel,write_time)
             
-        if not "dest" in kargs.keys():
+        if not "dest" in list(kargs.keys()):
             raise ValueError("Destination source must be provided"
                              "in assembling excel references")
         dest=kargs["dest"]
@@ -168,7 +168,7 @@ class ExcelService(Service):
         selector=sel)
 
         ref_dic={}
-        if "ref_dic" in kargs.keys():
+        if "ref_dic" in list(kargs.keys()):
             ref_dic=kargs["ref_dic"]
             
         if ref_dic:
@@ -267,8 +267,8 @@ def _fill_excel_header(ref_dic,header_template):
    
     header={}
     
-    for (header_label,header_val) in header_template.items():
-        for parts_key in ref_dic.keys():
+    for (header_label,header_val) in list(header_template.items()):
+        for parts_key in list(ref_dic.keys()):
             if "${"+parts_key+"}" in header_val:
                 header_val=header_val.replace\
                 ("${"+parts_key+"}",ref_dic[parts_key])

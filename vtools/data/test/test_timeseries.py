@@ -35,7 +35,7 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts.has_gap(),True)
         
     def testRTSInterval(self):
-        self.assertEquals(self.ts1.interval, time_interval(minutes=15))
+        self.assertEqual(self.ts1.interval, time_interval(minutes=15))
         self.assertEqual(self.ts1.start,self.stime1)
         self.assertEqual(self.ts1.end,self.stime1 + (self.size1 - 1)*self.dt)
         self.assertEqual(len(self.ts1),self.size1)
@@ -90,8 +90,8 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts4.data[-1],ts1.data[-1])
         ts5=(ts1+ts3)/2.0
         self.assertEqual(len(ts5),len(ts1)+1)
-        self.assert_(numpy.isnan(ts5.data[0]))
-        self.assert_(numpy.isnan(ts5.data[-1]))
+        self.assertTrue(numpy.isnan(ts5.data[0]))
+        self.assertTrue(numpy.isnan(ts5.data[-1]))
         self.assertEqual(ts5.data[1],(ts1.data[1]+ts3.data[0])/2.0)
         self.assertEqual(ts5.data[-2],(ts1.data[19]+ts3.data[18])/2.0)
                          
@@ -106,14 +106,14 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts4[0].value,5.)
         self.assertEqual(ts4.start,self.ts1.start)
         self.assertEqual(len(ts4),len(self.ts1))
-        self.assert_(ts4.is_regular())
+        self.assertTrue(ts4.is_regular())
         self.assertEqual(ts4.interval,self.ts1.interval)
         self.assertEqual(ts4.end,self.ts1.end)
         ts5 = self.its1+4.
         self.assertEqual(ts5[0].value,4.)
         self.assertEqual(ts5[4].value,8.)
         self.assertEqual(ts5.start,self.its1.start)
-        self.assert_(not ts5.is_regular())
+        self.assertTrue(not ts5.is_regular())
 
     def testInPlaceAddScalar(self):
         ts4=self.ts1 
@@ -121,7 +121,7 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(ts4[0].value,5.)
         self.assertEqual(ts4.start,self.ts1.start)
         self.assertEqual(len(ts4),len(self.ts1))
-        self.assert_(ts4.is_regular())
+        self.assertTrue(ts4.is_regular())
         self.assertEqual(ts4.interval,self.ts1.interval)
         self.assertEqual(ts4.end,self.ts1.end)
         self.assertEqual(ts4.props["UNIT"],"CFS")
@@ -184,7 +184,7 @@ class TestTimeSeries(unittest.TestCase):
     def testMultiply(self):
         ts5=self.ts2*self.ts1
         self.assertEqual(ts5[4].value,8.)
-        self.assert_(numpy.isnan(ts5.data[-1]))
+        self.assertTrue(numpy.isnan(ts5.data[-1]))
         ts5=self.ts1*2.
         self.assertEqual(ts5[4].value,8.)
         ts5=3.*self.ts1
@@ -207,21 +207,21 @@ class TestTimeSeries(unittest.TestCase):
 
     def test_is_regular(self):
 
-        data=range(1000)
+        data=list(range(1000))
         start=self.stime1
         interval=time_interval(months=1)
 
         ts=rts(data,start,interval,{})
 
-        self.assert_(ts.is_regular())
+        self.assertTrue(ts.is_regular())
 
         interval=time_interval(hours=1)
         ts=rts(data,start,interval,{})
 
-        self.assert_(ts.is_regular())
+        self.assertTrue(ts.is_regular())
         
     def test_index_after(self):
-        data=range(1000)
+        data=list(range(1000))
         start=self.stime1
         interval=time_interval(months=1)
 
@@ -247,7 +247,7 @@ class TestTimeSeries(unittest.TestCase):
 
     def test_indexes_after(self):
         n = 10
-        data = range(n)
+        data = list(range(n))
         start = self.stime1
         interval = time_interval(days=1)
         ts = rts(data, start, interval, {})
@@ -259,7 +259,7 @@ class TestTimeSeries(unittest.TestCase):
 
     def test_get_span(self):
         n = 10
-        data = range(n)
+        data = list(range(n))
         start = self.stime1
         interval = time_interval(days=1)
         ts = rts(data, start, interval, {})
@@ -358,7 +358,7 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(indexes, (0, 2))
 
     def test_index_before(self):
-        data=range(1000)
+        data=list(range(1000))
         start=self.stime1
         interval=time_interval(months=1)
 
@@ -396,18 +396,18 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(len(newts),9)
         self.assertEqual(newts.props["UNIT"],"CFS")
         self.assertEqual(newts.props[AGGREGATION],MEAN)
-        self.assert_(newts.data[0]==self.ts1.data[0])
+        self.assertTrue(newts.data[0]==self.ts1.data[0])
         self.ts1.data[0]+=2.0
-        self.assert_(not(newts.data[0]==self.ts1.data[0]))
+        self.assertTrue(not(newts.data[0]==self.ts1.data[0]))
        
         
         stime=self.its1.times[0]
         etime=self.its1.times[4]
         newits=self.its1.copy(start=stime,end=etime)
         self.assertEqual(len(newits),5)      
-        self.assert_(newits.data[0]==self.its1.data[0])
+        self.assertTrue(newits.data[0]==self.its1.data[0])
         self.its1.data[0]+=2.0
-        self.assert_(not(newits.data[0]==self.its1.data[0]))
+        self.assertTrue(not(newits.data[0]==self.its1.data[0]))
         
         
     def test_ts_window(self):
@@ -418,9 +418,9 @@ class TestTimeSeries(unittest.TestCase):
         self.assertEqual(len(newts),9)
         self.assertEqual(newts.props["UNIT"],"CFS")
         self.assertEqual(newts.props[AGGREGATION],MEAN) 
-        self.assert_(newts.data[0]==self.ts1.data[0])
+        self.assertTrue(newts.data[0]==self.ts1.data[0])
         self.ts1.data[0]+=2.0
-        self.assert_(newts.data[0]==self.ts1.data[0])
+        self.assertTrue(newts.data[0]==self.ts1.data[0])
         
         stime=self.ts1.start + minutes(5)
         etime=self.ts1.times[8] + minutes(5)
@@ -484,9 +484,9 @@ class TestTimeSeries(unittest.TestCase):
         etime=self.its1.times[4]
         newits=self.its1.window(start=stime,end=etime)
         self.assertEqual(len(newits),5)      
-        self.assert_(newits.data[0]==self.its1.data[0])
+        self.assertTrue(newits.data[0]==self.its1.data[0])
         self.its1.data[0]+=2.0
-        self.assert_(newits.data[0]==self.its1.data[0])
+        self.assertTrue(newits.data[0]==self.its1.data[0])
         
         stime=self.ts1.start - minutes(2)
         etime=self.ts1.start - minutes(1)
@@ -504,8 +504,8 @@ class TestTimeSeries(unittest.TestCase):
         etime=self.ts1.times[10]+dt
         newts=self.ts1.copy(start=stime,end=etime,left=True,right=True)
         self.assertEqual(len(newts),11)
-        self.assert_(newts.data[0]==self.ts1.data[1])
-        self.assert_(newts.data[10]==self.ts1.data[11])
+        self.assertTrue(newts.data[0]==self.ts1.data[1])
+        self.assertTrue(newts.data[10]==self.ts1.data[11])
 
         self.assertRaises(ValueError,self.ts1.copy,etime,stime)    
     
@@ -543,14 +543,14 @@ class TestTimeSeries(unittest.TestCase):
         st=parse_time("1/30/1991")
         num=120
         d2=parse_time("2/28/1991")
-        data=range(num)
+        data=list(range(num))
         ts1=rts(data,st,dt)
         self.assertEqual(ts1.times[1],d2)
         
         dt=time_interval(years=1)
         st=parse_time("2/29/2000")
         num=20
-        data=range(num)
+        data=list(range(num))
         ts2=rts(data,st,dt)
         d2=parse_time("2/28/2001")
         self.assertEqual(ts2.times[1],d2)
@@ -569,7 +569,7 @@ class TestTimeSeries(unittest.TestCase):
         dt=time_interval(months=1)
         st=parse_time("1/1/1991")
         num=120
-        data=range(num)
+        data=list(range(num))
         ts1=rts(data,st,dt)
         ## test of month interval ts
         ts1_centered = ts1.centered(copy_data=False, neaten=True)
@@ -673,7 +673,7 @@ class TestTimeSeries(unittest.TestCase):
         dt=time_interval(hours=1)
         st=parse_time("1/1/1991")
         num=120
-        data=range(100,num+100)
+        data=list(range(100,num+100))
         ts1=rts(data,st,dt)
         
         new_start=parse_time("12/23/1990")

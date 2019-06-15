@@ -32,7 +32,7 @@ class TestExcelService(unittest.TestCase):
     
     def test_get_catalog(self):
         c=self.excel_service.get_catalog(self.test_file_path)
-        self.assert_(type(c)==ExcelCatalog)
+        self.assertTrue(type(c)==ExcelCatalog)
                        
     def test_get_data(self):
 
@@ -44,7 +44,7 @@ class TestExcelService(unittest.TestCase):
       
         for d in dref:
             ts=self.excel_service.get_data(d)
-            self.assert_(ts.is_regular())
+            self.assertTrue(ts.is_regular())
             self.assertEqual(len(ts),104)
 
         ## filter catalog to get some data reference of its.
@@ -53,7 +53,7 @@ class TestExcelService(unittest.TestCase):
       
         for d in dref:
             ts=self.excel_service.get_data(d)
-            self.assert_(not(ts.is_regular()))
+            self.assertTrue(not(ts.is_regular()))
             self.assertEqual(len(ts),104)
 
     def test_add_data(self):

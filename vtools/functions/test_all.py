@@ -9,7 +9,7 @@ from test_shift import TestShift
 from test_resample import TestResamplefunctions
 from test_diffnorm import TestDiffNorm
 
-def suite():    
+def suite():
     suite = unittest.TestSuite()
 
     ## Period op tests
@@ -30,8 +30,8 @@ def suite():
     suite.addTest(TestInterpolate("test_rts_near_nan_point"))
     suite.addTest(TestInterpolate("test_multidimension_tsdata"))
     suite.addTest(TestInterpolate("test_flat"))
-    
-    ##  Decimate 
+
+    ##  Decimate
     suite.addTest(TestDecimate("test_decimate_rts"))
     suite.addTest(TestResamplefunctions("test_resample_rts_aligned"))
     suite.addTest(TestResamplefunctions("test_resample_rts_in"))
@@ -43,7 +43,7 @@ def suite():
     suite.addTest(TestFilter("test_butterworth"))
     suite.addTest(TestFilter("test_boxcar"))
     suite.addTest(TestFilter("test_daily_average"))
-    suite.addTest(TestFilter("test_butterworth_noevenorder")) 
+    suite.addTest(TestFilter("test_butterworth_noevenorder"))
 
     ## godin
     suite.addTest(TestFilter("test_godin"))
@@ -57,12 +57,12 @@ def suite():
     suite.addTest(TestMerge("test_merge_rts_2d_intersect"))
     suite.addTest(TestMerge("test_merge_large_rts"))
 
-    ## shift                  
+    ## shift
     suite.addTest(TestShift("test_shift_operation_rts"))
-    suite.addTest(TestShift("test_shift_operation_its"))             
+    suite.addTest(TestShift("test_shift_operation_its"))
 
-    
-    ## diffnorm                  
+
+    ## diffnorm
     suite.addTest(TestDiffNorm("test_norm_L1"))
     suite.addTest(TestDiffNorm("test_norm_L2"))
     suite.addTest(TestDiffNorm("test_norm_Linf"))
@@ -76,4 +76,4 @@ if __name__=="__main__":
     funcsuit=suite()
     runner=unittest.TextTestRunner()
     result=runner.run(funcsuit)
-    print result
+    print(result)

@@ -28,5 +28,5 @@ props={DATUM:"NGVD88"}
 # create the series
 ts=its(times,data,props)
 
-print ts[0]                          # todo: time series elements don't print
-print ts[1]
+print(ts[0])                          # todo: time series elements don't print
+print(ts[1])

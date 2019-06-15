@@ -1,6 +1,6 @@
 import sys
 
-from service import Service
+from .service import Service
 
 class Singleton(object):
         _instance = None

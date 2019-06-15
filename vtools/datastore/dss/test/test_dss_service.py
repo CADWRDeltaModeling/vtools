@@ -227,7 +227,7 @@ class TestDssService(unittest.TestCase):
         
         dssc=self.dss_service.get_catalog(source)
         data_refs=dssc.data_references(selector)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         ts_back=self.dss_service.get_data(data_ref)
         self.assertTrue(ts_back.start==ts.start)
         self.assertTrue(len(ts_back)==len(ts))
@@ -245,7 +245,7 @@ class TestDssService(unittest.TestCase):
         
         dssc=self.dss_service.get_catalog(source)
         data_refs=dssc.data_references(selector)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         ts_back=self.dss_service.get_data(data_ref)
         self.assertTrue(ts_back.start==ts.start)
         self.assertTrue(len(ts_back)==len(ts))
@@ -263,7 +263,7 @@ class TestDssService(unittest.TestCase):
         
         dssc=self.dss_service.get_catalog(source)
         data_refs=dssc.data_references(selector)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         ts_back=self.dss_service.get_data(data_ref)
         self.assertTrue(ts_back.start==ts.start)
         self.assertTrue(len(ts_back)==len(ts))
@@ -282,7 +282,7 @@ class TestDssService(unittest.TestCase):
         
         dssc=self.dss_service.get_catalog(source)
         data_refs=dssc.data_references(selector)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         ts_back=self.dss_service.get_data(data_ref)
         self.assertTrue(ts_back.start==ts.start)
         self.assertTrue(len(ts_back)==len(ts))
@@ -299,7 +299,7 @@ class TestDssService(unittest.TestCase):
         ##cagatalog function return a itertor over possible data reference
         ##we only get one data ref
         data_refs=dssc.data_references(selector)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         ts=self.dss_service.get_data(data_ref)
 
 
@@ -313,7 +313,7 @@ class TestDssService(unittest.TestCase):
 
         ## read this ts back it be sa me length as original one
         data_refs=dssc.data_references(selector)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         nts=self.dss_service.get_data(data_ref)
         self.assertTrue(len(ts)==len(nts))
         
@@ -339,7 +339,7 @@ class TestDssService(unittest.TestCase):
         ##cagatalog function return a itertor over possible data reference
         ##we only get one data ref
         data_refs=dssc.data_references(selector)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         ts=self.dss_service.get_data(data_ref)
         
         self.assertTrue(type(ts)==TimeSeries)
@@ -365,7 +365,7 @@ class TestDssService(unittest.TestCase):
         ## also with all other properties
         dssc=self.dss_service.get_catalog(source)
         data_refs=dssc.data_references(path)
-        data_ref=data_refs.next()
+        data_ref=next(data_refs)
         ts=self.dss_service.get_data(data_ref)
         
         self.assertTrue(type(ts)==TimeSeries)
@@ -386,7 +386,7 @@ class TestDssService(unittest.TestCase):
         ## save some ts into dss file, ts is hourly averaged
         
         ## save rts first.
-        data=range(1000)
+        data=list(range(1000))
         start="12/21/2000 2:00"
         interval="1hour"
         prop={}
@@ -409,7 +409,7 @@ class TestDssService(unittest.TestCase):
         rtt2=self.dss_service.get_data(data_ref)
         self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
         self.assertTrue(len(rtt2)==992)
-        correct_data = range(8,len(rtt2)+8)
+        correct_data = list(range(8,len(rtt2)+8))
         for i in range(len(rtt2)):
             self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
@@ -423,7 +423,7 @@ class TestDssService(unittest.TestCase):
         self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
         self.assertTrue(rtt2.end==parse_time("12/21/2000 21:00"))
         self.assertTrue(len(rtt2)==12)
-        correct_data = range(8,len(rtt2)+8)
+        correct_data = list(range(8,len(rtt2)+8))
         for i in range(len(rtt2)):
             self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
@@ -438,7 +438,7 @@ class TestDssService(unittest.TestCase):
         self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
         self.assertTrue(rtt2.end==parse_time("12/21/2000 21:00"))
         self.assertTrue(len(rtt2)==12)
-        correct_data = range(8,len(rtt2)+8)
+        correct_data = list(range(8,len(rtt2)+8))
         for i in range(len(rtt2)):
             self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
@@ -545,7 +545,7 @@ class TestDssService(unittest.TestCase):
         ## save some ts into dss file, ts is hourly spaned instanteous
         
         ## save rts first.
-        data=range(1000)
+        data=list(range(1000))
         start="12/21/2000 2:00"
         interval="1hour"
         prop={}
@@ -567,7 +567,7 @@ class TestDssService(unittest.TestCase):
         rtt2=self.dss_service.get_data(data_ref)
         self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
         self.assertTrue(len(rtt2)==992)
-        correct_data = range(8,len(rtt2)+8)
+        correct_data = list(range(8,len(rtt2)+8))
         for i in range(len(rtt2)):
             self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
@@ -581,7 +581,7 @@ class TestDssService(unittest.TestCase):
         self.assertTrue(rtt2.start==parse_time("12/21/2000 10:00"))
         self.assertTrue(rtt2.end==parse_time("12/21/2000 22:00"))
         self.assertTrue(len(rtt2)==13)
-        correct_data = range(8,len(rtt2)+8)
+        correct_data = list(range(8,len(rtt2)+8))
         for i in range(len(rtt2)):
             self.assertTrue(rtt2.data[i]==float(correct_data[i]))
 
@@ -652,7 +652,7 @@ class TestDssService(unittest.TestCase):
         ## header.
         
         ## save rts first.
-        data=range(1000)
+        data=list(range(1000))
         start="12/21/2000 2:00"
         interval="1hour"
         prop={}
@@ -672,7 +672,7 @@ class TestDssService(unittest.TestCase):
         self.dss_service.add_data(data_ref,rt1)
         dssc=self.dss_service.get_catalog(source)        
         path="/TEST/DOWNSTREAM/EC//1HOUR/STAGE/"
-        data_ref=dssc.data_references(path).next()       
+        data_ref=next(dssc.data_references(path))       
         rtt=self.dss_service.get_data(data_ref)      
         self.assertTrue(len(rtt)==len(data))
         self.assertTrue(rtt.props[TIMESTAMP]==PERIOD_START)
@@ -690,7 +690,7 @@ class TestDssService(unittest.TestCase):
         ## then its.
 
         path="/HERE/IS/ITS//IR-YEAR/TEST/"
-        data=range(20)
+        data=list(range(20))
         data_ref=DataReference(id,source=source,selector=path)
         prop[AGGREGATION]=INDIVIDUAL
         
@@ -702,7 +702,7 @@ class TestDssService(unittest.TestCase):
                "04/15/1998","05/19/1998","06/30/1998",\
                "07/15/1998","08/24/1998"]
         
-        times=map(parse_time,times)
+        times=list(map(parse_time,times))
         itt=its(times,data,prop)
         self.dss_service.add_data(data_ref,itt)
         extent="time_window=(1/10/1997 02:00,09/30/1998 18:00)"
@@ -721,7 +721,7 @@ class TestDssService(unittest.TestCase):
         its_len   = 40000 ## 80000 will cause zsitx fail,for dss interal
                           ## cache size is 10000. data size
                           ## close to this number will cause dss lib abort
-        data=range(total_len)
+        data=list(range(total_len))
         start="12/21/1940 2:00"
         interval="1hour"
         prop={}
@@ -781,7 +781,7 @@ class TestDssService(unittest.TestCase):
         """ try to save ts to a non exist file."""
         
         ## save rts first.
-        data=range(1000)
+        data=list(range(1000))
         start="12/21/2000 2:00"
         interval="1hour"
         prop={}
@@ -816,7 +816,7 @@ class TestDssService(unittest.TestCase):
         
         selector="/RLTM+CHAN/*/*//*/*/"
         loops =100
-        print "this is a time consuming test case ,be patient..."
+        print("this is a time consuming test case ,be patient...")
         for i in range(loops):
             c=self.dss_service.get_catalog(self.test_file_path)
             data_ref=[df for df in c.data_references(selector)]
@@ -827,7 +827,7 @@ class TestDssService(unittest.TestCase):
 
             for a_data_ref,ts in zip(data_ref,tslist):
                 self.dss_service.add_data(a_data_ref,ts)
-        print "finish repeating get and save ts %i rounds"%loops
+        print("finish repeating get and save ts %i rounds"%loops)
            
            
       

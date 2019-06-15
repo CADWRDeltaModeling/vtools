@@ -5,7 +5,7 @@
 
 """
 
-from vtime import *
-from timeseries import *
-from sample_series import *
+from .vtime import *
+from .timeseries import *
+from .sample_series import *
 

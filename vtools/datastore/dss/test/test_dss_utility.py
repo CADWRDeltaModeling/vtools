@@ -67,7 +67,7 @@ class TestDssUtility(unittest.TestCase):
             path="/I_%s/CREATE/THIS//1HOUR/TS/"%i 
             dss_store_ts(ts,destination,path)
 
-        self.assert_(os.path.exists(destination))
+        self.assertTrue(os.path.exists(destination))
         
     def test_save_ts_invalid_path(self):
         start=datetime(1990,1,1,0,0)

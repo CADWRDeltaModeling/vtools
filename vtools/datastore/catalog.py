@@ -4,7 +4,7 @@
 from copy import deepcopy
 
 # Local import
-from dimension import Dimension
+from .dimension import Dimension
 
 
 class CatalogEntry(object):
@@ -65,7 +65,7 @@ class CatalogEntry(object):
             
             If the item specified actually doesn't exist, error will be raised 
         """
-        if name in self._item_name_to_index.keys():
+        if name in list(self._item_name_to_index.keys()):
             index=self._item_name_to_index[name]
         else:
             return KeyError(" %s doesn't exist in this instance of CatalogEntry \
@@ -74,7 +74,7 @@ class CatalogEntry(object):
 
     def has_item(self,name):
         """ Check if a item exist within a catalog entry."""
-        if name in self._item_name_to_index.keys():
+        if name in list(self._item_name_to_index.keys()):
             return True
         else:
             return False
@@ -84,7 +84,7 @@ class CatalogEntry(object):
             with the name specified.
             
         """        
-        if(name in self._item_name_to_index.keys()):
+        if(name in list(self._item_name_to_index.keys())):
             index=self._item_name_to_index[name]
             self._metadata_items[index]=value
         else:
@@ -120,7 +120,7 @@ class CatalogEntry(object):
              stored in this entry.
         """
         names=[None]*(len(self._metadata_items)+len(self._dimensions))
-        for name in self._item_name_to_index.keys():
+        for name in list(self._item_name_to_index.keys()):
             index=self._item_name_to_index[name]
             names[index]=name
 
@@ -220,7 +220,7 @@ class Catalog(object):
             c=self
         entry_iter=iter(c._entries)
         while True:
-            entry=entry_iter.next()
+            entry=next(entry_iter)
             ref=c.get_data_reference(entry,extent)
             yield ref
             

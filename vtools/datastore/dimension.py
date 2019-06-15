@@ -73,7 +73,7 @@ class ChannelDimension(Dimension):
         """ return the index of a channel in the
         inner list.
         """                
-        if channel in self._index_map.keys():
+        if channel in list(self._index_map.keys()):
             return self._index_map[channel]
         else:
             raise KeyError("%s doesn't exist in this dimension"%channel)

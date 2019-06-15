@@ -122,7 +122,7 @@ class TestExcelUtility(unittest.TestCase):
 
         self.assertEqual(len(tss),5)
         for ts in tss:
-            self.assert_(not (ts.is_regular()))
+            self.assertTrue(not (ts.is_regular()))
 
     def test_retrieve_rts_col_time(self):
         """ test of retrieving rts as all share one time col"""

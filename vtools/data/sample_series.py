@@ -4,9 +4,9 @@ import os
 from numpy import arange,loadtxt,put
 from numpy import nan,cos,pi
 from scipy.special import jn
-from timeseries import *
-from constants import *
-from vtime import *
+from .timeseries import *
+from .constants import *
+from .vtime import *
 
 
 def create_sample_series():
@@ -46,36 +46,36 @@ def _synthetic_tide(t):
     (1.405189e-04,0.97799,217.03899),\
     ##S2
     (1.454441e-04,1.00142,239.89972)]
-    
+
     tide=0.0
-    
+
     for freq,amp,phase in  principal_tide_components:
         tide=tide+amp*cos(freq*t+phase*pi/180)
     return tide
-    
+
 
 def synthetic_tide_series(days=7):
     """ Return a week long synthetic tide
-	
+
     """
-    
+
     a_week_seconds=24*days*3600
     step=15*60
     times = arange(0,a_week_seconds,step)
-    data=map(_synthetic_tide,times)
+    data=list(map(_synthetic_tide,times))
     start_time=_datetime.datetime(1992,1,1)
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"meter"}
     dt=time_interval(minutes=15)
     ts=rts(data,start_time,dt,props)
     return ts
-        
+
 
 def _simple_averaged_series():
     """Return a short dayily average time series
-     
+
     """
     data = [
-        0.35977895,  0.49610614,  0.33600347, -0.33929111, -1.78860056, 
+        0.35977895,  0.49610614,  0.33600347, -0.33929111, -1.78860056,
        -1.19358623, -1.59885151, -1.34639294, -0.98803911, -0.88551162,
        -0.76594505, -0.12272514, -0.00707276,  0.29447027, -1.16436027,
        -0.15500166, -2.07909746, -1.03036495, -1.1203458 , -0.61648268,
@@ -92,60 +92,59 @@ def _simple_averaged_series():
     props={AGGREGATION:MEAN,TIMESTAMP:PERIOD_START,UNIT:"meter"}
     ts=rts(data,stime,dt,props)
     return ts
-    
+
 def example_data(name):
-    
     if (name=="pt_reyes_tidal_6min"):
         return pt_reyes_tidal_6min_interval()
     elif (name=="pt_reyes_tidal_1hour"):
-	  return pt_reyes_tidal_1hour_interval()
+      return pt_reyes_tidal_1hour_interval()
     elif (name=="pt_reyes_tidal_with_gaps"):
-	  return pt_reyes_tidal_with_gaps()
+      return pt_reyes_tidal_with_gaps()
     elif  (name=="simple_average"):
         return _simple_averaged_series()
     elif (name=="oldriver_flow"):
         return  old_river_head_flow()
     else:
         raise ValueError("invalid example series name")
-		
-		
+
+
 def _datetime_convertor(time_str):
     """ Convert input datetime string into vtools ticks
-	
+
     """
-	
+
     a_t=parse_time(time_str)
     return ticks(a_t)
-	
+
 
 def pt_reyes_tidal_6min_interval():
     """ Sea surface level at Point Reyes from NOAA with 6 min interval from 11/24/2013-11/25/2013
-	
+
     """
- 
+
     data_file=os.path.join(os.path.split(__file__)[0],"CO-OPS__9415020__wl_6min.txt")
     raw_data=loadtxt(data_file,converters={0:_datetime_convertor},skiprows=1,delimiter=",")
     start=ticks_to_time(raw_data[:,0][0])
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
     return rts(raw_data[:,1],start,interval,props)
-	
+
 
 def pt_reyes_tidal_1hour_interval():
     """ Sea surface level at Point Reyes from NOAA downsampled to 1hour interval from 11/01/2013-11/08/2013
-	
+
     """
-    
+
     data_file=os.path.join(os.path.split(__file__)[0],"CO-OPS_9415020_wl_1hour.txt")
     raw_data=numpy.loadtxt(data_file,converters={0:_datetime_convertor},skiprows=1,delimiter=",")
     start=ticks_to_time(raw_data[:,0][0])
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
     return rts(raw_data[:,1],start,interval,props)
-	
+
 def pt_reyes_tidal_with_gaps():
     """ Sea surface level at Point Reys with gaps of different length"
-	
+
 	"""
 
     data_file=os.path.join(os.path.split(__file__)[0],"CO-OPS__9415020__wl_6min.txt")
@@ -153,12 +152,12 @@ def pt_reyes_tidal_with_gaps():
     start=ticks_to_time(raw_data[:,0][0])
     interval=ticks_to_interval(raw_data[:,0][1]-raw_data[:,0][0])
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"feet"}
-    put(raw_data[:,1],range(12,14),nan)
-    put(raw_data[:,1],range(20,23),nan)
-    put(raw_data[:,1],range(26,45),nan)
+    put(raw_data[:,1],list(range(12,14)),nan)
+    put(raw_data[:,1],list(range(20,23)),nan)
+    put(raw_data[:,1],list(range(26,45)),nan)
     return rts(raw_data[:90,1],start,interval,props)
-    
-    
+
+
 def old_river_head_flow():
     """ flow rate of old river at head with 15 minutes interval"""
     data_file=os.path.join(os.path.split(__file__)[0],\
@@ -168,14 +167,14 @@ def old_river_head_flow():
     interval=minutes(15)
     props={AGGREGATION:INDIVIDUAL,TIMESTAMP:INST,UNIT:"cfs"}
     return rts(flow,start,interval,props)
-    
-    
-    
-    
+
+
+
+
 def arma(phi,theta,sigma,n,discard=0,verbose=0):
 
-    """ Generate a Gaussian ARMA(p,q) series. 
-    This was obtained from stack exchange and is not written in terms of 
+    """ Generate a Gaussian ARMA(p,q) series.
+    This was obtained from stack exchange and is not written in terms of
     a time series ... however it can be used as an ingredient in a time series
     providing correlated random noise
 
@@ -193,14 +192,14 @@ def arma(phi,theta,sigma,n,discard=0,verbose=0):
 
     n :        Length of the returned series.
 
-    discard:   Number of data points that are going to be discarded (the higher 
+    discard:   Number of data points that are going to be discarded (the higher
           the better) to avoid dependence of the ARMA time-series on the initial values.
-          
+
     Returns
     -------
     Numpy array from an ARMA(p,q) process
-    
-    """ 
+
+    """
     from numpy import append,array
     from numpy.random import normal
 
@@ -222,13 +221,5 @@ def arma(phi,theta,sigma,n,discard=0,verbose=0):
               s=s+theta[j]*w[i-j-1]
           arma=append(arma,s+w[i])
     if(verbose!=0):
-      print 'Measured standard deviation: '+str(sqrt(var(w[discard:])))
+      print('Measured standard deviation: '+str(sqrt(var(w[discard:]))))
     return arma[discard:]
-
-
-    
-    
-    
-
-
-    

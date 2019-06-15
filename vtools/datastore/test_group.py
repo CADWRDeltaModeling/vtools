@@ -18,48 +18,48 @@ class TestGroup(unittest.TestCase):
         self.max_val=1000
         self.min_val=0.01
         self.large_data_size=100000
-        
+
     def test_group_by_nan(self):
-        
+
         data = [1,2,3]
         compress_size =3
         groups= group_by_nan(data,compress_size)
         self.assertEqual(len(groups),1)
         self.assertEqual(groups[0],[0,2])
-        
+
         data = [1,2,3,nan,nan]
         compress_size =3
         groups= group_by_nan(data,compress_size)
         self.assertEqual(len(groups),1)
         self.assertEqual(groups[0],[0,4])
-        
+
         data = [nan,nan,1,2,3]
         compress_size =3
         groups= group_by_nan(data,compress_size)
         self.assertEqual(len(groups),1)
         self.assertEqual(groups[0],[0,4])
-        
+
         data = [nan,nan,nan,1,2,3]
         compress_size =3
         groups= group_by_nan(data,compress_size)
         self.assertEqual(len(groups),1)
         self.assertEqual(groups[0],[3,5])
-        
+
         data = [1,2,3,nan,nan,nan]
         compress_size =3
         groups= group_by_nan(data,compress_size)
         self.assertEqual(len(groups),1)
         self.assertEqual(groups[0],[0,2])
-        
+
         data = [1,2,3,nan,nan,nan,4,5,6,nan,nan,7,8]
         compress_size =3
         groups= group_by_nan(data,compress_size)
         self.assertEqual(len(groups),2)
         self.assertEqual(groups[0],[0,2])
         self.assertEqual(groups[1],[6,12])
-        
+
     def test_ts_group(self):
-        
+
         ts_data = [1,2,3,nan,nan,nan,4,5,6,nan,nan,7,8]
         compress_size =3
         ts_start = parse_time("01/02/2000 23:00")
@@ -81,63 +81,7 @@ class TestGroup(unittest.TestCase):
         self.assertEqual(ts_groups[1].data[6],8.0)
         self.assertEqual(ts_groups[1].start,ts_start+parse_interval("6day"))
         self.assertEqual(ts_groups[1].props, ts.props)
-        
+
 if __name__=="__main__":
-    
-    unittest.main()       
 
-
-
-    
-
-            
-
-        
-        
-
-        
-            
-
-
-        
-        
-
-        
-        
-
-        
-
-        
-
-
-        
-
-             
-
-
-
-            
-        
-    
-        
-        
-
- 
-
-        
-
-        
-        
-
-    
-                    
-
-
-
-
-        
-
-                 
-
-    
-    
+    unittest.main()

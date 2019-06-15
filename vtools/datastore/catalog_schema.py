@@ -18,7 +18,7 @@ class CatalogSchemaItem(object):
             if not(type(attr_dict)==dict):
                 raise TypeError("Inappropriate argument type \
                                 in initializing CagalogSchemItem")         
-            for (attr,value) in attr_dict.items():
+            for (attr,value) in list(attr_dict.items()):
                 setattr(self,attr,value)
                 self.description=self.description+attr+"="+str(value)+","
                 self.user_attrname.append(attr)

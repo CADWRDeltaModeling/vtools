@@ -15,18 +15,18 @@ c=dss_catalog(source)
 ## use for loop to print string representation
 ## of each entry.
 for e in c:
-    print e
+    print(e)
    ## to find out what items
    ##contained within a single 
    ## entry
-    print e.item_names()
+    print(e.item_names())
    ## to view a specific item
-    print e.item('item_name')
+    print(e.item('item_name'))
 
 ## to print a string representation of
 ## whole catalog, use function catalog_string
 from vtools.datastore.catalog import *
-print catalog_string(c)
+print(catalog_string(c))
 
 
 ## comment: such example can be applied on

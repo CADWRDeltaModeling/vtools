@@ -23,16 +23,15 @@ import datetime as _datetime
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from time import strptime
-from string import lower,strip
 import re #,pdb
 
 def resolution():
-    return 1L
+    return 1
 
 ticks_per_second=resolution()
-ticks_per_minute=resolution()*60L
-ticks_per_hour=ticks_per_minute*60L
-ticks_per_day=24L*ticks_per_hour
+ticks_per_minute=resolution()*60
+ticks_per_hour=ticks_per_minute*60
+ticks_per_day=24*ticks_per_hour
 time_base=_datetime.datetime.min
 
 def ticks(time,base=time_base):
@@ -72,16 +71,16 @@ def increment(time,interval,nintvl=1):
        nintvl: number of times to increment it
     """
     if int(nintvl)==0:
-        return time   
+        return time
     if (isinstance(interval,relativedelta)):
         dt=interval*nintvl
-        dt.years=long(dt.years)
-        dt.months=long(dt.months)
-        dt.days=long(dt.days)
-        dt.hours=long(dt.hours)
-        dt.minutes=long(dt.minutes)
-        dt.seconds=long(dt.seconds)
-        dt.microseconds=0L
+        dt.years=int(dt.years)
+        dt.months=int(dt.months)
+        dt.days=int(dt.days)
+        dt.hours=int(dt.hours)
+        dt.minutes=int(dt.minutes)
+        dt.seconds=int(dt.seconds)
+        dt.microseconds=0
     else:
          dt=nintvl*interval
     return time+dt
@@ -92,7 +91,7 @@ def number_intervals(start,end,dt):
     Calculate the number of intervals dt between start and end time.
     The result is the max number_intervals such that
      start + number_intervals*dt <= end.
-    """	
+    """
     if start==end:
         return 0
     if isinstance(dt,_datetime.timedelta):
@@ -107,7 +106,7 @@ def number_intervals(start,end,dt):
         while (increment(start,dt,(est_n+1)) <= end):
             est_n += 1
         while (increment(start,dt,est_n) > end):
-            est_n -= 1            
+            est_n -= 1
         return est_n
 
 def seconds(s):
@@ -115,11 +114,11 @@ def seconds(s):
     return _datetime.timedelta(seconds=s)
 
 def minutes(m):
-    """ Create a time interval representing m minutes"""    
+    """ Create a time interval representing m minutes"""
     return _datetime.timedelta(minutes=m)
 
 def hours(h):
-    """ Create a time interval representing h hours"""    
+    """ Create a time interval representing h hours"""
     return _datetime.timedelta(hours=h)
 
 def days(d):
@@ -148,33 +147,33 @@ def time_sequence(start,dt,n):
     if not isinstance(start,_datetime.datetime):
         raise TypeError("1st argument of time_sequence"
         "must be type of datetime")
-    
+
     #if start.day>28:
     #    if type(dt)==type(years(1)):
     #        if dt.months or dt.years:
     #            raise ValueError("Time sequence "
     #            "starting after 28th day by interval %s"
     #            "is not defined"%str(dt))
-    
+
     if isinstance(dt,_datetime.timedelta):
         start=(start-time_base)
         sticks=ticks(start)
         dticks=ticks(dt)
-        tseq=numpy.arange(long(n))*(dticks) + sticks
+        tseq=numpy.arange(int(n))*(dticks) + sticks
     elif isinstance(dt,relativedelta):
-        tseq=numpy.arange(long(n))
+        tseq=numpy.arange(int(n))
         for i in range(n):
             rel=increment(start,dt,i) - time_base
             tseq[i]=ticks(rel)
     else:
         raise  TypeError("2st argument of time_sequence must be\
-        datetime.timedelta or dateutil.relativedelta.relativedelta") 
+        datetime.timedelta or dateutil.relativedelta.relativedelta")
     return tseq
 
-    
+
 def ticks_to_time(ticks,base=time_base):
     """Convert a number of ticks to a datetime"""
-    return base+_datetime.timedelta(seconds=long(ticks)/ticks_per_second)
+    return base+_datetime.timedelta(seconds=int(ticks)/ticks_per_second)
 
 def ticks_to_interval(ticks,base=time_base):
     """Convert a number of ticks to a time interval."""
@@ -209,24 +208,24 @@ def is_calendar_dependent(intvl):
     else:
         return False
 
-        
+
 def infer_interval(time_sequence,fraction,standard = None):
     """ Infer a time interval from a time sequence using differences
-        
+
     Parameters
     -----------
-    time_sequence  : time_sequence 
+    time_sequence  : time_sequence
     sequence to be analyzed
-    
+
     fraction : float
     fraction of intervals in the sample that must conform once times are
     rounded to one minute. For instance, if four times are input,
     this will create three differences, so a fraction=0.67 would require that two out
     of three agree.
     standard : list of standard intervals. If None, any non-calendar interval is accepted
-    as is an interval of one month. Otherwise, this argument should be a list and 
+    as is an interval of one month. Otherwise, this argument should be a list and
     a ValueError is generated if the interval isn't on the list.
-    
+
     Returns
     --------
     interval : time_interval
@@ -234,7 +233,7 @@ def infer_interval(time_sequence,fraction,standard = None):
     """
     import numpy as np
     import scipy.stats
-    from itertools import imap
+
     onemin = minutes(1)
     arr = np.array([round_time(x,onemin)[0] for x in time_sequence],copy=False)
     diff = arr[1:] - arr[:-1]
@@ -246,20 +245,20 @@ def infer_interval(time_sequence,fraction,standard = None):
     else:
         md = md[0]
         count = count[0]
-        
+
     if md.days < 27:
         if standard:
             if md in standard:
                 return md
             else:
                 for s in standard:
-                    frac_almost = sum(imap(lambda d: abs(s.total_seconds() - d.total_seconds()) < 80.,diff))/len(diff)
+                    frac_almost = sum(map(lambda d: abs(s.total_seconds() - d.total_seconds()) < 80.,diff))/len(diff)
                     if frac_almost >= fraction:
                         return s
                 return None
         else:
             if count/len(diff) > fraction:
-                return md       
+                return md
             return None
     elif md.days > 27 and md.days < 32:
         add_month = (arr + months(1))[:-1]
@@ -269,17 +268,17 @@ def infer_interval(time_sequence,fraction,standard = None):
             return None
     else:
         return None
-    
-        
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
 
 def parse_interval(interval_string):
     """ Parse interval expressed as string and return a valid time interval
-    
+
     Parameters
     -----------
         interval_string : string
@@ -290,7 +289,7 @@ def parse_interval(interval_string):
                 - d,day
                 - mon,month
                 - y,yr,year
-    
+
     Returns
     --------
     interval : time_interval
@@ -298,10 +297,10 @@ def parse_interval(interval_string):
     """
     if not(type(interval_string)==str):
         raise TypeError("parse_interval only accept string input.")
-    
-    interval_string=strip(lower(interval_string))
+
+    interval_string=interval_string.lower().strip()
     interval=None
-    
+
     time_pattern=re.compile(r'(-?\d+)(\D+)')
     matches=time_pattern.findall(interval_string)
 
@@ -317,8 +316,8 @@ def parse_interval(interval_string):
 
     args={}
     for t in matches:
-        n=int(strip(t[0]))
-        ss=strip(t[1])
+        n=int(t[0].strip())
+        ss=t[1].strip()
         ## for time_delta funciton don't honor week input, convert week into days.
         if ss.lower()=="week" or ss.lower()=="weeks":
             ss="days"
@@ -328,8 +327,8 @@ def parse_interval(interval_string):
 
     return time_interval(**args)
 
-                           
-                
+
+
 def align(timepoint,interval,side):
     """ Finds a neat time point that is calendar aligned with the given
         interval either to the right (+1) or the left (-1) of the arg
@@ -348,20 +347,20 @@ def align(timepoint,interval,side):
         else: return increment(left,interval)
 
 def round_time(dtime, interval):
-    """Round a datetime object to an interval 
+    """Round a datetime object to an interval
     dtime : datetime.datetime object, default now.
     interval: interval to round to (non-calendar dependent)
     returns rounded time and offset in seconds between input time and rounded time
     """
     round_to=ticks(interval)
-    seconds = long((dtime - dtime.min).seconds)
+    seconds = int((dtime - dtime.min).seconds)
     # // is a floor division, not a comment on following line:
     rounding = (seconds+round_to/2) // round_to * round_to
     return dtime + _datetime.timedelta(0,rounding-seconds,-dtime.microsecond), (rounding-seconds)
 
 
 def round_ticks(inticks,interval):
-    """Tick-based version of round_time in seconds, for use with vectors 
+    """Tick-based version of round_time in seconds, for use with vectors
     ticks : ticks representing seconds
     interval: interval to round to (non-calendar dependent)
     """
@@ -383,18 +382,3 @@ def parse_time(t):
         if type(t)==str:
            t=t.strip()
            return parse(t)
-
-
-    
-    
-    
-    
-    
-
-
-            
-    
-    
-
-    
-

@@ -39,14 +39,14 @@ from vtools.datastore.data_reference import *
 
 from vtools.datastore.dss.dss_catalog import DssCatalog
 from vtools.datastore.dss.dss_constants import *
-from vtime_dss_utility import dss_rts_to_ts
-from vtime_dss_utility import dss_its_to_ts
-from vtime_dss_utility import datetime_to_dss_julian_date
-from vtime_dss_utility import validate_rts_for_dss
-from vtime_dss_utility import validate_its_for_dss
-from vtime_dss_utility import discover_valid_rts_start,\
+from .vtime_dss_utility import dss_rts_to_ts
+from .vtime_dss_utility import dss_its_to_ts
+from .vtime_dss_utility import datetime_to_dss_julian_date
+from .vtime_dss_utility import validate_rts_for_dss
+from .vtime_dss_utility import validate_its_for_dss
+from .vtime_dss_utility import discover_valid_rts_start,\
      discover_valid_rts_end
-from vtime_dss_utility import dss_julian2python,interval_to_D,valid_dss_interval_dic_in_delta
+from .vtime_dss_utility import dss_julian2python,interval_to_D,valid_dss_interval_dic_in_delta
 
 
 
@@ -321,7 +321,7 @@ class DssService(Service):
                 validate_rts_for_dss(ts)
                 
                 if cprops:                   
-                    for key in cprops.keys():
+                    for key in list(cprops.keys()):
                         val=cprops[key]
                         clabels.append(key)
                         citems.append(val)
@@ -343,7 +343,7 @@ class DssService(Service):
                 itimes,flags,lflags,jbdate,cunits,ctype,cprops=\
                 validate_its_for_dss(ts)
                 if cprops:                   
-                    for key in cprops.keys():
+                    for key in list(cprops.keys()):
                         val=cprops[key]
                         clabels.append(key)
                         citems.append(val)
@@ -627,7 +627,7 @@ class DssService(Service):
 
     def _remove_paths_record(self,index):
         """ Remove all the paths record of a dssfile specified  by index."""
-        temp_dic = dict((k,v) for k, v in self._dss_catalogs.iteritems() if k !=index)
+        temp_dic = dict((k,v) for k, v in self._dss_catalogs.items() if k !=index)
         DssService._dss_catalogs = temp_dic   
         
     
@@ -638,7 +638,7 @@ class DssService(Service):
 
         try:
             findex =  DssService._dss_file_opened[dss_file_path][0]
-        except Exception,e:
+        except Exception as e:
             return
         self._remove_paths_record(findex)
         dss_file_path=dss_file_path.lower()
@@ -718,7 +718,7 @@ class DssService(Service):
         ## begins one interval, no such operation
         ## for the end for it is already stamped at the
         ## end of aggregating period
-        if ctype in RTS_DSS_PROPTY_TO_VT.keys():
+        if ctype in list(RTS_DSS_PROPTY_TO_VT.keys()):
             valid_start=valid_start-interval
         
         
@@ -740,7 +740,7 @@ class DssService(Service):
         try:
             [nvals,vals,flags,lfread,cunits,ctype,headu,nheadu,\
              iofset,icomp,istat]=dssf.zrrtsx(cpath," "," ",nvals,True,kheadu)
-        except Exception,e:
+        except Exception as e:
             dssf.close()
             raise e
 
@@ -786,7 +786,7 @@ class DssService(Service):
             [itimes,vals,nvals,jbdate,flags,lfread,cunits,\
              ctype,headu,nheadu,istat]= \
             dssf.zritsx(cpath,juls,istime,jule,ietime,nvals,False,500,0)
-        except Exception,e:
+        except Exception as e:
             dssf.close()
             raise e
 
@@ -818,7 +818,7 @@ class DssService(Service):
         while (ipos>=0):
             try:
                 [clabelout,citem,ipos,istat]=zustfh(clabel,0,ipos,headu)
-            except Exception, e:
+            except Exception as e:
                 raise e
             ## for output from zustfh is one-string list  
             clabels=clabels+","+clabelout[0]
@@ -908,7 +908,7 @@ class DssService(Service):
                 istat=dssf.zsrtsx(path,cdate,ctime,nval,valt,flags,lflags,cunits,ctype,\
                                   headu,nheadu,iplan,icomp,basev,lbasev,lhigh,iprec)
                 i=i+nval
-            except Exception, e:
+            except Exception as e:
                 dssf.close()
                 del dssf
                 raise e
@@ -929,7 +929,7 @@ class DssService(Service):
         try:            
             istat=dssf.zsitsx(path,itimes,values,nvals,jbdate,flags,lflags,cunits,ctype,\
                               headu,nheadu,inflag)
-        except Exception, e:
+        except Exception as e:
             del dssf
             raise e
 
@@ -1003,7 +1003,7 @@ class DssService(Service):
             
 
         ## for aggregated ts move time stamp to begining of interval
-        if (ctype in RTS_DSS_PROPTY_TO_VT.keys()):
+        if (ctype in list(RTS_DSS_PROPTY_TO_VT.keys())):
             ts_start =ts_start - step
             ts_end   =ts_end - step
 
@@ -1015,9 +1015,9 @@ class DssService(Service):
             stime = ts_start
 
         ##  for aggregated ts move a interval forward to make sure including the last data
-        if (etime>(ts_end+step)) and (ctype in RTS_DSS_PROPTY_TO_VT.keys()):
+        if (etime>(ts_end+step)) and (ctype in list(RTS_DSS_PROPTY_TO_VT.keys())):
             etime = ts_end+step
-        elif (etime>(ts_end)) and (not(ctype in RTS_DSS_PROPTY_TO_VT.keys())):
+        elif (etime>(ts_end)) and (not(ctype in list(RTS_DSS_PROPTY_TO_VT.keys()))):
             etime = ts_end
         
             
@@ -1083,7 +1083,7 @@ class DssService(Service):
         nvalt =0
         while True:            
             try:
-                cdate,ctime,nval=window_iter.next()
+                cdate,ctime,nval=next(window_iter)
             except:
                 break
             
@@ -1130,7 +1130,7 @@ class DssService(Service):
         
         if nnheadu>0:
             hdic=self._unstuff_header(hheadu,nnheadu,2)
-            for key in hdic.keys():
+            for key in list(hdic.keys()):
                 if not((key==UNIT)or(key==CTYPE)):
                     prop[key]=hdic[key]
 
@@ -1216,7 +1216,7 @@ class DssService(Service):
 
         if nheadu>0:
             hdic=self._unstuff_header(headu,nheadu,2)
-            for key in hdic.keys():
+            for key in list(hdic.keys()):
                 if not((key==UNIT)or(key==CTYPE)):
                     prop[key]=hdic[key]
                 
@@ -1260,12 +1260,12 @@ class DssService(Service):
             path="/${A}/${B}/${C}/${D}/${INTERVAL}/${F}/"
         parts=['A','B','C','D','E','F']
         ref_dic={}
-        if "ref_dic" in kargs.keys():
+        if "ref_dic" in list(kargs.keys()):
             ref_dic=kargs["ref_dic"]
             
         if ref_dic:
             for part in parts:
-                if part in ref_dic.keys():
+                if part in list(ref_dic.keys()):
                     if part=='E':
                         if not ref_dic[part] in interval_to_D:
                             path=path.replace("${INTERVAL}",ref_dic[part])
@@ -1273,7 +1273,7 @@ class DssService(Service):
                             path=path.replace("${"+part+"}",ref_dic[part])
                     else:
                         path=path.replace("${"+part+"}",ref_dic[part])
-            if "extent" in ref_dic.keys():
+            if "extent" in list(ref_dic.keys()):
                 extent=ref_dic['extent']
         if "(null)" in path:
             path=path.replace("(null)","")        
@@ -1281,7 +1281,7 @@ class DssService(Service):
         extent=None
 
         dest=""
-        if not "dest" in kargs.keys():
+        if not "dest" in list(kargs.keys()):
             raise ValueError("Destination source must be provided"
                              "in assembling dss references")
         dest=kargs["dest"]
@@ -1292,7 +1292,7 @@ class DssService(Service):
     
 if __name__=="__main__":
     st=DssService()
-    print st.identification
+    print(st.identification)
 
 
         

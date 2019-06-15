@@ -81,7 +81,7 @@ class TestDssCatalog(unittest.TestCase):
 
         # Test remove the new entry.
         dssc.remove(entry2)
-        self.assert_(entry2 not in dssc.entries())
+        self.assertTrue(entry2 not in dssc.entries())
 
         # Try to get data from based on new datareference
         # , service should raise exception.        
@@ -104,7 +104,7 @@ class TestDssCatalog(unittest.TestCase):
             
         for newentry in dssc.entries():
             dataref=dssc.get_data_reference(newentry)
-            self.assert_('_MODIFIED' in dataref.selector)
+            self.assertTrue('_MODIFIED' in dataref.selector)
             
     def test_filter_catalog(self):
         dssfile_path=self.test_file_path

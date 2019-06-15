@@ -23,7 +23,7 @@ class TestDecimate(unittest.TestCase):
     def __init__(self,methodName="runTest"):
 
         super(TestDecimate,self).__init__(methodName)
-                         
+
         # Number of data in a time series.
         self.num_ts=1000
         self.max_val=1000
@@ -36,20 +36,20 @@ class TestDecimate(unittest.TestCase):
         interval="15min"
         props={}
         self.ts=rts(data,start_time,interval,props)
-		
-                
+
+
     def test_decimate_rts(self):
-                
-        for resample_interval in self.test_interval:     
+
+        for resample_interval in self.test_interval:
             ts_resampled=decimate(self.ts,resample_interval)
             self.assertEqual(ts_resampled.interval,resample_interval)
-        
-        
 
-       
 
-    
-                        
+
+
+
+
+
 if __name__=="__main__":
-    
-    unittest.main()       
+
+    unittest.main()

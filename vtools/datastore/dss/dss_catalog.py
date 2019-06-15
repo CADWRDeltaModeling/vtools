@@ -25,8 +25,8 @@ from scipy import zeros
 
 
 #local import 
-from vtime_dss_utility import string_to_dss_julian_date,uncondensed_Dparts
-from dss_constants import DSS_DATA_SOURCE
+from .vtime_dss_utility import string_to_dss_julian_date,uncondensed_Dparts
+from .dss_constants import DSS_DATA_SOURCE
 
 
 __all__=["DssCatalogError","DssCatalog"]
@@ -276,8 +276,8 @@ class DssCatalog(Catalog):
         path2=self._path_from_entry(entry2)
         dss_file_path=self._dss_file_path
         dssfile=open_dss(dss_file_path)        
-        buff1=range(750)
-        buff2=range(100)
+        buff1=list(range(750))
+        buff2=list(range(100))
         
         if self._condensed_catalog:            
             con_path1=path1
@@ -432,7 +432,7 @@ class DssCatalog(Catalog):
         self._entries[index].add_dimension_scale(time_extent)
         
         ## insert item within header_dic into entry
-        for header_label,header_value in header_dic.items():
+        for header_label,header_value in list(header_dic.items()):
             self._entries[index].add_item(header_label,header_value)
 
         ## insert unit and type also.
@@ -452,7 +452,7 @@ class DssCatalog(Catalog):
             catalogentry=CatalogEntry(self.schema(),self)
             Dpart=dic["D"] ## Dpart contains all D part seperated by ","
             Dlist=Dpart.split(",")
-            for key in dic.keys():
+            for key in list(dic.keys()):
                 if key=="D": 
                     dd=Dlist[0]+"-"+Dlist[-1]
                     catalogentry.add_item(key,dd)

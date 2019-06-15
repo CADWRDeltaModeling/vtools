@@ -21,12 +21,12 @@ class TestUFunc(unittest.TestCase):
         self.max_val=1000
         self.min_val=0.01
         self.large_data_size=100000
-        
+
     def test_ts_max(self):
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
         tsmax=ts_max(ts0)
         self.assertEqual(tsmax,data[-1])
@@ -34,13 +34,13 @@ class TestUFunc(unittest.TestCase):
         time_window=(ts0.times[5],ts0.times[30])
         truemax=data[30]
         tsmax=ts_max(ts0.window(ts0.times[5],ts0.times[30]))
-        self.assertEqual(tsmax,truemax)    
-    
+        self.assertEqual(tsmax,truemax)
+
     def test_ts_maximum(self):
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
         tsmax=ts_maximum(ts0,0)
         self.assertEqual(tsmax,data[-1])
@@ -48,13 +48,13 @@ class TestUFunc(unittest.TestCase):
         time_window=(ts0.times[5],ts0.times[30])
         truemax=data[30]
         tsmax=ts_max(ts0.window(ts0.times[5],ts0.times[30]))
-        self.assertEqual(tsmax,truemax)         
+        self.assertEqual(tsmax,truemax)
 
     def test_ts_minimum(self):
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
         tsmin=ts_minimum(ts0,50)
         self.assertEqual(tsmin[49].value,49.)
@@ -63,18 +63,18 @@ class TestUFunc(unittest.TestCase):
     def test_ts_minimum(self):
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
         tsmin=ts_maximum(ts0,50)
         self.assertEqual(tsmin[49].value,50.)
         self.assertEqual(tsmin[51].value,51.)
-        
+
     def test_ts_sum(self):
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
         tssum=ts_sum(ts0)
         self.assertEqual(tssum,sum(data))
@@ -82,18 +82,18 @@ class TestUFunc(unittest.TestCase):
         time_window=(ts0.times[5],ts0.times[30])
         truesum=sum(data[5:31])
         tssum=ts_sum(ts0.window(time_window[0],time_window[1]))
-        self.assertEqual(tssum,truesum)        
+        self.assertEqual(tssum,truesum)
 
     def test_ts_mean(self):
-        
+
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
         tsmean=ts_mean(ts0)
         self.assertEqual(tsmean,sum(data)/ts_len)
-        
+
         time_window=(ts0.times[5],ts0.times[30])
         truemean=sum(data[5:31])/26
         tsmean=ts_mean(ts0.window(time_window[0],time_window[1]))
@@ -101,11 +101,11 @@ class TestUFunc(unittest.TestCase):
 
 
     def test_ts_apply(self):
-          
+
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
 
         larger=1000
@@ -116,74 +116,18 @@ class TestUFunc(unittest.TestCase):
         chop=50
         chop_ts=ts_apply(ts0,numpymaximum,other=chop)
         self.assertEqual(len(larger_ts),ts_len)
-        self.assertEqual(larger,larger_ts.data[23])         
+        self.assertEqual(larger,larger_ts.data[23])
 
     def test_ts_accumulate(self):
         ts_start=datetime(year=1990,month=2,day=3,hour=11, minute=45)
         ts_len=100
-        ts_intvl=days(1)            
-        data=range(ts_len)
+        ts_intvl=days(1)
+        data=list(range(ts_len))
         ts0=rts(data,ts_start,ts_intvl)
         accadd_ts=ts_accumulate(ts0,numpyadd)
         self.assertEqual(len(accadd_ts),ts_len)
         self.assertEqual(accadd_ts.data[-1],sum(data))
-            
+
 if __name__=="__main__":
-    
-    unittest.main()       
 
-
-
-    
-
-            
-
-        
-        
-
-        
-            
-
-
-        
-        
-
-        
-        
-
-        
-
-        
-
-
-        
-
-             
-
-
-
-            
-        
-    
-        
-        
-
- 
-
-        
-
-        
-        
-
-    
-                    
-
-
-
-
-        
-
-                 
-
-    
-    
+    unittest.main()

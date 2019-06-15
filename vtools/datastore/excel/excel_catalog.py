@@ -12,7 +12,7 @@ from vtools.datastore.catalog import Catalog
 from vtools.datastore.data_reference import DataReference
 
 ## local import
-from excel_constants import *
+from .excel_constants import *
 
 __all__=["ExcelCatalog"]
 

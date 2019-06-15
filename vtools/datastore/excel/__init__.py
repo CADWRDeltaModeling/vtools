@@ -6,4 +6,4 @@ except:
 
     
 def make_plugin():
-    from excel_service import ExcelService
+    from .excel_service import ExcelService

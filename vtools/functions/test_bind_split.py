@@ -46,25 +46,25 @@ class TestBindSplitOp(unittest.TestCase):
         data=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
         ts1=its(times,data,{})
         ts2=its(times,data,{})
- 
+
         new_ts = ts_bind(ts1,ts2)
         self.assertEqual(len(new_ts),len(ts1))
         self.assertEqual(new_ts.start,ts1.start)
-       
+
         for (d1,d2),d  in zip(new_ts.data,data):
             self.assertEqual(d1,d)
             self.assertEqual(d2,d)
-            
+
     def test_bind_op_regular(self):
         """ Test behaviour of bind operation on regular TS."""
-    
+
         #times=sciadd.accumulate(times)
         start = parse_time("1996-2-1")
         interval = parse_interval("1hour")
         data=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
         ts1=rts(data,start,interval,{})
         ts2=rts(data,start,interval,{})
- 
+
         new_ts = ts_bind(ts1,ts2)
         self.assertEqual(len(new_ts),len(ts1))
         self.assertEqual(new_ts.start,ts1.start)
@@ -72,7 +72,7 @@ class TestBindSplitOp(unittest.TestCase):
         for (d1,d2),d  in zip(new_ts.data,data):
             self.assertEqual(d1,d)
             self.assertEqual(d2,d)
-        
+
         ## partial overlap
         start2 = parse_time("1996-2-1 4:00")
         ts2=rts(data,start2,interval,{})
@@ -87,7 +87,7 @@ class TestBindSplitOp(unittest.TestCase):
         for i in range(10):
             self.assertEqual(new_ts.data[i,0],data[i])
             self.assertEqual(new_ts.data[i+4,1],data[i])
-          
+
          ##no overlap,immediately after
         start2 = parse_time("1996-2-1 10:00")
         ts2=rts(data,start2,interval,{})
@@ -102,7 +102,7 @@ class TestBindSplitOp(unittest.TestCase):
         for i in range(10):
             self.assertEqual(new_ts.data[i,0],data[i])
             self.assertEqual(new_ts.data[i+10,1],data[i])
-        
+
         ## smaller interval
         start2 = parse_time("1996-2-1 8:00")
         interval2=parse_interval("15min")
@@ -113,7 +113,7 @@ class TestBindSplitOp(unittest.TestCase):
         self.assertEqual(new_ts.times[-1],ts2.times[-1])
         self.assertEqual(new_ts.interval,interval2)
         ts1_id = [4*x for x in range(10)]
-        nan_id =  range(len(new_ts))
+        nan_id =  list(range(len(new_ts)))
         for i in ts1_id:
             nan_id.remove(i) ## those id supoose have nan
         ts1_val = new_ts.data[ts1_id,0]
@@ -122,11 +122,11 @@ class TestBindSplitOp(unittest.TestCase):
             self.assertEqual(d1,d2)
         for d in left_val:
             self.assertTrue(isnan(d))
-        ts2_id = range(32,42)
+        ts2_id = list(range(32,42))
         ts2_val = new_ts.data[ts2_id,1]
         for d1,d2 in zip(ts2_val,data):
             self.assertEqual(d1,d2)
-            
+
     def test_bind_multivar(self):
         """ test behaviour of bind on multvariate ts"""
         start = parse_time("1996-2-1")
@@ -135,12 +135,12 @@ class TestBindSplitOp(unittest.TestCase):
         data2t=sciarray([[1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0],
                         [2.0,2.1,2.8,9.1,3.2,0.5,0.1,8.1,1.2,1.1]])
         data2=data2t.transpose()
-        
-        data_temp= sciarray([data1[:],data2t[0,:],data2t[1,:]]).transpose()             
-                        
+
+        data_temp= sciarray([data1[:],data2t[0,:],data2t[1,:]]).transpose()
+
         ts1=rts(data1,start,interval,{})
         ts2=rts(data2,start,interval,{})
-       
+
         new_ts = ts_bind(ts1,ts2)
         self.assertEqual(len(new_ts),len(ts1))
         self.assertEqual(new_ts.start,ts1.start)
@@ -149,7 +149,7 @@ class TestBindSplitOp(unittest.TestCase):
             self.assertEqual(d1,dt1)
             self.assertEqual(d2,dt2)
             self.assertEqual(d3,dt3)
-            
+
     def test_split_op_irregular(self):
         """ Test behaviour of split operation on irregular TS."""
         times=[12,15,32,38,43,52,84,138,161,172]
@@ -160,35 +160,35 @@ class TestBindSplitOp(unittest.TestCase):
         times=sciadd(times,start_ticks)
         data1=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
         data2=sciarray([7.0,1.2,10.5,3.0,1.0,1.0,9.0,3.0,0.0,0.2])
-        
+
         ts = its(times,sciarray([data1,data2]).transpose())
-        
+
         ts1,ts2 =ts_split(ts,False)
-           
-        
+
+
         for d1,d2 in zip(ts.data[:,0],ts1.data):
             self.assertEqual(d1,d2)
         for d1,d2 in zip(ts.data[:,1],ts2.data):
             self.assertEqual(d1,d2)
         ts1.data[5] = -9999.0
-        ts2.data[2] = -9999.0    
+        ts2.data[2] = -9999.0
         self.assertNotEqual(ts1.data[5],ts.data[5,0])
         self.assertNotEqual(ts2.data[2],ts.data[2,1])
-        
+
         for t1,t2 in zip(ts1.times,ts.times):
            self.assertEqual(t1,t2)
         for t1,t2 in zip(ts2.times,ts.times):
            self.assertEqual(t1,t2)
-           
+
         ts1,ts2 =ts_split(ts,True)
         ts1.data[5] = -9999.0
         ts2.data[2] = -9999.0
-    
+
         for d1,d2 in zip(ts.data[:,0],ts1.data):
             self.assertEqual(d1,d2)
         for d1,d2 in zip(ts.data[:,1],ts2.data):
             self.assertEqual(d1,d2)
-       
+
         for t1,t2 in zip(ts1.times,ts.times):
            self.assertEqual(t1,t2)
         for t1,t2 in zip(ts2.times,ts.times):
@@ -196,173 +196,117 @@ class TestBindSplitOp(unittest.TestCase):
 
     def test_split_op_regular(self):
         """ Test behaviour of split operation on regular TS."""
-        
+
         #times=sciadd.accumulate(times)
         start = parse_time("1996-2-1")
         interval = parse_interval("1hour")
         data1=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
         data2=sciarray([7.0,1.2,10.5,3.0,1.0,1.0,9.0,3.0,0.0,0.2])
-        
+
         ts = rts(sciarray([data1,data2]).transpose(),start,interval)
-        
+
         ts1,ts2 =ts_split(ts,False)
-        
+
         for d1,d2 in zip(ts.data[:,0],ts1.data):
             self.assertEqual(d1,d2)
         for d1,d2 in zip(ts.data[:,1],ts2.data):
             self.assertEqual(d1,d2)
-            
+
         ts1.data[5] = -9999.0
-        ts2.data[2] = -9999.0    
+        ts2.data[2] = -9999.0
         self.assertNotEqual(ts1.data[5],ts.data[5,0])
         self.assertNotEqual(ts2.data[2],ts.data[2,1])
-         
+
         self.assertEqual(ts1.start,ts.start)
         self.assertEqual(ts1.interval,ts.interval)
         self.assertEqual(len(ts1),len(ts))
         self.assertEqual(ts2.start,ts.start)
         self.assertEqual(ts2.interval,ts.interval)
         self.assertEqual(len(ts2),len(ts))
-        
+
         ts1,ts2 =ts_split(ts,True)
 
         ts1.data[5] = -9999.0
         ts2.data[2] = -9999.0
-    
-        
+
+
         for d1,d2 in zip(ts.data[:,0],ts1.data):
             self.assertEqual(d1,d2)
         for d1,d2 in zip(ts.data[:,1],ts2.data):
             self.assertEqual(d1,d2)
-         
+
         self.assertEqual(ts1.start,ts.start)
         self.assertEqual(ts1.interval,ts.interval)
         self.assertEqual(len(ts1),len(ts))
         self.assertEqual(ts2.start,ts.start)
         self.assertEqual(ts2.interval,ts.interval)
         self.assertEqual(len(ts2),len(ts))
-        
+
     def test_split_op_regular_3(self):
         """ Test behaviour of split operation on regular TS with more than 3 variable"""
-        
+
         #times=sciadd.accumulate(times)
         start = parse_time("1996-2-1")
         interval = parse_interval("1hour")
         data1=sciarray([1.0,1.0,1.0,1.0,1.0,1.0,2.0,3.0,3.0,3.0])
         data2=sciarray([7.0,1.2,10.5,3.0,1.0,1.0,9.0,3.0,0.0,0.2])
         data3=sciarray([0.03,1.02,70.5,0.0,1.0,1.0,9.6,13.0,0.0,2.2])
-        
+
         ts = rts(sciarray([data1,data2,data3]).transpose(),start,interval)
-        
+
         ts1,ts2,ts3 =ts_split(ts,False)
-        
+
         for d1,d2 in zip(ts.data[:,0],ts1.data):
             self.assertEqual(d1,d2)
         for d1,d2 in zip(ts.data[:,1],ts2.data):
             self.assertEqual(d1,d2)
         for d1,d2 in zip(ts.data[:,2],ts3.data):
             self.assertEqual(d1,d2)
-            
+
         ts1.data[5] = -9999.0
-        ts2.data[2] = -9999.0    
+        ts2.data[2] = -9999.0
         self.assertNotEqual(ts1.data[5],ts.data[5,0])
         self.assertNotEqual(ts2.data[2],ts.data[2,1])
-         
+
         self.assertEqual(ts1.start,ts.start)
         self.assertEqual(ts1.interval,ts.interval)
         self.assertEqual(len(ts1),len(ts))
         self.assertEqual(ts2.start,ts.start)
         self.assertEqual(ts2.interval,ts.interval)
         self.assertEqual(len(ts2),len(ts))
-        
+
         ts1,ts2,ts3 =ts_split(ts,True)
 
         ts1.data[5] = -9999.0
         ts2.data[2] = -9999.0
-    
-        
+
+
         for d1,d2 in zip(ts.data[:,0],ts1.data):
             self.assertEqual(d1,d2)
         for d1,d2 in zip(ts.data[:,1],ts2.data):
             self.assertEqual(d1,d2)
-         
+
         self.assertEqual(ts1.start,ts.start)
         self.assertEqual(ts1.interval,ts.interval)
         self.assertEqual(len(ts1),len(ts))
         self.assertEqual(ts2.start,ts.start)
         self.assertEqual(ts2.interval,ts.interval)
         self.assertEqual(len(ts2),len(ts))
-        
+
         ts = rts(sciarray(data1),start,interval)
         [ts1] =ts_split(ts,True)
 
         ts1.data[5] = -9999.0
-       
-        
+
+
         for d1,d2 in zip(ts.data,ts1.data):
             self.assertEqual(d1,d2)
-      
-         
+
+
         self.assertEqual(ts1.start,ts.start)
         self.assertEqual(ts1.interval,ts.interval)
         self.assertEqual(len(ts1),len(ts))
-      
+
 if __name__=="__main__":
-    
-    unittest.main()       
 
-
-
-    
-
-            
-
-        
-        
-
-        
-            
-
-
-        
-        
-
-        
-        
-
-        
-
-        
-
-
-        
-
-             
-
-
-
-            
-        
-    
-        
-        
-
- 
-
-        
-
-        
-        
-
-    
-                    
-
-
-
-
-        
-
-                 
-
-    
-    
+    unittest.main()

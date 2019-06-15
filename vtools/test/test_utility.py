@@ -87,7 +87,7 @@ class TestUtility(unittest.TestCase):
                "01/9/1998","02/15/1998","03/19/1998",\
                "04/15/1998","05/19/1998","06/30/1998",\
                "07/15/1998","08/24/1998"]
-        times =map(parse,times)
+        times =list(map(parse,times))
         props={}
         ts = its(times,data,props=props)
         dss_store_ts(ts,dssfile_path,path)
@@ -96,7 +96,7 @@ class TestUtility(unittest.TestCase):
         ##
         dssfile_path=self.dss_file_path
         c=dss_catalog(dssfile_path)
-        print c
+        print(c)
       
         
         

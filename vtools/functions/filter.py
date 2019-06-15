@@ -118,7 +118,7 @@ def butterworth(ts,order=4,cutoff_period=None,cutoff_frequency=None):
     d2=filtfilt(b,a,ts.data,axis=0)
     
     prop={}
-    for key,val in ts.props.items():
+    for key,val in list(ts.props.items()):
         prop[key]=val
     prop[TIMESTAMP]=INST
     prop[AGGREGATION]=INDIVIDUAL
@@ -198,7 +198,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
         be specified simultaneously")
         
     if ( (cutoff_frequency is None)) and ((cutoff_period is None)):
-         print "neither cutoff_frequency nor cutoff_period is given, 40 hours is used by defualt"
+         print("neither cutoff_frequency nor cutoff_period is given, 40 hours is used by defualt")
          cutoff_period = hours(40)
         
     cf=cutoff_frequency
@@ -269,7 +269,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
         d2[len(d2)-2*m:len(d2)]=nan
         
     prop={}
-    for key,val in ts.props.items():
+    for key,val in list(ts.props.items()):
         prop[key]=val
     prop[TIMESTAMP]=INST
     prop[AGGREGATION]=INDIVIDUAL
@@ -393,7 +393,7 @@ def boxcar(ts,before,after):
     new_data=_boxcar(ts.data,len_before,len_after)
     
     prop={}
-    for key,val in ts.props.items():
+    for key,val in list(ts.props.items()):
         prop[key]=val
     prop[TIMESTAMP]=INST
     prop[AGGREGATION]=INDIVIDUAL
@@ -444,7 +444,7 @@ def godin(ts):
     
     interval=ts.interval
     
-    if not interval in godin_interval.keys():
+    if not interval in list(godin_interval.keys()):
         raise ValueError("Not supported time interval by godin filter")
     
     num_1=godin_interval[interval][0]
@@ -457,7 +457,7 @@ def godin(ts):
     d1=_boxcar(d1,num_2,num_2)
     
     prop={}
-    for key,val in ts.props.items():
+    for key,val in list(ts.props.items()):
         prop[key]=val
     prop[TIMESTAMP]=INST
     prop[AGGREGATION]=INDIVIDUAL

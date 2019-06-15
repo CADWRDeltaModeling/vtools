@@ -1,8 +1,8 @@
 import sys,os,unittest
 
-from test_catalog import TestCatalog
-from test_transfer import TestTransfer
-from test_translate import TestTranslate
+from .test_catalog import TestCatalog
+from .test_transfer import TestTransfer
+from .test_translate import TestTranslate
 
 def suite():    
     suite = unittest.TestSuite()
@@ -25,4 +25,4 @@ if __name__=="__main__":
     storesuit=suite()
     runner=unittest.TextTestRunner()
     result=runner.run(storesuit)
-    print result
+    print(result)

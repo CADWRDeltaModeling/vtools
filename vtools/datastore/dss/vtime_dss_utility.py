@@ -18,7 +18,7 @@ from vtools.data.timeseries import rts,its
 from vtools.data.constants import *
 
 # local import
-from dss_constants import *
+from .dss_constants import *
 
 ########################################################################### 
 # Public interface.
@@ -79,7 +79,7 @@ def validate_rts_for_dss(rt):
         aggregation=INDIVIDUAL
         ## this is the props going to be reurned
         corrected_props=copy.deepcopy(rt.props) 
-        if rt.props and (AGGREGATION in rt.props.keys()):
+        if rt.props and (AGGREGATION in list(rt.props.keys())):
             aggregation=rt.props[AGGREGATION]
             aggregation_before_translate=aggregation
             #remove this aggregation item,for it is not needed in dss storage
@@ -87,12 +87,12 @@ def validate_rts_for_dss(rt):
         else:
             aggregation=INDIVIDUAL
         ## if aggregation need to be translate into dss term 
-        if aggregation in RTS_VT_PROPTY_TO_DSS.keys():
+        if aggregation in list(RTS_VT_PROPTY_TO_DSS.keys()):
             aggregation=RTS_VT_PROPTY_TO_DSS[aggregation]        
         
         ctype=aggregation
         
-        if rt.props and (TIMESTAMP in rt.props.keys()):
+        if rt.props and (TIMESTAMP in list(rt.props.keys())):
             timestamp=rt.props[TIMESTAMP]
             #remove this timestamp for it is not needed in dss storage
             del corrected_props[TIMESTAMP]
@@ -179,17 +179,17 @@ def dss_rts_to_ts(data,startdate,starttime,time_interval,iofset,prop=None,flags=
     relative_interval=None
     ## is it PER-AVE,PER-MIN, PER-MAX...
     isAggregated=False
-    if CTYPE in prop.keys():
+    if CTYPE in list(prop.keys()):
         tsstype=prop[CTYPE]
         #translate vtools time aggreation term into dss term
         # Todo: make the automatic conversion a user controlled
         # those handlinges for the type of mean,min,max over a period only     
-        if tsstype in RTS_DSS_PROPTY_TO_VT.keys():
+        if tsstype in list(RTS_DSS_PROPTY_TO_VT.keys()):
            #start_datetime=start_datetime-interval_timedelta
            isAggregated=True
            prop[TIMESTAMP]=PERIOD_START
            prop[AGGREGATION]=RTS_DSS_PROPTY_TO_VT[tsstype]
-        elif tsstype in RTS_DSS_PROPTY_TO_VT.values():
+        elif tsstype in list(RTS_DSS_PROPTY_TO_VT.values()):
            #start_datetime=start_datetime-interval_timedelta
            isAggregated=Ture
            prop[TIMESTAMP]=PERIOD_START
@@ -270,7 +270,7 @@ def validate_its_for_dss(irrts):
     lflags=False
     jbdate=_datetime_to_dss_julian_days(irrts.start)
 
-    if irrts.props and UNIT in irrts.props.keys():
+    if irrts.props and UNIT in list(irrts.props.keys()):
         cunit=irrts.props[UNIT]
     else:
         cunit=UND
@@ -313,7 +313,7 @@ def uncondensed_Dparts(interval_str,start_str,end_str):
     intl=_dss_block_size[interval_str.upper()]
     ni=number_intervals(st,et,intl)
     tlst=time_sequence(st,intl,ni+1)
-    tlst=map(ticks_to_time,tlst)
+    tlst=list(map(ticks_to_time,tlst))
     nt=[d.strftime("%d%b%Y") for d in tlst]
     return nt
     
@@ -348,7 +348,7 @@ def _validate_properties_of_regular_timeseries(rt):
     flags=False
     lflags=None
     
-    if rt.props and (UNIT in rt.props.keys()):
+    if rt.props and (UNIT in list(rt.props.keys())):
         cunits=rt.props[UNIT]
     else:
         cunits=UND
@@ -391,7 +391,7 @@ def _validate_interval_of_regualr_timeseries(interval):
         if not (interval_seconds in valid_dss_interval_seconds):
             raise ValueError("%d is incorrect time interval for dss storage"%interval_second)
     elif type(interval)==type("st"):
-        if not (upper(interval) in valid_dss_interval_dic_in_mins.keys()):
+        if not (upper(interval) in list(valid_dss_interval_dic_in_mins.keys())):
             raise ValueError("%s is incorrect time interval for dss storage"%interval)
     elif type(interval)==type(time_interval(hours=1)) or type(interval)==type(time_interval(years=1)):
         if not interval in valid_dss_interval_dic_in_delta:
@@ -457,7 +457,7 @@ def _string_interval_to_minutes(time_interval):
     """
     num_min=1
 
-    if not(time_interval in valid_dss_interval_dic_in_mins.keys()):
+    if not(time_interval in list(valid_dss_interval_dic_in_mins.keys())):
         err_str= "%s is not a valid dss regular time interval"%time_interval
         raise ValueError(err_str)
     

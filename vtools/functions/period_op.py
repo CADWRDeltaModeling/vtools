@@ -101,7 +101,7 @@ def period_op(ts,interval,op,method=None):
     ## select mean method if doing mean.
     if op==MEAN:
         if not method:
-            if (not ts.props is None) and TIMESTAMP in ts.props.keys() and \
+            if (not ts.props is None) and TIMESTAMP in list(ts.props.keys()) and \
                ts.props[TIMESTAMP]==INST:
                 method=TRAPEZOID
             else:
@@ -111,7 +111,7 @@ def period_op(ts,interval,op,method=None):
     ## valid starting time point.
     ts_start=ts.start
     ts_end=ts.end
-    if (TIMESTAMP in ts.props.keys()) and (ts.props[TIMESTAMP]==PERIOD_START):
+    if (TIMESTAMP in list(ts.props.keys())) and (ts.props[TIMESTAMP]==PERIOD_START):
         ts_end=ts_end+ts.interval
         
     aligned_start=align(ts_start,interval,1)
@@ -127,7 +127,7 @@ def period_op(ts,interval,op,method=None):
     ndx_after=ts.index_after(aligned_start_ticks)  
     start_index=sciint64(ndx_after)
     
-    if not (op in operator_dic.keys()):
+    if not (op in list(operator_dic.keys())):
         raise ValueError("Invalid operation %s,it must be" \
                          " one of %s."%(op,operator_dic.kyes()))
 
@@ -136,7 +136,7 @@ def period_op(ts,interval,op,method=None):
     prop={}
     prop[TIMESTAMP]=PERIOD_START
     prop[AGGREGATION]=op
-    for key,val in ts.props.items():
+    for key,val in list(ts.props.items()):
         if (not (key==TIMESTAMP)) and (not (key==AGGREGATION)):
             prop[key]=val
     
@@ -291,7 +291,7 @@ def _calendar_independent_op(ts,op,interval,\
     elif data.ndim==1:
         data=data.reshape(num,stepsize)
     else:
-        raise StandardError("Time series data has dimension size larger than 2.")
+        raise Exception("Time series data has dimension size larger than 2.")
     
     operator= operator_dic[op] 
     if operator==sciadd and op==MEAN:
@@ -363,7 +363,7 @@ def _calendar_dependent_op(ts,op,interval,\
     tsdata=ts.data
     
     if not operation_index.any():
-        raise StandardError("Error in building operation" 
+        raise Exception("Error in building operation" 
                             " indexs in period operation funcs.")
     
     operator= operator_dic[op]

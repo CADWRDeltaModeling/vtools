@@ -249,25 +249,25 @@ def _main():
     ts1 = shift(ts1,lag)
     
     lag_sec = calculate_lag(ts0,ts1, (datetime(2009,3,14),datetime(2009,4,14)),max_shift=minutes(60),period = days(21))
-    print "lag = %s" % (lag_sec/60.)
-    print "skill = %s" % skill_score(ts0.data, shift(ts1,seconds(lag_sec)).data)
+    print("lag = %s" % (lag_sec/60.))
+    print("skill = %s" % skill_score(ts0.data, shift(ts1,seconds(lag_sec)).data))
     
     x = np.array([2.,4.,6.])
     y = x*1.5
-    print mse(x,y.mean())
-    print rmse(x,x.mean())
-    print skill_score(x,y)
-    print median_error(x,y)
+    print(mse(x,y.mean()))
+    print(rmse(x,x.mean()))
+    print(skill_score(x,y))
+    print(median_error(x,y))
     
     z0 = np.array([1.,np.nan,7.,5.,7.,10.,12.,14.])
     z1 = np.array([2.,3.,5.,6.,8.,11.,13.,36.])
     zts0 = rts(z0,start,intvl)
     zts1 = rts(z1,start,intvl)
-    print "OK"
-    print "tmean %s" % tmean_error(z0,z1,limits=(-1.,1.))
+    print("OK")
+    print("tmean %s" % tmean_error(z0,z1,limits=(-1.,1.)))
     
-    print "tmean %s" % tmean_error(zts0,zts1,limits=(-1.,1.))
-    print "r %s" % corr_coefficient(zts0,zts1)
+    print("tmean %s" % tmean_error(zts0,zts1,limits=(-1.,1.)))
+    print("r %s" % corr_coefficient(zts0,zts1))
 
  
     

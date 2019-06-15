@@ -33,7 +33,7 @@ USAGE = re.compile(r'(?s)\s*usage: (.*?)(\n[ \t]*\n|$)')
 
 def nonzero(self): # will become the nonzero method of optparse.Values       
     "True if options were given"
-    for v in self.__dict__.itervalues():
+    for v in self.__dict__.values():
         if v is not None: return True
     return False
 
@@ -56,13 +56,13 @@ def parse(docstring, arglist=None):
         p = optparse.OptionParser(optlines[0])
         for line in optlines[1:]:
             opt, help=line.split(':')[:2]
-            short,long=opt.split(',')[:2]
+            short,int=opt.split(',')[:2]
             if '=' in opt:
                 action='store'
-                long=long.split('=')[0]
+                long=int.split('=')[0]
             else:
                 action='store_true'
-            p.add_option(short.strip(),long.strip(),
+            p.add_option(short.strip(),int.strip(),
                          action = action, help = help.strip())
     except (IndexError,ValueError):
         raise ParsingError("Cannot parse the option string correctly")

@@ -1,7 +1,7 @@
 import sys
 
-from data_access_service import DataAccessService,DataAccessError
-from catalog_service import CatalogService
+from .data_access_service import DataAccessService,DataAccessError
+from .catalog_service import CatalogService
 
 
 
@@ -20,16 +20,14 @@ class Register(type):
     return
 
 
-class Service(DataAccessService,CatalogService):
-
-    __metaclass__=Register
+class Service(DataAccessService,CatalogService, metaclass=Register):
 
     all_service={}
     identification="vtools.datastore.ui.service"
 
     def factory(identification):
 
-        if identification in Service.all_service.keys():
+        if identification in list(Service.all_service.keys()):
             return Service.all_service[identification]
         else:
             raise ValueError(identification +" is not a type registed")

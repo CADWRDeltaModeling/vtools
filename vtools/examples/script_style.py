@@ -22,13 +22,13 @@ def script_style(first, second, myinteger,ending = "!!!"):
      if (first is None):
          raise TypeError("Raise this error for None")
      if type(myinteger) != int:
-         print myinteger
+         print(myinteger)
          raise TypeError("myint should be an integer.")
      if myinteger >=5:
          raise ValueError("ValueError for right type, inappropriate value")
      
      message="Hello world %s %s %s %s" % (first, second, myinteger,ending)
-     print message
+     print(message)
      return message
 
 def main():
@@ -70,8 +70,8 @@ def main():
         ending=args[0]
         script_style(opts.first,opts.second,opts.myint,ending)
                 
-    except StandardError, e:
-        print e
+    except Exception as e:
+        print(e)
 
     
 
@@ -84,7 +84,7 @@ def test():
         script_style("a","b",6)
         raise "Bad argument not identified"
     except ValueError:
-        print "Exception caught as expected"
+        print("Exception caught as expected")
     return
 
 

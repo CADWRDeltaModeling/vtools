@@ -26,12 +26,12 @@ from vtools.datastore.transfer import *
 ## local import
 from vtools.datastore.dss.dss_service import *
 from vtools.datastore.excel.excel_service import *
-from data_service_manager import DataServiceManager
-from service import Service
+from .data_service_manager import DataServiceManager
+from .service import Service
 
-from translate import *
-from group import *
-from optionparse import parse
+from .translate import *
+from .group import *
+from .optionparse import parse
 
 
 
@@ -48,7 +48,7 @@ for plugin in  __import__('pkg_resources').iter_entry_points(group="vtools.datas
         pe=plugin.parse(str(plugin))
         pe.load(False)
         
-    except Exception, e:
+    except Exception as e:
         raise ImportError("fail to load required data source service plugin %s due to %s"%(str(plugin),str(e)))
 
 
@@ -110,14 +110,14 @@ def batch_transfer(source,dest=None,selector=None,extent=None\
     c1=s1.get_catalog(source)
     try:
       data_ref1=[rf for rf in c1.data_references(selector,extent)]
-    except NotImplementedError,e:
+    except NotImplementedError as e:
       raise ValueError("Batch transfer timeseries from"
                        "this type of source is not supported yet.")
     
     if not data_ref1:
-      print " Warning:selection criteria "\
+      print(" Warning:selection criteria "\
        "return no data records from source "\
-       "no transfer was done."
+       "no transfer was done.")
       return
       
     data_ref2=translate_references(s1,data_ref1,\
@@ -173,9 +173,9 @@ def transfer(s1,reference1,s2,reference2,transform=None,**func_args):
       try:
         dt=s1.get_data(d1)
       except:
-        raise StandardError("Failed to retrieve data pointed to by %s"%d1.selector)
+        raise Exception("Failed to retrieve data pointed to by %s"%d1.selector)
       ts_groups =[]
-      if "compress_size" in func_args.keys():
+      if "compress_size" in list(func_args.keys()):
           compress_size = func_args["compress_size"]
           ts_groups = ts_group(dt,compress_size)
       else:
@@ -185,11 +185,11 @@ def transfer(s1,reference1,s2,reference2,transform=None,**func_args):
           try:
               ts=_transform(a_dt,transform,**func_args)
           except:
-              raise StandardError("Failed to transform input timeseries" )
+              raise Exception("Failed to transform input timeseries" )
           try:
               s2.add_data(d2,ts)
           except:
-              raise StandardError("Failed to add new data into path %s in dest %s"%(d2.selector,d2.source))
+              raise Exception("Failed to add new data into path %s in dest %s"%(d2.selector,d2.source))
     return
 
 ########################################################################### 
@@ -200,7 +200,7 @@ def _service(source,ds):
    """ return a service based on the source given.
    """
    s1=None
-   for cls in Service.all_service.values():
+   for cls in list(Service.all_service.values()):
       if cls.serve(source):
          s1=cls()
          break
@@ -260,7 +260,7 @@ def _get_func(fullFuncName):
     """Retrieve a function object from a full dotted-package name."""
     
     # Parse out the path, module, and function
-    lastDot = fullFuncName.rfind(u".")
+    lastDot = fullFuncName.rfind(".")
     funcName = fullFuncName[lastDot + 1:]
     modPath = fullFuncName[:lastDot]
     
@@ -268,7 +268,7 @@ def _get_func(fullFuncName):
     aFunc = getattr(aMod, funcName)
     
     # Assert that the function is a *callable* attribute.
-    assert callable(aFunc), u"%s is not callable." % fullFuncName
+    assert callable(aFunc), "%s is not callable." % fullFuncName
     
     # Return a reference to the function itself,
     # not the results of the function.
@@ -281,7 +281,7 @@ def main():
    opt,otherarg=parse(__doc__)
 
    if (not opt) or getattr(opt,"usage"):
-      print  """ 
+      print(""" 
                   Transfer and transform data from one source to another
                   This module provides functionality for opening one data
                   source,grabbing data that matches selecting criteria,
@@ -317,7 +317,7 @@ def main():
                     transfer -i a.dss -s C=FLOW -o b.dss --extent (4/26/2001T09:30,08/30/2004T11:40) 
                     -t vtools.functions.api.period_ave interval=1day
                   
-               """
+               """)
       return 
      
    if not hasattr(opt,"in"):
@@ -350,10 +350,10 @@ def main():
       ext=getattr(opt,"extent")
    else:
       ext=None      
-   print source
-   print dest
-   print sel1
-   print ext
+   print(source)
+   print(dest)
+   print(sel1)
+   print(ext)
    batch_transfer(source,dest=dest,selector=sel1,extent=ext\
                    ,mapper=sel2,transform=transname,**varlst)
                    

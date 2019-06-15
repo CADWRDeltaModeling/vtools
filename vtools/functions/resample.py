@@ -82,7 +82,7 @@ def resample(ts,interval,aligned=True):
         st=ts.start
         prop={}
        
-        for key,val in ts.props.items():
+        for key,val in list(ts.props.items()):
             prop[key]=val
         prop[TIMESTAMP]=INST
         prop[AGGREGATION]=INDIVIDUAL
@@ -112,7 +112,7 @@ def _decimate(x, q, n=None, ftype='fir', axis=-1):
     """
 
     if type(q) != type(1):
-        raise ValueError, "q should be an integer"
+        raise ValueError("q should be an integer")
 
     if n is None:
         if ftype == 'fir':
@@ -156,7 +156,7 @@ def decimate(ts,interval,**dic):
     """
     
     
-    if "align_calendar" in dic.keys():
+    if "align_calendar" in list(dic.keys()):
         align_calendar=dic["align_calendar"]
         del dic["align_calendar"]
     else:
@@ -197,7 +197,7 @@ def decimate(ts,interval,**dic):
     
     ll=data.shape[0]    
     prop={}
-    for key,val in ts.props.items():
+    for key,val in list(ts.props.items()):
         prop[key]=val
     prop[TIMESTAMP]=INST
     prop[AGGREGATION]=INDIVIDUAL

@@ -4,56 +4,56 @@ for creating regular and irregular time series, as well as
 some helper functions.
 """
 import sys
-from vtime import *
+from .vtime import *
 import datetime as _datetime
 import numpy as np
 import copy
 import itertools
 import scipy
 import bisect
+import numbers
+import collections
 all = ["TimeSeries","TimeSeriesElement","prep_binary","range_union","rts","its","extrapolate_ts"]
 
-# python standard lib import.
-from operator import isNumberType,isSequenceType
 #from vtools.debugtools.timeprofile import debug_timeprofiler
 
 def range_union(ts0,ts1):
     """Union of time ranges of two series.
-       
+
        Parameters
        ----------
        ts0,ts1 : :class:`~vtools.data.timeseries.TimeSeries`
               The series whose union is to be found
-       
+
        Returns
-       ------- 
+       -------
        range : (:py:class:`datetime.datetime`, :py:class:`datetime.datetime`)
               A tuple representing the start and end of the union of time
               ranges of ts0 and ts1, as determined by the earliest start and the latest end.
     """
-      
+
     union_start=min(ts0.start,ts1.start)
     union_end=max(ts0.end,ts1.end)
     return (union_start,union_end)
-    
-    
+
+
 def range_intersect(ts0,ts1):
     """Intersection of time ranges of two series.
-    
+
       .. note::
          may return result with union_start > union_end,
          in which case there is no intersection.
-    
+
        Parameters
        ----------
        ts0,ts1 : :class:`~vtools.data.timeseries.TimeSeries`
               The series whose union is to be found
-       
+
        Returns
-       ------- 
+       -------
        range : (:py:class:`datetime.datetime`, :py:class:`datetime.datetime`)
               A tuple representing the start and end of the intersect of time ranges of ts0 and ts1
-            
+
     """
     if type(ts1) == tuple:
         comp_start = ts1[0]
@@ -62,22 +62,22 @@ def range_intersect(ts0,ts1):
         # assumes time series
         comp_start = ts1.start
         comp_end = ts1.end
-        
+
     intersect_start=max(ts0.start,comp_start)
     intersect_end=min(ts0.end,comp_end)
     return (intersect_start,intersect_end)
 
 def index_after(seq,tm):
     """Return the integer index of a time sequence that is on or after tm
-    
+
     Parameters
     ----------
     seq : :ref:`time_sequence<time_sequence>`
     The sequence whose index will be searched
-    
+
     tm : :py:class:`datetime.datetime`
     Time whose index is sought
-    
+
     Returns
     -------
     The integer index in the sequence that fall on or after tm.
@@ -92,12 +92,12 @@ def index_after(seq,tm):
 def indexes_after(seq,tm):
     """Return an array of indexes representing the index of seq that is on or after each
        member of tm.
-       
+
     Parameters
     ----------
     seq : :ref:`time_sequence<time_sequence>`
     The sequence whose index will be searched
-    
+
     tm : list of  :py:class:`datetime.datetime`
     List of times whose index is sought
     When tm is bigger than the last item of seq, it will return len(seq).
@@ -109,19 +109,19 @@ def indexes_after(seq,tm):
 
 def index_before(seq,tm):
     """Return the integer index of a time sequence that is on or before tm
-    
+
     Parameters
     ----------
     seq : :ref:`time_sequence<time_sequence>`
     The sequence whose index will be searched
-    
+
     tm : :py:class:`datetime.datetime`
     Time whose index is sought
-    
+
     Returns
     -------
     The integer index in the sequence that fall on or before tm.
-    
+
     """
     tm_ticks = ticks(tm)
     candidate = bisect.bisect_right(seq,tm_ticks) - 1
@@ -131,7 +131,7 @@ def prep_binary(ts1,ts2):
     """Create data for time-aligned op binary operation between two series
        Returns data holders and selections required to carry out
        index-aligned binary operations on two series. Mostly of interest to programmers.
-       
+
        Parameters
        ----------
        ts1,ts2 : :class:`~vtools.data.timeseries.TimeSeries`
@@ -144,13 +144,13 @@ def prep_binary(ts1,ts2):
 
        start : py:class:`datetime.datetime`
            The start of the sequence as a datetime
-       
-       slice0 : slice 
+
+       slice0 : slice
            Indexing slice within seq covered by ranges of both ts1 and ts2
-       
+
        slice1 : slice
            Indexing slice within ts1 representing the region intersecting ts2
-       
+
        slice2 : slice
            Indexing slice within ts2 representing the region intersecting ts1
     """
@@ -172,7 +172,7 @@ def prep_binary(ts1,ts2):
 def _get_span(ts,start,end,left,right):
     """ Return span of index within ts according to input start and end
     """
-    
+
     if len(ts)==0:
         raise ValueError("invalid input time series")
 
@@ -222,7 +222,7 @@ class TimeSeriesElement(object):
 
     def _get_time(self):
         return ticks_to_time(self.ticks)
-    
+
     value = property(_get_value,None,None,"Value at element")
     ticks = property(_get_ticks,None,None,"Time point in long integer ticks of element")
     time = property(_get_time,None,None,"Time at element")
@@ -233,10 +233,10 @@ class TimeSeriesElement(object):
 
 
 class TimeSeries(object):
-    """ Fundamental class for both regular and irregular time series. 
+    """ Fundamental class for both regular and irregular time series.
        The preferred way to create a time series is with the rts or its factory functions,
        not with the constructor. The member attributes include the times and data in the series (which
-       are paired) as well as methods of querying the time series properties (start, end, interval) of the time series.       
+       are paired) as well as methods of querying the time series properties (start, end, interval) of the time series.
     """
 
     def __init__(self, times, data, props,header=None):
@@ -246,33 +246,33 @@ class TimeSeries(object):
         if (len(times) != len(data)):
             raise ValueError("times not same length as data")
             # fixme: what is the correct exception?
-        
+
         # are times input as times or as a sequence
         # of ticks?
         if(len(times)>0):
             if isinstance(times[0],_datetime.datetime):
-                self._ticks = scipy.array(map(ticks,times))
+                self._ticks = scipy.array(list(map(ticks,times)))
             else:
                 self._ticks = times
         else:
             self._ticks=[]
         self._props = {} if props is None else props
         self._data = data
-        self._props = props     
+        self._props = props
         self._len = len(times)
         self._len = len(data)
-       
+
 
     def is_regular(self):
         """Returns true if the time series is regular
            A regular series is considered regular if it has a sampling interval. This interval may
-           or may not be calendar dependent. 
+           or may not be calendar dependent.
         """
-        if hasattr(self,'interval'): 
+        if hasattr(self,'interval'):
             return not self.interval is None
         else:
-            return False 
-    
+            return False
+
     def __len__(self):
         return len(self._ticks)
 
@@ -289,43 +289,47 @@ class TimeSeries(object):
             Input tm maybe a single datetime or list/array datetime, or
             single ticks or list/array of ticks.
             Accordingly, return will be a single index or array of indexes
-            
+
             If points are found, corresponding indexes will be return,
-            if not, indexes whose time are directly after points will 
+            if not, indexes whose time are directly after points will
             be returned.
 
             Performance of this method is better if tm is given by ticks
             if this is convenient; otherwise, if given a sequence of times,
             the method will convert the sequence to ticks automatically.
         """
-        
+
         ## Decsion about time type of tm, is it
         ## ticks or datetime.
- 
+
         issequence=False
-        if isSequenceType(tm):
+        if self._issequence(tm):
+            import pdb; pdb.set_trace()
             test_tm=tm[0]
             issequence=True
         else:
             test_tm=tm
-        
+
         if isinstance(test_tm,_datetime.datetime):
             if issequence:
-                   tm=map(ticks,tm)
+                   tm=list(map(ticks,tm))
             else:
                    tm=ticks(tm)
             return indexes_after(self._ticks,tm)
-        elif isNumberType(test_tm):
+        elif isinstance(test_tm,numbers.Number):
             return indexes_after(self._ticks,tm)
         else:
             raise TypeError("Timeseries class can only"
                             " search time given as datetime"
                             " or ticks")
-       
 
+    def _issequence(self, obj):
+        t = type(obj)
+        return hasattr(t, '__len__') and hasattr(t, '__getitem__')
+        # additionally: and hasattr(t, '__setitem__') and hasattr(t, '__delitem__')
 
     def __iter__(self):
-        ts_iter = itertools.izip(self._ticks,self._data)
+        ts_iter = zip(self._ticks,self._data)
         for item in ts_iter:
             yield TimeSeriesElement(item)
 
@@ -376,7 +380,7 @@ class TimeSeries(object):
                 raise IndexError("Subscript date must exactly match existing date in series")
         else:
             raise KeyError("Key not understood")
-    # 
+    #
     def __delitem__(self, index):
         if( self.is_regular()):
             raise ValueError("Elements may not be deleted from a regular time series")
@@ -386,31 +390,31 @@ class TimeSeries(object):
 
     def has_gap(self):
         """ find out if timeseries has nan data"""
-        
+
         return np.any(np.isnan(self.data))
 
     def copy(self,start=None,end=None,left=False,right=False):
         """ Perform a copy of this series, optionally with clipped start and end
-        
+
         Parameters
         ----------
         start : :py:class:`datetime.datetime`
             Start time of copy
-        
+
         end : :py:class:`datetime.datetime`extr
             End time of copy
-        
+
         left : boolean, optional
             Overlap so that the copy catches the value previous to the given start time (useful for irregular)
 
         right : boolean, optional
             Overlap so that the copy catches the next value after the given end time (useful for irregular)
-        
+
         Returns
         -------
         result : :class:`~vtools.data.timeseries.TimeSeries`
             Copy of the series. No shared data with the original, so you can manipulate it without fear of overwriting the original series.
-        
+
         See also
         --------
         window : Same concept but with shared data.
@@ -425,39 +429,39 @@ class TimeSeries(object):
         else:
             newticks=numpy.copy(self._ticks[startindex:endindex+1])
             return its(newticks,newdata,newprops)
-    
-    # 
-    # 
+
+    #
+    #
     def window(self,start=None, end=None, left=False, right=False):
-        """Provide a shared-memory ts (shared data and props) with a reduced time window 
-        
+        """Provide a shared-memory ts (shared data and props) with a reduced time window
+
            .. note::
                if left=True, the first time point will be at or before the given start time
                otherwise, the first time will be at or after the given start. same for right.
-               
+
         Parameters
         ----------
         start : :py:class:`datetime.datetime`
             Start time of window
-        
+
         end : :py:class:`datetime.datetime`
             End time of window
-        
+
         left : boolean, optional
             Overlap so that the copy catches the value previous to the given start time (useful for irregular)
 
         right : boolean, optional
             Overlap so that the copy catches the next value after the given end time (useful for irregular)
-        
+
         Returns
         -------
         result : :class:`~vtools.data.timeseries.TimeSeries`
             Copy of the series,shared data with the original.
-        
+
         See also
         --------
         copy : Same concept but with copied data.
-        
+
         """
         (startindex,endindex)=_get_span(self,start,end,left,right)
         newdata=self.data[startindex:endindex+1]
@@ -468,34 +472,34 @@ class TimeSeries(object):
             return rts(newdata,newstart,interval,newprops)
         else:
             newticks=self._ticks[startindex:endindex+1]
-            return its(newticks,newdata,newprops)      
-    
+            return its(newticks,newdata,newprops)
+
     def replace(self,ts,start,end):
         """Return a time series with data replaced by input ts or constant
-        
-         
+
+
         Parameters
         ----------
         ts    : :class:`~vtools.data.timeseries.TimeSeries` or constant
-             Data or constant to be used for replacing            
-            
+             Data or constant to be used for replacing
+
         start : :py:class:`datetime.datetime`
             Start time of window
-        
+
         end : :py:class:`datetime.datetime`
             End time of window
-        
+
         Returns
         -------
         result : :class:`~vtools.data.timeseries.TimeSeries`
             A new time series.
-        
+
         """
 
         left=False
         right=False
         replacingWithTs=False
-        
+
         if type(ts)==type(self):
             if not ((ts.is_regular() and self.is_regular())):
                 raise TypeError("only support replacing between two regular time series")
@@ -504,10 +508,10 @@ class TimeSeries(object):
             replacingWithTs=True
         #elif not (type(ts)==type(self.data.dtype)):
         #    raise TypeError("unsupported input type%s"%type(ts))
-                  
+
         (startIndex,endIndex)=_get_span(self,start,end,left,right)
-        
-        new_data=self.data[:]        
+
+        new_data=self.data[:]
         if not replacingWithTs:
             out = self.copy()
             try:
@@ -520,7 +524,7 @@ class TimeSeries(object):
                 (tsStart,tsEnd)=_get_span(ts,start,end,left,right)
             except :
                 raise ValueError("invalid input time series")
-                
+
             if not((tsEnd-tsStart)==(endIndex-startIndex)):
                 raise ValueError("replacing time series doesn't have enought length")
             new_data[startIndex:endIndex+1]=ts.data[tsStart:tsEnd+1]
@@ -528,23 +532,23 @@ class TimeSeries(object):
             return rts(new_data,self.start,self.interval,self.props)
         else:
             return its(self.times,new_data,self.props)
-    
+
     def centered(self,copy_data=False,neaten=True):
         """ Return a time series with times centered between the timestamps of the original series.
-        
+
         Parameters
         ----------
         copy_data : boolean,optional
             If True, the result is an entirely new series with deep copy of all data and properties. Otherwise, it will share data and properties ... more like a window than a new series.
-        
+
         neaten : boolean, optional
-        
+
         Returns
         -------
         result : :class:`~vtools.data.timeseries.TimeSeries`
             New series with shared or copied data with time centered between the timestamps of the original series. Note the new series has length one shorter than the original.
         """
-        
+
         new_data=self.data[0:-1]
         if copy_data:
             new_data = numpy.copy(self.data[0:-1])
@@ -573,43 +577,43 @@ class TimeSeries(object):
             half_interval  = [t/2 for t in interval_ticks]
             new_ticks = [t+dt for t,dt in zip(ticks1,half_interval)]
             return its(new_ticks,new_data,new_props)
-            
-    
-            
+
+
+
     def shift(self,interval,start=None,end=None):
         """ Inplace shift section of time series by a interval.
-        
+
         Parameters
         ----------
-        interval : :py:class:`dateutil.relativedelta`, :py:class:`datetime.timedelta`, string 
-  
-        start : :py:class:`datetime.datetime`, string 
-        end : :py:class:`datetime.datetime`, string 
-        
+        interval : :py:class:`dateutil.relativedelta`, :py:class:`datetime.timedelta`, string
+
+        start : :py:class:`datetime.datetime`, string
+        end : :py:class:`datetime.datetime`, string
+
          Returns
         -------
         result : boolean
-        
+
              return true if succeeded.
-             
-        """    
-        
-         
+
+        """
+
+
         if not is_interval(interval):
             interval=parse_interval(interval)
-            
+
         if is_calendar_dependent(interval):
             raise ValueError("shfit by calendar dependent interval is not supported")
-            
+
         if not(start):
-            start=self.start 
+            start=self.start
         if not(end):
-            end=self.end 
-            
+            end=self.end
+
         shift_ticks = ticks(interval)
-        
+
         if self.is_regular():
-            
+
             ts_interval_ticks = ticks(self.interval)
             if shift_ticks%ts_interval_ticks:
                 raise ValueError("you must shift by multiple of regular time series interval")
@@ -619,23 +623,23 @@ class TimeSeries(object):
             (start_index,end_index)=_get_span(self,start,end,left,right)
              ##univariate
             temp=0
-           
-                
+
+
             if len(self.data.shape)==1:
                 temp = self.data[start_index:end_index]
                 self.data[start_index+num_interval:end_index+num_interval]=temp
                 if shift_ticks>0:
                     self.data[start_index:start_index+num_interval]=np.nan
                 else:
-                    self.data[end_index+num_interval:end_index+1]=np.nan 
+                    self.data[end_index+num_interval:end_index+1]=np.nan
             else:
                 temp = self.data[:,start_index:end_index]
                 self.data[:,start_index+num_interval:end_index+num_interval]=temp
                 if shift_ticks>0:
                     self.data[:,start_index:start_index+num_interval]=np.nan
                 else:
-                    self.data[:,end_index+num_interval:end_index+1]=np.nan 
-                        
+                    self.data[:,end_index+num_interval:end_index+1]=np.nan
+
             return True
         else:
             left=True
@@ -644,19 +648,19 @@ class TimeSeries(object):
 
             shifted_span_start = self.ticks[start_index]+shift_ticks
             shifted_span_end   = self.ticks[end_index]+shift_ticks
-          
+
             if (shift_ticks>0):
                 if (((end_index+1)<len(self.ticks)) and (shifted_span_end>self.ticks[end_index+1])):
                     raise ValueError("shifted window end overlap existing data point")
             elif  (shift_ticks<0):
                 if (((start_index-1)>-1) and (shifted_span_start<self.ticks[start_index-11])):
                     raise ValueError("shifted window start overlap existing data point")
-            
+
             temp = self.ticks[start_index:end_index+1]+shift_ticks
             self.ticks[start_index:end_index+1]=temp
             return True
-    
-            
+
+
     def ts_inplace_binary(f):
         def b(self,other):
             if( isinstance(other,TimeSeries) ):
@@ -670,7 +674,7 @@ class TimeSeries(object):
 
 
     # built in math
-    def ts_unary(f):     
+    def ts_unary(f):
         def u(self):
             data=f(self._data)
             if self.is_regular():
@@ -709,10 +713,14 @@ class TimeSeries(object):
     @ts_binary
     def __mul__(self, other):
         return self * other
-    
-    @ts_binary    
-    def __div__(self, other):
+
+    @ts_binary
+    def __truediv__(self, other):
         return self / other
+
+    @ts_binary
+    def __floordiv__(self, other):
+        return self // other
 
     @ts_binary
     def __mod__(self, other):
@@ -735,8 +743,12 @@ class TimeSeries(object):
         return self*other
 
     @ts_binary
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         return other/self
+
+    @ts_binary
+    def __rfloordiv__(self, other):
+        return other//self
 
     @ts_binary
     def __rmod__(self, other):
@@ -745,7 +757,7 @@ class TimeSeries(object):
     @ts_binary
     def __pow__(self, other):
         return other % self
-        
+
     def __rdivmod__(self, other):
         raise NotImplementedError
 
@@ -757,7 +769,7 @@ class TimeSeries(object):
     @ts_inplace_binary
     def __isub__(self,other):
         self-=other
-        
+
     @ts_inplace_binary
     def __imul__(self,other):
         self*=other
@@ -766,8 +778,8 @@ class TimeSeries(object):
     def __idiv__(self,other):
         self/=other
 
-        
-# Called to implement the unary arithmetic operations (-, +, abs()  and ~). 
+
+# Called to implement the unary arithmetic operations (-, +, abs()  and ~).
     @ts_unary
     def __neg__(self):
         return -self
@@ -789,7 +801,7 @@ class TimeSeries(object):
 
     @ts_binary
     def __lt__(self, other):
-        return self < other        
+        return self < other
 
     @ts_binary
     def __le__(self, other):
@@ -797,35 +809,35 @@ class TimeSeries(object):
 
     @ts_binary
     def __ge__(self, other):
-        return self >= other                
+        return self >= other
 
     @ts_binary
     def __eq__(self, other):
-        return self == other 
+        return self == other
 
     @ts_binary
     def __ne__(self, other):
-        return self != other             
-        
+        return self != other
+
     @ts_binary
     def __and__(self,other):
-        return numpy.logical_and(self,other) 
+        return numpy.logical_and(self,other)
 
     @ts_binary
     def __or__(self,other):
-        return numpy.logical_or(self,other) 
-        
+        return numpy.logical_or(self,other)
+
 # Private accessors for properties
 
     def _get_start(self):
-        return ticks_to_time(self._ticks[0])        
+        return ticks_to_time(self._ticks[0])
 
     def _get_end(self):
         return ticks_to_time(self._ticks[-1])
 
     def _get_data(self):
         return self._data
-        
+
     def _set_data(self,data):
         if type(data) == type(self._data):
             self._data = data
@@ -841,52 +853,52 @@ class TimeSeries(object):
 
     def _get_props(self):
         return self._props
-    
+
     def _get_times(self):
-        return scipy.array(map(ticks_to_time,self._ticks))
+        return scipy.array(list(map(ticks_to_time,self._ticks)))
 
     def _get_name(self):
 
         if type(self._props)==dict:
-            if 'name' in self._props.keys():
+            if 'name' in list(self._props.keys()):
                 return self._props['name']
             else:
                 return 'no name'
         else:
             return 'no name'
-    
+
 #   public properties
     start = property(_get_start,None,None,"Time at first element of series")
-    end = property(_get_end,None,None,"Time at last element of series") 
+    end = property(_get_end,None,None,"Time at last element of series")
     data=property(_get_data,_set_data,None,"Data component of series (for all time)")
     ticks=property(_get_ticks,None,None,"Array of long integer ticks representing the time index of the series")
-    times=property(_get_times,None,None,"Array of datetimes represented by series")    
+    times=property(_get_times,None,None,"Array of datetimes represented by series")
     props=property(_get_props,None,None,"Dictionary containing attributes, metadata and user properties")
 
 
-    
+
 def rts(data,start,interval,props=None):
     """ Create a regular or calendar time series from data and time parameters
 
         Parameters
         ----------
         data : array_like
-            Should be a array/list of values. There is no restriction on data 
+            Should be a array/list of values. There is no restriction on data
              type, but not all functionality like addition or interpolation will work on all data.
-        
+
         start : :py:class:`datetime.datetime`
             Can also be a string representing a datetime.
-        
+
         interval : :ref:`time_interval<time_intervals>`
             Can also be a string representing an interval that is
-            understood by :func:`vools.vtime.parse_interval`. 
+            understood by :func:`vools.vtime.parse_interval`.
 
         Returns
         -------
         result :  :class:`~vtools.data.timeseries.TimeSeries`
             A regular time series.
     """
-    
+
     if type(start)==type(' '):
         start=parse_time(start)
     if type(interval)==type(' '):
@@ -898,24 +910,24 @@ def rts(data,start,interval,props=None):
         props = {}
     elif not(type(props)==type({})):
         raise TypeError("input props must be a dictionary")
-    
-    
+
+
     ts=TimeSeries(timeseq,data,props)
     ts.interval=interval
     return ts
 
 def its(times,data,props=None):
     """ Create an irregular time series from time and data sequences
-        
+
         Parameters
         ----------
         times : :ref:`time_sequence<time_sequences>`
             An array or list of datetimes or ticks
-        
+
         data : array or list of values
             An array/list of values. No restriction on data type,
             but not all functionality will work on every data type.
-        
+
         Returns
         -------
         result :  :class:`~vtools.data.timeseries.TimeSeries`
@@ -924,7 +936,7 @@ def its(times,data,props=None):
     # convert times to a tick sequence
     if type(data)==list:
         data=scipy.array(data)
-    if (props is None): props = {}        
+    if (props is None): props = {}
     ts=TimeSeries(times,data,props)
 
     return ts
@@ -932,50 +944,50 @@ def its(times,data,props=None):
 
 def its2rts(its,interval,original_dates=True):
    """ Convert an irregular time series to a regular.
-   
+
        .. note::
-       This function assumes observations were taken at "almost regular" intervals with some 
+       This function assumes observations were taken at "almost regular" intervals with some
        variation due to clocks/recording. It nudges the time to "neat" time points to obtain the
-       corresponding regular index, allowing gaps. There is no correctness checking, 
+       corresponding regular index, allowing gaps. There is no correctness checking,
        The dates are stored at the original "imperfect" time points if original_dates == True,
        otherwise at the "nudged" regular times.
-       
+
         Parameters
         ----------
         its : :class:`~vtools.data.timeseries.TimeSeries`
              A irregular time series.
-             
-        
+
+
         interval : :ref:`time_interval<time_intervals>`
-            Interval of resulting regular timeseries,Can also be a string 
-            representing an interval that is understood by :func:`vools.vtime.parse_interval`. 
+            Interval of resulting regular timeseries,Can also be a string
+            representing an interval that is understood by :func:`vools.vtime.parse_interval`.
 
         original_dates:boolean,optional
             Use original datetime or nudged regular times.
-        
+
         Returns
         -------
         result :  :class:`~vtools.data.timeseries.TimeSeries`
             A regular time series.
-       
+
    """
    import warnings
-   if not isinstance(interval, _datetime.timedelta): 
+   if not isinstance(interval, _datetime.timedelta):
        raise ValueErrror("Only exact regular intervals (secs, mins, hours, days)\
                         accepted in its2rts")
    start = round_ticks(its.ticks[0],interval)
    stime = ticks_to_time(start)
    end = round_ticks(its.ticks[-1],interval)
    interval_seconds = ticks(interval)
-   its_ticks = its.ticks   
+   its_ticks = its.ticks
    n = (end - start)/interval_seconds
    tseq = time_sequence(stime, interval, n+1)   # todo: Changed from n+1 to n+2 a bit casually
    outsize = list(its.data.shape)
    outsize[0] = n+1
-   
+
    data = np.full(tuple(outsize),fill_value=np.nan,dtype=its.data.dtype)
    vround = np.vectorize(round_ticks)
-   tround = vround(its.ticks,interval)   
+   tround = vround(its.ticks,interval)
    ndx = np.searchsorted(tseq,tround)
    conflicts = np.equal(ndx[1:],ndx[:-1])
    if any(conflicts):
@@ -994,59 +1006,59 @@ def its2rts(its,interval,original_dates=True):
 
 
 def rts_constant(start,end,interval,val=np.nan):
-    
+
     """ Create a regular or calendar time series filled with constant value
 
         Parameters
         ----------
         start : :py:class:`datetime.datetime`
             Starting time, can also be a string representing a datetime.
-        
+
         end : :py:class:`datetime.datetime`
             Ending time,can also be a string representing a datetime.
-        
+
         interval : :ref:`time_interval<time_intervals>`
-            Can also be a string representing an interval that is 
-            understood by :func:`vools.vtime.parse_interval`. 
-            
+            Can also be a string representing an interval that is
+            understood by :func:`vools.vtime.parse_interval`.
+
         val : float,int
             Constant will be filled into the time series.
             Optional, default is nan.
-            
+
         Returns
         -------
         result :  :class:`~vtools.data.timeseries.TimeSeries`
             A regular time series wiht constant values
     """
-    
-    
+
+
     num_data=number_intervals(start,end,interval)+1
     data=np.empty(num_data)
     data.fill(val)
     ts=rts(data,start,interval,{})
     return ts
-        
+
 
 def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
-    
-    """ Extend a regular time series with newer start/end 
+
+    """ Extend a regular time series with newer start/end
 
         Parameters
         ----------
         start : :py:class:`datetime.datetime`
             The starting time to be extended to.Optional, default no extension.
-        
+
         end : :py:class:`datetime.datetime`
            The ending time to be extended to.Optional,default no extension.
-        
+
         method : :string
             Method to fill the extended part of resulting series. either
             "taper" or"constant". default constant.
-            
+
         val : float
             Constant will be filled or the value that the last non-nan
             gets tapered to. Only constant is supported for multivariate data
-            
+
         Returns
         -------
         result :  :class:`~vtools.data.timeseries.TimeSeries`
@@ -1054,8 +1066,8 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
            This function will only extend, not clip, so if you want to be
            sure the returned function is the correct siae you need to apply
            a window afterwards.
-           
-           
+
+
     """
     if start is None:
         start=ts.start
@@ -1082,21 +1094,21 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
         data[head_extended:head_extended+old_len]=ts.data[:]
     else:
         data[head_extended:head_extended+old_len,]=ts.data
-        
+
 
     if method=="constant":
         data[0:head_extended,]=val
         data[head_extended+old_len:new_len,]=val
     elif method=="taper":
         if np.any(np.isnan(val)):
-            raise ValueError("You must input a valid value for taper method")        
+            raise ValueError("You must input a valid value for taper method")
         if data.ndim > 1:
             raise ValueError("Extrapolate with taper not implemented for ndim > 1")
         ## find out first and last non val
         temp=ts.data[~np.isnan(ts.data)]
         begin_taper_to=temp[0]
         end_taper_from=temp[-1]
-        
+
         head_taper_step=(begin_taper_to-val)/(head_extended)
         tail_taper_step=(val-end_taper_from)/(tail_extended)
         data[0:head_extended]=np.arange(start=val,\
@@ -1104,21 +1116,9 @@ def extrapolate_ts(ts,start=None,end=None,method="constant",val=np.nan):
                                 step=head_taper_step)
         data[old_len+head_extended:new_len]=np.arange(start=end_taper_from+tail_taper_step,\
                                 stop=val+tail_taper_step,step=tail_taper_step)
-        
+
     else:
         raise ValueError("Unkonw filling method:"+method)
-        
+
     new_ts=rts(data,eff_start,ts.interval,{})
     return new_ts
-        
-    
-    
-
-
-
-    
-    
-    
-
-
-    
