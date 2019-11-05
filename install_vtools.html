@@ -105,23 +105,28 @@
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
 <p>If you want HEC-DSS functionality, you will need pydss, our Python bindings for the HEC-DSS storage format. The package
 is currently only available for Windows and in binaries, linked to the binary library with permission from the Hydrologic Engineering Center. Our portion of the code is offered using an MIT license. Linux will be supported.</p>
-<p><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_amd64.exe">pydss installer (Python 2.7, Windows 64 bit)</a></p>
+<p><a class="reference external" href="https://data.cnra.ca.gov/dataset/26a9d3fa-9edb-48fc-b310-705562406700/resource/35741a3d-ef31-4c9b-bec1-21e5a7e2ff78/download/pydss-0.8.win-amd64.exe">pydss installer (Python 2.7, Windows 64 bit)</a></p>
 <p>VTools makes extensive use of numpy, scipy as well as interfaces to data sources. There is a trend now with python towards fully featured scientific distrubtions, and we don’t particularly recommend trying to build up a full featured tool a la carte. To that end, we recommend the <a class="reference external" href="https://store.continuum.io/cshop/anaconda/">Anaconda</a> distribution. One of the main developers on our time has also used Python(x,y).</p>
 </div>
 <div class="section" id="vtools-install">
 <h2>VTools Install<a class="headerlink" href="#vtools-install" title="Permalink to this headline">¶</a></h2>
+<p>An window installer (ver 1.1.1) is available below. You might need to select the location of your Python installation</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="https://data.cnra.ca.gov/dataset/26a9d3fa-9edb-48fc-b310-705562406700/resource/25d150e9-22e8-459b-88c1-cddbd32b626e/download/vtools-1.1.1.win-amd64.msi">vtools-1.1.1.win-amd64.msi (Python 2.7, Windows 64 bit)</a></li>
+</ul>
+</div></blockquote> 
 <p>VTools is installed via a python “egg”. The vtools egg available here:</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/vtools-1.1-py2.7.egg">vtools-1.1-py2.7.egg (Python 2.7, Windows 64 bit)</a></li>
-<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/vtools-1.0-py2.7_win32.egg">vtools-1.0-py2.7_win32.egg (Python 2.7, Windows 32 bit)</a></li>
+<li><a class="reference external" href="https://data.cnra.ca.gov/dataset/26a9d3fa-9edb-48fc-b310-705562406700/resource/0b810726-4b28-4e4c-ba93-64baba2ff89d/download/vtools-1.1.1-py2.7.egg">vtools-1.1.1-py2.7.egg (Python 2.7, Windows 64 bit)</a></li>
 </ul>
 </div></blockquote>
 <p>Use the command:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>$ easy_install vtools-1.1-py2.7.egg
 </pre></div>
 </div>
-<p>Version 2.7 of Python is currently supported in 32 or 64 bit flavors. We will make the jump to 3.x when it is fully supported in ArcGIS.</p>
+<p>Version 2.7 of Python is currently supported in 64 bit only. We are making the jump to 3.x soon and this package will no longer be supported there.</p>
 <p>VTools is offered under the MIT license. You should receive a copy of the license with the package.</p>
 </div>
 <div class="section" id="pydss">
@@ -130,8 +135,7 @@ is currently only available for Windows and in binaries, linked to the binary li
 We are redistributing the HEC-DSS library with permission from the Hydrologic Engineering Center and don’t have explicit permission to distribute their source code. Currently we only have a Windows Build.</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_win32.exe">pydss_0.8_py2.7_win32.exe</a></li>
-<li><a class="reference external" href="https://msb.water.ca.gov/documents/86683/266737/pydss_0.8_py2.7_amd64.exe">pydss_0.8_py2.7_amd64.exe</a></li>
+<li><a class="reference external" href="https://data.cnra.ca.gov/dataset/26a9d3fa-9edb-48fc-b310-705562406700/resource/35741a3d-ef31-4c9b-bec1-21e5a7e2ff78/download/pydss-0.8.win-amd64.exe">pydss_0.8_py2.7_amd64.exe</a></li>
 </ul>
 </div></blockquote>
 </div>
