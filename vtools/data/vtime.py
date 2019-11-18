@@ -366,7 +366,7 @@ def round_ticks(inticks,interval):
     """
     round_to=ticks(interval)
     seconds = inticks
-    rounding = (seconds + round_to/2) // round_to*round_to
+    rounding = (seconds + round_to // 2) // round_to*round_to
     return rounding
 
 def parse_time(t):
