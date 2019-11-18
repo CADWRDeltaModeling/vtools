@@ -251,7 +251,7 @@ def cosine_lanczos(ts,cutoff_period=None,cutoff_frequency=None,filter_len=None,
     if (padlen is None) and (not(padtype is None)):
         padlen=6*m
         
-    if padlen>len(data):
+    if padlen is not None and padlen>len(data):
         raise ValueError("Padding length is more  than data size")
         
     ## get filter coefficients. sizeo of coefis is 2*m+1 in fact
