@@ -22,9 +22,9 @@ from vtools.data.timeseries import its,rts
 from vtools.data.constants import *
 
 ## local import.
-from _monotonic_spline import _monotonic_spline
+from ._monotonic_spline import _monotonic_spline
 #from _rational_hist import *
-from rhist import rhist_bound
+from .rhist import rhist_bound
 
 __all__=["linear","spline","monotonic_spline","nearest_neighbor","gap_size",\
          "previous_neighbor","next_neighbor","interpolate_ts_nan",\
